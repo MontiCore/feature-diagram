@@ -1,0 +1,45 @@
+grammar FeatureDiagram extends de.monticore.common.Common {
+
+  symbol scope FeatureDiagram =
+    Stereotype? "featurediagram" Name "{"
+      FDElement*
+    "}";
+    
+  interface FDElement;
+
+  FeatureTreeRule implements FDElement =
+    Stereotype? Name "=" FeatureGroup ";" ;
+    
+  interface FeatureGroup = Feature+ ;
+
+  // CompositeFeature -> all features must be chosen
+  // Example A = B & C & D
+  AndFeatureGroup implements FeatureGroup = ( Feature || "&" )+ ;
+
+  // XorFeature -> exactly one feature must be chosen
+  // Example A = B ^ C ^ D
+  XorFeatureGroup implements FeatureGroup = Feature ( "^" Feature )+ ;
+
+  // OrFeature -> one or more features must be chosen
+  // Example A = B | C | D
+  OrFeatureGroup implements FeatureGroup = Feature ( "|" Feature )+ ;
+
+  // CardinalizedFeature -> specify a range of features, for example
+  // Example A = [2..3] (B, C, D)
+  CardinalizedFeatureGroup implements FeatureGroup = Cardinality "(" ( Feature || "," )+ ")" ;
+
+  // Elemental Feature
+  // - can be enhanced with stereotypes
+  // - can be optional (?)
+  symbol Feature = Stereotype? Name ( optional:["?"] )? ;
+  
+  FeatureConstraint implements FDElement =
+    "constraint" ("{" ( ConstraintExpression ";" )* "}" | ConstraintExpression ";" ) ;
+    
+  interface ConstraintExpression ;
+  
+  RequiresConstraint implements ConstraintExpression = a:Name@Feature "requires" b:Name@Feature ;
+  
+  ExcludesConstraint implements ConstraintExpression = a:Name@Feature "excludes" b:Name@Feature ;
+  
+}

@@ -1,0 +1,86 @@
+package fd;
+/*
+ * Copyright (c) 2019 RWTH Aachen. All rights reserved.
+ *
+ * http://www.se-rwth.de/
+ */
+
+import java.io.IOException;
+import java.util.Optional;
+
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import de.se_rwth.commons.logging.LogStub;
+import featurediagram._parser.FeatureDiagramParser;
+
+/**
+ * TODO: Write me!
+ *
+ * @author (last commit) $Author$
+ * @version $Revision$, $Date$
+ * @since TODO: add version number
+ */
+public class FeatureDiagramParserTest {
+  
+  @BeforeClass
+  public static void initLog() {
+    LogStub.init();
+//    Log.enableFailQuick(false);
+  }
+  
+  @Test
+  public void testParseStringsForIndividualGrammarRules() throws IOException {
+    FeatureDiagramParser parser = new FeatureDiagramParser();
+    assertPresent(parser.parse_StringXorFeatureGroup("A ^ B"));
+    assertPresent(parser.parse_StringXorFeatureGroup("A ^ B ^ C"));
+    assertEmpty(parser.parse_StringXorFeatureGroup("A"));
+    assertEmpty(parser.parse_StringXorFeatureGroup("^A"));
+    assertEmpty(parser.parse_StringXorFeatureGroup("^"));
+    
+    assertPresent(parser.parse_StringAndFeatureGroup("A & B"));
+    assertPresent(parser.parse_StringAndFeatureGroup("A & B & C"));
+    assertPresent(parser.parse_StringAndFeatureGroup("A"));
+    assertEmpty(parser.parse_StringAndFeatureGroup("&A"));
+    assertEmpty(parser.parse_StringAndFeatureGroup("&"));
+    
+    assertPresent(parser.parse_StringOrFeatureGroup("A | B"));
+    assertPresent(parser.parse_StringOrFeatureGroup("A | B | C"));
+    assertEmpty(parser.parse_StringOrFeatureGroup("A"));
+    assertEmpty(parser.parse_StringOrFeatureGroup("|A"));
+    assertEmpty(parser.parse_StringOrFeatureGroup("|"));
+    
+    assertPresent(parser.parse_StringCardinalizedFeatureGroup("[2 .. 3] (A)"));
+    assertPresent(parser.parse_StringCardinalizedFeatureGroup("[2 .. 3] (A,B)"));
+    assertPresent(parser.parse_StringCardinalizedFeatureGroup("[2 .. 3] (A,B,C)"));
+    assertPresent(parser.parse_StringCardinalizedFeatureGroup("[0 .. *] (A,B,C)"));
+    assertPresent(parser.parse_StringCardinalizedFeatureGroup("[2] (A,B)"));
+    assertEmpty(parser.parse_StringCardinalizedFeatureGroup("[-2 .. 3] (A,B)"));
+    assertEmpty(parser.parse_StringCardinalizedFeatureGroup("[2] ()"));
+    
+    assertPresent(parser.parse_StringFeature("A"));
+    assertPresent(parser.parse_StringFeature("A?"));
+    assertPresent(parser.parse_StringFeature("<<final>>A"));
+    assertPresent(parser.parse_StringFeature("A123456789a_z"));
+    assertEmpty(parser.parse_StringFeature("<<>>A"));
+    
+    assertPresent(parser.parse_StringConstraintExpression("A requires B"));
+    assertPresent(parser.parse_StringConstraintExpression("A excludes B"));
+  }
+  
+  @Test
+  public void testBasicElements() throws IOException {
+    FeatureDiagramParser parser = new FeatureDiagramParser();
+    assertPresent(parser.parse("src/test/resources/fdvalid/BasicElements.fd"));
+  }
+
+  protected static void assertPresent(Optional<?> opt) {
+    Assert.assertTrue(opt.isPresent());
+  }
+
+  protected static void assertEmpty(Optional<?> opt) {
+    Assert.assertTrue(!opt.isPresent());
+  }
+  
+}

@@ -1,0 +1,12 @@
+grammar FeatureConfiguration extends FeatureDiagram {
+
+  symbol scope FeatureConfiguration =
+    "featureconfig" Name
+    "for" featureDiagram:Name@FeatureDiagram "{"
+      (FeatureSelection || ",")+
+    "}"
+    ;
+
+  FeatureSelection = Stereotype? selectedFeature:Name@Feature ;
+  
+}
