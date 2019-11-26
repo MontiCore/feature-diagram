@@ -5,27 +5,17 @@
  */
 package featurediagram._symboltable;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.modelloader.ModelingLanguageModelLoader;
-
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * Language for Feature Diagrams
  */
 public class FeatureDiagramLanguage extends FeatureDiagramLanguageTOP {
-  
+
   public FeatureDiagramLanguage() {
     super("Feature Diagram", "fd");
   }
-  
-  /**
-   * @see de.monticore.CommonModelingLanguage#provideModelLoader()
-   */
+
   @Override
-  protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
+  protected FeatureDiagramModelLoader provideModelLoader() {
     return new FeatureDiagramModelLoader(this);
   }
 }

@@ -1,4 +1,4 @@
-grammar FeatureDiagram extends de.monticore.common.Common {
+grammar FeatureDiagram extends de.monticore.UMLStereotype, de.monticore.Cardinality {
 
   symbol scope FeatureDiagram =
     Stereotype? "featurediagram" Name "{"
@@ -7,9 +7,11 @@ grammar FeatureDiagram extends de.monticore.common.Common {
     
   interface FDElement;
 
+  // all features are "defined" at the RHS of a feature tree rule
+  // EXCEPT the root feature, which is the left-hand side of the first feature-tree rule
   FeatureTreeRule implements FDElement =
     Stereotype? Name "=" FeatureGroup ";" ;
-    
+
   interface FeatureGroup = Feature+ ;
 
   // CompositeFeature -> all features must be chosen

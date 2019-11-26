@@ -5,17 +5,8 @@
  */
 package featureconfiguration._symboltable;
 
-import de.monticore.ast.ASTNode;
-import de.monticore.modelloader.ModelingLanguageModelLoader;
-
 /**
- * TODO: Write me!
- *
- * @author  (last commit) $Author$
- * @version $Revision$,
- *          $Date$
- * @since   TODO: add version number
- *
+ * Language for feature configurations
  */
 public class FeatureConfigurationLanguage extends FeatureConfigurationLanguageTOP {
 
@@ -23,12 +14,9 @@ public class FeatureConfigurationLanguage extends FeatureConfigurationLanguageTO
     super("Feature Configuration", "fc");
   }
 
-  /**
-   * @see de.monticore.CommonModelingLanguage#provideModelLoader()
-   */
   @Override
-  protected ModelingLanguageModelLoader<? extends ASTNode> provideModelLoader() {
+  protected FeatureConfigurationModelLoader provideModelLoader() {
     return new FeatureConfigurationModelLoader(this);
   }
-  
+
 }

@@ -16,11 +16,7 @@ import de.se_rwth.commons.logging.LogStub;
 import featurediagram._parser.FeatureDiagramParser;
 
 /**
- * TODO: Write me!
- *
- * @author (last commit) $Author$
- * @version $Revision$, $Date$
- * @since TODO: add version number
+ * This class tests the parser of feature diagram and feature configuration languages
  */
 public class FeatureDiagramParserTest {
   
