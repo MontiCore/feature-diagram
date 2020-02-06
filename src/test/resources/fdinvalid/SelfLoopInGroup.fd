@@ -1,0 +1,3 @@
+featurediagram SelfLoopInGroup {
+  A = B & A? & D;
+}

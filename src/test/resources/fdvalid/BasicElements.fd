@@ -1,6 +1,7 @@
 featurediagram BasicElements {
+  root A;
   A = B & C? & D;
-  B = E ^ F ^ G;
+  A = E ^ F ^ G;
   C = H | I | J;
   D = [0 .. *] (K,L,M); 
   constraint M requires E;

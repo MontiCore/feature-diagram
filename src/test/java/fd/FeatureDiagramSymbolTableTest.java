@@ -6,27 +6,41 @@ package fd;
  */
 
 import de.monticore.io.paths.ModelPath;
-import featurediagram.FeatureDiagramTool;
-import featurediagram._symboltable.FeatureDiagramArtifactScope;
-import featurediagram._symboltable.FeatureDiagramSymbol;
-import featurediagram._symboltable.IFeatureDiagramScope;
+import featurediagram._ast.ASTFDCompilationUnit;
+import featurediagram._parser.FeatureDiagramParser;
+import featurediagram._symboltable.*;
 import org.junit.Test;
 
-import java.util.Optional;
+import java.io.IOException;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 /**
  *
  */
 public class FeatureDiagramSymbolTableTest {
 
+  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
+      throws IOException {
+    ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
+    assertNotNull(ast);
+    FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
+    FeatureDiagramGlobalScope globalScope = new FeatureDiagramGlobalScope(mp, lang);
+    FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
+    return symbolTable.createFromAST(ast);
+  }
+
+  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile)
+      throws IOException {
+    return setupSymbolTable(modelFile, new ModelPath());
+  }
+
   @Test
-  public void test() {
+  public void test() throws IOException {
     String model = "src/test/resources/fdvalid/BasicElements.fd";
-    FeatureDiagramArtifactScope scope = FeatureDiagramTool.run(model, new ModelPath());
-    assertTrue(null!= scope);
+    FeatureDiagramArtifactScope scope = setupSymbolTable(model);
+
+    assertTrue(null != scope);
     FeatureDiagramSymbol fd = scope.resolveFeatureDiagram("BasicElements").orElse(null);
     assertTrue(null != fd);
 
@@ -45,5 +59,5 @@ public class FeatureDiagramSymbolTableTest {
     assertTrue(fdScope.resolveFeature("D").isPresent());
     assertFalse(fdScope.resolveFeature("NotAFeature").isPresent());
   }
-  
+
 }

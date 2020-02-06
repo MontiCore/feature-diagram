@@ -1,12 +1,14 @@
 grammar FeatureConfiguration extends FeatureDiagram {
 
-  symbol scope FeatureConfiguration =
-    "featureconfig" Name
-    "for" featureDiagram:Name@FeatureDiagram "{"
-      (FeatureSelection || ",")+
-    "}"
-    ;
+  FCCompilationUnit = ("package" package:MCQualifiedName ";")?
+                      (MCImportStatement)*
+                      FeatureConfiguration;
 
-  FeatureSelection = Stereotype? selectedFeature:Name@Feature ;
-  
+  symbol scope FeatureConfiguration =
+    "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram "{"
+//      (Name || ",")+
+      selectedFeature:Name@Feature ( "," selectedFeature:Name@Feature )+
+//      (selectedFeature:Name@Feature || ",")+
+    "}";
+
 }

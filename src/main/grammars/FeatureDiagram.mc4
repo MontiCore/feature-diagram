@@ -1,47 +1,49 @@
-grammar FeatureDiagram extends de.monticore.UMLStereotype, de.monticore.Cardinality {
+
+grammar FeatureDiagram extends de.monticore.Cardinality,
+                               de.monticore.types.MCBasicTypes {
+
+  FDCompilationUnit = ("package" package:MCQualifiedName ";")?
+                      (MCImportStatement)*
+                      FeatureDiagram;
 
   symbol scope FeatureDiagram =
-    Stereotype? "featurediagram" Name "{"
+    "featurediagram" Name "{"
       FDElement*
     "}";
     
   interface FDElement;
 
-  // all features are "defined" at the RHS of a feature tree rule
-  // EXCEPT the root feature, which is the left-hand side of the first feature-tree rule
-  FeatureTreeRule implements FDElement =
-    Stereotype? Name "=" FeatureGroup ";" ;
+  RootFeature implements FDElement = "root" Feature ";";
 
-  interface FeatureGroup = Feature+ ;
+  // Elemental feature, either mandatory or optional
+  symbol Feature = Name ( optional:["?"] )?;
 
-  // CompositeFeature -> all features must be chosen
-  // Example A = B & C & D
-  AndFeatureGroup implements FeatureGroup = ( Feature || "&" )+ ;
+  FeatureTreeRule implements FDElement = Name@Feature "=" FeatureGroup ";";
 
-  // XorFeature -> exactly one feature must be chosen
-  // Example A = B ^ C ^ D
-  XorFeatureGroup implements FeatureGroup = Feature ( "^" Feature )+ ;
+  interface FeatureGroup = Feature+;
 
-  // OrFeature -> one or more features must be chosen
-  // Example A = B | C | D
-  OrFeatureGroup implements FeatureGroup = Feature ( "|" Feature )+ ;
+  // All features must be chosen ( e.g., A = B & C & D; )
+  AndGroup implements FeatureGroup = ( Feature || "&" )+;
 
-  // CardinalizedFeature -> specify a range of features, for example
-  // Example A = [2..3] (B, C, D)
-  CardinalizedFeatureGroup implements FeatureGroup = Cardinality "(" ( Feature || "," )+ ")" ;
+  // Exactly one feature must be chosen ( e.g., A = B ^ C ^ D; )
+  XorGroup implements FeatureGroup = Feature ( "^" Feature )+;
 
-  // Elemental Feature
-  // - can be enhanced with stereotypes
-  // - can be optional (?)
-  symbol Feature = Stereotype? Name ( optional:["?"] )? ;
-  
+  // One or more features must be chosen ( e.g.,  A = B | C | D; )
+  OrGroup implements FeatureGroup = Feature ( "|" Feature )+;
+
+  // Specify a range of features ( e.g., A = [2..3] (B, C, D); )
+  CardinalizedGroup implements FeatureGroup = Cardinality "(" ( Feature || "," )+ ")";
+
   FeatureConstraint implements FDElement =
-    "constraint" ("{" ( ConstraintExpression ";" )* "}" | ConstraintExpression ";" ) ;
+                     "constraint" ("{" ( ConstraintExpression ";" )* "}"
+                                  | ConstraintExpression ";" );
     
-  interface ConstraintExpression ;
+  interface ConstraintExpression;
   
-  RequiresConstraint implements ConstraintExpression = a:Name@Feature "requires" b:Name@Feature ;
+  RequiresConstraint implements ConstraintExpression =
+                       a:Name@Feature "requires" b:Name@Feature;
   
-  ExcludesConstraint implements ConstraintExpression = a:Name@Feature "excludes" b:Name@Feature ;
-  
+  ExcludesConstraint implements ConstraintExpression =
+                       a:Name@Feature "excludes" b:Name@Feature;
+
 }

@@ -14,7 +14,7 @@
 
     <properties>
         <!-- MontiCore -->
-        <monticore.version>6.0.0</monticore.version>
+        <monticore.version>6.1.0-SNAPSHOT</monticore.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.1.2</logback.version>
 

@@ -1,0 +1,8 @@
+import MyCDTypes.Foo;
+import MyCDTypes.Bar;
+import MyCDTypes.NotBar;
+
+featurediagram FooBar {
+  root Foo;
+  Foo = Bar | NotBar;
+}

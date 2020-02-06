@@ -4,7 +4,8 @@ package featurediagram;
 
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
-import featurediagram._ast.ASTFeatureDiagram;
+import featurediagram._ast.ASTFDCompilationUnit;
+import featurediagram._cocos.FeatureDiagramCoCos;
 import featurediagram._parser.FeatureDiagramParser;
 import featurediagram._symboltable.FeatureDiagramArtifactScope;
 import featurediagram._symboltable.FeatureDiagramGlobalScope;
@@ -18,19 +19,19 @@ import java.util.Optional;
 
 public class FeatureDiagramTool {
 
-  public static FeatureDiagramArtifactScope run(String modelFile, ModelPath modelPath){
+  public static FeatureDiagramArtifactScope run(String modelFile, ModelPath modelPath) {
     // setup the language infrastructure
     final FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
 
     // parse the model and create the AST representation
-    final ASTFeatureDiagram ast = parse(modelFile);
+    final ASTFDCompilationUnit ast = parse(modelFile);
     Log.info(modelFile + " parsed successfully!", "FeatureDiagramTool");
 
     // setup the symbol table
-    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(lang, modelPath,  ast);
+    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(lang, modelPath, ast);
 
     // execute default context conditions
-    runDefaultCoCos(ast);
+    FeatureDiagramCoCos.checkAll(ast);
 
     // store artifact scope after context conditions have been checked
     FeatureDiagramScopeDeSer.store(lang, modelTopScope);
@@ -43,10 +44,10 @@ public class FeatureDiagramTool {
    * @param model - file to parse
    * @return
    */
-  public static ASTFeatureDiagram parse(String model) {
+  public static ASTFDCompilationUnit parse(String model) {
     try {
-      FeatureDiagramParser parser = new FeatureDiagramParser() ;
-      Optional<ASTFeatureDiagram> optFD = parser.parse(model);
+      FeatureDiagramParser parser = new FeatureDiagramParser();
+      Optional<ASTFDCompilationUnit> optFD = parser.parse(model);
 
       if (!parser.hasErrors() && optFD.isPresent()) {
         return optFD.get();
@@ -66,17 +67,11 @@ public class FeatureDiagramTool {
    * @param ast
    * @return
    */
-  public static FeatureDiagramArtifactScope createSymbolTable(FeatureDiagramLanguage lang, ModelPath mp, ASTFeatureDiagram ast) {
+  public static FeatureDiagramArtifactScope createSymbolTable(FeatureDiagramLanguage lang,
+      ModelPath mp, ASTFDCompilationUnit ast) {
     FeatureDiagramGlobalScope globalScope = new FeatureDiagramGlobalScope(mp, lang);
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
     return symbolTable.createFromAST(ast);
-  }
-
-  /**
-   * Run the default context conditions.
-   */
-  public static void runDefaultCoCos(ASTFeatureDiagram ast) {
-//    new FeatureDiagramCoCos().getCheckerForAllCoCos().checkAll(ast);
   }
 
   /**

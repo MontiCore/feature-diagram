@@ -1,0 +1,5 @@
+classdiagram MyCDTypes {
+  class Foo{ }
+  class Bar{}
+  class NotBar{ }
+}

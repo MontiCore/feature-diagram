@@ -1,0 +1,3 @@
+featureconfig Select1 for BasicElements {
+  A,B,C,E;
+}

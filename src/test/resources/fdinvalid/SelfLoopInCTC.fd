@@ -1,0 +1,9 @@
+featurediagram SelfLoopInCTC {
+  A = B & C? & D;
+
+  constraint{
+    B requires B;
+  }
+
+  constraint C excludes C;
+}
