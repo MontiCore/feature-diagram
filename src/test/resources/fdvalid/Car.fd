@@ -1,0 +1,13 @@
+package fdvalid;
+
+featurediagram Car {
+  root Car;
+
+  Car = ElectricWindowOpener? & PanoramicRoof?;
+
+  Car = SmallTrunk ^ LargeTrunk;
+
+  PanoramicRoof = Electric?;
+
+  constraint Electric requires ElectricWindowOpener;
+}

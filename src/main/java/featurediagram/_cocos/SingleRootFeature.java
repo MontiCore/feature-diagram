@@ -19,7 +19,7 @@ public class SingleRootFeature implements FeatureDiagramASTFeatureDiagramCoCo {
         if (root.isPresent()) {
           String name1 = ((ASTRootFeature) astfdElement).getFeature().getName();
           String name2 = root.get().getFeature().getName();
-          Log.error("0xF0001 Feature diagrams must not contain more than one root feature! '"
+          Log.error("0xFD0001 Feature diagrams must not contain more than one root feature! '"
               + node.getName() + "' contains conflicting root features '" + name1 + "' and '"
               + name2 + "'.", astfdElement.get_SourcePositionStart());
         }
@@ -29,7 +29,7 @@ public class SingleRootFeature implements FeatureDiagramASTFeatureDiagramCoCo {
       }
     }
     if (!root.isPresent()) {
-      Log.error("0xF0002 Feature diagrams must contain a root feature! '"
+      Log.error("0xFD0002 Feature diagrams must contain a root feature! '"
           + node.getName() + "' contains no root feature.", node.get_SourcePositionStart());
     }
 

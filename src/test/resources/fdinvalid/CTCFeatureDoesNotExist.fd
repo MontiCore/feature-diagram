@@ -1,0 +1,7 @@
+featurediagram CTCFeatureDoesNotExist {
+  root A;
+  A = B & C? & D;
+
+  constraint Foo excludes Bar;
+
+}

@@ -1,0 +1,6 @@
+featurediagram InvalidParent {
+  root A;
+  A = B;
+  B = C;
+  NotAFeature = C;
+}

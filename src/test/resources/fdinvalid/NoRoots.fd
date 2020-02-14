@@ -1,0 +1,4 @@
+featurediagram NoRoots {
+  A = B;
+  B = C;
+}

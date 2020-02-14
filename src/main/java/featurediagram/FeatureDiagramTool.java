@@ -52,10 +52,10 @@ public class FeatureDiagramTool {
       if (!parser.hasErrors() && optFD.isPresent()) {
         return optFD.get();
       }
-      Log.error("Model could not be parsed.");
+      Log.error("0xFD1000 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("Failed to parse " + model, e);
+      Log.error("0xFD1001 Failed to parse " + model, e);
     }
     return null;
   }
@@ -75,13 +75,13 @@ public class FeatureDiagramTool {
   }
 
   /**
-   * Use the single argument for specifying the single input automata file.
+   * Use the single argument for specifying the single input feature diagram file.
    *
    * @param args
    */
   public static void main(String[] args) {
     if (args.length != 1) {
-      Log.error("Please specify only one single path to the input model.");
+      Log.error("0xFD1002 Please specify only one single path to the input model.");
       return;
     }
     FeatureDiagramTool.run(args[0], new ModelPath());

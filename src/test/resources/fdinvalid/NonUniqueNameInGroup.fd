@@ -1,3 +1,4 @@
 featurediagram NonUniqueNameInGroup {
+  root A;
   A = B & B? & D;
 }

@@ -38,12 +38,21 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
                      "constraint" ("{" ( ConstraintExpression ";" )* "}"
                                   | ConstraintExpression ";" );
     
-  interface ConstraintExpression;
+  interface ConstraintExpression = Name@Feature+;
   
   RequiresConstraint implements ConstraintExpression =
-                       a:Name@Feature "requires" b:Name@Feature;
+                       Name@Feature "requires" Name@Feature;
   
   ExcludesConstraint implements ConstraintExpression =
-                       a:Name@Feature "excludes" b:Name@Feature;
+                       Name@Feature "excludes" Name@Feature;
+
+  symbolrule FeatureDiagram =
+                   rootFeature:featurediagram._symboltable.FeatureSymbolLoader
+                   ;
+
+  symbolrule Feature =
+                   isOptional:boolean
+                   children:featurediagram._symboltable.FeatureGroup*
+                   ;
 
 }

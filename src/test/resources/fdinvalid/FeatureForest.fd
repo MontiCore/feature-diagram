@@ -1,0 +1,5 @@
+featurediagram FeatureForest {
+  root A;
+  A = B | C;
+  X = Y ^ Z;
+}

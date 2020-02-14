@@ -6,9 +6,13 @@ package fd;
  */
 
 import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import featurediagram._ast.ASTFDCompilationUnit;
 import featurediagram._parser.FeatureDiagramParser;
 import featurediagram._symboltable.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -19,6 +23,17 @@ import static org.junit.Assert.*;
  *
  */
 public class FeatureDiagramSymbolTableTest {
+
+  @BeforeClass
+  public static void disableFailQuick() {
+    //    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+    LogStub.init();
+  }
+
+  @Before
+  public void clearFindings() {
+    Log.getFindings().clear();
+  }
 
   protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
       throws IOException {

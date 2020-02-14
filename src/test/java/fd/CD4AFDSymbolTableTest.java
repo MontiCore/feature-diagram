@@ -1,43 +1,58 @@
 package fd;
 
-import cdfeaturediagram.CDTypeFeatureDiagramGlobalScope;
-import de.monticore.io.paths.ModelPath;
-import featurediagram._ast.ASTFDCompilationUnit;
-import featurediagram._parser.FeatureDiagramParser;
-import featurediagram._symboltable.*;
+import cdfeaturediagram.CDType2FeatureAdapter;
+import cdfeaturediagram.CDTypeFeatureDiagramTool;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
+import featurediagram._symboltable.FeatureDiagramArtifactScope;
+import featurediagram._symboltable.FeatureDiagramSymTabMill;
+import featurediagram._symboltable.FeatureDiagramSymbol;
+import featurediagram._symboltable.FeatureSymbol;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CD4AFDSymbolTableTest {
 
-  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, String path)
-      throws IOException {
-    ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
-    assertNotNull(ast);
-    FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
-    CDTypeFeatureDiagramGlobalScope globalScope = new CDTypeFeatureDiagramGlobalScope(
-        new ModelPath(Paths.get(path)), lang);
-    FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
-    return symbolTable.createFromAST(ast);
+  @BeforeClass
+  public static void disableFailQuick() {
+    //    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+    LogStub.init();
+  }
+
+  @Before
+  public void clearFindings() {
+    Log.getFindings().clear();
+  }
+
+  @AfterClass
+  public static void resetMill(){
+    //Important: reset Mill, because otherwise all "normal feature diagrams" cannot be processed
+    FeatureDiagramSymTabMill.reset();
   }
 
   @Test
   public void test() throws IOException {
     String model = "src/test/resources/cd4a-fd/FooBar.fd";
-    FeatureDiagramArtifactScope scope = setupSymbolTable(model, "src/test/resources/cd4a-fd");
+    FeatureDiagramArtifactScope scope = CDTypeFeatureDiagramTool
+        .run(model, "src/test/resources/cd4a-fd");
 
     assertTrue(null != scope);
     FeatureDiagramSymbol fd = scope.resolveFeatureDiagram("FooBar").orElse(null);
     assertTrue(null != fd);
 
-    List<FeatureSymbol> foo = fd.getSpannedScope().resolveFeatureMany("Foo");
-    assertEquals(2, foo.size());
-    assertEquals("blo", foo.get(0).getClass());
+    List<FeatureSymbol> foos = fd.getSpannedScope().resolveFeatureMany("Foo");
+    assertEquals(1, foos.size());
+    FeatureSymbol fooSymbol = foos.get(0);
+    assertTrue(fooSymbol instanceof CDType2FeatureAdapter);
+    assertEquals("Foo", fooSymbol.getName());
   }
 
 }

@@ -1,0 +1,6 @@
+featurediagram TwoRoots {
+  root A;
+  root B;
+  A = D;
+  B = C;
+}

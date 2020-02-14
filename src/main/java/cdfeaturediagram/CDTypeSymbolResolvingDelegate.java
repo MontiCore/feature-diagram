@@ -1,4 +1,5 @@
-package cdfeaturediagram;/* (c) https://github.com/MontiCore/monticore */
+/* (c) https://github.com/MontiCore/monticore */
+package cdfeaturediagram;
 
 import de.monticore.cd.cd4analysis._symboltable.ICD4AnalysisScope;
 import de.monticore.symboltable.modifiers.AccessModifier;

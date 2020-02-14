@@ -12,7 +12,7 @@ public class NoSelfLoopsInFeatureTree implements FeatureDiagramASTFeatureTreeRul
     String lhs = node.getName();
     for (ASTFeature f : node.getFeatureGroup().getFeatureList()) {
       if (f.getName().equals(lhs)) {
-        Log.error("0xF0003 Feature diagram rules must not introduce self loops!",
+        Log.error("0xFD0003 Feature diagram rules must not introduce self loops!",
             node.get_SourcePositionStart());
       }
     }

@@ -1,3 +1,5 @@
+package fdvalid;
+
 featurediagram BasicElements {
   root A;
   A = B & C? & D;

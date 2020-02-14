@@ -1,4 +1,6 @@
 featurediagram SelfLoopInCTC {
+
+  root A;
   A = B & C? & D;
 
   constraint{

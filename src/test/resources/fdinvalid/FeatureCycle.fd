@@ -1,0 +1,8 @@
+featurediagram FeatureCycle {
+  root A;
+  A = B;
+
+  B = C;
+  C = D;
+  D = B;
+}

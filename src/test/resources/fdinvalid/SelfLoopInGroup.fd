@@ -1,3 +1,5 @@
 featurediagram SelfLoopInGroup {
-  A = B & A? & D;
+  root A;
+
+  B = B & C;
 }
