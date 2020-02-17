@@ -1,4 +1,4 @@
-
+/* (c) https://github.com/MontiCore/monticore */
 grammar FeatureDiagram extends de.monticore.Cardinality,
                                de.monticore.types.MCBasicTypes {
 
@@ -32,7 +32,8 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   OrGroup implements FeatureGroup = Feature ( "|" Feature )+;
 
   // Specify a range of features ( e.g., A = [2..3] (B, C, D); )
-  CardinalizedGroup implements FeatureGroup = Cardinality "(" ( Feature || "," )+ ")";
+  CardinalizedGroup implements FeatureGroup =
+                               Cardinality "(" ( Feature || "," )+ ")";
 
   FeatureConstraint implements FDElement =
                      "constraint" ("{" ( ConstraintExpression ";" )* "}"

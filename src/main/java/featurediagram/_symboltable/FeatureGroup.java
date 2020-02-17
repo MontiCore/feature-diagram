@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package featurediagram._symboltable;
+
+import de.se_rwth.commons.logging.Log;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -14,15 +15,44 @@ public class FeatureGroup {
 
   protected GroupKind kind;
 
+  protected int min;
+
+  protected int max;
+
+  public FeatureGroup(FeatureSymbolLoader parent,
+      List<FeatureSymbolLoader> members, int min, int max) {
+    this.parent = parent;
+    this.members = members;
+    this.kind = GroupKind.CARDINALITY;
+    this.min = min;
+    this.max = max;
+  }
+
   public FeatureGroup(FeatureSymbolLoader parent,
       List<FeatureSymbolLoader> members, GroupKind kind) {
     this.parent = parent;
     this.members = members;
     this.kind = kind;
-  }
 
-  enum GroupKind {
-    XOR, OR, AND, CARDINALITY;
+    switch (kind) {
+      case AND:
+        this.min = Integer.MAX_VALUE;
+        this.max = Integer.MAX_VALUE;
+        break;
+      case OR:
+        this.min = 1;
+        this.max = Integer.MAX_VALUE;
+        break;
+      case XOR:
+        this.min = 1;
+        this.max = 1;
+        break;
+      case CARDINALITY:
+      default:
+        Log.error("0xFD1002 Feature group with parent '" + parent.getName()
+            + "' is a cardinality group, but its cardinality has not been set!");
+        break;
+    }
   }
 
   public FeatureSymbolLoader getParent() {
@@ -84,5 +114,21 @@ public class FeatureGroup {
 
   public FeatureSymbolLoader remove(int index) {
     return members.remove(index);
+  }
+
+  public int getMin() {
+    return min;
+  }
+
+  public void setMin(int min) {
+    this.min = min;
+  }
+
+  public int getMax() {
+    return max;
+  }
+
+  public void setMax(int max) {
+    this.max = max;
   }
 }

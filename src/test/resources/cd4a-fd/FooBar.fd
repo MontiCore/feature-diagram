@@ -1,8 +1,10 @@
-import MyCDTypes.Foo;
-import MyCDTypes.Bar;
-import MyCDTypes.NotBar;
+/* (c) https://github.com/MontiCore/monticore */
 
-featurediagram FooBar {
-  root Foo;
-  Foo = Bar | NotBar;
-}
+import MyCDTypes.*;
+   import MyCDTypes.Bar;
+   import MyCDTypes.NotBar;
+
+   featurediagram FooBar {
+     root Foo;
+     Foo = Bar | NotBar;
+   }

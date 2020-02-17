@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package featurediagram._cocos;
 
 import de.se_rwth.commons.logging.Log;

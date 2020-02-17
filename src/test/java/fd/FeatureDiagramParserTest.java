@@ -1,9 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
 package fd;
-/*
- * Copyright (c) 2019 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
 
 import java.io.IOException;
 import java.util.Optional;
@@ -65,8 +61,6 @@ public class FeatureDiagramParserTest {
     assertPresent(parser.parse_StringFeature("A"));
     assertPresent(parser.parse_StringFeature("A?"));
     assertPresent(parser.parse_StringFeature("A123456789a_z"));
-//    assertPresent(parser.parse_StringFeature("<<final>>A"));
-//    assertEmpty(parser.parse_StringFeature("<<>>A"));
 
     assertPresent(parser.parse_StringConstraintExpression("A requires B"));
     assertPresent(parser.parse_StringConstraintExpression("A excludes B"));

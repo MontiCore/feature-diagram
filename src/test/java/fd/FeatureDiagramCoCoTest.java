@@ -1,9 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
 package fd;
-/*
- * Copyright (c) 2019 RWTH Aachen. All rights reserved.
- *
- * http://www.se-rwth.de/
- */
 
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Finding;
@@ -24,9 +20,6 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-/**
- *
- */
 public class FeatureDiagramCoCoTest {
 
   @BeforeClass

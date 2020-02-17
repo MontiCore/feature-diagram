@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package featurediagram._symboltable;
 
 import de.monticore.symboltable.ImportStatement;
@@ -9,11 +8,6 @@ import featurediagram._ast.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * THIS CLASS IS CURRENTLY UNNECESSARY TODO check if needed after review BR
- * Extends the generated symbol table creator by adding a featuresymbol of the name of the first feature rule.
- * This is impoliclty set as root feature.
- */
 public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableCreatorTOP {
 
   protected Map<String, List<FeatureGroup>> groups;
@@ -37,7 +31,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
         .getMCImportStatementList().stream()
         .map(i -> new ImportStatement(i.getQName(), i.isStar()))
         .collect(Collectors.toList());
-    String packageName = rootNode.isPresentPackage()?rootNode.getPackage().toString():"";
+    String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
 
     FeatureDiagramArtifactScope artifactScope = FeatureDiagramSymTabMill
         .featureDiagramArtifactScopeBuilder()
@@ -76,6 +70,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
 
   /**
    * This method is overriden to set the root feature as attribute
+   *
    * @param symbol
    * @param ast
    */
@@ -102,11 +97,11 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
 
   @Override public void endVisit(ASTFeatureDiagram node) {
     super.endVisit(node);
-    for(FeatureSymbol symbol : featureSymbols){
-      if(groups.containsKey(symbol.getName())){
+    for (FeatureSymbol symbol : featureSymbols) {
+      if (groups.containsKey(symbol.getName())) {
         symbol.setChildrenList(groups.get(symbol.getName()));
       }
-      else{
+      else {
         symbol.setChildrenList(new ArrayList<>());
       }
     }
@@ -120,9 +115,17 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
       FeatureSymbolLoader fsl = createFeatureSymbolLoader(child.getName());
       children.add(fsl);
     }
-    FeatureGroup.GroupKind kind = getGroupKind(node.getFeatureGroup());
-    FeatureGroup group = new FeatureGroup(parent, children, kind);
-    putFeatureGroup(group);
+    GroupKind kind = getGroupKind(node.getFeatureGroup());
+    if (GroupKind.CARDINALITY == kind) {
+      ASTCardinalizedGroup g = (ASTCardinalizedGroup) node.getFeatureGroup();
+      int min = g.getCardinality().getLowerBound();
+      int max = g.getCardinality().getUpperBound();
+      putFeatureGroup(new FeatureGroup(parent, children, min, max));
+    }
+    else {
+      putFeatureGroup(new FeatureGroup(parent, children, kind));
+    }
+
   }
 
   protected void putFeatureGroup(FeatureGroup group) {
@@ -141,18 +144,18 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
         .build();
   }
 
-  protected FeatureGroup.GroupKind getGroupKind(ASTFeatureGroup featureGroup) {
+  protected GroupKind getGroupKind(ASTFeatureGroup featureGroup) {
     if (featureGroup instanceof ASTOrGroup) {
-      return FeatureGroup.GroupKind.OR;
+      return GroupKind.OR;
     }
     else if (featureGroup instanceof ASTXorGroup) {
-      return FeatureGroup.GroupKind.XOR;
+      return GroupKind.XOR;
     }
     else if (featureGroup instanceof ASTAndGroup) {
-      return FeatureGroup.GroupKind.AND;
+      return GroupKind.AND;
     }
     else if (featureGroup instanceof ASTCardinalizedGroup) {
-      return FeatureGroup.GroupKind.CARDINALITY;
+      return GroupKind.CARDINALITY;
     }
     else {
       Log.error("0xTODO Unknown feature group kind '" + featureGroup.getClass().getName() + "'");

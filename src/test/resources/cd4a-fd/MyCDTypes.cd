@@ -1,5 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 classdiagram MyCDTypes {
-  class Foo{ }
-  class Bar{}
-  class NotBar{ }
-}
+   class Foo{ }
+   class Bar{}
+   class NotBar{ }
+ }

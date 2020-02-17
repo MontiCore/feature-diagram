@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 grammar FeatureConfiguration extends FeatureDiagram {
 
   FCCompilationUnit = ("package" package:MCQualifiedName ";")?
@@ -6,9 +7,7 @@ grammar FeatureConfiguration extends FeatureDiagram {
 
   symbol scope FeatureConfiguration =
     "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram "{"
-//      (Name || ",")+
-      selectedFeature:Name@Feature ( "," selectedFeature:Name@Feature )+
-//      (selectedFeature:Name@Feature || ",")+
+      selectedFeature:Name@Feature ( "," selectedFeature:Name@Feature )*
     "}";
 
 }

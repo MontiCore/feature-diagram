@@ -6,7 +6,6 @@ import de.monticore.cd.cd4analysis._symboltable.CD4AnalysisLanguage;
 import de.monticore.io.paths.ModelPath;
 import featurediagram._symboltable.FeatureDiagramGlobalScope;
 import featurediagram._symboltable.FeatureDiagramLanguage;
-import featurediagram._symboltable.FeatureDiagramSymTabMill;
 import featurediagram._symboltable.IFeatureDiagramScope;
 
 public class CDTypeFeatureDiagramGlobalScope extends FeatureDiagramGlobalScope {
