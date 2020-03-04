@@ -19,7 +19,7 @@ public class FeatureDiagramSymbolTableTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    //    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+//        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
     LogStub.init();
   }
 

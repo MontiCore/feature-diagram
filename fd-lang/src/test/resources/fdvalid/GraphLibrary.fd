@@ -17,9 +17,8 @@ featurediagram GraphLibrary {
 
   MST = Prim ^ Kruskal;
 
-  constraint {
-    Cycle requires Directed;
-    MST requires Weighted;
-    MST requires Undirected;
-  }
+  Cycle requires Directed;
+  MST requires Weighted;
+  MST requires Undirected;
+
 }

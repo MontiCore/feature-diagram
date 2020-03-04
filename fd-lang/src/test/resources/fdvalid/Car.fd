@@ -11,5 +11,5 @@ featurediagram Car {
 
   PanoramicRoof = Electric?;
 
-  constraint Electric requires ElectricWindowOpener;
+  Electric requires ElectricWindowOpener;
 }

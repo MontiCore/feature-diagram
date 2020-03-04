@@ -20,7 +20,7 @@ public class FeatureDiagramParserTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    //    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+//        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
     LogStub.init();
   }
 
@@ -50,12 +50,12 @@ public class FeatureDiagramParserTest {
     assertEmpty(parser.parse_StringOrGroup("|A"));
     assertEmpty(parser.parse_StringOrGroup("|"));
     
-    assertPresent(parser.parse_StringCardinalizedGroup("[2 .. 3] (A)"));
-    assertPresent(parser.parse_StringCardinalizedGroup("[2 .. 3] (A,B)"));
-    assertPresent(parser.parse_StringCardinalizedGroup("[2 .. 3] (A,B,C)"));
-    assertPresent(parser.parse_StringCardinalizedGroup("[0 .. *] (A,B,C)"));
-    assertPresent(parser.parse_StringCardinalizedGroup("[2] (A,B)"));
-    assertEmpty(parser.parse_StringCardinalizedGroup("[-2 .. 3] (A,B)"));
+    assertPresent(parser.parse_StringCardinalizedGroup("[2 .. 3] of {A}"));
+    assertPresent(parser.parse_StringCardinalizedGroup("[2 .. 3] of {A,B}"));
+    assertPresent(parser.parse_StringCardinalizedGroup("[2 .. 3] of {A,B,C}"));
+    assertPresent(parser.parse_StringCardinalizedGroup("[0 .. *] of {A,B,C}"));
+    assertPresent(parser.parse_StringCardinalizedGroup("[2] of {A,B}"));
+    assertEmpty(parser.parse_StringCardinalizedGroup("[-2 .. 3] of {A,B}"));
     assertEmpty(parser.parse_StringCardinalizedGroup("[2] ()"));
     
     assertPresent(parser.parse_StringFeature("A"));

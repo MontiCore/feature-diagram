@@ -20,6 +20,8 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
 
   FeatureTreeRule implements FDElement = Name@Feature "=" FeatureGroup ";";
 
+  FeatureConstraint implements FDElement = ConstraintExpression ";" ;
+
   interface FeatureGroup = Feature+;
 
   // All features must be chosen ( e.g., A = B & C & D; )
@@ -33,12 +35,9 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
 
   // Specify a range of features ( e.g., A = [2..3] (B, C, D); )
   CardinalizedGroup implements FeatureGroup =
-                               Cardinality "(" ( Feature || "," )+ ")";
+                               Cardinality "of" "{" ( Feature || "," )+ "}";
 
-  FeatureConstraint implements FDElement =
-                     "constraint" ("{" ( ConstraintExpression ";" )* "}"
-                                  | ConstraintExpression ";" );
-    
+
   interface ConstraintExpression = Name@Feature+;
   
   RequiresConstraint implements ConstraintExpression =

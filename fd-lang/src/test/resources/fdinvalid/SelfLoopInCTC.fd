@@ -5,9 +5,6 @@ featurediagram SelfLoopInCTC {
   root A;
   A = B & C? & D;
 
-  constraint{
-    B requires B;
-  }
-
-  constraint C excludes C;
+  B requires B;
+  C excludes C;
 }
