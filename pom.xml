@@ -7,10 +7,15 @@
     <!-- == PROJECT COORDINATES ============================================= -->
 
     <groupId>de.monticore.lang</groupId>
-    <artifactId>feature-diagram</artifactId>
+    <artifactId>feature-diagrams-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
-    <name>Feature Diagram Language</name>
+    <name>Feature Diagrams</name>
+		
+	<modules>
+	    <module>fd-lang</module>
+	</modules>
 
     <properties>
         <!-- MontiCore -->
@@ -34,27 +39,6 @@
 
     </properties>
     <dependencies>
-
-        <!-- MontiCore Dependencies -->
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-grammar</artifactId>
-            <version>${monticore.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-grammar</artifactId>
-            <version>${monticore.version}</version>
-            <classifier>${grammars.classifier}</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>de.monticore</groupId>
-            <artifactId>monticore-generator</artifactId>
-            <version>${monticore.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>de.monticore</groupId>
@@ -91,65 +75,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-
-    <!-- == DEFAULT BUILD SETTINGS =========================================== -->
-
-    <build>
-        <plugins>
-            <!-- MontiCore Generation -->
-            <plugin>
-                <groupId>de.monticore.mojo</groupId>
-                <artifactId>monticore-maven-plugin</artifactId>
-                <version>${monticore.version}</version>
-                <executions>
-                    <execution>
-                        <configuration>
-                            <script>de/monticore/monticore_noemf.groovy</script>
-                        </configuration>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler.plugin}</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-
-			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${surefire.plugin}</version>
-			</plugin>
-        </plugins>
-
-    </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>de.monticore.mojo</groupId>
-                <artifactId>monticore-maven-plugin</artifactId>
-                <version>${monticore.version}</version>
-                <inherited>false</inherited>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>reporting-report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
 
     <repositories>
         <repository>
