@@ -158,7 +158,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
       return GroupKind.CARDINALITY;
     }
     else {
-      Log.error("0xTODO Unknown feature group kind '" + featureGroup.getClass().getName() + "'");
+      Log.error("0xFD0004 Unknown feature group kind '" + featureGroup.getClass().getName() + "'");
       return null;
     }
   }

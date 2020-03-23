@@ -25,10 +25,10 @@ public class CDTypeFeatureDiagramTool {
       if (parseResult.isPresent()) {
         return parseResult.get();
       }
-      Log.error("0xTODO Error while parsing '" + fileName + "'!");
+      Log.error("0xFD0011 Error while parsing '" + fileName + "'!");
     }
     catch (IOException e) {
-      Log.error("0xTODO Error while parsing '" + fileName + "'!", e);
+      Log.error("0xFD0012 Error while parsing '" + fileName + "'!", e);
     }
     return null;
   }

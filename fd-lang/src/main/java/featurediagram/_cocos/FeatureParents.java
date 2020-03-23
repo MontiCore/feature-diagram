@@ -14,7 +14,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * TODO implement me
+ * Checks that each feature of a feature diagram except the root feature has
+ * exactly one parent feature.
  */
 public class FeatureParents implements FeatureDiagramASTFeatureDiagramCoCo {
 
