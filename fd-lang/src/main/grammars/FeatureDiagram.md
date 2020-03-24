@@ -1,8 +1,7 @@
 <!-- List with all references used within this markdown file: -->
 [Readme]: ../../../../README.md
 [Grammar]: FeatureDiagram.mc4
-[SymTabPic]: ../../../../doc/SymbolTableDataStructure.png
-[SymTabPic]: ../java/featurediagram
+
 <!-- The following references should pont towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
 [MCBasicTypes MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/types/MCBasicTypes.mc4
@@ -10,7 +9,7 @@
 
 > NOTE: <br>
 This documentation is intended for  **language engineers** who use the feature diagram languages.
-The documentation for **modelers** is located **[here](Readme)**. 
+The documentation for **modelers** is located **[here][Readme]**. 
 
 # MontiCore Feature Diagram Language
 
@@ -21,7 +20,7 @@ The purpose of the language is to describe
 ## Syntax
 
 ### Grammar
-The **[FeatureDiagram grammar](Grammar)** describes the syntax
+The **[FeatureDiagram grammar][Grammar]** describes the syntax
 of feature models. The grammar itself is a good documentation of the concrete and abstract syntax of 
 feature models. Design decisions are documented inline. 
 
@@ -35,9 +34,7 @@ following:
 method for retrieving all features contained in the feature diagram.
 
 <div align="center">
-![Symbol Table Data Structure](../../../../doc/SymbolTableDataStructure.png)
-
-Symbol Table Data Structure
+<img width="600" src="../../../../doc/SymbolTableDataStructure.png"><br>Symbol Table Data Structure
 </div>
  
 ### Syntax Extension Points
@@ -49,9 +46,9 @@ different applications. For instance, it is possible to add feature attributes.
 ## Generator
 
 ## Related Language Components
-* This language component uses the language component **[de.monticore.Cardinality](Cardinality MLC)**
-* This language component uses the language component **[de.monticore.types.MCBasicTypes](MCBasicTypes MLC)**
-* This language component can be used in combination with the language component **[FeatureConfiguration](FeatureConfiguration MLC)**
+* This language component uses the language component **[de.monticore.Cardinality][Cardinality MLC]**
+* This language component uses the language component **[de.monticore.types.MCBasicTypes][MCBasicTypes MLC]**
+* This language component can be used in combination with the language component **[FeatureConfiguration][FeatureConfiguration MLC]**
 
 
 
