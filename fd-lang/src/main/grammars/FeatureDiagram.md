@@ -1,6 +1,9 @@
 <!-- List with all references used within this markdown file: -->
 [Readme]: ../../../../README.md
 [Grammar]: FeatureDiagram.mc4
+[HasTreeShape]: ../java/featurediagram/_cocos/HasTreeShape.java
+[CTCFeatureNamesExist]: ../java/featurediagram/_cocos/CTCFeatureNamesExist.java
+[NonUniqueNameInGroup]: ../java/featurediagram/_cocos/NonUniqueNameInGroup.java
 
 <!-- The following references should pont towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
@@ -32,9 +35,15 @@ following:
 
 * The `FeatureDiagramSymbol` has been extended with the TOP mechanism. For convenience, we added a 
 method for retrieving all features contained in the feature diagram.
+* FeatureSymbols contain a list of `FeatureGroup`. Feature groups have a `GroupKind` that is either
+`AND`, `XOR`, or `OR`. A feature group has children in form of a list of feature symbols.
+Feature groups are instantiated during symbol table creation in the (handwritten) class
+`FeatureDiagramSymbolTableCreator`.
 
 <div align="center">
-<img width="600" src="../../../../doc/SymbolTableDataStructure.png"><br>Symbol Table Data Structure
+<img width="800" src="../../../../doc/SymbolTableDataStructure.png">
+<br><b>Figure 1:</b> 
+Symbol Table Data Structure
 </div>
  
 ### Syntax Extension Points
@@ -42,6 +51,17 @@ The grammar contains several extension points that can be used to tailor the lan
 different applications. For instance, it is possible to add feature attributes.
 
 ### Context Conditions
+
+| Context Condition Class | Error Code | Explanation |
+| ---      |  ------  |---------|
+| [HasTreeShape][HasTreeShape]                 | 0xFD0001 | Feature diagrams must not contain more than one root feature. |
+|                                              | 0xFD0002 | Feature diagrams must not contain more than one root feature. |
+|                                              | 0xFD0003 | Feature diagrams must contain a root feature. |
+|                                              | 0xFD0007 | Feature diagram rules must not introduce self loops. | 
+|                                              | 0xFD0008 | Each feature except the root feature must have a parent feature. | 
+|                                              | 0xFD0010 | The parent feature does not exist.  |
+| [CTCFeatureNamesExist][CTCFeatureNamesExist] | 0xFD0006 | A cross-tree constraint must operate on features that are available in the current feature model. |
+| [NonUniqueNameInGroup][NonUniqueNameInGroup] | 0xFD0009 | A Feature group must not contain a feature more than once. |
 
 ## Generator
 
