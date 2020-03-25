@@ -17,15 +17,25 @@ The documentation for **modelers** is located **[here][Readme]**.
 # MontiCore Feature Diagram Language
 
 The following documents a feature diagram language engineered with MontiCore. 
-The purpose of the language is to describe 
+The purpose of the language is to represent feature models used in product line engineering. 
+The language is extensible to tailor it for various different applications. 
 
+Many notational extensions have been presented in literature such as 
+
+[[_TOC_]]
 
 ## Syntax
+
+The syntax of the feature diagram language is specified through the feature model 
+[grammar](#grammar), some handwritten extensions of the [abstract syntax](#handwritten-ast-&-symbol-table-classes), and the [context conditions](#context-conditions).
 
 ### Grammar
 The **[FeatureDiagram grammar][Grammar]** describes the syntax
 of feature models. The grammar itself is a good documentation of the concrete and abstract syntax of 
 feature models. Design decisions are documented inline. 
+
+The grammar contains several extension points that can be used to tailor the language to 
+different applications. For instance, it is possible to add feature attributes.
 
 ### Handwritten AST & Symbol Table Classes
 The AST data structure has not been customized with any handwritten extensions to the generated classes.
@@ -45,10 +55,6 @@ Feature groups are instantiated during symbol table creation in the (handwritten
 <br><b>Figure 1:</b> 
 Symbol Table Data Structure
 </div>
- 
-### Syntax Extension Points
-The grammar contains several extension points that can be used to tailor the language to 
-different applications. For instance, it is possible to add feature attributes.
 
 ### Context Conditions
 
@@ -70,27 +76,7 @@ different applications. For instance, it is possible to add feature attributes.
 * This language component uses the language component **[de.monticore.types.MCBasicTypes][MCBasicTypes MLC]**
 * This language component can be used in combination with the language component **[FeatureConfiguration][FeatureConfiguration MLC]**
 
-
-
-- Pro Sprache soll eine eigene *.md Datei zu Dokumentationszwecken erstellt werden 
-
-  - Die *.md Datei zur Dokumentation soll wie die Kerngrammatik heißen (wie die wichtigste Grammatik unter den Grammatiken der Sprache)
-
-  - Diese Dokumentation dient nicht dazu, um Modellierern die Sprachen zu erklären, sondern um eine Dokumentation für Sprachentwickler bereitzustellen 
-
-  - Für die Dokumentation, die an Modellierer gerichtet ist: individuell eine eigene geeignete Form nutzen
-
-  - Die Grammatiken dokumentieren die abstrakte Syntax und die Symboltabelle
-
-  - In der Grammatik sollen unter anderem Kommentare eingebaut werden, die z.B. Designentscheidungen begründen
-
   
-
-- Inhalt der detaillierten Sprachdokus (Für Sprachentwickler): 
-
-  - Zweck der Sprache
-
-  - Durch welche handgeschriebenen Klassen wurde die abstrakte Syntax erweitert?
 
   - Was sind die wichtigsten (handgeschriebenen) internen Funktionalitäten 
 
