@@ -37,7 +37,8 @@ defaults to an empty package.
 Example for the textual syntax of a feature model (left) and its visual 
 representation (right). The bottom demonstrates the syntax of a feature
 configuration by example.
-</div>
+</div><br>
+
 
 The content of the feature model begins with the keyword `featurediagram` followed 
 by the feature model's name (l. 3) and the feature model body, enclosed by curly 
