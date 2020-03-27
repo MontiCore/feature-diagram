@@ -5,6 +5,15 @@
 [HasTreeShape]: ../java/featurediagram/_cocos/HasTreeShape.java
 [CTCFeatureNamesExist]: ../java/featurediagram/_cocos/CTCFeatureNamesExist.java
 [NonUniqueNameInGroup]: ../java/featurediagram/_cocos/NonUniqueNameInGroup.java
+[flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
+
+[AllProducts]: ../../fd-analysis/src/main/java/tool/analyses/AllProducts.java
+[CompleteToValid]: ../../fd-analysis/src/main/java/tool/analyses/CompleteToValidConfig.java
+[DeadFeature]: ../../fd-analysis/src/main/java/tool/analyses/DeadFeature.java
+[FalseOptional]: ../../fd-analysis/src/main/java/tool/analyses/FalseOptional.java
+[IsValid]: ../../fd-analysis/src/main/java/tool/analyses/IsValid.java
+[IsVoid]: ../../fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModfel.java
+[NumberOfProducts]: ../../fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
 
 <!-- The following references should pont towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
@@ -12,7 +21,7 @@
 [FeatureConfiguration MLC]: FeatureConfiguration.md
 
 > NOTE: <br>
-This documentation is intended for  **language engineers** who use the feature diagram languages.
+This documentation is intended for  **language engineers** who use the feature diagram language.
 The documentation for **modelers** is located **[here][Readme]**. 
 
 # MontiCore Feature Diagram Language
@@ -101,13 +110,42 @@ feature diagram symbol tables is implemented as well.
 
 ## Generator
 
+This language component provides a generator that translates feature models to 
+[FlatZinc][flatzinc] models. FlatZinc, as part of MiniZinc, is a modeling language
+enabling to model constraint satisfaction (and optimization) problems. Different
+constraint solvers support FlatZinc as input format.
+
+## Tool
+
+### Supported Feature Analyses
+
+Name	Eingabe	Ausgabe	Beschreibung
+IsValid	FM m, FC c	Boolean	Ist c eine gültige FC in m?
+CompleteToValid	FM m, FC c	Optional<FC>	Kann c zu einer gültigen FC von m vervollständigt werden?
+IsVoidFeatureModel	FM m	Boolean	Gibt es gültige FCs in m?
+AllProducts	FM m	Set<FC>	Alle gültigen FCs
+DeadFeatures	FM m	Set<String>	Features in m, die in keiner gültigen FC von m enthalten sind
+
+
+
+
+| Analysis Class | Input | Result | Explanation |
+| ---    | ---      |  ------  |---------|
+| [AllProducts][AllProducts]           | FM m | Set<String> | Returns all valid FCs in m |
+| [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional<FC> | Can c be completed to a valid FC of m? If yes, return one example. |
+| [DeadFeatures][DeadFeature]           | FM m | Set<String> | Set of features that are contained in m, but in no valid FC of m. |
+| [FalseOptional][FalseOptional]       | FM m | Set<String> | Set of features that are optional in m, but are contained in all valid FCs of m. |
+| [IsValid][IsValid]                   | FM m, FC c | Boolean | Is c a valid FC in m? |
+| [IsVoid][IsVoid]                     | FM m | Boolean | Is there a valid FC in m? |
+| [NumberOfProducts][NumberOfProducts] | FM m | int | Returns the number of valid FCs in m. |
+
 ## Related Language Components
 * This language component uses the language component **[de.monticore.Cardinality][Cardinality MLC]**
 * This language component uses the language component **[de.monticore.types.MCBasicTypes][MCBasicTypes MLC]**
 * This language component can be used in combination with the language component **[FeatureConfiguration][FeatureConfiguration MLC]**
 
   
-
+<!--
   - Was sind die wichtigsten (handgeschriebenen) internen Funktionalitäten 
 
     (Funktionen, die auf der abstrakten Syntax Informationen berechnen oder die abstrakte Syntax modifizieren), 
@@ -123,4 +161,4 @@ feature diagram symbol tables is implemented as well.
     (z.B. PrettyPrinter)
 
   - Welche Erweiterungspunkte für Generatoren sind vorgesehen?
-
+-->
