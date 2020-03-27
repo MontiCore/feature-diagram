@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 # Feature Diagram Languages in MontiCore
 
 The feature diagram languages comprise two grammars: 
