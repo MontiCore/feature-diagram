@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar FeatureConfigurationPartial extends FeatureDiagram {
+
+  FCCompilationUnit = ("package" package:MCQualifiedName ";")?
+                      (MCImportStatement)*
+                      FeatureConfiguration;
+
+  symbol scope FeatureConfiguration =
+    "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram Selection+;
+
+  interface Selection = feature:Name@Feature+;
+
+  Select implements Selection =
+    "select" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
+
+  Unselect implements Selection =
+    "unselect" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
+
+  Undecided implements Selection =
+    "undecided" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
+
+}
