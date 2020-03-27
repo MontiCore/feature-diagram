@@ -1,7 +1,7 @@
 package tool.analyses;
 
 import featureconfiguration._ast.ASTFeatureConfiguration;
-import tool.transform.trafos.ConfigurationTrafo;
+import tool.transform.trafos.config.ConfigurationTrafo;
 
 import java.util.Collection;
 import java.util.Map;
