@@ -1,17 +1,22 @@
+[Readme]: ../../../../README.md
+[Grammar]: FeatureConfiguration.mc4
+[fdstc]: ../java/featureconfiguration/_symboltable/FeatureConfigurationSymbolTableCreator.java
+[HasTreeShape]: ../java/featurediagram/_cocos/HasTreeShape.java
+
+> NOTE: <br>
+This documentation is intended for  **language engineers** who use the feature 
+configueration language. The documentation for **modelers** is located 
+**[here][Readme]**. 
+
 # MontiCore Feature Configuration Language
 
-
-
-
-The feature diagram languages comprise two grammars: 
-* The **[FeatureDiagram grammar](fd-lang/src/main/grammars/FeatureDiagram.mc4)** describes the syntax
-of feature models. It contains several extension points that can be used to tailor the language to 
-different applications. For instance, it is possible to add feature attributes.
-* The **[FeatureConfiguration grammar](fd-lang/src/main/grammars/FeatureDiagram.mc4)** describes the syntax
+* The **[FeatureConfiguration grammar][Grammar]** describes the syntax
 of feature configurations. As feature configurations always exist in the context of a feature model, this 
 grammar reuses symbols from the FeatureDiagram language.
 
+> UNDER CONSTRUCTION
 
+<!--
 - Pro Sprache soll eine eigene *.md Datei zu Dokumentationszwecken erstellt werden 
 
   - Die *.md Datei zur Dokumentation soll wie die Kerngrammatik heißen (wie die wichtigste Grammatik unter den Grammatiken der Sprache)
@@ -49,3 +54,4 @@ grammar reuses symbols from the FeatureDiagram language.
   - Welche Erweiterungspunkte für Generatoren sind vorgesehen?
 
   - Verwandte Sprachen/ benutzte Sprachen (wie?, weshalb?, warum?)
+-->
