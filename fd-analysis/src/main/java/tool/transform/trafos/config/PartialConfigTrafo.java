@@ -59,7 +59,7 @@ public class PartialConfigTrafo implements FeatureModel2FlatZincModelTrafo, Feat
   @Override
   public void visit(ASTUnselect node) {
     node.streamFeatures().
-            forEach(f-> constraints.add(new Constraint("int_eq", f, "1")));
+            forEach(f-> constraints.add(new Constraint("int_eq", f, "0")));
   }
 
   @Override
