@@ -1,5 +1,9 @@
 package tool.transform.trafos;
 
+import complexconstraint._ast.ASTExcludes;
+import complexconstraint._ast.ASTRequires;
+import complexconstraint._visitor.ComplexConstraintVisitor;
+import complexconstraintfeaturediagram._visitor.ComplexConstraintFeatureDiagramVisitor;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
@@ -18,7 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ComplexConstraint2FZN implements CommonExpressionsVisitor, FeatureModel2FlatZincModelTrafo {
+public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVisitor, FeatureModel2FlatZincModelTrafo {
 
   private List<Constraint> fznConstraints = new ArrayList<>();
   private Map<String, Variable> variables = new HashMap<>();
@@ -205,6 +209,30 @@ public class ComplexConstraint2FZN implements CommonExpressionsVisitor, FeatureM
   }
 
   @Override
+  public void endVisit(ASTRequires node) {
+    String name = createVariable(node, Variable.Type.BOOL);
+    String helperName = "helper" + name;
+    Variable helpervariable = new Variable();
+    helpervariable.setType(Variable.Type.BOOL);
+    helpervariable.setName(helperName);
+    variables.put(helperName, helpervariable);
+    fznConstraints.add(new Constraint("bool_not", names.get(node.getLeft()), helperName));
+    fznConstraints.add(new Constraint("bool_or", helperName, names.get(node.getRight()), name));
+  }
+
+  @Override
+  public void endVisit(ASTExcludes node) {
+    String name = createVariable(node, Variable.Type.BOOL);
+    String helperName = "helper" + name;
+    Variable helpervariable = new Variable();
+    helpervariable.setType(Variable.Type.BOOL);
+    helpervariable.setName(helperName);
+    variables.put(helperName, helpervariable);
+    fznConstraints.add(new Constraint("bool_not", name, helperName));
+    fznConstraints.add(new Constraint("bool_and", names.get(node.getLeft()), names.get(node.getRight()), helperName));
+  }
+
+  @Override
   public void endVisit(ASTBracketExpression node) {
     //Is handled by Namescalcualtor and Parser
   }
@@ -226,16 +254,20 @@ public class ComplexConstraint2FZN implements CommonExpressionsVisitor, FeatureM
 
   private String getTypeFromName(ASTNode node) {
     String constraintname = "";
-    switch (variables.containsKey(names.get(node))? variables.get(names.get(node)).getType() : otherVariables.get(names.get(node)).getType()) {
-      case BOOL:
-        constraintname = "bool";
-        break;
-      case INT:
-        constraintname = "int";
-        break;
-      case FLOAT:
-        constraintname = "float";
-        break;
+    try {
+      switch (variables.containsKey(names.get(node)) ? variables.get(names.get(node)).getType() : otherVariables.get(names.get(node)).getType()) {
+        case BOOL:
+          constraintname = "bool";
+          break;
+        case INT:
+          constraintname = "int";
+          break;
+        case FLOAT:
+          constraintname = "float";
+          break;
+      }
+    }catch (NullPointerException e){
+      return "int";
     }
     return constraintname;
   }
@@ -249,7 +281,7 @@ public class ComplexConstraint2FZN implements CommonExpressionsVisitor, FeatureM
     return name;
   }
 
-  private class NameCalculator implements CommonExpressionsVisitor {
+  private class NameCalculator implements ComplexConstraintVisitor {
 
     private int i = 1;
     private Map<ASTNode, String> names = new HashMap<>();
@@ -368,6 +400,16 @@ public class ComplexConstraint2FZN implements CommonExpressionsVisitor, FeatureM
     @Override
     public void visit(ASTNameExpression node) {
       names.put(node, node.getName());
+    }
+
+    @Override
+    public void visit(ASTExcludes node){
+      names.put(node, "excludes"+i++);
+    }
+
+    @Override
+    public void visit(ASTRequires node) {
+      names.put(node, "requires"+i++);
     }
 
     public Map<ASTNode, String> getNames(){

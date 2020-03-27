@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+grammar ComplexConstraintFeatureDiagram extends ComplexConstraint, FeatureDiagram {
+
+  start FDCompilationUnit;
+
+  Constraint implements FDElement = Expression ";";
+}
