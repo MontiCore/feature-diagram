@@ -119,22 +119,12 @@ constraint solvers support FlatZinc as input format.
 
 ### Supported Feature Analyses
 
-Name	Eingabe	Ausgabe	Beschreibung
-IsValid	FM m, FC c	Boolean	Ist c eine gültige FC in m?
-CompleteToValid	FM m, FC c	Optional<FC>	Kann c zu einer gültigen FC von m vervollständigt werden?
-IsVoidFeatureModel	FM m	Boolean	Gibt es gültige FCs in m?
-AllProducts	FM m	Set<FC>	Alle gültigen FCs
-DeadFeatures	FM m	Set<String>	Features in m, die in keiner gültigen FC von m enthalten sind
-
-
-
-
 | Analysis Class | Input | Result | Explanation |
 | ---    | ---      |  ------  |---------|
-| [AllProducts][AllProducts]           | FM m | Set<String> | Returns all valid FCs in m |
-| [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional<FC> | Can c be completed to a valid FC of m? If yes, return one example. |
-| [DeadFeatures][DeadFeature]           | FM m | Set<String> | Set of features that are contained in m, but in no valid FC of m. |
-| [FalseOptional][FalseOptional]       | FM m | Set<String> | Set of features that are optional in m, but are contained in all valid FCs of m. |
+| [AllProducts][AllProducts]           | FM m | Set\<String\> | Returns all valid FCs in m |
+| [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional\<FC\> | Can c be completed to a valid FC of m? If yes, return one example. |
+| [DeadFeatures][DeadFeature]           | FM m | Set\<String\> | Set of features that are contained in m, but in no valid FC of m. |
+| [FalseOptional][FalseOptional]       | FM m | Set\<String\> | Set of features that are optional in m, but are contained in all valid FCs of m. |
 | [IsValid][IsValid]                   | FM m, FC c | Boolean | Is c a valid FC in m? |
 | [IsVoid][IsVoid]                     | FM m | Boolean | Is there a valid FC in m? |
 | [NumberOfProducts][NumberOfProducts] | FM m | int | Returns the number of valid FCs in m. |
