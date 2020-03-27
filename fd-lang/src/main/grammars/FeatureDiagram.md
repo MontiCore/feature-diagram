@@ -7,12 +7,12 @@
 [NonUniqueNameInGroup]: ../java/featurediagram/_cocos/NonUniqueNameInGroup.java
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 
-[AllProducts]: ../../fd-analysis/src/main/java/tool/analyses/AllProducts.java
-[CompleteToValid]: ../../fd-analysis/src/main/java/tool/analyses/CompleteToValidConfig.java
-[DeadFeature]: ../../fd-analysis/src/main/java/tool/analyses/DeadFeature.java
-[FalseOptional]: ../../fd-analysis/src/main/java/tool/analyses/FalseOptional.java
-[IsValid]: ../../fd-analysis/src/main/java/tool/analyses/IsValid.java
-[IsVoid]: ../../fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModfel.java
+[AllProducts]: ../java/tool/analyses/AllProducts.java
+[CompleteToValid]: ../java/tool/analyses/CompleteToValidConfig.java
+[DeadFeature]: ../java/tool/analyses/DeadFeature.java
+[FalseOptional]: ../java/tool/analyses/FalseOptional.java
+[IsValid]: ../java/tool/analyses/IsValid.java
+[IsVoid]: ../java/tool/analyses/IsVoidFeatureModel.java
 [NumberOfProducts]: ../../fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
 
 <!-- The following references should pont towards the markdown files, once these exist -->
