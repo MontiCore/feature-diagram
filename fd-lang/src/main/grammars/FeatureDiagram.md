@@ -7,13 +7,17 @@
 [NonUniqueNameInGroup]: ../java/featurediagram/_cocos/NonUniqueNameInGroup.java
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 
-[AllProducts]: ../java/tool/analyses/AllProducts.java
-[CompleteToValid]: ../java/tool/analyses/CompleteToValidConfig.java
-[DeadFeature]: ../java/tool/analyses/DeadFeature.java
-[FalseOptional]: ../java/tool/analyses/FalseOptional.java
-[IsValid]: ../java/tool/analyses/IsValid.java
-[IsVoid]: ../java/tool/analyses/IsVoidFeatureModel.java
-[NumberOfProducts]: ../../fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
+[AllProducts]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/AllProducts.java
+[CompleteToValid]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/CompleteToValidConfig.java
+[DeadFeature]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/DeadFeature.java
+[FalseOptional]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/FalseOptional.java
+[IsValid]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/IsValid.java
+[IsVoid]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java
+[NumberOfProducts]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
+
+[generator]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses
+[tool]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
+
 
 <!-- The following references should pont towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
@@ -113,9 +117,13 @@ feature diagram symbol tables is implemented as well.
 This language component provides a generator that translates feature models to 
 [FlatZinc][flatzinc] models. FlatZinc, as part of MiniZinc, is a modeling language
 enabling to model constraint satisfaction (and optimization) problems. Different
-constraint solvers support FlatZinc as input format.
+constraint solvers support FlatZinc as input format. The generator is located [here][generator].
 
 ## Tool
+
+The feature model language component provides the [FeatureModelAnalysisTool][tool],
+which coordinates the execution of one or more several analyses against a featurre model
+and, optionally, additional information (depends on the analysis kinds).
 
 ### Supported Feature Analyses
 
@@ -133,6 +141,7 @@ constraint solvers support FlatZinc as input format.
 * This language component uses the language component **[de.monticore.Cardinality][Cardinality MLC]**
 * This language component uses the language component **[de.monticore.types.MCBasicTypes][MCBasicTypes MLC]**
 * This language component can be used in combination with the language component **[FeatureConfiguration][FeatureConfiguration MLC]**
+* There are language components for partial configurations of feature models and for feature models with attributes
 
   
 <!--
