@@ -68,12 +68,6 @@ public class FeatureDiagramCoCoTest {
     testCoCo("NoRoots.fd", "0xFD0002", "0xFD0010");
   }
 
-  @Ignore //TODO: Is this coco necessary in general?
-  @Test
-  public void testSelfLoopInCTC() throws IOException {
-    testCoCo("SelfLoopInCTC.fd", "FD0006");
-  }
-
   @Test
   public void testSelfLoopInGroup() throws IOException {
     testCoCo("SelfLoopInGroup.fd", "0xFD0003");
