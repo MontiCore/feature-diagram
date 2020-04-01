@@ -1,4 +1,4 @@
-package tool.transform.trafos;
+package tool.transform.trafos.config;
 
 import featureconfiguration._ast.ASTFeatureConfiguration;
 import featurediagram._symboltable.FeatureDiagramSymbol;
@@ -20,9 +20,15 @@ public class ConfigurationTrafo implements FeatureModel2FlatZincModelTrafo, Hier
   private List<Constraint> constraints = new ArrayList<>();
   private List<Variable> variables = new ArrayList<>();
   private ASTFeatureConfiguration astFeatureConfiguration;
+  private boolean undefinedEqualsNot;
 
   public ConfigurationTrafo(ASTFeatureConfiguration configuration) {
+    this(configuration, true);
+  }
+
+  public ConfigurationTrafo(ASTFeatureConfiguration configuration, boolean undefinedEqualsNot){
     this.astFeatureConfiguration = configuration;
+    this.undefinedEqualsNot = undefinedEqualsNot;
   }
 
   @Override
@@ -52,9 +58,7 @@ public class ConfigurationTrafo implements FeatureModel2FlatZincModelTrafo, Hier
 
   @Override
   public void perform() {
-    configuration = CompleteConfigToPartialConfig.getConfiguration(astFeatureConfiguration, feature, false);
-    FeatureMinMaxCalculator calculator = new FeatureMinMaxCalculator();
-    getFeatureModel().accept(calculator);
+    configuration = CompleteConfigToPartialConfig.getConfiguration(astFeatureConfiguration, feature, undefinedEqualsNot);
     configuration.forEach((name, isSelected)->{
       if(isSelected == null){return;}
       if(isSelected){
