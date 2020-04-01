@@ -1,3 +1,5 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+# Feature Diagram Languages in MontiCore
 <!-- List with all references used within this markdown file: -->
 [Readme]: ../../../../README.md
 [Grammar]: FeatureDiagram.mc4

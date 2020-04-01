@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package fd;
 
 import cdfeaturediagram.CDType2FeatureAdapter;
