@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+component grammar ComplexConstraint extends de.monticore.expressions.CommonExpressions{
+
+  Requires implements InfixExpression =
+  left:Expression operator:"requires" right:Expression;
+
+  Excludes implements InfixExpression =
+  left:Expression operator:"excludes" right:Expression;
+
+}

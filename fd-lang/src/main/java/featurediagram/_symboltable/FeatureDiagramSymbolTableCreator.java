@@ -45,29 +45,6 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
     return artifactScope;
   }
 
-  //  protected ASTFeatureTreeRule firstRule; //TODO check if needed after review BR
-
-  //  @Override public void visit(ASTFeatureTreeRule node) {  //TODO check if needed after review BR
-  //    SourcePosition newPos = node.get_SourcePositionStart();
-  //    super.visit(node);
-  //    //set new firstRule, if it is the first rule in the model visited so far
-  //    if (firstRule == null || newPos.compareTo(firstRule.get_SourcePositionStart()) < 0) {
-  //      firstRule = node;
-  //    }
-  //  }
-
-  //  @Override public void endVisit(ASTFeatureDiagram node) {  //TODO check if needed after review BR
-  //    if (firstRule != null) {
-  //      ASTFeature astFeature = FeatureDiagramMill.featureBuilder()
-  //          .setOptional(true)
-  //          .setName(firstRule.getName())
-  //          .build();
-  //      featurediagram._symboltable.FeatureSymbol symbol = create_Feature(astFeature);
-  //      initialize_Feature(symbol, astFeature);
-  //      addToScopeAndLinkWithNode(symbol, astFeature);
-  //    }
-  //  }
-
   /**
    * This method is overriden to set the root feature as attribute
    *
@@ -158,7 +135,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
       return GroupKind.CARDINALITY;
     }
     else {
-      Log.error("0xTODO Unknown feature group kind '" + featureGroup.getClass().getName() + "'");
+      Log.error("0xFD0004 Unknown feature group kind '" + featureGroup.getClass().getName() + "'");
       return null;
     }
   }

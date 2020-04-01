@@ -3,22 +3,41 @@ package featurediagram._cocos;
 
 import de.se_rwth.commons.logging.Log;
 import featurediagram._ast.*;
-import featurediagram._symboltable.FeatureGroup;
-import featurediagram._symboltable.FeatureSymbol;
-import featurediagram._symboltable.FeatureSymbolLoader;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * TODO implement me
- */
-public class FeatureParents implements FeatureDiagramASTFeatureDiagramCoCo {
+public class HasTreeShape
+    implements FeatureDiagramASTFeatureDiagramCoCo, FeatureDiagramASTFeatureTreeRuleCoCo {
 
   @Override public void check(ASTFeatureDiagram node) {
+    checkSingleRootFeature(node);
+    checkParents(node);
+  }
+
+  protected void checkSingleRootFeature(ASTFeatureDiagram node) {
+    Optional<ASTRootFeature> root = Optional.empty();
+    for (ASTFDElement astfdElement : node.getFDElementList()) {
+      if (astfdElement instanceof ASTRootFeature) {
+        if (root.isPresent()) {
+          String name1 = ((ASTRootFeature) astfdElement).getFeature().getName();
+          String name2 = root.get().getFeature().getName();
+          Log.error("0xFD0001 Feature diagrams must not contain more than one root feature! '"
+              + node.getName() + "' contains conflicting root features '" + name1 + "' and '"
+              + name2 + "'.", astfdElement.get_SourcePositionStart());
+        }
+        else {
+          root = Optional.of((ASTRootFeature) astfdElement);
+        }
+      }
+    }
+    if (!root.isPresent()) {
+      Log.error("0xFD0002 Feature diagrams must contain a root feature! '"
+          + node.getName() + "' contains no root feature.", node.get_SourcePositionStart());
+    }
+  }
+
+  protected void checkParents(ASTFeatureDiagram node) {
     if (!node.isPresentSymbol() || null == node.getSymbol()) {
       Log.error("0xF0004 Feature diagram symbol table has to be created before cocos are checked!",
           node.get_SourcePositionStart());
@@ -44,7 +63,16 @@ public class FeatureParents implements FeatureDiagramASTFeatureDiagramCoCo {
               + feature + "' does not have a parent feature",
           node.get_SourcePositionStart());
     }
+  }
 
+  @Override public void check(ASTFeatureTreeRule node) {
+    String lhs = node.getName();
+    for (ASTFeature f : node.getFeatureGroup().getFeatureList()) {
+      if (f.getName().equals(lhs)) {
+        Log.error("0xFD0003 Feature diagram rules must not introduce self loops!",
+            node.get_SourcePositionStart());
+      }
+    }
   }
 
   protected Set<String> getAllFeatureNames(ASTFeatureDiagram node) {
@@ -93,5 +121,4 @@ public class FeatureParents implements FeatureDiagramASTFeatureDiagramCoCo {
     }
     return parents;
   }
-
 }

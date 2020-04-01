@@ -8,11 +8,9 @@ public class FeatureDiagramCoCos {
 
   public static FeatureDiagramCoCoChecker getCheckerForAllCoCos() {
     FeatureDiagramCoCoChecker checker = new FeatureDiagramCoCoChecker();
-    checker.addCoCo(new NoSelfLoopsInFeatureTree());
-    checker.addCoCo(new SingleRootFeature());
-//    checker.addCoCo(new UniqueFeatureNames());
+    checker.addCoCo((FeatureDiagramASTFeatureDiagramCoCo) new HasTreeShape());
+    checker.addCoCo((FeatureDiagramASTFeatureTreeRuleCoCo) new HasTreeShape());
     checker.addCoCo(new CTCFeatureNamesExist());
-    checker.addCoCo(new FeatureParents());
     checker.addCoCo(new NonUniqueNameInGroup());
     return checker;
   }

@@ -15,7 +15,8 @@
 		
 	<modules>
 	    <module>fd-lang</module>
-	</modules>
+    <module>fd-analysis</module>
+  </modules>
 
     <properties>
         <!-- MontiCore -->

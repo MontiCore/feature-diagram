@@ -2,6 +2,7 @@
 package featurediagram._symboltable;
 
 import de.se_rwth.commons.logging.Log;
+import featurediagram._visitor.FeatureDiagramSymbolVisitor;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,12 +37,12 @@ public class FeatureGroup {
 
     switch (kind) {
       case AND:
-        this.min = Integer.MAX_VALUE;
-        this.max = Integer.MAX_VALUE;
+        this.min = members.size();
+        this.max = members.size();
         break;
       case OR:
         this.min = 1;
-        this.max = Integer.MAX_VALUE;
+        this.max = members.size();
         break;
       case XOR:
         this.min = 1;
@@ -131,4 +132,5 @@ public class FeatureGroup {
   public void setMax(int max) {
     this.max = max;
   }
+
 }
