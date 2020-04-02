@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
 import tool.transform.FZNModelBuilder;
@@ -16,6 +17,5 @@ public class IsVoidFeatureModel extends Analysis<Boolean> {
   public FZNModelBuilder getModelBuilder() {
     return new FZNModelBuilder(false);
   }
-
 
 }

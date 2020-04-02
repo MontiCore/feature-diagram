@@ -1,14 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
 import java.util.Collection;
 import java.util.Map;
 
-public class CompleteToValidConfig extends Analysis<Map<String, Boolean>>{
+public class CompleteToValidConfig extends Analysis<Map<String, Boolean>> {
   @Override
   public void perform(Collection<Map<String, Boolean>> configurations) {
-    if(configurations.isEmpty()){
+    if (configurations.isEmpty()) {
       setResult(null);
-    }else {
+    }
+    else {
       setResult(configurations.iterator().next());
     }
   }

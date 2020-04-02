@@ -1,5 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.util;
-
 
 import featurediagram._symboltable.FeatureSymbol;
 import featurediagram._visitor.FeatureDiagramSymbolVisitor;
@@ -16,7 +16,7 @@ public class FeatureNameCollector implements FeatureDiagramSymbolVisitor {
     names.add(symbol.getName());
   }
 
-  public List<String> getNames(){
+  public List<String> getNames() {
     return names;
   }
 }

@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.solver.choco;
 
 import org.apache.commons.io.IOUtils;
@@ -23,25 +24,28 @@ public class ChocoSolver extends Flatzinc implements ISolver {
     Map<String, Boolean> config = new HashMap<>();
 
     Arrays.stream(model.getVars())
-            .filter(variable -> features.contains(variable.getName()))
-            .filter(v -> v instanceof IntVar)
-            .map(v -> ((IntVar) v))
-            .map(ChocoSolver::map)
-            .forEach(vars -> config.putAll(vars));
+        .filter(variable -> features.contains(variable.getName()))
+        .filter(v -> v instanceof IntVar)
+        .map(v -> ((IntVar) v))
+        .map(ChocoSolver::map)
+        .forEach(vars -> config.putAll(vars));
     return config;
   }
 
-  static Map<String , Boolean> map(IntVar chocoVariable) {
+  static Map<String, Boolean> map(IntVar chocoVariable) {
     Map<String, Boolean> ret = new HashMap<>();
-    switch (chocoVariable.getValue()){
-      case 0: ret.put(chocoVariable.getName(), false);
-      case 1: ret.put(chocoVariable.getName(), true);
+    switch (chocoVariable.getValue()) {
+      case 0:
+        ret.put(chocoVariable.getName(), false);
+      case 1:
+        ret.put(chocoVariable.getName(), true);
     }
     return ret;
   }
 
   @Override
-  public List<Map<String, Boolean>> solve(String model, List<String> features, Boolean allSolutions) {
+  public List<Map<String, Boolean>> solve(String model, List<String> features,
+      Boolean allSolutions) {
     List<Map<String, Boolean>> ret = new ArrayList<>();
     portfolio.addModel(new Model());
     Model m = getModel();
@@ -53,12 +57,12 @@ public class ChocoSolver extends Flatzinc implements ISolver {
     Datas d = datas[0];
     parse(this.getModel(), d, IOUtils.toInputStream(model));
 
-
     if (allSolutions) {
       while (m.getSolver().solve()) {
         ret.add(transformModelToASTConfiguration(m, features));
       }
-    } else {
+    }
+    else {
       if (m.getSolver().solve()) {
         ret.add(transformModelToASTConfiguration(m, features));
       }

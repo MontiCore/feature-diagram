@@ -1,7 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
 package complexconstraintfeaturediagram._symboltable;
 
-public class ComplexConstraintFeatureDiagramLanguage extends ComplexConstraintFeatureDiagramLanguageTOP{
-  public ComplexConstraintFeatureDiagramLanguage(){
+public class ComplexConstraintFeatureDiagramLanguage
+    extends ComplexConstraintFeatureDiagramLanguageTOP {
+  public ComplexConstraintFeatureDiagramLanguage() {
     super("Complex Constraint Feature Diagram", "fd");
   }
 

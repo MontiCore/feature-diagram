@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package featurediagram._symboltable.serialization;
 
 import featurediagram._symboltable.FeatureGroup;

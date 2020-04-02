@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.util;
 
 import featurediagram._ast.ASTOrGroup;
@@ -7,6 +8,7 @@ import featurediagram._visitor.FeatureDiagramVisitor;
 public class GroupCardinalityFinder implements FeatureDiagramVisitor {
 
   String min;
+
   String max;
 
   public String getMin() {
@@ -20,12 +22,12 @@ public class GroupCardinalityFinder implements FeatureDiagramVisitor {
   @Override
   public void visit(ASTOrGroup astOrGroup) {
     min = "1";
-    max = ""+astOrGroup.getFeatureList().size();
+    max = "" + astOrGroup.getFeatureList().size();
   }
 
   @Override
   public void visit(ASTXorGroup astXorGroup) {
-    min ="1";
-    max="1";
+    min = "1";
+    max = "1";
   }
 }

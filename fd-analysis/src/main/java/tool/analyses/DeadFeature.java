@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
 import tool.transform.FZNModelBuilder;
@@ -14,8 +15,8 @@ public class DeadFeature extends Analysis<List<String>> {
     getFeatureModel().accept(collector);
     List<String> features = collector.getNames();
     configurations.forEach(configuration -> {
-      configuration.forEach((k,v) -> {
-        if(v!= null && v){
+      configuration.forEach((k, v) -> {
+        if (v != null && v) {
           features.remove(k);
         }
       });

@@ -1,6 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
 package featureconfigurationpartial._symboltable;
 
-public class FeatureConfigurationPartialLanguage extends FeatureConfigurationPartialLanguageTOP{
+public class FeatureConfigurationPartialLanguage extends FeatureConfigurationPartialLanguageTOP {
   public FeatureConfigurationPartialLanguage() {
     super("Partial Feature Model Configuration", "fc");
   }

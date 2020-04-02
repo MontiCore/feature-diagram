@@ -2,7 +2,6 @@
 package featurediagram._symboltable;
 
 import de.se_rwth.commons.logging.Log;
-import featurediagram._visitor.FeatureDiagramSymbolVisitor;
 
 import java.util.Collection;
 import java.util.Iterator;

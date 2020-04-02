@@ -1,8 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.solver;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ISolver {
-  public List<Map<String, Boolean>> solve(String model, List<String> featureNames, Boolean isAllsSolutions);
+  public List<Map<String, Boolean>> solve(String model, List<String> featureNames,
+      Boolean isAllsSolutions);
 }

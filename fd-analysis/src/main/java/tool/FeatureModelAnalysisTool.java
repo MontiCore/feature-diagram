@@ -1,8 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import featurediagram._symboltable.FeatureDiagramSymbol;
-import featurediagram._symboltable.FeatureSymbol;
 import tool.analyses.Analysis;
 import tool.solver.ISolver;
 import tool.solver.choco.ChocoSolver;
@@ -29,18 +29,6 @@ public class FeatureModelAnalysisTool {
 
   private List<FeatureModel2FlatZincModelTrafo> trafos = new ArrayList<>();
 
-  public void addFeatureModelTrafo(FeatureModel2FlatZincModelTrafo trafo){
-    trafos.add(trafo);
-  }
-
-  public void addComplexConstraint(ASTExpression expression){
-    expressions.add(expression);
-  }
-
-  public void addAllComplexConstraints(Collection<ASTExpression> expressions){
-    this.expressions.addAll(expressions);
-  }
-
   public FeatureModelAnalysisTool(FeatureDiagramSymbol featureModelSymbol, ISolver solver) {
     this.featureSymbol = featureModelSymbol;
     this.solver = solver;
@@ -52,6 +40,18 @@ public class FeatureModelAnalysisTool {
   public FeatureModelAnalysisTool(FeatureDiagramSymbol featureSymbol) {
     this(featureSymbol, new ChocoSolver());
 
+  }
+
+  public void addFeatureModelTrafo(FeatureModel2FlatZincModelTrafo trafo) {
+    trafos.add(trafo);
+  }
+
+  public void addComplexConstraint(ASTExpression expression) {
+    expressions.add(expression);
+  }
+
+  public void addAllComplexConstraints(Collection<ASTExpression> expressions) {
+    this.expressions.addAll(expressions);
   }
 
   public FeatureDiagramSymbol getFeatureSymbol() {

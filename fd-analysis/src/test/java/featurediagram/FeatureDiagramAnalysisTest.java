@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package featurediagram;
 
 import complexconstraintfeaturediagram._ast.ASTConstraint;
@@ -13,7 +14,6 @@ import featurediagram._parser.FeatureDiagramParser;
 import featurediagram._symboltable.*;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runners.JUnit4;
 import tool.FeatureModelAnalysisTool;
 import tool.analyses.Analysis;
 import tool.analyses.NumberOfProducts;
@@ -21,8 +21,6 @@ import tool.transform.trafos.BasicConstraintTrafo;
 import tool.transform.trafos.ComplexConstraint2FZN;
 
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
 public class FeatureDiagramAnalysisTest {
 
   protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
-          throws IOException {
+      throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
     FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
@@ -42,29 +40,35 @@ public class FeatureDiagramAnalysisTest {
   }
 
   protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile)
-          throws IOException {
+      throws IOException {
     return setupSymbolTable(modelFile, new ModelPath());
   }
 
-  protected ComplexConstraintFeatureDiagramArtifactScope setupComplexSymbolTable(String modelFile, ModelPath mp)
-          throws IOException {
-    ASTFDCompilationUnit ast = new ComplexConstraintFeatureDiagramParser().parse(modelFile).orElse(null);
+  protected ComplexConstraintFeatureDiagramArtifactScope setupComplexSymbolTable(String modelFile,
+      ModelPath mp)
+      throws IOException {
+    ASTFDCompilationUnit ast = new ComplexConstraintFeatureDiagramParser().parse(modelFile)
+        .orElse(null);
     assertNotNull(ast);
     ComplexConstraintFeatureDiagramLanguage lang = new ComplexConstraintFeatureDiagramLanguage();
-    ComplexConstraintFeatureDiagramGlobalScope globalScope = new ComplexConstraintFeatureDiagramGlobalScope(mp, lang);
-    ComplexConstraintFeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
+    ComplexConstraintFeatureDiagramGlobalScope globalScope = new ComplexConstraintFeatureDiagramGlobalScope(
+        mp, lang);
+    ComplexConstraintFeatureDiagramSymbolTableCreatorDelegator symbolTable = lang
+        .getSymbolTableCreator(globalScope);
     return symbolTable.createFromAST(ast);
   }
 
   protected ComplexConstraintFeatureDiagramArtifactScope setupComplexSymbolTable(String modelFile)
-          throws IOException {
+      throws IOException {
     return setupComplexSymbolTable(modelFile, new ModelPath());
   }
 
   @Test
   public void testPhoneExample() throws IOException {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable("../fd-lang/src/test/resources/fdvalid/Phone.fd");
-    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = featureDiagramArtifactScope.resolveFeatureDiagram("Phone");
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "../fd-lang/src/test/resources/fdvalid/Phone.fd");
+    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = featureDiagramArtifactScope
+        .resolveFeatureDiagram("Phone");
     Assert.assertTrue(optionalFeatureDiagramSymbol.isPresent());
     FeatureDiagramSymbol featureDiagramSymbol = optionalFeatureDiagramSymbol.get();
 
@@ -75,17 +79,20 @@ public class FeatureDiagramAnalysisTest {
     modelAnalysisTool.performAnalyses();
     System.out.println(numberOfProducts.getResult());
 
-
   }
 
   @Test
   public void testPhoneComplexExample() throws IOException {
-    ComplexConstraintFeatureDiagramArtifactScope featureDiagramArtifactScope = setupComplexSymbolTable("../fd-lang/src/test/resources/fdvalid/PhoneComplex.fd");
-    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = featureDiagramArtifactScope.resolveFeatureDiagram("Phone");
+    ComplexConstraintFeatureDiagramArtifactScope featureDiagramArtifactScope = setupComplexSymbolTable(
+        "../fd-lang/src/test/resources/fdvalid/PhoneComplex.fd");
+    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = featureDiagramArtifactScope
+        .resolveFeatureDiagram("Phone");
     Assert.assertTrue(optionalFeatureDiagramSymbol.isPresent());
     FeatureDiagramSymbol featureDiagramSymbol = optionalFeatureDiagramSymbol.get();
 
-    List<ASTExpression> constraints = featureDiagramSymbol.getAstNode().streamFDElements().filter(x-> x instanceof ASTConstraint).map(x -> ((ASTConstraint) x).getExpression()).collect(Collectors.toList());
+    List<ASTExpression> constraints = featureDiagramSymbol.getAstNode().streamFDElements()
+        .filter(x -> x instanceof ASTConstraint).map(x -> ((ASTConstraint) x).getExpression())
+        .collect(Collectors.toList());
 
     FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
     modelAnalysisTool.addFeatureModelTrafo(new ComplexConstraint2FZN(constraints));
@@ -93,7 +100,6 @@ public class FeatureDiagramAnalysisTest {
     modelAnalysisTool.addAnalysis(numberOfProducts);
     modelAnalysisTool.performAnalyses();
     System.out.println(numberOfProducts.getResult());
-
 
   }
 }

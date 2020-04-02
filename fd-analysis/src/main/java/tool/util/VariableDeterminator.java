@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.util;
 
 import featurediagram._symboltable.FeatureSymbol;
@@ -11,6 +12,7 @@ import java.util.Stack;
 public class VariableDeterminator implements FeatureDiagramSymbolVisitor {
 
   List<Variable> variables = new ArrayList<>();
+
   Stack<String> features = new Stack<>();
 
   public List<Variable> getVariables() {

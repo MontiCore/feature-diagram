@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.transform.flatzinc;
 
 import java.util.ArrayList;
@@ -6,9 +7,11 @@ import java.util.List;
 
 public class Constraint {
   private String name;
+
   private List<String> parameters = new ArrayList<>();
 
-  public Constraint(){}
+  public Constraint() {
+  }
 
   public Constraint(String name, List<String> parameters) {
     this.name = name;

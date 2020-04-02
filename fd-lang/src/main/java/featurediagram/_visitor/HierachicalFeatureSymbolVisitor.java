@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package featurediagram._visitor;
 
 import featurediagram._symboltable.FeatureDiagramSymbol;
@@ -13,14 +14,15 @@ public interface HierachicalFeatureSymbolVisitor extends FeatureDiagramSymbolVis
   @Override
   default public void traverse(FeatureSymbol node) {
     node.streamChildren().forEach(
-            featureGroup -> featureGroup.getMembers().forEach(
-                    featureSymbolLoader -> featureSymbolLoader.loadSymbol().
-                            ifPresent(featureSymbol -> featureSymbol.accept(getRealThis()))));
+        featureGroup -> featureGroup.getMembers().forEach(
+            featureSymbolLoader -> featureSymbolLoader.loadSymbol().
+                ifPresent(featureSymbol -> featureSymbol.accept(getRealThis()))));
   }
 
   @Override
   default public void traverse(FeatureDiagramSymbol node) {
     String root = node.getRootFeature().getName();
-    node.getAllFeatures().stream().filter(featureSymbol -> featureSymbol.getName().equals(root)).forEach(featureSymbol -> featureSymbol.accept(this));
+    node.getAllFeatures().stream().filter(featureSymbol -> featureSymbol.getName().equals(root))
+        .forEach(featureSymbol -> featureSymbol.accept(this));
   }
 }

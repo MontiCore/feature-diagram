@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos;
 
 import featurediagram._symboltable.FeatureDiagramSymbol;
@@ -12,6 +13,7 @@ import java.util.List;
 public class RootFeatureSelected implements FeatureModel2FlatZincModelTrafo {
 
   private FeatureDiagramSymbol featureModel;
+
   private List<Constraint> constraints = new ArrayList<>();
 
   @Override
@@ -19,14 +21,14 @@ public class RootFeatureSelected implements FeatureModel2FlatZincModelTrafo {
   }
 
   @Override
-  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
-    this.featureModel = featureModel;
-
+  public FeatureDiagramSymbol getFeatureModel() {
+    return this.featureModel;
   }
 
   @Override
-  public FeatureDiagramSymbol getFeatureModel() {
-    return this.featureModel;
+  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
+    this.featureModel = featureModel;
+
   }
 
   @Override

@@ -1,7 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
-
-import featureconfiguration._ast.ASTFeatureConfiguration;
-import tool.transform.FZNModelBuilder;
 
 import java.util.Collection;
 import java.util.HashSet;

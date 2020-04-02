@@ -13,7 +13,6 @@ import featurediagram._symboltable.FeatureDiagramLanguage;
 import featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,7 +23,7 @@ public class FeatureDiagramCoCoTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-//        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+    //        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
     LogStub.init();
   }
 

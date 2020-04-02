@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos;
 
 import featurediagram._ast.ASTExcludesConstraint;
@@ -12,26 +13,32 @@ import tool.transform.flatzinc.Variable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicConstraintTrafo implements FeatureModel2FlatZincModelTrafo, FeatureDiagramVisitor {
+public class BasicConstraintTrafo
+    implements FeatureModel2FlatZincModelTrafo, FeatureDiagramVisitor {
 
   private FeatureDiagramSymbol featureModel;
-  private List<Constraint> constraints =new ArrayList<>();
-  private List<Variable> variables =new ArrayList<>();
+
+  private List<Constraint> constraints = new ArrayList<>();
+
+  private List<Variable> variables = new ArrayList<>();
+
   private List<String> names;
+
   private int varCount = 0;
+
   @Override
   public void setNames(List<String> names) {
     this.names = names;
   }
 
   @Override
-  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
-    this.featureModel = featureModel;
+  public FeatureDiagramSymbol getFeatureModel() {
+    return featureModel;
   }
 
   @Override
-  public FeatureDiagramSymbol getFeatureModel() {
-    return featureModel;
+  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
+    this.featureModel = featureModel;
   }
 
   @Override
@@ -47,11 +54,11 @@ public class BasicConstraintTrafo implements FeatureModel2FlatZincModelTrafo, Fe
   @Override
   public void perform() {
     featureModel.getAstNode().streamFDElements().forEach(
-            astfdElement -> {
-              if (astfdElement instanceof ASTFeatureConstraint){
-                astfdElement.accept(this);
-              }
-            }
+        astfdElement -> {
+          if (astfdElement instanceof ASTFeatureConstraint) {
+            astfdElement.accept(this);
+          }
+        }
     );
   }
 
@@ -73,8 +80,8 @@ public class BasicConstraintTrafo implements FeatureModel2FlatZincModelTrafo, Fe
     constraints.add(new Constraint("bool_eq", name, "true"));
   }
 
-  private String createBoolVar(String name){
-    name = name+varCount++;
+  private String createBoolVar(String name) {
+    name = name + varCount++;
     Variable variable = new Variable();
     variable.setType(Variable.Type.BOOL);
     variable.setName(name);

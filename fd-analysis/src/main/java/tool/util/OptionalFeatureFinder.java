@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.util;
 
 import featurediagram._symboltable.FeatureSymbol;
@@ -8,9 +9,10 @@ import java.util.List;
 
 public class OptionalFeatureFinder implements FeatureDiagramSymbolVisitor {
   private List<FeatureSymbol> optionalFeatures = new ArrayList<>();
+
   @Override
   public void visit(FeatureSymbol symbol) {
-    if (symbol.isIsOptional()){
+    if (symbol.isIsOptional()) {
       optionalFeatures.add(symbol);
     }
   }

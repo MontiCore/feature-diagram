@@ -20,7 +20,7 @@ public class FeatureDiagramDeSerTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-//        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+    //        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
     LogStub.init();
   }
 
@@ -66,19 +66,28 @@ public class FeatureDiagramDeSerTest {
     assertEquals(scope.getName(), deserialized.getName());
     assertEquals(scope.getPackageName(), deserialized.getPackageName());
     assertEquals(scope.getImportList().size(), deserialized.getImportList().size());
-    assertEquals(scope.getTopLevelSymbol().isPresent(), deserialized.getTopLevelSymbol().isPresent());
-    assertEquals(scope.getTopLevelSymbol().get().getName(), deserialized.getTopLevelSymbol().get().getName());
-    assertEquals(scope.getLocalFeatureDiagramSymbols().size(), deserialized.getLocalFeatureDiagramSymbols().size());
-    assertEquals(scope.getLocalFeatureSymbols().size(), deserialized.getLocalFeatureSymbols().size());
+    assertEquals(scope.getTopLevelSymbol().isPresent(),
+        deserialized.getTopLevelSymbol().isPresent());
+    assertEquals(scope.getTopLevelSymbol().get().getName(),
+        deserialized.getTopLevelSymbol().get().getName());
+    assertEquals(scope.getLocalFeatureDiagramSymbols().size(),
+        deserialized.getLocalFeatureDiagramSymbols().size());
+    assertEquals(scope.getLocalFeatureSymbols().size(),
+        deserialized.getLocalFeatureSymbols().size());
 
     FeatureDiagramSymbol expectedSymbol = scope.getLocalFeatureDiagramSymbols().get(0);
     FeatureDiagramSymbol actualSymbol = deserialized.getLocalFeatureDiagramSymbols().get(0);
     assertEquals(expectedSymbol.getName(), actualSymbol.getName());
-    assertEquals(expectedSymbol.getSpannedScope().getName(), actualSymbol.getSpannedScope().getName());
-    assertEquals(expectedSymbol.getSpannedScope().getLocalFeatureSymbols().size(), actualSymbol.getSpannedScope().getLocalFeatureSymbols().size());
-    assertEquals(expectedSymbol.getSpannedScope().getSubScopes().size(), actualSymbol.getSpannedScope().getSubScopes().size());
-    assertEquals(expectedSymbol.getSpannedScope().getLocalFeatureDiagramSymbols().size(), actualSymbol.getSpannedScope().getLocalFeatureDiagramSymbols().size());
-    assertEquals(expectedSymbol.getSpannedScope().getSpanningSymbol().getName(), actualSymbol.getSpannedScope().getSpanningSymbol().getName());
+    assertEquals(expectedSymbol.getSpannedScope().getName(),
+        actualSymbol.getSpannedScope().getName());
+    assertEquals(expectedSymbol.getSpannedScope().getLocalFeatureSymbols().size(),
+        actualSymbol.getSpannedScope().getLocalFeatureSymbols().size());
+    assertEquals(expectedSymbol.getSpannedScope().getSubScopes().size(),
+        actualSymbol.getSpannedScope().getSubScopes().size());
+    assertEquals(expectedSymbol.getSpannedScope().getLocalFeatureDiagramSymbols().size(),
+        actualSymbol.getSpannedScope().getLocalFeatureDiagramSymbols().size());
+    assertEquals(expectedSymbol.getSpannedScope().getSpanningSymbol().getName(),
+        actualSymbol.getSpannedScope().getSpanningSymbol().getName());
   }
 
 }

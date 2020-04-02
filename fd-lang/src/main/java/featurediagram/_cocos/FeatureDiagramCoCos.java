@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package featurediagram._cocos;
 
 import featurediagram._ast.ASTFeatureDiagramNode;

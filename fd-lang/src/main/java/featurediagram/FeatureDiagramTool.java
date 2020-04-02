@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package featurediagram;
 
 import de.monticore.io.paths.ModelPath;

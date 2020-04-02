@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos;
 
 import complexconstraint._ast.ASTExcludes;
@@ -6,7 +7,6 @@ import complexconstraint._visitor.ComplexConstraintVisitor;
 import complexconstraintfeaturediagram._visitor.ComplexConstraintFeatureDiagramVisitor;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
-import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import featurediagram._symboltable.FeatureDiagramSymbol;
@@ -22,16 +22,25 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVisitor, FeatureModel2FlatZincModelTrafo {
+public class ComplexConstraint2FZN
+    implements ComplexConstraintFeatureDiagramVisitor, FeatureModel2FlatZincModelTrafo {
 
   private List<Constraint> fznConstraints = new ArrayList<>();
+
   private Map<String, Variable> variables = new HashMap<>();
+
   private Map<String, Variable> otherVariables;
+
   private List<ASTExpression> constraints;
+
   private List<String> usedNames;
+
   private Map<ASTNode, String> names = new HashMap<>();
+
   private Map<ASTNode, Variable.Type> types = new HashMap<>();
+
   private int i = 1;
+
   private FeatureDiagramSymbol featureModel;
 
   public ComplexConstraint2FZN(List<ASTExpression> constraints) {
@@ -46,7 +55,8 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
   public void perform() {
     VariableDeterminator det = new VariableDeterminator();
     featureModel.accept(det);
-    otherVariables = det.getVariables().stream().collect(Collectors.toMap(Variable::getName, Function.identity()));
+    otherVariables = det.getVariables().stream()
+        .collect(Collectors.toMap(Variable::getName, Function.identity()));
     NameCalculator calculator = new NameCalculator();
     constraints.forEach(astExpression -> {
       astExpression.accept(calculator);
@@ -64,13 +74,13 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
   }
 
   @Override
-  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
-    this.featureModel = featureModel;
+  public FeatureDiagramSymbol getFeatureModel() {
+    return featureModel;
   }
 
   @Override
-  public FeatureDiagramSymbol getFeatureModel() {
-    return featureModel;
+  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
+    this.featureModel = featureModel;
   }
 
   public List<Constraint> getConstraints() {
@@ -107,27 +117,34 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
   public void endVisit(ASTMultExpression node) {
     String name = createVariable(node, Variable.Type.INT);
     String constraintName = getTypeFromName(node.getLeft()) + "_times";
-    fznConstraints.add(new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()), name));
+    fznConstraints.add(
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
   public void endVisit(ASTDivideExpression node) {
     String name = createVariable(node, variables.get(names.get(node.getLeft())).getType());
     String constraintName = getTypeFromName(node.getLeft()) + "_div";
-    fznConstraints.add(new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()), name));
+    fznConstraints.add(
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
   public void endVisit(ASTModuloExpression node) {
     String name = createVariable(node, Variable.Type.INT);
-    fznConstraints.add(new Constraint("int_mod", names.get(node.getLeft()), names.get(node.getRight()), name));
+    fznConstraints.add(
+        new Constraint("int_mod", names.get(node.getLeft()), names.get(node.getRight()), name));
   }
 
   @Override
   public void endVisit(ASTPlusExpression node) {
     String name = createVariable(node, variables.get(names.get(node.getLeft())).getType());
     String constraintName = getTypeFromName(node.getLeft()) + "_plus";
-    fznConstraints.add(new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()), name));
+    fznConstraints.add(
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
@@ -135,21 +152,26 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
     String name = createVariable(node, variables.get(names.get(node.getLeft())).getType());
     // l-r=d <=> d+r=l
     String constraintName = getTypeFromName(node.getLeft()) + "_plus";
-    fznConstraints.add(new Constraint(constraintName, names.get(node.getRight()), name, names.get(node.getLeft())));
+    fznConstraints.add(new Constraint(constraintName, names.get(node.getRight()), name,
+        names.get(node.getLeft())));
   }
 
   @Override
   public void endVisit(ASTEqualsExpression node) {
     String name = createVariable(node, Variable.Type.BOOL);
     String constraintName = getTypeFromName(node.getLeft()) + "_eq_reif";
-    fznConstraints.add(new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()), name));
+    fznConstraints.add(
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
   public void endVisit(ASTLessEqualExpression node) {
     String name = createVariable(node, Variable.Type.BOOL);
     String constraintName = getTypeFromName(node.getLeft()) + "_le_reif";
-    fznConstraints.add(new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()), name));
+    fznConstraints.add(
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
@@ -157,13 +179,18 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
     String name = createVariable(node, Variable.Type.BOOL);
     String constraintName = getTypeFromName(node.getLeft()) + "_le_reif";
     // l>=r <=> r<=l
-    fznConstraints.add(new Constraint(constraintName, names.get(node.getRight()), names.get(node.getLeft()), name));
+    fznConstraints.add(
+        new Constraint(constraintName, names.get(node.getRight()), names.get(node.getLeft()),
+            name));
   }
+
   @Override
   public void endVisit(ASTLessThanExpression node) {
     String name = createVariable(node, Variable.Type.BOOL);
     String constraintName = getTypeFromName(node.getLeft()) + "_lt_reif";
-    fznConstraints.add(new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()), name));
+    fznConstraints.add(
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
@@ -171,31 +198,38 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
     String name = createVariable(node, Variable.Type.BOOL);
     String constraintName = getTypeFromName(node.getLeft()) + "_le_reif";
     // l>r <=> r<l
-    fznConstraints.add(new Constraint(constraintName, names.get(node.getRight()), names.get(node.getLeft()), name));
+    fznConstraints.add(
+        new Constraint(constraintName, names.get(node.getRight()), names.get(node.getLeft()),
+            name));
   }
 
   @Override
   public void endVisit(ASTNotEqualsExpression node) {
     String name = createVariable(node, Variable.Type.BOOL);
     String constraintName = getTypeFromName(node.getLeft()) + "_ne_reif";
-    fznConstraints.add(new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()), name));
+    fznConstraints.add(
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
   public void endVisit(ASTBooleanAndOpExpression node) {
     String name = createVariable(node, Variable.Type.BOOL);
-    fznConstraints.add(new Constraint("bool_and", names.get(node.getLeft()), names.get(node.getRight()), name));
+    fznConstraints.add(
+        new Constraint("bool_and", names.get(node.getLeft()), names.get(node.getRight()), name));
   }
 
   @Override
   public void endVisit(ASTBooleanOrOpExpression node) {
     String name = createVariable(node, Variable.Type.BOOL);
-    fznConstraints.add(new Constraint("bool_or", names.get(node.getLeft()), names.get(node.getRight()), name));
+    fznConstraints.add(
+        new Constraint("bool_or", names.get(node.getLeft()), names.get(node.getRight()), name));
   }
 
   @Override
   public void endVisit(ASTConditionalExpression node) {
-    String name = createVariable(node, variables.get(names.get(node.getTrueExpression())).getType());
+    String name = createVariable(node,
+        variables.get(names.get(node.getTrueExpression())).getType());
     String helperName = "helper" + name;
     Variable helpervariable = new Variable();
     helpervariable.setType(Variable.Type.BOOL);
@@ -203,8 +237,10 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
     variables.put(helperName, helpervariable);
     String type = getTypeFromName(node.getTrueExpression());
     fznConstraints.add(new Constraint("bool_not", names.get(node.getCondition()), helperName));
-    fznConstraints.add(new Constraint(type + "_eq_reif", names.get(node.getTrueExpression()), name, names.get(node.getCondition())));
-    fznConstraints.add(new Constraint(type + "_eq_reif", names.get(node.getFalseExpression()), name, helperName));
+    fznConstraints.add(new Constraint(type + "_eq_reif", names.get(node.getTrueExpression()), name,
+        names.get(node.getCondition())));
+    fznConstraints.add(
+        new Constraint(type + "_eq_reif", names.get(node.getFalseExpression()), name, helperName));
 
   }
 
@@ -229,7 +265,9 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
     helpervariable.setName(helperName);
     variables.put(helperName, helpervariable);
     fznConstraints.add(new Constraint("bool_not", name, helperName));
-    fznConstraints.add(new Constraint("bool_and", names.get(node.getLeft()), names.get(node.getRight()), helperName));
+    fznConstraints.add(
+        new Constraint("bool_and", names.get(node.getLeft()), names.get(node.getRight()),
+            helperName));
   }
 
   @Override
@@ -255,7 +293,9 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
   private String getTypeFromName(ASTNode node) {
     String constraintname = "";
     try {
-      switch (variables.containsKey(names.get(node)) ? variables.get(names.get(node)).getType() : otherVariables.get(names.get(node)).getType()) {
+      switch (variables.containsKey(names.get(node)) ?
+          variables.get(names.get(node)).getType() :
+          otherVariables.get(names.get(node)).getType()) {
         case BOOL:
           constraintname = "bool";
           break;
@@ -266,7 +306,8 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
           constraintname = "float";
           break;
       }
-    }catch (NullPointerException e){
+    }
+    catch (NullPointerException e) {
       return "int";
     }
     return constraintname;
@@ -284,7 +325,9 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
   private class NameCalculator implements ComplexConstraintVisitor {
 
     private int i = 1;
+
     private Map<ASTNode, String> names = new HashMap<>();
+
     @Override
     public void visit(ASTNode node) {
 
@@ -292,89 +335,88 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
 
     @Override
     public void visit(ASTCallExpression node) {
-      names.put(node, "callExpr"+i++);
+      names.put(node, "callExpr" + i++);
     }
 
     @Override
     public void visit(ASTBooleanNotExpression node) {
-      names.put(node, "boolNotExpr"+i++);
+      names.put(node, "boolNotExpr" + i++);
     }
 
     @Override
     public void visit(ASTLogicalNotExpression node) {
-      names.put(node, "logicalNotExpr"+i++);
+      names.put(node, "logicalNotExpr" + i++);
     }
 
     @Override
     public void visit(ASTMultExpression node) {
-      names.put(node, "multExpr"+i++);
+      names.put(node, "multExpr" + i++);
     }
 
     @Override
     public void visit(ASTDivideExpression node) {
-      names.put(node, "divExpr"+i++);
+      names.put(node, "divExpr" + i++);
     }
 
     @Override
     public void visit(ASTModuloExpression node) {
-      names.put(node, "modExpr"+i++);
+      names.put(node, "modExpr" + i++);
     }
 
     @Override
     public void visit(ASTPlusExpression node) {
-      names.put(node, "plusExpr"+i++);
+      names.put(node, "plusExpr" + i++);
     }
 
     @Override
     public void visit(ASTMinusExpression node) {
-      names.put(node, "minusExpr"+i++);
+      names.put(node, "minusExpr" + i++);
     }
 
     @Override
     public void visit(ASTLessEqualExpression node) {
-      names.put(node, "leqExpr"+i++);
+      names.put(node, "leqExpr" + i++);
     }
 
     @Override
     public void visit(ASTGreaterEqualExpression node) {
-      names.put(node, "geqExpr"+i++);
+      names.put(node, "geqExpr" + i++);
     }
 
     @Override
     public void visit(ASTLessThanExpression node) {
-      names.put(node, "lessExpr"+i++);
+      names.put(node, "lessExpr" + i++);
     }
 
     @Override
     public void visit(ASTGreaterThanExpression node) {
-      names.put(node, "greaterExpr"+i++);
+      names.put(node, "greaterExpr" + i++);
     }
 
     @Override
     public void visit(ASTEqualsExpression node) {
-      names.put(node, "eqExpr"+i++);
+      names.put(node, "eqExpr" + i++);
     }
 
     @Override
     public void visit(ASTNotEqualsExpression node) {
-      names.put(node, "neqExpr"+i++);
+      names.put(node, "neqExpr" + i++);
     }
 
     @Override
     public void visit(ASTBooleanAndOpExpression node) {
-      names.put(node, "boolAndExpr"+i++);
+      names.put(node, "boolAndExpr" + i++);
     }
 
     @Override
     public void visit(ASTBooleanOrOpExpression node) {
-      names.put(node, "boolOrExpr"+i++);
+      names.put(node, "boolOrExpr" + i++);
     }
 
     @Override
     public void visit(ASTConditionalExpression node) {
-      names.put(node, "condExpr"+i++);
+      names.put(node, "condExpr" + i++);
     }
-
 
     @Override
     public void visit(ASTBracketExpression node) {
@@ -384,17 +426,17 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
 
     @Override
     public void visit(ASTArguments node) {
-      names.put(node, "argumExpr"+i++);
+      names.put(node, "argumExpr" + i++);
     }
 
     @Override
     public void visit(ASTInfixExpression node) {
-      names.put(node, "infixExpr"+i++);
+      names.put(node, "infixExpr" + i++);
     }
 
     @Override
     public void visit(ASTCommonExpressionsNode node) {
-      names.put(node, "commonExpr"+i++);
+      names.put(node, "commonExpr" + i++);
     }
 
     @Override
@@ -403,16 +445,16 @@ public class ComplexConstraint2FZN implements ComplexConstraintFeatureDiagramVis
     }
 
     @Override
-    public void visit(ASTExcludes node){
-      names.put(node, "excludes"+i++);
+    public void visit(ASTExcludes node) {
+      names.put(node, "excludes" + i++);
     }
 
     @Override
     public void visit(ASTRequires node) {
-      names.put(node, "requires"+i++);
+      names.put(node, "requires" + i++);
     }
 
-    public Map<ASTNode, String> getNames(){
+    public Map<ASTNode, String> getNames() {
       return names;
     }
   }

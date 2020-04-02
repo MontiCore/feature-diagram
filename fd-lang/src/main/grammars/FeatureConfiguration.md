@@ -1,3 +1,4 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
 [Readme]: ../../../../README.md
 [Grammar]: FeatureConfiguration.mc4
 [fdstc]: ../java/featureconfiguration/_symboltable/FeatureConfigurationSymbolTableCreator.java

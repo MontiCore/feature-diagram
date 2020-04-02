@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos;
 
 import featurediagram._symboltable.FeatureDiagramSymbol;
@@ -14,11 +15,17 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class BasicTrafo implements FeatureModel2FlatZincModelTrafo, HierachicalFeatureSymbolVisitor {
+public class BasicTrafo
+    implements FeatureModel2FlatZincModelTrafo, HierachicalFeatureSymbolVisitor {
   private FeatureDiagramSymbol featureModel;
+
   private List<String> names = new ArrayList<>();
+
   private List<Constraint> constraints = new ArrayList<>();
+
   private List<Variable> variables = new ArrayList<>();
+
+  private Random random = new Random();
 
   @Override
   public void setNames(List<String> names) {
@@ -26,13 +33,13 @@ public class BasicTrafo implements FeatureModel2FlatZincModelTrafo, HierachicalF
   }
 
   @Override
-  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
-    this.featureModel = featureModel;
+  public FeatureDiagramSymbol getFeatureModel() {
+    return this.featureModel;
   }
 
   @Override
-  public FeatureDiagramSymbol getFeatureModel() {
-    return this.featureModel;
+  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
+    this.featureModel = featureModel;
   }
 
   @Override
@@ -49,7 +56,6 @@ public class BasicTrafo implements FeatureModel2FlatZincModelTrafo, HierachicalF
   public void perform() {
     featureModel.accept(this);
   }
-
 
   public void visit(FeatureSymbol feature) {
     Variable variable = new Variable();
@@ -76,7 +82,8 @@ public class BasicTrafo implements FeatureModel2FlatZincModelTrafo, HierachicalF
             if (childFeature.isIsOptional()) {
               min = "0";
               max = "1";
-            } else {
+            }
+            else {
               min = "1";
               max = "1";
             }
@@ -87,7 +94,8 @@ public class BasicTrafo implements FeatureModel2FlatZincModelTrafo, HierachicalF
     }
   }
 
-  private void addCardinalFeature(FeatureSymbol parent, FeatureSymbol child, String min, String max) {
+  private void addCardinalFeature(FeatureSymbol parent, FeatureSymbol child, String min,
+      String max) {
     String helperName1 = createNewHelper(parent.getName() + "IsUnselected", Variable.Type.BOOL);
     String helperName2 = createNewHelper(child.getName() + "IsUnselected", Variable.Type.BOOL);
     String helperName3 = createNewHelper(parent.getName() + "IsSelected", Variable.Type.BOOL);
@@ -108,25 +116,30 @@ public class BasicTrafo implements FeatureModel2FlatZincModelTrafo, HierachicalF
     constraints.add(constraint6);
   }
 
-
-  private void addCardinalGroup(FeatureSymbol parent, FeatureGroup children, String min, String max) {
+  private void addCardinalGroup(FeatureSymbol parent, FeatureGroup children, String min,
+      String max) {
     String helperName1 = createNewHelper(parent.getName() + "IsZero", Variable.Type.BOOL);
     String helperName2 = createNewHelper(parent.getName() + "HasZeroChildren", Variable.Type.BOOL);
     String helperName3 = createNewHelper(parent.getName() + "IsNotZero", Variable.Type.BOOL);
     String subfeatures = children.getMembers().stream()
-            .map(f -> f.loadSymbol()).filter(Optional::isPresent)
-            .map(Optional::get)
-            .map(FeatureSymbol::getName).collect(Collectors.joining(","));
+        .map(f -> f.loadSymbol()).filter(Optional::isPresent)
+        .map(Optional::get)
+        .map(FeatureSymbol::getName).collect(Collectors.joining(","));
     String factors = children.getMembers().stream().map(t -> "1").collect(Collectors.joining(","));
-    String negativeFactors = children.getMembers().stream().map(t -> "-1").collect(Collectors.joining(","));
+    String negativeFactors = children.getMembers().stream().map(t -> "-1")
+        .collect(Collectors.joining(","));
     //if (parent = 0) then children = 0
     Constraint constraint1 = new Constraint("int_eq_reif", "0", parent.getName(), helperName1);
-    Constraint constraint2 = new Constraint("int_lin_eq_reif", "[" + factors + "]", "[" + subfeatures + "]", "0", helperName2);
-    Constraint constraint3 = new Constraint("bool_clause", "[" + helperName1 + "]", "[" + helperName2 + "]");
+    Constraint constraint2 = new Constraint("int_lin_eq_reif", "[" + factors + "]",
+        "[" + subfeatures + "]", "0", helperName2);
+    Constraint constraint3 = new Constraint("bool_clause", "[" + helperName1 + "]",
+        "[" + helperName2 + "]");
     //else sum(children) in {min, max}
     Constraint constraint4 = new Constraint("bool_not", helperName1, helperName3);
-    Constraint constraint5 = new Constraint("int_lin_le_reif", "[" + negativeFactors + "]", "[" + subfeatures + "]", "-" + min, helperName3);
-    Constraint constraint6 = new Constraint("int_lin_le", "[" + factors + "]", "[" + subfeatures + "]", max);
+    Constraint constraint5 = new Constraint("int_lin_le_reif", "[" + negativeFactors + "]",
+        "[" + subfeatures + "]", "-" + min, helperName3);
+    Constraint constraint6 = new Constraint("int_lin_le", "[" + factors + "]",
+        "[" + subfeatures + "]", max);
     constraints.add(constraint1);
     constraints.add(constraint2);
     constraints.add(constraint3);
@@ -147,6 +160,4 @@ public class BasicTrafo implements FeatureModel2FlatZincModelTrafo, HierachicalF
     variables.add(helper);
     return name;
   }
-
-  private Random random = new Random();
 }

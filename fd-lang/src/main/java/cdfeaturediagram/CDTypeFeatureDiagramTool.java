@@ -8,9 +8,11 @@ import featurediagram.FeatureDiagramTool;
 import featurediagram._ast.ASTFDCompilationUnit;
 import featurediagram._cocos.FeatureDiagramCoCos;
 import featurediagram._parser.FeatureDiagramParser;
-import featurediagram._symboltable.*;
+import featurediagram._symboltable.FeatureDiagramArtifactScope;
+import featurediagram._symboltable.FeatureDiagramLanguage;
+import featurediagram._symboltable.FeatureDiagramSymTabMill;
+import featurediagram._symboltable.FeatureDiagramSymbolTableCreator;
 import featurediagram._symboltable.serialization.FeatureDiagramScopeDeSer;
-import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -36,6 +38,7 @@ public class CDTypeFeatureDiagramTool {
 
   /**
    * Process a CDFeatureModel with the passed model path entries
+   *
    * @param fileName
    * @param modelPaths
    * @return
@@ -50,6 +53,7 @@ public class CDTypeFeatureDiagramTool {
 
   /**
    * Process a CDFeatureModel with the passed model path
+   *
    * @param modelFile
    * @param modelPath
    * @return
@@ -72,7 +76,6 @@ public class CDTypeFeatureDiagramTool {
     FeatureDiagramScopeDeSer.store(lang, modelTopScope);
     return modelTopScope;
   }
-
 
   /**
    * Parse the model contained in the specified file.

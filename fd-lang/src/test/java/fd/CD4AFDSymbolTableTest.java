@@ -28,15 +28,15 @@ public class CD4AFDSymbolTableTest {
     LogStub.init();
   }
 
+  @AfterClass
+  public static void resetMill() {
+    //Important: reset Mill, because otherwise all "normal feature diagrams" cannot be processed
+    FeatureDiagramSymTabMill.reset();
+  }
+
   @Before
   public void clearFindings() {
     Log.getFindings().clear();
-  }
-
-  @AfterClass
-  public static void resetMill(){
-    //Important: reset Mill, because otherwise all "normal feature diagrams" cannot be processed
-    FeatureDiagramSymTabMill.reset();
   }
 
   @Test

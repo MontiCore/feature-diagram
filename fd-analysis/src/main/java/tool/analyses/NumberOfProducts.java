@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
 import java.util.Collection;
@@ -13,7 +14,5 @@ public class NumberOfProducts extends Analysis<Integer> {
   public void perform(Collection<Map<String, Boolean>> configurations) {
     setResult(configurations.size());
   }
-
-
 
 }

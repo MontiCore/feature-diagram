@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.transform;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -11,11 +12,17 @@ import java.util.*;
 
 public class FZNModelBuilder {
   private List<FeatureModel2FlatZincModelTrafo> trafos = new ArrayList<>();
+
   private List<String> names = new ArrayList<>();
+
   private Map<String, Boolean> configuration;
+
   private boolean allSolutions;
+
   private StringBuilder stringBuilder;
+
   private FlatZincModel flatZincModel = new FlatZincModel();
+
   private Set<String> booleanVars;
 
   public FZNModelBuilder(List<FeatureModel2FlatZincModelTrafo> trafos, boolean allSolutions) {
@@ -40,30 +47,31 @@ public class FZNModelBuilder {
     trafos.add(trafo);
   }
 
-  public void addAllFeatureModelFZNTrafos(Collection<FeatureModel2FlatZincModelTrafo> trafos){
+  public void addAllFeatureModelFZNTrafos(Collection<FeatureModel2FlatZincModelTrafo> trafos) {
     this.trafos.addAll(trafos);
   }
 
-
   public void buildFlatZincModel(FeatureDiagramSymbol featureModel) {
     trafos.forEach(trafo -> trafo.setNames(names));
-    trafos.stream().filter(t -> t.getFeatureModel() == null).forEach(t -> t.setFeatureModel(featureModel));
+    trafos.stream().filter(t -> t.getFeatureModel() == null)
+        .forEach(t -> t.setFeatureModel(featureModel));
     trafos.forEach(FeatureModel2FlatZincModelTrafo::perform);
-    trafos.forEach(featureModel2FlatZincModelTrafo -> flatZincModel.addVariables(featureModel2FlatZincModelTrafo.getVariables()));
-    trafos.forEach(featureModel2FlatZincModelTrafo -> flatZincModel.addConstraints(featureModel2FlatZincModelTrafo.getConstraints()));
+    trafos.forEach(featureModel2FlatZincModelTrafo -> flatZincModel
+        .addVariables(featureModel2FlatZincModelTrafo.getVariables()));
+    trafos.forEach(featureModel2FlatZincModelTrafo -> flatZincModel
+        .addConstraints(featureModel2FlatZincModelTrafo.getConstraints()));
   }
 
   public FlatZincModel getFlatZincModel() {
     return flatZincModel;
   }
 
-
   public void addDefaultFMTrafos() {
     trafos.add(new BasicTrafo());
     trafos.add(new RootFeatureSelected());
   }
 
-  public void addComplexConstraints(List<ASTExpression> constraints){
+  public void addComplexConstraints(List<ASTExpression> constraints) {
     trafos.add(new ComplexConstraint2FZN(constraints));
   }
 

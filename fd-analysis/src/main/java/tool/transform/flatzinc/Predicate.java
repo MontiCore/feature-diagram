@@ -1,9 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
 package tool.transform.flatzinc;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Predicate {
+  private String identifier;
+
+  private List<String> parameters = new ArrayList<>();
+
+  private String experession;
+
   public void append(StringBuilder stringBuilder) {
     stringBuilder
         .append("predicate ")
@@ -14,10 +21,6 @@ public class Predicate {
         .append(experession)
         .append(";\n");
   }
-
-  private String identifier;
-  private List<String> parameters = new ArrayList<>();
-  private String experession;
 
   public void setIdentifier(String identifier) {
     this.identifier = identifier;
