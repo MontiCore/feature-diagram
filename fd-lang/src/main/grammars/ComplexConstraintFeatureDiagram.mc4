@@ -3,5 +3,5 @@ grammar ComplexConstraintFeatureDiagram extends ComplexConstraint, FeatureDiagra
 
   start FDCompilationUnit;
 
-  Constraint implements FDElement = Expression ";";
+  Constraint implements ConstraintExpression = Expression ;
 }

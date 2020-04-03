@@ -38,7 +38,7 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
                                Cardinality "of" "{" ( Feature || "," )+ "}";
 
 
-  interface ConstraintExpression = Name@Feature+;
+  interface ConstraintExpression;
   
   RequiresConstraint implements ConstraintExpression =
                        Name@Feature "requires" Name@Feature;

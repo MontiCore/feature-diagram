@@ -9,7 +9,9 @@ import complexconstraintfeaturediagram._symboltable.ComplexConstraintFeatureDiag
 import complexconstraintfeaturediagram._symboltable.ComplexConstraintFeatureDiagramSymbolTableCreatorDelegator;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.io.paths.ModelPath;
+import featurediagram._ast.ASTConstraintExpression;
 import featurediagram._ast.ASTFDCompilationUnit;
+import featurediagram._ast.ASTFeatureConstraint;
 import featurediagram._parser.FeatureDiagramParser;
 import featurediagram._symboltable.*;
 import org.junit.Assert;
@@ -90,8 +92,8 @@ public class FeatureDiagramAnalysisTest {
     Assert.assertTrue(optionalFeatureDiagramSymbol.isPresent());
     FeatureDiagramSymbol featureDiagramSymbol = optionalFeatureDiagramSymbol.get();
 
-    List<ASTExpression> constraints = featureDiagramSymbol.getAstNode().streamFDElements()
-        .filter(x -> x instanceof ASTConstraint).map(x -> ((ASTConstraint) x).getExpression())
+    List<ASTConstraintExpression> constraints = featureDiagramSymbol.getAstNode().streamFDElements()
+        .filter(x -> x instanceof ASTFeatureConstraint).map(x -> ((ASTFeatureConstraint) x).getConstraintExpression())
         .collect(Collectors.toList());
 
     FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);

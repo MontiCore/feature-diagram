@@ -2,6 +2,7 @@
 package tool;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import featurediagram._ast.ASTConstraintExpression;
 import featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.analyses.Analysis;
 import tool.solver.ISolver;
@@ -21,7 +22,7 @@ public class FeatureModelAnalysisTool {
 
   private FeatureDiagramSymbol featureSymbol;
 
-  private List<ASTExpression> expressions = new ArrayList<>();
+  private List<ASTConstraintExpression> expressions = new ArrayList<>();
 
   private List<Analysis> analyses = new ArrayList<>();
 
@@ -46,11 +47,11 @@ public class FeatureModelAnalysisTool {
     trafos.add(trafo);
   }
 
-  public void addComplexConstraint(ASTExpression expression) {
+  public void addComplexConstraint(ASTConstraintExpression expression) {
     expressions.add(expression);
   }
 
-  public void addAllComplexConstraints(Collection<ASTExpression> expressions) {
+  public void addAllComplexConstraints(Collection<ASTConstraintExpression> expressions) {
     this.expressions.addAll(expressions);
   }
 
