@@ -1,9 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+/**
+  FeatureDiagram describes the language to define FDs.
+  This includes trees of arbitrary depth, but not additional 
+  constructs, such as exclusion or requirement.
+*/
+
 grammar FeatureDiagram extends de.monticore.Cardinality,
                                de.monticore.types.MCBasicTypes {
 
   FDCompilationUnit = ("package" package:MCQualifiedName ";")?
-                      (MCImportStatement)*
+                      MCImportStatement*
                       FeatureDiagram;
 
   symbol scope FeatureDiagram =
@@ -11,11 +18,17 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
       FDElement*
     "}";
     
+  /**
+    A feature diagram consists of a list of FD element, which are defined by
+    this nonterminal. Each must be terminated with a ";"
+  */
   interface FDElement;
 
   RootFeature implements FDElement = "root" Feature ";";
 
-  // Elemental feature, either mandatory or optional
+  /**
+    Elemental feature, either mandatory or optional
+  */
   symbol Feature = Name ( optional:["?"] )?;
 
   FeatureTreeRule implements FDElement = Name@Feature "=" FeatureGroup ";";
@@ -24,19 +37,30 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
 
   interface FeatureGroup = Feature+;
 
-  // All features must be chosen ( e.g., A = B & C & D; )
+  /**
+    This demands: All features must be chosen ( e.g., A = B & C & D; )
+  */
   AndGroup implements FeatureGroup = ( Feature || "&" )+;
 
-  // Exactly one feature must be chosen ( e.g., A = B ^ C ^ D; )
+  /**
+    This demands: Exactly one feature must be chosen ( e.g., A = B ^ C ^ D; )
+  */
   XorGroup implements FeatureGroup = Feature ( "^" Feature )+;
 
-  // One or more features must be chosen ( e.g.,  A = B | C | D; )
+  /**
+    This demands: One or more features must be chosen ( e.g.,  A = B | C | D; )
+  */
   OrGroup implements FeatureGroup = Feature ( "|" Feature )+;
 
-  // Specify a range of features ( e.g., A = [2..3] (B, C, D); )
+  /** 
+    Specify a range of features ( e.g., A = [2..3] (B, C, D); )
+    selectable at that level (subfeatures do not count)
+  */
   CardinalizedGroup implements FeatureGroup =
                                Cardinality "of" "{" ( Feature || "," )+ "}";
 
+
+  // TODO AB: Ikonsistent zu anderer Grammatik: Entscheiden und dann eine löschen!
 
   interface ConstraintExpression = Name@Feature+;
   
@@ -46,10 +70,16 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   ExcludesConstraint implements ConstraintExpression =
                        Name@Feature "excludes" Name@Feature;
 
+  // TODO AB: Loader will be deleted ASAP
   symbolrule FeatureDiagram =
                    rootFeature:featurediagram._symboltable.FeatureSymbolLoader
                    ;
 
+  /**
+    Feature Symbols carry their names (already there),
+    the optional flag (TODO: warum dieses? Und was bedeutet es?)
+    and the list of subfeatures (TODO: reicht das?)
+  */
   symbolrule Feature =
                    isOptional:boolean
                    children:featurediagram._symboltable.FeatureGroup*

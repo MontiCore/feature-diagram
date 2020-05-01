@@ -1,12 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+/**
+  FeatureConfiguration defines a concrete list of
+  features for an externally given Featurediagram.
+*/
+
+// TODO AB: 
+// replace:: selectedFeature:Name@Feature ( "," selectedFeature:Name@Feature )*
+//       by        {Name@Feature || "," }*
+
 grammar FeatureConfiguration extends FeatureDiagram {
 
   FCCompilationUnit = ("package" package:MCQualifiedName ";")?
-                      (MCImportStatement)*
+                      MCImportStatement*
                       FeatureConfiguration;
 
+  /**
+    A FeatureConfiguration describes a set of features.
+    These Features must be defined in the cited FD
+   */
   symbol scope FeatureConfiguration =
-    "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram "{"
+    "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram
+    "{"
       selectedFeature:Name@Feature ( "," selectedFeature:Name@Feature )*
     "}";
 
