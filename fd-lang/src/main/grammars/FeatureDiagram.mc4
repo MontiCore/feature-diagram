@@ -17,7 +17,7 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   // Elemental feature, either mandatory or optional
   symbol Feature = Name;
 
-  FeatureTreeRule implements FDElement = Name@Feature "=>" FeatureGroup ";";
+  FeatureTreeRule implements FDElement = Name@Feature "->" FeatureGroup ";";
 
   FeatureConstraint implements FDElement = ConstraintExpression ";" ;
 

@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 featurediagram FeatureCycle {
-  A => B;
+  A -> B;
 
-  B => C;
-  C => D;
-  D => B;
+  B -> C;
+  C -> D;
+  D -> B;
 }

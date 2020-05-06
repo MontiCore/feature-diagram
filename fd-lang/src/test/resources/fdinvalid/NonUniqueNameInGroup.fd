@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 featurediagram NonUniqueNameInGroup {
-  A => B & B? & D;
+  A -> B & B? & D;
 }

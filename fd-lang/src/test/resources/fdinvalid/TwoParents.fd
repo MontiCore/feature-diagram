@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 featurediagram TwoParents {
-  A => B | C;
-  B => D;
-  C => D;
+  A -> B | C;
+  B -> D;
+  C -> D;
 }

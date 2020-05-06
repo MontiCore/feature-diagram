@@ -64,11 +64,6 @@ public class FeatureDiagramParserTest {
     assertPresent(parser.parse_StringCardinalizedGroup("[2] of {A,B}"));
     assertEmpty(parser.parse_StringCardinalizedGroup("[-2 .. 3] of {A,B}"));
     assertEmpty(parser.parse_StringCardinalizedGroup("[2] ()"));
-
-    assertPresent(parser.parse_StringFeature("A"));
-    assertPresent(parser.parse_StringFeature("A?"));
-    assertPresent(parser.parse_StringFeature("A123456789a_z"));
-
     assertPresent(parser.parse_StringConstraintExpression("A requires B"));
     assertPresent(parser.parse_StringConstraintExpression("A excludes B"));
   }
