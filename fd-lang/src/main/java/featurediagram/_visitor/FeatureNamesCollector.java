@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package featurediagram._visitor;
 
 import featurediagram._ast.ASTFeatureTreeRule;

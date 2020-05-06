@@ -75,6 +75,7 @@ public class FeatureDiagramParserTest {
     assertPresent(parser.parse("src/test/resources/fdvalid/Car.fd"));
     assertPresent(parser.parse("src/test/resources/fdvalid/GraphLibrary.fd"));
     assertPresent(parser.parse("src/test/resources/fdvalid/Phone.fd"));
+    assertPresent(parser.parse("src/test/resources/fdvalid/PhoneComplex.fd"));
   }
 
 }
