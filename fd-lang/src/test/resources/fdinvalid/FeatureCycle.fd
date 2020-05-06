@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 featurediagram FeatureCycle {
-  root A;
-  A = B;
+  A => B;
 
-  B = C;
-  C = D;
-  D = B;
+  B => C;
+  C => D;
+  D => B;
 }

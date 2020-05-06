@@ -5,17 +5,15 @@ package fdvalid;
 // example from [ABK+13]
 featurediagram GraphLibrary {
 
-  root GraphLibrary;
+  GraphLibrary => EdgeType & Search? & Weighted? & Algorithm?;
 
-  GraphLibrary = EdgeType & Search? & Weighted? & Algorithm?;
+  EdgeType => Directed ^ Undirected;
 
-  EdgeType = Directed ^ Undirected;
+  Search => BFS ^ DFS;
 
-  Search = BFS ^ DFS;
+  Algorithm => Cycle | ShortestPath | MST | Transpose;
 
-  Algorithm = Cycle | ShortestPath | MST | Transpose;
-
-  MST = Prim ^ Kruskal;
+  MST => Prim ^ Kruskal;
 
   Cycle requires Directed;
   MST requires Weighted;

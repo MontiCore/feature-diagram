@@ -8,7 +8,7 @@ grammar FeatureConfigurationPartial extends FeatureDiagram {
   symbol scope FeatureConfiguration =
     "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram Selection+;
 
-  interface Selection = feature:Name@Feature+;
+  interface Selection = feature:Name+;
 
   Select implements Selection =
     "select" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;

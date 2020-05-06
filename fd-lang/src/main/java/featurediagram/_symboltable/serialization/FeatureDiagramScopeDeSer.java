@@ -2,12 +2,13 @@
 package featurediagram._symboltable.serialization;
 
 import featurediagram._symboltable.FeatureDiagramArtifactScope;
-import featurediagram._symboltable.FeatureDiagramLanguage;
+
+import java.nio.file.Paths;
 
 public class FeatureDiagramScopeDeSer extends FeatureDiagramScopeDeSerTOP {
 
-  public static void store(FeatureDiagramLanguage lang, FeatureDiagramArtifactScope modelTopScope) {
-    new FeatureDiagramScopeDeSer().store(modelTopScope, lang, "target/symbols");
+  public static void store(FeatureDiagramArtifactScope modelTopScope) {
+    new FeatureDiagramScopeDeSer().store(modelTopScope, Paths.get("target/symbols"));
   }
 
 }

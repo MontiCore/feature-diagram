@@ -3,13 +3,12 @@
 package fdvalid;
 
 featurediagram Car {
-  root Car;
 
-  Car = ElectricWindowOpener? & PanoramicRoof?;
+  Car => ElectricWindowOpener? & PanoramicRoof?;
 
-  Car = SmallTrunk ^ LargeTrunk;
+  Car => SmallTrunk ^ LargeTrunk;
 
-  PanoramicRoof = Electric?;
+  PanoramicRoof => Electric?;
 
   Electric requires ElectricWindowOpener;
 }

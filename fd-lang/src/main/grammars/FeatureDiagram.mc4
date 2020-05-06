@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 grammar FeatureDiagram extends de.monticore.Cardinality,
-                               de.monticore.types.MCBasicTypes {
+                               de.monticore.types.MCBasicTypes,
+                               de.monticore.expressions.CommonExpressions{
 
   FDCompilationUnit = ("package" package:MCQualifiedName ";")?
                       (MCImportStatement)*
@@ -13,45 +14,51 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
     
   interface FDElement;
 
-  RootFeature implements FDElement = "root" Feature ";";
-
   // Elemental feature, either mandatory or optional
-  symbol Feature = Name ( optional:["?"] )?;
+  symbol Feature = Name;
 
-  FeatureTreeRule implements FDElement = Name@Feature "=" FeatureGroup ";";
+  FeatureTreeRule implements FDElement = Name@Feature "=>" FeatureGroup ";";
 
   FeatureConstraint implements FDElement = ConstraintExpression ";" ;
 
-  interface FeatureGroup = Feature+;
+  // This should be Name@Feature, but due to a MontiCore Bug this is not possible (protected method in interface)
+  interface FeatureGroup = Name+;
 
   // All features must be chosen ( e.g., A = B & C & D; )
-  AndGroup implements FeatureGroup = ( Feature || "&" )+;
+  AndGroup implements FeatureGroup = Name@Feature (optional:"?")? (Name@Feature (optional:"?")? "&" )*;
 
   // Exactly one feature must be chosen ( e.g., A = B ^ C ^ D; )
-  XorGroup implements FeatureGroup = Feature ( "^" Feature )+;
+  XorGroup implements FeatureGroup = Name@Feature ( "^" Name@Feature )+;
 
   // One or more features must be chosen ( e.g.,  A = B | C | D; )
-  OrGroup implements FeatureGroup = Feature ( "|" Feature )+;
+  OrGroup implements FeatureGroup = Name@Feature ( "|" Name@Feature )+;
 
   // Specify a range of features ( e.g., A = [2..3] (B, C, D); )
   CardinalizedGroup implements FeatureGroup =
-                               Cardinality "of" "{" ( Feature || "," )+ "}";
+                               Cardinality "of" "{" ( Name@Feature | "," )+ "}";
 
 
   interface ConstraintExpression;
-  
-  RequiresConstraint implements ConstraintExpression =
-                       Name@Feature "requires" Name@Feature;
-  
-  ExcludesConstraint implements ConstraintExpression =
-                       Name@Feature "excludes" Name@Feature;
+
+  Constraint implements ConstraintExpression = Expression;
+
+  Requires implements Expression<115>, InfixExpression =
+    left:Expression operator:"requires" right:Expression;
+
+  Excludes implements Expression<116>, InfixExpression =
+    left:Expression operator:"excludes" right:Expression;
 
   symbolrule FeatureDiagram =
-                   rootFeature:featurediagram._symboltable.FeatureSymbolLoader
+                   rootFeature:featurediagram._symboltable.FeatureSymbol
+                   features:featurediagram._symboltable.FeatureSymbol*
+                   ;
+
+  astrule FeatureDiagram =
+                   features:featurediagram._ast.ASTFeature*
+                   rootFeature:featurediagram._ast.ASTFeature
                    ;
 
   symbolrule Feature =
-                   isOptional:boolean
                    children:featurediagram._symboltable.FeatureGroup*
                    ;
 

@@ -5,6 +5,5 @@ import MyCDTypes.*;
    import MyCDTypes.NotBar;
 
    featurediagram FooBar {
-     root Foo;
-     Foo = Bar | NotBar;
+     Foo => Bar | NotBar;
    }

@@ -4,7 +4,7 @@ package featurediagram._visitor;
 import featurediagram._symboltable.FeatureDiagramSymbol;
 import featurediagram._symboltable.FeatureSymbol;
 
-public interface HierachicalFeatureSymbolVisitor extends FeatureDiagramSymbolVisitor {
+public interface HierachicalFeatureSymbolVisitor extends FeatureDiagramVisitor {
 
   @Override
   default public void visit(FeatureSymbol node) {

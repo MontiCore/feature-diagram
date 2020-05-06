@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 featurediagram FeatureForest {
-  root A;
-  A = B | C;
-  X = Y ^ Z;
+  A => B | C;
+  X => Y ^ Z;
 }

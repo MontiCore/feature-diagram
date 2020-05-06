@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 featurediagram InvalidParent {
-  root A;
-  A = B;
-  B = C;
-  NotAFeature = C;
+  A => B;
+  B => C;
+  NotAFeature => C;
 }

@@ -7,7 +7,7 @@ grammar FeatureConfiguration extends FeatureDiagram {
 
   symbol scope FeatureConfiguration =
     "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram "{"
-      selectedFeature:Name@Feature ( "," selectedFeature:Name@Feature )*
+      ( selectedFeature:Name | "," )+
     "}";
 
 }

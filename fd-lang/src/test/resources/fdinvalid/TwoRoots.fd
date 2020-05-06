@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 featurediagram TwoRoots {
-  root A;
-  root B;
-  A = D;
-  B = C;
+  A => D;
+  B => C;
 }

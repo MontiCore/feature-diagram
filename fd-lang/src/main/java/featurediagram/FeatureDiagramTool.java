@@ -33,7 +33,7 @@ public class FeatureDiagramTool {
     FeatureDiagramCoCos.checkAll(ast);
 
     // store artifact scope after context conditions have been checked
-    FeatureDiagramScopeDeSer.store(lang, modelTopScope);
+    FeatureDiagramScopeDeSer.store(modelTopScope);
     return modelTopScope;
   }
 
