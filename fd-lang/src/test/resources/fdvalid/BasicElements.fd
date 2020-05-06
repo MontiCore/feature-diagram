@@ -6,7 +6,7 @@ featurediagram BasicElements {
   A => B & C? & D;
   A => E ^ F ^ G;
   C => H | I | J;
-  D => [0 .. *] of {K,L,M};
+  D => {0 .. *} of {K,L,M};
   M requires E;
   C excludes I;
   E excludes J;

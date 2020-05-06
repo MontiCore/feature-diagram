@@ -25,7 +25,7 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   interface FeatureGroup = Name+;
 
   // All features must be chosen ( e.g., A = B & C & D; )
-  AndGroup implements FeatureGroup = Name@Feature (optional:"?")? (Name@Feature (optional:"?")? "&" )*;
+  AndGroup implements FeatureGroup = Name@Feature (optional:"?")? ("&" Name@Feature (optional:"?")?)*;
 
   // Exactly one feature must be chosen ( e.g., A = B ^ C ^ D; )
   XorGroup implements FeatureGroup = Name@Feature ( "^" Name@Feature )+;
