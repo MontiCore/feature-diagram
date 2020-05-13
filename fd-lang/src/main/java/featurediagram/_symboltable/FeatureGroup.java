@@ -7,76 +7,38 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class FeatureGroup {
+public abstract class FeatureGroup {
 
-  protected FeatureSymbolLoader parent;
+  protected FeatureSymbol parent;
 
-  protected List<FeatureSymbolLoader> members;
-
-  protected GroupKind kind;
+  protected List<FeatureSymbol> members;
 
   protected int min;
 
   protected int max;
 
-  public FeatureGroup(FeatureSymbolLoader parent,
-      List<FeatureSymbolLoader> members, int min, int max) {
+  public FeatureGroup(FeatureSymbol parent,
+      List<FeatureSymbol> members, int min, int max) {
     this.parent = parent;
     this.members = members;
-    this.kind = GroupKind.CARDINALITY;
     this.min = min;
     this.max = max;
   }
 
-  public FeatureGroup(FeatureSymbolLoader parent,
-      List<FeatureSymbolLoader> members, GroupKind kind) {
-    this.parent = parent;
-    this.members = members;
-    this.kind = kind;
-
-    switch (kind) {
-      case AND:
-        this.min = members.size();
-        this.max = members.size();
-        break;
-      case OR:
-        this.min = 1;
-        this.max = members.size();
-        break;
-      case XOR:
-        this.min = 1;
-        this.max = 1;
-        break;
-      case CARDINALITY:
-      default:
-        Log.error("0xFD1002 Feature group with parent '" + parent.getName()
-            + "' is a cardinality group, but its cardinality has not been set!");
-        break;
-    }
-  }
-
-  public FeatureSymbolLoader getParent() {
+  public FeatureSymbol getParent() {
     return parent;
   }
 
-  public void setParent(FeatureSymbolLoader parent) {
+  public void setParent(FeatureSymbol parent) {
     this.parent = parent;
   }
 
-  public List<FeatureSymbolLoader> getMembers() {
+  public List<FeatureSymbol> getMembers() {
     return members;
   }
 
-  public void setMembers(List<FeatureSymbolLoader> members) {
+  public void setMembers(List<FeatureSymbol> members) {
     this.members = members;
-  }
-
-  public GroupKind getKind() {
-    return kind;
-  }
-
-  public void setKind(GroupKind kind) {
-    this.kind = kind;
   }
 
   public int size() {
@@ -91,16 +53,16 @@ public class FeatureGroup {
     return members.contains(o);
   }
 
-  public Iterator<FeatureSymbolLoader> iterator() {
+  public Iterator<FeatureSymbol> iterator() {
     return members.iterator();
   }
 
-  public boolean add(FeatureSymbolLoader featureSymbolLoader) {
-    return members.add(featureSymbolLoader);
+  public boolean add(FeatureSymbol featureSymbol) {
+    return members.add(featureSymbol);
   }
 
   public boolean addAll(
-      Collection<? extends FeatureSymbolLoader> c) {
+      Collection<? extends FeatureSymbol> c) {
     return members.addAll(c);
   }
 
@@ -108,11 +70,11 @@ public class FeatureGroup {
     members.clear();
   }
 
-  public FeatureSymbolLoader get(int index) {
+  public FeatureSymbol get(int index) {
     return members.get(index);
   }
 
-  public FeatureSymbolLoader remove(int index) {
+  public FeatureSymbol remove(int index) {
     return members.remove(index);
   }
 

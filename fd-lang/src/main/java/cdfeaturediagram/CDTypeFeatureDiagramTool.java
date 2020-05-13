@@ -10,7 +10,7 @@ import featurediagram._cocos.FeatureDiagramCoCos;
 import featurediagram._parser.FeatureDiagramParser;
 import featurediagram._symboltable.FeatureDiagramArtifactScope;
 import featurediagram._symboltable.FeatureDiagramLanguage;
-import featurediagram._symboltable.FeatureDiagramSymTabMill;
+import featurediagram.FeatureDiagramMill;
 import featurediagram._symboltable.FeatureDiagramSymbolTableCreator;
 import featurediagram._symboltable.serialization.FeatureDiagramScopeDeSer;
 
@@ -107,7 +107,7 @@ public class CDTypeFeatureDiagramTool {
    */
   public static FeatureDiagramArtifactScope createSymbolTable(FeatureDiagramLanguage lang,
       ModelPath mp, ASTFDCompilationUnit ast) {
-    FeatureDiagramSymTabMill.initMe(new CDTypeFeatureDiagramSymTabMill());
+    FeatureDiagramMill.initMe(new CDTypeFeatureDiagramSymTabMill());
     CDTypeFeatureDiagramGlobalScope gs = new CDTypeFeatureDiagramGlobalScope(mp);
     FeatureDiagramSymbolTableCreator creator = new FeatureDiagramSymbolTableCreator(gs);
     FeatureDiagramArtifactScope as = creator.createFromAST(ast);

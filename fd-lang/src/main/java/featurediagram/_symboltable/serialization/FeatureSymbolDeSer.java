@@ -3,6 +3,7 @@ package featurediagram._symboltable.serialization;
 
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
+import featurediagram.FeatureDiagramMill;
 import featurediagram._symboltable.*;
 
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ public class FeatureSymbolDeSer extends FeatureSymbolDeSerTOP {
 
   protected FeatureGroup deserializeFeatureGroup(JsonObject o, String parentFeatureName,
       IFeatureDiagramScope enclosingScope) {
-    FeatureSymbolLoader parent = getLoader(parentFeatureName, enclosingScope);
-    List<FeatureSymbolLoader> members = deserializeMembers(o, enclosingScope);
+    FeatureSymbol parent = enclosingScope.resolveFeature(parentFeatureName).orElse(null);
+    List<FeatureSymbol> members = deserializeMembers(o, enclosingScope);
     GroupKind kind = GroupKind.valueOf(o.getStringMember("kind"));
     if (GroupKind.CARDINALITY == kind) {
       int min = o.getIntegerMember("min");
@@ -35,20 +36,20 @@ public class FeatureSymbolDeSer extends FeatureSymbolDeSerTOP {
     }
   }
 
-  protected List<FeatureSymbolLoader> deserializeMembers(JsonObject o,
+  protected List<FeatureSymbol> deserializeMembers(JsonObject o,
       IFeatureDiagramScope enclosingScope) {
-    List<FeatureSymbolLoader> members = new ArrayList<>();
+    List<FeatureSymbol> members = new ArrayList<>();
     for (JsonElement e : o.getArrayMember("members")) {
       if (e.isJsonString()) {
         String childName = e.getAsJsonString().getValue();
-        members.add(getLoader(childName, enclosingScope));
+        members.add(enclosingScope.resolveFeature(childName).orElse(null));
       }
     }
     return members;
   }
 
   protected FeatureSymbolLoader getLoader(String name, IFeatureDiagramScope enclosingScope) {
-    return FeatureDiagramSymTabMill.featureSymbolLoaderBuilder()
+    return FeatureDiagramMill.featureSymbolLoaderBuilder()
         .setName(name)
         .setEnclosingScope(enclosingScope)
         .build();

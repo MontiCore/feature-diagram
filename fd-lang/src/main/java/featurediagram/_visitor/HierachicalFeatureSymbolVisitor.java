@@ -15,8 +15,7 @@ public interface HierachicalFeatureSymbolVisitor extends FeatureDiagramVisitor {
   default public void traverse(FeatureSymbol node) {
     node.streamChildren().forEach(
         featureGroup -> featureGroup.getMembers().forEach(
-            featureSymbolLoader -> featureSymbolLoader.loadSymbol().
-                ifPresent(featureSymbol -> featureSymbol.accept(getRealThis()))));
+            featureSymbol -> featureSymbol.accept(getRealThis())));
   }
 
   @Override

@@ -21,10 +21,10 @@ public class FeatureNamesCollector implements FeatureDiagramVisitor{
 
     node.getFeatureGroup().getNameList().stream()
             .forEach(rightName -> {
-              if(names.getOrDefault(name, Occurrence.RIGHT) != Occurrence.RIGHT){
-                names.put(name, Occurrence.BOTH);
+              if(names.getOrDefault(rightName, Occurrence.RIGHT) != Occurrence.RIGHT){
+                names.put(rightName, Occurrence.BOTH);
               }else {
-                names.put(name, Occurrence.RIGHT);
+                names.put(rightName, Occurrence.RIGHT);
               }
             });
   }

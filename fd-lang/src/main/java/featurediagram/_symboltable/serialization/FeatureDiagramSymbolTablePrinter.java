@@ -34,7 +34,7 @@ public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTableP
         printer.member("max", group.getMax());
       }
       printer.beginArray("members");
-      for (FeatureSymbolLoader member : group.getMembers()) {
+      for (FeatureSymbol member : group.getMembers()) {
         printer.value(member.getName());
       }
       printer.endArray();

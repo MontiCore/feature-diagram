@@ -5,6 +5,7 @@ import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
+import featurediagram.FeatureDiagramTool;
 import featurediagram._ast.ASTFDCompilationUnit;
 import featurediagram._cocos.FeatureDiagramCoCos;
 import featurediagram._parser.FeatureDiagramParser;
@@ -53,23 +54,13 @@ public class FeatureDiagramCoCoTest {
   }
 
   @Test
-  public void testFeatureForest() throws IOException {
-    testCoCo("FeatureForest.fd", "0xFD0010", "0xFD0010");
-  }
-
-  @Test
   public void testNonUniqueNameInGroup() throws IOException {
     testCoCo("NonUniqueNameInGroup.fd", "0xFD0009");
   }
 
   @Test
-  public void testNoRoots() throws IOException {
-    testCoCo("NoRoots.fd", "0xFD0002", "0xFD0010");
-  }
-
-  @Test
   public void testSelfLoopInGroup() throws IOException {
-    testCoCo("SelfLoopInGroup.fd", "0xFD0003");
+    testCoCo("SelfLoopInGroup.fd", "0xFD0003", "0xFD0008");
   }
 
   @Test
@@ -78,13 +69,8 @@ public class FeatureDiagramCoCoTest {
   }
 
   @Test
-  public void testInvalidParent() throws IOException {
-    testCoCo("InvalidParent.fd", "0xFD0008");
-  }
-
-  @Test
   public void testTwoRoots() throws IOException {
-    testCoCo("TwoRoots.fd", "0xFD0001");
+    testCoCo("TwoRoots.fd", "0xFD0001", "0xFD0007");
   }
 
   protected void testCoCo(String modelName, String... errorCode) throws IOException {
@@ -118,6 +104,7 @@ public class FeatureDiagramCoCoTest {
       throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
+    FeatureDiagramTool.transform(ast);
     FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
     FeatureDiagramGlobalScope globalScope = new FeatureDiagramGlobalScope(mp, lang);
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
