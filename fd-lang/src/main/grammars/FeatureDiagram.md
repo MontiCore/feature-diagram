@@ -38,7 +38,7 @@ The following documents a feature diagram language engineered with MontiCore.
 The purpose of the language is to represent feature models used in product line engineering. 
 The language is extensible to tailor it for various different applications.
 
-Many notational semantic variations and extensions to the original feature diagrams
+Many notational and semantic variations of the original feature diagrams
 as presented in [[KCH+90]](https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf)
 have been developed. This language uses feature models with the following characteristics:
 * Each feature diagram must have a root feature
