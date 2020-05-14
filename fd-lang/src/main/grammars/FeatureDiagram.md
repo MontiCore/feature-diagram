@@ -54,6 +54,31 @@ have been developed. This language uses feature models with the following charac
 * Obligation or optionality of a feature in any group except ANDGroup is discarded. 
 All features that are members of such groups are regarded as optional features
 
+## Syntax Teaser
+
+
+Each feature model has a name and a body that is surrounded by curly brackets.
+The body contains rules that define the feature tree. Each rule describes a 
+feature group with a parent feature (left-hand side) followed by an arrow 
+(`->`) and children features (right-hand side). 
+The root of the feature tree is detected automatically. 
+Further, a feature model may define cross-tree constraints
+and use Java-like expressions to formulate these.
+```
+/* (c) https://github.com/MontiCore/monticore */
+featurediagram Phone {
+  Phone -> Memory & OS & Camera? & Screen;
+  Memory -> Internal & External?;
+  Internal -> [1..2] of {Small, Medium, Large};
+  OS -> iOS ^ Android;
+  Screen -> Flexible | FullHD;
+
+  External ? Flexible => Android  : iOS && Android ;
+
+}
+```
+
+
 ## Syntax
 
 The syntax of the feature diagram language is specified through the feature model 
