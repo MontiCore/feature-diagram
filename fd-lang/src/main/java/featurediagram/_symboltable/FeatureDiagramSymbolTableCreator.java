@@ -82,7 +82,10 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
       FeatureSymbol fs = getResolveOrCreateFeatureSymbol(child);
       children.add(fs);
     }
-    putFeatureGroup(new AndGroup(parent, children, node.getOptionalList().stream().map(s -> "?".equals(s)).collect(Collectors.toList())));
+    putFeatureGroup(new AndGroup(parent, children, node.getOptList()
+            .stream()
+            .map(ASTOpt::isOptional)
+            .collect(Collectors.toList())));
   }
 
   @Override

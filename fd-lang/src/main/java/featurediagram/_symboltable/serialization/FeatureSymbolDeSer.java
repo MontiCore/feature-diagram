@@ -30,7 +30,9 @@ public class FeatureSymbolDeSer extends FeatureSymbolDeSerTOP {
     String kind = o.getStringMember("kind");
     if(kind.equals(AndGroup.class.getName())){
         return new AndGroup(parent,members,
-                o.getArrayMember("optionals").stream().map(JsonElement::getAsJsonBoolean).map(JsonBoolean::getValue).collect(Collectors.toList()));
+                o.getArrayMember("optionals").stream().map(jsonElement ->
+                  jsonElement.getAsJsonBoolean().getValue()
+                ).collect(Collectors.toList()));
     }
     if(kind.equals(OrGroup.class.getName())){
         return new OrGroup(parent, members);

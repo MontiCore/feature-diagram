@@ -34,7 +34,9 @@ public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTableP
         printer.member("max", group.getMax());
       }
       if (group instanceof AndGroup){
-        printer.member("optionals", String.valueOf(((AndGroup) group).getOptionalFeatures()));
+        printer.beginArray("optionals");
+        ((AndGroup) group).getOptionalFeatures().forEach(b->printer.value(b));
+        printer.endArray();
       }
       printer.beginArray("members");
       for (FeatureSymbol member : group.getMembers()) {

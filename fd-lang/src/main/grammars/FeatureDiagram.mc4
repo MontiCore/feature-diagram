@@ -34,10 +34,12 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   // This should be Name@Feature, but due to a MontiCore Bug this is not possible (protected method in interface)
   interface FeatureGroup = Name+;
 
+  Opt= optional:["?"]?;
+
   /**
     This demands: All features must be chosen ( e.g., A = B & C & D; )
   */
-  AndGroup implements FeatureGroup = Name@Feature (optional:"?")? ("&" Name@Feature (optional:"?")?)*;
+  AndGroup implements FeatureGroup = Name@Feature Opt ("&" Name@Feature Opt)*;
 
   /**
     This demands: Exactly one feature must be chosen ( e.g., A = B ^ C ^ D; )
