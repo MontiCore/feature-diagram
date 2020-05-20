@@ -81,28 +81,7 @@ public class FeatureDiagramTool {
   }
 
   public static void transform(ASTFDCompilationUnit ast) {
-    FeatureNamesCollector collector = new FeatureNamesCollector();
-    ast.accept(collector);
-    HashMap<String, FeatureNamesCollector.Occurrence> features = collector.getNames();
-    features.forEach((k,v)-> {
-      ASTFeature feature = FeatureDiagramMill.featureBuilder().setName(k).build();
-      ast.getFeatureDiagram().addFeatures(feature);
-      if(v == FeatureNamesCollector.Occurrence.LEFT){
-        ast.getFeatureDiagram().setRootFeature(feature);
-      }
-    });
-    List<String> rootfeatures = features.entrySet().stream()
-            .filter(e -> FeatureNamesCollector.Occurrence.LEFT == e.getValue())
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toList());
-    if(rootfeatures.size() == 0){
-      Log.error("0xFD0001 Featurediagram" + ast.getFeatureDiagram().getName() +
-              "has no root node.");
-    }
-    if (rootfeatures.size() > 1) {
-      Log.error("0xFD0001 Featurediagram" + ast.getFeatureDiagram().getName() +
-              "has multiple root nodes.");
-    }
+
   }
 
   /**

@@ -36,9 +36,9 @@ public class HasTreeShape
     features.removeAll(parents.keySet());
 
     //remove the root feature(s), which must not have a parent
-    ASTFeature rootFeature = node.getRootFeature();
+    String rootFeature = node.getRootFeature();
 
-    features.remove(rootFeature.getName());
+    features.remove(rootFeature);
 
 
     for (String feature : features) {

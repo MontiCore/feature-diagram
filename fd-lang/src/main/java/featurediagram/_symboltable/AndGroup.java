@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package featurediagram._symboltable;
 
 import java.util.List;
@@ -9,5 +10,9 @@ public class AndGroup extends FeatureGroup{
   public AndGroup(FeatureSymbol parent, List<FeatureSymbol> members, List<Boolean> optionalFeatures) {
     super(parent, members, (int) optionalFeatures.stream().filter(Boolean::booleanValue).count(), members.size());
     this.optionalFeatures = optionalFeatures;
+  }
+
+  public List<Boolean> getOptionalFeatures() {
+    return optionalFeatures;
   }
 }

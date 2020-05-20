@@ -2,10 +2,10 @@
 package featurediagram._symboltable.serialization;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
+import featurediagram._symboltable.AndGroup;
+import featurediagram._symboltable.CardinalitiyGroup;
 import featurediagram._symboltable.FeatureGroup;
 import featurediagram._symboltable.FeatureSymbol;
-import featurediagram._symboltable.FeatureSymbolLoader;
-import featurediagram._symboltable.GroupKind;
 
 import java.util.List;
 
@@ -28,10 +28,13 @@ public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTableP
     printer.beginArray("children");
     for (FeatureGroup group : children) {
       printer.beginObject();
-      printer.member("kind", group.getKind().name());
-      if (GroupKind.CARDINALITY == group.getKind()) {
+      printer.member("kind", group.getClass().getName());
+      if (group instanceof CardinalitiyGroup) {
         printer.member("min", group.getMin());
         printer.member("max", group.getMax());
+      }
+      if (group instanceof AndGroup){
+        printer.member("optionals", String.valueOf(((AndGroup) group).getOptionalFeatures()));
       }
       printer.beginArray("members");
       for (FeatureSymbol member : group.getMembers()) {
@@ -42,5 +45,7 @@ public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTableP
     }
     printer.endArray();
   }
+
+
 
 }

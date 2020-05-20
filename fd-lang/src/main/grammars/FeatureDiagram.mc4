@@ -74,8 +74,8 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
                    ;
 
   astrule FeatureDiagram =
-                   features:featurediagram._ast.ASTFeature*
-                   rootFeature:featurediagram._ast.ASTFeature
+                   features:String*
+                   rootFeature:String
                    ;
 
   /**

@@ -10,6 +10,7 @@ public class FeatureDiagramCoCos {
     checker.addCoCo((FeatureDiagramASTFeatureDiagramCoCo) new HasTreeShape());
     checker.addCoCo((FeatureDiagramASTFeatureTreeRuleCoCo) new HasTreeShape());
     checker.addCoCo(new NonUniqueNameInGroup());
+    checker.addCoCo(new CTCFeatureNameExists());
     return checker;
   }
 
