@@ -5,8 +5,8 @@
   feature diagram can define: requires and excludes
 */
 
-// TODO AB: ExpressionBasis oder LogicExpression statt Common Expressions?
-// TODO AB: es fehlen passende Prioritäten
+// TODO AB: ! ExpressionBasis oder LogicExpression statt Common Expressions?
+// TODO AB: ! es fehlen passende Prioritäten
 
 component grammar ComplexConstraint extends de.monticore.expressions.CommonExpressions{
 

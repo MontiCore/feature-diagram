@@ -61,7 +61,8 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
 
 
   // TODO AB: Ikonsistent zu anderer Grammatik: Entscheiden und dann eine löschen!
-
+  // TODO AB: ! Inkonsistent zu anderer Grammatik: Entscheiden und dann eine löschen!
+  
   interface ConstraintExpression = Name@Feature+;
   
   RequiresConstraint implements ConstraintExpression =
@@ -77,8 +78,8 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
 
   /**
     Feature Symbols carry their names (already there),
-    the optional flag (TODO: warum dieses? Und was bedeutet es?)
-    and the list of subfeatures (TODO: reicht das?)
+    the optional flag (TODO: ! warum dieses? Und was bedeutet es?)
+    and the list of subfeatures (TODO: ! reicht das?)
   */
   symbolrule Feature =
                    isOptional:boolean
