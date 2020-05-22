@@ -1,5 +1,7 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 
+<!-- Beta-version: This is intended to become a MontiCore stable explanation. -->
+
 <!-- List with all references used within this markdown file: -->
 [Readme]: ../../../../README.md
 [Grammar]: FeatureDiagram.mc4
@@ -171,20 +173,3 @@ and, optionally, additional information (depends on the analysis kinds).
 * There are language components for partial configurations of feature models and for feature models with attributes
 
   
-<!--
-  - Was sind die wichtigsten (handgeschriebenen) internen Funktionalitäten 
-
-    (Funktionen, die auf der abstrakten Syntax Informationen berechnen oder die abstrakte Syntax modifizieren), 
-
-    z.B. Trafos, Symboltabellenberechnungen, CoCo checks
-
-  - Welche Erweiterungspunkte für die Syntax sind vorgesehen? 
-
-    (z.B. in Form von Top-Mechanismus/Pattern zur Erweiterung)
-
-  - Welche Generatorfunktionalitäten existieren?
-
-    (z.B. PrettyPrinter)
-
-  - Welche Erweiterungspunkte für Generatoren sind vorgesehen?
--->
