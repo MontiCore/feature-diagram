@@ -50,9 +50,8 @@ have been developed. This language uses feature models with the following charac
     * alternative features (XORGroup)
     * selection of features (ORGroup)
     * lower and upper bound for number of selected features (CardinalityGroup)
-* Cross tree constraints are only binary relations between two features in which either:
-    * a feature excludes another feature
-    * a feature requires another feature
+* Cross tree constraints are expressions over any features with logic operators, 
+  such as **and** `&&`, **or** `||`, **implication** `=>`
 * Obligation or optionality of a feature in any group except ANDGroup is discarded. 
 All features that are members of such groups are regarded as optional features
 
@@ -75,8 +74,7 @@ featurediagram Phone {
   OS -> iOS ^ Android;
   Screen -> Flexible | FullHD;
 
-  External ? Flexible => Android  : iOS && Android ;
-
+  Camera => (iOS && External) || Android;
 }
 ```
 
@@ -158,10 +156,10 @@ and, optionally, additional information (depends on the analysis kinds).
 
 | Analysis Class | Input | Result | Explanation |
 | ---    | ---      |  ------  |---------|
-| [AllProducts][AllProducts]           | FM m | Set\<String\> | Returns all valid FCs in m |
+| [AllProducts][AllProducts]           | FM m | Set\<FC\> | Returns all valid FCs in m |
 | [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional\<FC\> | Can c be completed to a valid FC of m? If yes, return one example. |
-| [DeadFeatures][DeadFeature]           | FM m | Set\<String\> | Set of features that are contained in m, but in no valid FC of m. |
-| [FalseOptional][FalseOptional]       | FM m | Set\<String\> | Set of features that are optional in m, but are contained in all valid FCs of m. |
+| [DeadFeatures][DeadFeature]           | FM m | Set\<Feature\> | Set of features that are contained in m, but in no valid FC of m. |
+| [FalseOptional][FalseOptional]       | FM m | Set\<Feature\> | Set of features that are optional in m, but are contained in all valid FCs of m. |
 | [IsValid][IsValid]                   | FM m, FC c | Boolean | Is c a valid FC in m? |
 | [IsVoid][IsVoid]                     | FM m | Boolean | Is there a valid FC in m? |
 | [NumberOfProducts][NumberOfProducts] | FM m | int | Returns the number of valid FCs in m. |
