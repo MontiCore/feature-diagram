@@ -6,7 +6,8 @@
   also allows constraints.
 */
 
-grammar ComplexConstraintFeatureDiagram extends ComplexConstraint, FeatureDiagram {
+grammar ComplexConstraintFeatureDiagram extends 
+                         ComplexConstraint, FeatureDiagram {
 
   start FDCompilationUnit;
 

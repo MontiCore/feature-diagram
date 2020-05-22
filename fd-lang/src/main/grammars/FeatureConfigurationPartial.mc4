@@ -1,21 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
+
+// TODO AB description fehlt
+
+
 grammar FeatureConfigurationPartial extends FeatureDiagram {
 
   FCCompilationUnit = ("package" package:MCQualifiedName ";")?
                       (MCImportStatement)*
                       FeatureConfiguration;
 
+// TODO AB shorten:: featureDiagram:Name@FeatureDiagram, etc.
   symbol scope FeatureConfiguration =
     "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram Selection+;
 
   interface Selection = feature:Name+;
 
+// TODO AB shorten to  { Name@Feature | "," }*
   Select implements Selection =
     "select" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
 
   Unselect implements Selection =
     "unselect" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
 
+// TODO AB: Erklärung notwendig. Woher kommt das?
   Undecided implements Selection =
     "undecided" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
 

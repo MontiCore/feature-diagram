@@ -8,7 +8,7 @@
 
 grammar FeatureDiagram extends de.monticore.Cardinality,
                                de.monticore.types.MCBasicTypes,
-                               de.monticore.expressions.CommonExpressions{
+                               de.monticore.expressions.CommonExpressions {
 
   FDCompilationUnit = ("package" package:MCQualifiedName ";")?
                       MCImportStatement*
@@ -49,7 +49,7 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
 
   FeatureConstraint implements FDElement = ConstraintExpression ";" ;
 
-  // This should be Name@Feature, but due to a MontiCore Bug this is currently 
+  // TODO: This should be Name@Feature, but due to a MontiCore Bug this is currently 
   // not possible (protected method in interface)
   interface FeatureGroup = Name+;
   
@@ -89,10 +89,10 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
 
   Constraint implements ConstraintExpression = Expression;
 
-  Requires implements Expression<115>, InfixExpression =
+  Requires implements Expression <115>, InfixExpression =
     left:Expression operator:"requires" right:Expression;
 
-  Excludes implements Expression<116>, InfixExpression =
+  Excludes implements Expression <116>, InfixExpression =
     left:Expression operator:"excludes" right:Expression;
 
 
@@ -108,7 +108,7 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
 
   /**
     Feature Symbols carry their names (already there),
-    and the list of subfeatures (TODO: reicht das?)
+    and the list of subfeatures (TODO: ! reicht das?)
   */
   symbolrule Feature =
                    children:featurediagram._symboltable.FeatureGroup*

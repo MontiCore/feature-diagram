@@ -5,15 +5,18 @@
   feature diagram can define: requires and excludes
 */
 
-// TODO AB: ExpressionBasis oder LogicExpression statt Common Expressions?
-// TODO AB: es fehlen passende Prioritäten
+// TODO AB: ! ExpressionBasis oder LogicExpression statt Common Expressions?
+// TODO AB: ! es fehlen passende Prioritäten
 
-component grammar ComplexConstraint extends de.monticore.expressions.CommonExpressions{
+// TODO AB: diese Operationen passen nicht mit dem teaser und der Explanation überein
 
-  Requires implements Expression<115>, InfixExpression =
+component grammar ComplexConstraint extends 
+                  de.monticore.expressions.CommonExpressions {
+
+  Requires implements Expression <115>, InfixExpression =
   left:Expression operator:"requires" right:Expression;
 
-  Excludes implements Expression<116>, InfixExpression =
+  Excludes implements Expression <116>, InfixExpression =
   left:Expression operator:"excludes" right:Expression;
 
 }
