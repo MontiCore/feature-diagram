@@ -134,7 +134,7 @@ and, optionally, additional information (depends on the analysis kinds).
 | ---    | ---      |  ------  |---------|
 | [AllProducts][AllProducts]           | FM m | Set\<String\> | Returns all valid FCs in m |
 | [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional\<FC\> | Can c be completed to a valid FC of m? If yes, return one example. |
-| [DeadFeatures][DeadFeature]           | FM m | Set\<String\> | Set of features that are contained in m, but in no valid FC of m. |
+| [DeadFeatures][DeadFeature]           | FM m | Set\<String\> | Set of features that are contained in m, but in no valid FC of m uses them. |
 | [FalseOptional][FalseOptional]       | FM m | Set\<String\> | Set of features that are optional in m, but are contained in all valid FCs of m. |
 | [IsValid][IsValid]                   | FM m, FC c | Boolean | Is c a valid FC in m? |
 | [IsVoid][IsVoid]                     | FM m | Boolean | Is there a valid FC in m? |
