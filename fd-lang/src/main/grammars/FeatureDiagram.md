@@ -101,6 +101,30 @@ Feature groups are instantiated during symbol table creation in the (handwritten
 The symbol table is instantiated by the class [FeatureDiagramSymbolTableCreator][fdstc]. Functionality to load and store 
 feature diagram symbol tables is implemented as well.
 
+### Symboltable
+- (aus CD4A, TODO) De-/Serialization functionality for the symbol table 
+  ([`serialization`][serialization])
+
+### Symbol kinds used by Feature Diagrams (importable):
+- @AB TODO: List of Symbol types + short explanations, zB:
+- A feature diagram (as defined here) does not import any symbols; it defines all features locally.
+- It also doesn't import classes, variables or other symbols.
+
+### Symbol kinds defined by CD4A (exported):
+- @AB TODO: List of Symbol types + short explanations, zB:
+- FD defines its own type of FeatureSymbols.
+- A featureSymbol is defined as:
+  ```
+  class FeatureSymbol {
+      String name;
+      ...
+  }
+  ```
+
+### Symbols exported by CD4A:
+- A feature diagram exports its feature symbols for external reference.
+
+
 ### Context Conditions
 
 | Context Condition    | Error Code | Explanation |
