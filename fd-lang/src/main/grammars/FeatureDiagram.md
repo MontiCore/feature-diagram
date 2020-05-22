@@ -21,7 +21,7 @@
 [tool]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
 
 
-<!-- The following references should pont towards the markdown files, once these exist -->
+<!-- The following references should point towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
 [MCBasicTypes MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/types/MCBasicTypes.mc4
 [FeatureConfiguration MLC]: FeatureConfiguration.md
@@ -103,7 +103,8 @@ feature diagram symbol tables is implemented as well.
 
 ### Context Conditions
 
-| Context Condition Class | Error Code | Explanation |
+| Context Condition    | Error Code | Explanation |
+| implemented in Class |            |    |
 | ---      |  ------  |---------|
 | [HasTreeShape][HasTreeShape]                 | 0xFD0001 | Feature diagrams must not contain more than one root feature. |
 | (see above)                                  | 0xFD0002 | Feature diagrams must not contain more than one root feature. |
@@ -116,7 +117,7 @@ feature diagram symbol tables is implemented as well.
 
 ## Generator
 
-This language component provides a generator that translates feature models to 
+* For minimal use: This language component provides a generator that translates feature models to 
 [FlatZinc][flatzinc] models. FlatZinc, as part of MiniZinc, is a modeling language
 enabling to model constraint satisfaction (and optimization) problems. Different
 constraint solvers support FlatZinc as input format. The generator is located [here][generator].
