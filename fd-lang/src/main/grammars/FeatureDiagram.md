@@ -123,6 +123,7 @@ feature diagram symbol tables is implemented as well.
 
 ### Symbols exported by CD4A:
 - A feature diagram exports its feature symbols for external reference.
+- The symbols of a feature diagram "F.fd" are stored in "F.fdsym".
 
 
 ### Context Conditions
