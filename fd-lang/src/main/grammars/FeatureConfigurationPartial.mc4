@@ -1,29 +1,29 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-// TODO AB description fehlt
+/**
+  FeatureConfigurationPartial defines models for partial feature configurations.
+   Usually, a feature configuration explicates only *selected features* and
+   does not differentiate *unselected features* and features, for which *no decision*
+   has been made yet. Partial configurations explicate all three sets of features.
+   Each feature of the referenced feature diagram must be contained in exactly
+   one of these three sets.
+*/
+grammar FeatureConfigurationPartial extends FeatureConfiguration {
 
-
-grammar FeatureConfigurationPartial extends FeatureDiagram {
-
-  FCCompilationUnit = ("package" package:MCQualifiedName ";")?
-                      (MCImportStatement)*
-                      FeatureConfiguration;
-
-// TODO AB shorten:: featureDiagram:Name@FeatureDiagram, etc.
-  symbol scope FeatureConfiguration =
-    "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram Selection+;
-
-  interface Selection = feature:Name+;
+  /*
+    Reuse start nonterminal of FeatureConfiguration grammar
+  */
+  start FCCompilationUnit;
 
 // TODO AB shorten to  { Name@Feature | "," }*
-  Select implements Selection =
+  Select implements FCElement =
     "select" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
 
-  Unselect implements Selection =
+  Unselect implements FCElement =
     "unselect" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
 
 // TODO AB: Erklärung notwendig. Woher kommt das?
-  Undecided implements Selection =
+  Undecided implements FCElement =
     "undecided" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
 
 }

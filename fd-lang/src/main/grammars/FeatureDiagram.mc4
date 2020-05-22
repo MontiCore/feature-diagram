@@ -50,7 +50,7 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   FeatureConstraint implements FDElement = ConstraintExpression ";" ;
 
   // TODO: This should be Name@Feature, but due to a MontiCore Bug this is currently
-  // not possible (protected method in interface)
+  // not possible (MC Issue: #2520)
   interface FeatureGroup = Name+;
 
   /**
@@ -77,6 +77,7 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   /** 
     Specify a range of features ( e.g., A = [2..3] (B, C, D); )
     selectable at that level (subfeatures do not count)
+    TODO: change to ( Name@Feature || "," )+ if MC-Issue #2521 is fixed.
   */
   CardinalizedGroup implements FeatureGroup =
                                Cardinality "of" "{" ( Name@Feature | "," )+ "}";
@@ -87,8 +88,11 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   */
   interface ConstraintExpression;
 
-  // TODO AB: Ikonsistent zu anderer Grammatik: Entscheiden und dann eine löschen!
-  // TODO AB: ! Inkonsistent zu anderer Grammatik: Entscheiden und dann eine löschen!
+  /**
+   Through this, all nonterminals that implement the Expression interface can be used to
+   model cross-tree constraints. Through extending the language component "CommonExpressions",
+   standard logical expressions (e.g., `&&``, `||`, `=>` are available here by default.
+  */
   Constraint implements ConstraintExpression = Expression;
 
   Requires implements Expression <115>, InfixExpression =
