@@ -128,8 +128,7 @@ feature diagram symbol tables is implemented as well.
 
 ### Context Conditions
 
-| Context Condition    | Error Code | Explanation |
-| implemented in Class |            |    |
+| CoCo defined in class   | Error Code | Explanation |
 | ---      |  ------  |---------|
 | [HasTreeShape][HasTreeShape]                 | 0xFD0001 | Feature diagrams must not contain more than one root feature. |
 | (see above)                                  | 0xFD0002 | Feature diagrams must not contain more than one root feature. |
