@@ -23,7 +23,7 @@
 [tool]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
 
 
-<!-- The following references should pont towards the markdown files, once these exist -->
+<!-- The following references should point towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
 [MCBasicTypes MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/types/MCBasicTypes.mc4
 [FeatureConfiguration MLC]: FeatureConfiguration.md
@@ -126,9 +126,34 @@ Feature groups are instantiated during symbol table creation in the (handwritten
 The symbol table is instantiated by the class [FeatureDiagramSymbolTableCreator][fdstc]. Functionality to load and store 
 feature diagram symbol tables is implemented as well.
 
+### Symboltable
+- (aus CD4A, TODO) De-/Serialization functionality for the symbol table 
+  ([`serialization`][serialization])
+
+### Symbol kinds used by Feature Diagrams (importable):
+- @AB TODO: List of Symbol types + short explanations, zB:
+- A feature diagram (as defined here) does not import any symbols; it defines all features locally.
+- It also doesn't import classes, variables or other symbols.
+
+### Symbol kinds defined by CD4A (exported):
+- @AB TODO: List of Symbol types + short explanations, zB:
+- FD defines its own type of FeatureSymbols.
+- A featureSymbol is defined as:
+  ```
+  class FeatureSymbol {
+      String name;
+      ...
+  }
+  ```
+
+### Symbols exported by CD4A:
+- A feature diagram exports its feature symbols for external reference.
+- The symbols of a feature diagram "F.fd" are stored in "F.fdsym".
+
+
 ### Context Conditions
 
-| Context Condition Class | Error Code | Explanation |
+| CoCo defined in class   | Error Code | Explanation |
 | ---      |  ------  |---------|
 | [HasTreeShape][HasTreeShape]                 | 0xFD0001 | Feature diagrams must not contain more than one root feature. |
 | (see above)                                  | 0xFD0002 | Feature diagrams must not contain more than one root feature. |
@@ -141,7 +166,7 @@ feature diagram symbol tables is implemented as well.
 
 ## Generator
 
-This language component provides a generator that translates feature models to 
+* For minimal use: This language component provides a generator that translates feature models to 
 [FlatZinc][flatzinc] models. FlatZinc, as part of MiniZinc, is a modeling language
 enabling to model constraint satisfaction (and optimization) problems. Different
 constraint solvers support FlatZinc as input format. The generator is located [here][generator].
@@ -158,7 +183,7 @@ and, optionally, additional information (depends on the analysis kinds).
 | ---    | ---      |  ------  |---------|
 | [AllProducts][AllProducts]           | FM m | Set\<FC\> | Returns all valid FCs in m |
 | [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional\<FC\> | Can c be completed to a valid FC of m? If yes, return one example. |
-| [DeadFeatures][DeadFeature]           | FM m | Set\<Feature\> | Set of features that are contained in m, but in no valid FC of m. |
+| [DeadFeatures][DeadFeature]           | FM m | Set\<Feature\> | Set of features that are contained in m, but no valid FC of m uses them. |
 | [FalseOptional][FalseOptional]       | FM m | Set\<Feature\> | Set of features that are optional in m, but are contained in all valid FCs of m. |
 | [IsValid][IsValid]                   | FM m, FC c | Boolean | Is c a valid FC in m? |
 | [IsVoid][IsVoid]                     | FM m | Boolean | Is there a valid FC in m? |

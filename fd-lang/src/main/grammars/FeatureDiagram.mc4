@@ -15,9 +15,9 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
                       FeatureDiagram;
 
   /**
-    A feature diagram has a name and a body with a list of feature diagram 
+    A feature diagram has a name and a body with a list of feature diagram
     elements. It introduces a feature diagram symbol and spans a scope.
-    All symbols of features in this diagram are directly contained in this 
+    All symbols of features in this diagram are directly contained in this
     scope, yielding a flat namespace of feature names.
   */
   symbol scope FeatureDiagram =
@@ -28,33 +28,33 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   /**
     A feature diagram consists of a list of FD element, which are defined by
     this nonterminal. Each must be terminated with a ";".
-    This is an extension point that can be used to add further elements of a 
+    This is an extension point that can be used to add further elements of a
     feature diagram through language extension or language embedding.
   */
   interface FDElement;
-  
-  
+
+
   /**
-    This grammar rule produces FeatureSymbols that are used within other 
-    production of this grammar. However, this rule is never directly used by 
+    This grammar rule produces FeatureSymbols that are used within other
+    production of this grammar. However, this rule is never directly used by
     the parser as it is not connected to the start rule.
   */
   symbol Feature = Name;
 
   /**
-    Each rule of the feature tree has a feature name on the left-hand side and 
+    Each rule of the feature tree has a feature name on the left-hand side and
     a feature group on the right-hand side.
   */
   FeatureTreeRule implements FDElement = Name@Feature "->" FeatureGroup ";";
 
   FeatureConstraint implements FDElement = ConstraintExpression ";" ;
 
-  // TODO: This should be Name@Feature, but due to a MontiCore Bug this is currently 
+  // TODO: This should be Name@Feature, but due to a MontiCore Bug this is currently
   // not possible (protected method in interface)
   interface FeatureGroup = Name+;
-  
+
   /**
-    This producton produces an AST class for the optionality. Through this, 
+    This producton produces an AST class for the optionality. Through this,
     the optionality can be associated with a feature name in the AST.
   */
   Opt= optional:["?"]?;
@@ -82,11 +82,13 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
                                Cardinality "of" "{" ( Name@Feature | "," )+ "}";
 
   /**
-    This is an extension point that can be used via language extension or 
+    This is an extension point that can be used via language extension or
     language embedding to add further kinds of cross-tree constraint expressions
   */
   interface ConstraintExpression;
 
+  // TODO AB: Ikonsistent zu anderer Grammatik: Entscheiden und dann eine löschen!
+  // TODO AB: ! Inkonsistent zu anderer Grammatik: Entscheiden und dann eine löschen!
   Constraint implements ConstraintExpression = Expression;
 
   Requires implements Expression <115>, InfixExpression =
