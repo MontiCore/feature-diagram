@@ -46,11 +46,11 @@ public class ASTFeatureDiagram extends ASTFeatureDiagramTOP{
             .map(Map.Entry::getKey)
             .collect(Collectors.toList());
     if(rootfeatures.size() == 0){
-      Log.error("0xFD0001 Featurediagram" + getName() +
+      Log.error("0xFD003 Featurediagram" + getName() +
               "has no root node.");
     }
     if (rootfeatures.size() > 1) {
-      Log.error("0xFD0001 Featurediagram" + getName() +
+      Log.error("0xFD001 Featurediagram" + getName() +
               "has multiple root nodes.");
     }
   }

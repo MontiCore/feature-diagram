@@ -49,8 +49,7 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
 
   FeatureConstraint implements FDElement = ConstraintExpression ";" ;
 
-  // TODO: This should be Name@Feature, but due to a MontiCore Bug this is currently
-  // not possible (MC Issue: #2520)
+  // TODO: change `Name`to `Name@Feature` after MC Issue #2520 is resolved
   interface FeatureGroup = Name+;
 
   /**

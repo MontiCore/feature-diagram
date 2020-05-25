@@ -30,7 +30,7 @@ public class CDTypeFeatureDiagramTool {
    */
   public static void main(String[] args) {
     if (args.length != 1) {
-      Log.error("0xFD1002 Please specify only one single path to the input model.");
+      Log.error("0xFD200 Please specify only one single path to the input model.");
       return;
     }
     FeatureDiagramTool.run(args[0], new ModelPath());
@@ -90,10 +90,10 @@ public class CDTypeFeatureDiagramTool {
       if (parseResult.isPresent()) {
         return parseResult.get();
       }
-      Log.error("0xFD0011 Error while parsing '" + fileName + "'!");
+      Log.error("0xFD201 Error while parsing '" + fileName + "'!");
     }
     catch (IOException e) {
-      Log.error("0xFD0012 Error while parsing '" + fileName + "'!", e);
+      Log.error("0xFD202 Error while parsing '" + fileName + "'!", e);
     }
     return null;
   }

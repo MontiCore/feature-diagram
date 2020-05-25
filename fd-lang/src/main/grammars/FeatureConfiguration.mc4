@@ -16,7 +16,7 @@ grammar FeatureConfiguration extends FeatureDiagram {
    */
   symbol scope FeatureConfiguration =
     "featureconfig" Name "for" fdName:Name@FeatureDiagram "{"
-      FCElement*;
+      FCElement*
     "}";
 
   /*
@@ -27,8 +27,8 @@ grammar FeatureConfiguration extends FeatureDiagram {
 
   /**
     This language enables to use a list of feature names in the body of a feature configuration.
-    TODO: change to features:(Name@Feature || "," )+ if MC-Issue #2521 is fixed.
+    TODO: change to feature:(Name@Feature || "," )+ if MC-Issue #2521 is fixed.
   */
-  Features implements FCElement = features:( Name || "," )+;
+  Features implements FCElement = feature:( Name || "," )+;
 
 }

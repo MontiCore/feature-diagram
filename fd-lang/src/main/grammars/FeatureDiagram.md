@@ -167,14 +167,14 @@ feature diagram symbol tables is implemented as well.
 
 | CoCo defined in class   | Error Code | Explanation |
 | ---      |  ------  |---------|
-| [HasTreeShape][HasTreeShape]                 | 0xFD0001 | Feature diagrams must not contain more than one root feature. |
-| (see above)                                  | 0xFD0002 | Feature diagrams must not contain more than one root feature. |
-| (see above)                                  | 0xFD0003 | Feature diagrams must contain a root feature. |
-| (see above)                                  | 0xFD0007 | Feature diagram rules must not introduce self loops. | 
-| (see above)                                  | 0xFD0008 | Each feature except the root feature must have a parent feature. | 
-| (see above)                                  | 0xFD0010 | The parent feature does not exist.  |
-| [CTCFeatureNamesExist][CTCFeatureNamesExist] | 0xFD0006 | A cross-tree constraint must operate on features that are available in the current feature model. |
-| [NonUniqueNameInGroup][NonUniqueNameInGroup] | 0xFD0009 | A Feature group must not contain a feature more than once. |
+| [HasTreeShape][HasTreeShape]                 | 0xFD001 | Feature diagrams must not contain more than one root feature. |
+| (see above)                                  | 0xFD002 | Feature diagrams must not contain more than one root feature. |
+| (see above)                                  | 0xFD003 | Feature diagrams must contain a root feature. |
+| (see above)                                  | 0xFD007 | Feature diagram rules must not introduce self loops. | 
+| (see above)                                  | 0xFD008 | Each feature except the root feature must have a parent feature. | 
+| (see above)                                  | 0xFD010 | The parent feature does not exist.  |
+| [CTCFeatureNamesExist][CTCFeatureNamesExist] | 0xFD006 | A cross-tree constraint must operate on features that are available in the current feature model. |
+| [NonUniqueNameInGroup][NonUniqueNameInGroup] | 0xFD009 | A Feature group must not contain a feature more than once. |
 
 ## Generator
 

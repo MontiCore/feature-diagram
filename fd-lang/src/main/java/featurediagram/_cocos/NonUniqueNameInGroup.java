@@ -16,7 +16,7 @@ public class NonUniqueNameInGroup implements FeatureDiagramASTFeatureGroupCoCo {
     for (FeatureSymbol f : node.getFeatures()) {
       if (featureNames.contains(f.getName())) {
         Log.error(
-            "0xFD0009 A Feature group must not contain a feature more than once! '" + f.getName()
+            "0xFD009 A Feature group must not contain a feature more than once! '" + f.getName()
                 + "' is contained in a group multiple times.",
             node.get_SourcePositionStart());
       }
