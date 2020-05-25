@@ -21,7 +21,8 @@
 
 [generator]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses
 [tool]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
-
+[serialization]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/java/featurediagram/_symboltable/serialization
+[stc]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/java/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
 
 <!-- The following references should point towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
@@ -127,28 +128,39 @@ The symbol table is instantiated by the class [FeatureDiagramSymbolTableCreator]
 feature diagram symbol tables is implemented as well.
 
 ### Symboltable
-- (aus CD4A, TODO) De-/Serialization functionality for the symbol table 
-  ([`serialization`][serialization])
+- De-/Serialization functionality for the symbol table ([`serialization`][serialization])
+- [`FeatureDiagramSymbolTableCreator`][stc] handles the creation and linking of the symbols
 
 ### Symbol kinds used by Feature Diagrams (importable):
-- @AB TODO: List of Symbol types + short explanations, zB:
-- A feature diagram (as defined here) does not import any symbols; it defines all features locally.
+- A feature model may import feature symbols of another feature diagram. Through 
+  this, all (transitive) subfeatures are imported as well.
+- A feature diagram (as defined here) does not import any symbols from other 
+  languages; it defines all features locally.
 - It also doesn't import classes, variables or other symbols.
 
-### Symbol kinds defined by CD4A (exported):
-- @AB TODO: List of Symbol types + short explanations, zB:
-- FD defines its own type of FeatureSymbols.
-- A featureSymbol is defined as:
+
+### Symbol kinds defined by Feature Diagrams (exported):
+- FD defines its own type of FeatureDiagramSymbols and FeatureSymbols.
+- A FeatureSymbol is defined as:
   ```
   class FeatureSymbol {
       String name;
-      ...
+      List<FeatureGroup> children;
+  }
+  ```
+  - A FeatureDiagramSymbol is defined as:
+  ```
+  class FeatureDiagramSymbol {
+      String name;
+      FeatureSymbol rootFeature;
+      List<FeatureSymbol> features;
   }
   ```
 
-### Symbols exported by CD4A:
-- A feature diagram exports its feature symbols for external reference.
-- The symbols of a feature diagram "F.fd" are stored in "F.fdsym".
+### Symbols exported by Feature Diagrams:
+- A feature diagram exports the feature diagram symbol and its feature symbols
+  for external reference.
+- The artifact scope of a feature diagram "F.fd" is stored in "F.fdsym".
 
 
 ### Context Conditions
