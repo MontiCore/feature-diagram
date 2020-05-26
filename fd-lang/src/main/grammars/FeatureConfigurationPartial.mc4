@@ -1,22 +1,28 @@
 /* (c) https://github.com/MontiCore/monticore */
-grammar FeatureConfigurationPartial extends FeatureDiagram {
 
-  FCCompilationUnit = ("package" package:MCQualifiedName ";")?
-                      (MCImportStatement)*
-                      FeatureConfiguration;
+/**
+  FeatureConfigurationPartial defines models for partial feature configurations.
+   Usually, a feature configuration explicates only *selected features* and
+   does not differentiate *unselected features* and features, for which *no decision*
+   has been made yet. Partial configurations explicate all three sets of features.
+   Each feature of the referenced feature diagram must be contained in exactly
+   one of these three sets.
+*/
+grammar FeatureConfigurationPartial extends FeatureConfiguration {
 
-  symbol scope FeatureConfiguration =
-    "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram Selection+;
+  /*
+    Reuse start nonterminal of FeatureConfiguration grammar
+  */
+  start FCCompilationUnit;
 
-  interface Selection = feature:Name+;
+  // TODO: change to feature:(Name@Feature || "," )+ if MC-Issue #2521 is fixed.
+  Select implements FCElement = "select" "{" feature:( Name || "," )+ "}" ;
 
-  Select implements Selection =
-    "select" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
+  // TODO: change to feature:(Name@Feature || "," )+ if MC-Issue #2521 is fixed.
+  Unselect implements FCElement = "unselect" "{" feature:( Name || "," )+ "}" ;
 
-  Unselect implements Selection =
-    "unselect" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
-
-  Undecided implements Selection =
-    "undecided" "{" feature:Name@Feature ( "," feature:Name@Feature )* "}" ;
+  // TODO: change to feature:(Name@Feature || "," )+ if MC-Issue #2521 is fixed.
+  // TODO AB: Erklärung notwendig. Woher kommt das?
+  Undecided implements FCElement = "undecided" "{" feature:( Name || "," )+ "}" ;
 
 }

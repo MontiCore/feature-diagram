@@ -19,7 +19,7 @@ public class CTCFeatureNameExists implements FeatureDiagramASTFeatureDiagramCoCo
   node.accept(this);
     ctcnames.forEach((name, pos)-> {
       if(!node.getSpannedScope().resolveFeature(name).isPresent()){
-        Log.error("0xFD0006 The cross-tree constraint on " + name + " must operate on features that are available in the current feature model.", pos);
+        Log.error("0xFD006 The cross-tree constraint on " + name + " must operate on features that are available in the current feature model.", pos);
       }
     });
   }

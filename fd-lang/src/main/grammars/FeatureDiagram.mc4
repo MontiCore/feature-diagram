@@ -8,12 +8,18 @@
 
 grammar FeatureDiagram extends de.monticore.Cardinality,
                                de.monticore.types.MCBasicTypes,
-                               de.monticore.expressions.CommonExpressions{
+                               de.monticore.expressions.CommonExpressions {
 
   FDCompilationUnit = ("package" package:MCQualifiedName ";")?
                       MCImportStatement*
                       FeatureDiagram;
 
+  /**
+    A feature diagram has a name and a body with a list of feature diagram
+    elements. It introduces a feature diagram symbol and spans a scope.
+    All symbols of features in this diagram are directly contained in this
+    scope, yielding a flat namespace of feature names.
+  */
   symbol scope FeatureDiagram =
     "featurediagram" Name "{"
       FDElement*
@@ -21,19 +27,35 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
     
   /**
     A feature diagram consists of a list of FD element, which are defined by
-    this nonterminal. Each must be terminated with a ";"
+    this nonterminal. Each must be terminated with a ";".
+    This is an extension point that can be used to add further elements of a
+    feature diagram through language extension or language embedding.
   */
   interface FDElement;
 
+
+  /**
+    This grammar rule produces FeatureSymbols that are used within other
+    production of this grammar. However, this rule is never directly used by
+    the parser as it is not connected to the start rule.
+  */
   symbol Feature = Name;
 
+  /**
+    Each rule of the feature tree has a feature name on the left-hand side and
+    a feature group on the right-hand side.
+  */
   FeatureTreeRule implements FDElement = Name@Feature "->" FeatureGroup ";";
 
   FeatureConstraint implements FDElement = ConstraintExpression ";" ;
 
-  // This should be Name@Feature, but due to a MontiCore Bug this is not possible (protected method in interface)
+  // TODO: change `Name`to `Name@Feature` after MC Issue #2520 is resolved
   interface FeatureGroup = Name+;
 
+  /**
+    This producton produces an AST class for the optionality. Through this,
+    the optionality can be associated with a feature name in the AST.
+  */
   Opt= optional:["?"]?;
 
   /**
@@ -54,21 +76,32 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   /** 
     Specify a range of features ( e.g., A = [2..3] (B, C, D); )
     selectable at that level (subfeatures do not count)
+    TODO: change to ( Name@Feature || "," )+ if MC-Issue #2521 is fixed.
   */
   CardinalizedGroup implements FeatureGroup =
                                Cardinality "of" "{" ( Name@Feature | "," )+ "}";
 
-
+  /**
+    This is an extension point that can be used via language extension or
+    language embedding to add further kinds of cross-tree constraint expressions
+  */
   interface ConstraintExpression;
 
+  /**
+   Through this, all nonterminals that implement the Expression interface can be used to
+   model cross-tree constraints. Through extending the language component "CommonExpressions",
+   standard logical expressions (e.g., `&&``, `||`, `=>` are available here by default.
+  */
   Constraint implements ConstraintExpression = Expression;
 
-  Requires implements Expression<115>, InfixExpression =
+  Requires implements Expression <115>, InfixExpression =
     left:Expression operator:"requires" right:Expression;
 
-  Excludes implements Expression<116>, InfixExpression =
+  Excludes implements Expression <116>, InfixExpression =
     left:Expression operator:"excludes" right:Expression;
 
+  Implies implements Expression <60>, InfixExpression =
+    left:Expression operator:"=>" right:Expression;
 
   symbolrule FeatureDiagram =
                    rootFeature:featurediagram._symboltable.FeatureSymbol
@@ -82,8 +115,7 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
 
   /**
     Feature Symbols carry their names (already there),
-    the optional flag (TODO: warum dieses? Und was bedeutet es?)
-    and the list of subfeatures (TODO: reicht das?)
+    and the list of subfeatures (TODO: ! reicht das?)
   */
   symbolrule Feature =
                    children:featurediagram._symboltable.FeatureGroup*

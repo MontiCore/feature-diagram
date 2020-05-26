@@ -1,4 +1,7 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
+
+<!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
+
 [Readme]: ../../../../README.md
 [Grammar]: FeatureConfiguration.mc4
 [fdstc]: ../java/featureconfiguration/_symboltable/FeatureConfigurationSymbolTableCreator.java

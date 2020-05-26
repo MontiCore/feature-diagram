@@ -38,6 +38,7 @@ public class FeatureDiagramCoCoTest {
     String dir = "src/test/resources/fdvalid/";
     FeatureDiagramCoCos.checkAll(readFile(dir + "BasicElements.fd"));
     FeatureDiagramCoCos.checkAll(readFile(dir + "Car.fd"));
+    FeatureDiagramCoCos.checkAll(readFile(dir + "CarNavigation.fd"));
     FeatureDiagramCoCos.checkAll(readFile(dir + "GraphLibrary.fd"));
     FeatureDiagramCoCos.checkAll(readFile(dir + "Phone.fd"));
     assertEquals(0, Log.getErrorCount());
@@ -45,32 +46,32 @@ public class FeatureDiagramCoCoTest {
 
   @Test
   public void testCTCFeatureDoesNotExist() throws IOException {
-    testCoCo("CTCFeatureDoesNotExist.fd", "0xFD0006", "0xFD0006");
+    testCoCo("CTCFeatureDoesNotExist.fd", "0xFD006", "0xFD006");
   }
 
   @Test
   public void testFeatureCycle() throws IOException {
-    testCoCo("FeatureCycle.fd", "0xFD0008");
+    testCoCo("FeatureCycle.fd", "0xFD008");
   }
 
   @Test
   public void testNonUniqueNameInGroup() throws IOException {
-    testCoCo("NonUniqueNameInGroup.fd", "0xFD0009");
+    testCoCo("NonUniqueNameInGroup.fd", "0xFD009");
   }
 
   @Test
   public void testSelfLoopInGroup() throws IOException {
-    testCoCo("SelfLoopInGroup.fd", "0xFD0003", "0xFD0008");
+    testCoCo("SelfLoopInGroup.fd", "0xFD007", "0xFD008");
   }
 
   @Test
   public void testTwoParents() throws IOException {
-    testCoCo("TwoParents.fd", "0xFD0008");
+    testCoCo("TwoParents.fd", "0xFD008");
   }
 
   @Test
   public void testTwoRoots() throws IOException {
-    testCoCo("TwoRoots.fd", "0xFD0001", "0xFD0007");
+    testCoCo("TwoRoots.fd", "0xFD001", "0xFD004");
   }
 
   protected void testCoCo(String modelName, String... errorCode) throws IOException {

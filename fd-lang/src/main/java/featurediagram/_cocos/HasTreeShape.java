@@ -24,7 +24,7 @@ public class HasTreeShape
 
   protected void checkParents(ASTFeatureDiagram node) {
     if (!node.isPresentSymbol() || null == node.getSymbol()) {
-      Log.error("0xF0004 Feature diagram symbol table has to be created before cocos are checked!",
+      Log.error("0xFD005 Feature diagram symbol table has to be created before cocos are checked!",
               node.get_SourcePositionStart());
     }
 
@@ -42,7 +42,7 @@ public class HasTreeShape
 
 
     for (String feature : features) {
-      Log.error("0xFD0007 Each feature except the root feature must have a parent feature! '"
+      Log.error("0xFD004 Each feature except the root feature must have a parent feature! '"
                       + feature + "' does not have a parent feature",
               node.get_SourcePositionStart());
     }
@@ -53,7 +53,7 @@ public class HasTreeShape
     String lhs = node.getName();
     for (FeatureSymbol f : node.getFeatureGroup().getFeatures()) {
       if (f.getName().equals(lhs)) {
-        Log.error("0xFD0003 Feature diagram rules must not introduce self loops!",
+        Log.error("0xFD007 Feature diagram rules must not introduce self loops!",
                 node.get_SourcePositionStart());
       }
     }
@@ -88,13 +88,13 @@ public class HasTreeShape
           //get the parent name that was found
           String parentName2 = parents.get(featureName);
           if (!parentName.equals(parentName2)) {
-            Log.error("0xFD0008 A feature must not have more than one parent feature! '"
+            Log.error("0xFD008 A feature must not have more than one parent feature! '"
                             + featureName + "' has parents '" + parentName + "' and '" + parentName2 + "'",
                     node.get_SourcePositionStart());
           }
         } else {
           if (node.getSpannedScope().resolveFeatureMany(parentName).isEmpty()) {
-            Log.error("0xFD0010 The feature '" + featureName + "' has the unknown parent feature '"
+            Log.error("0xFD010 The feature '" + featureName + "' has the unknown parent feature '"
                             + parentName + "'",
                     node.get_SourcePositionStart());
           }
