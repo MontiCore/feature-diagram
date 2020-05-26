@@ -15,7 +15,7 @@
 
     <modules>
         <module>fd-lang</module>
-        <module>fd-analysis</module>
+<!--        <module>fd-analysis</module>--> <!-- TODO: An Language anpassen -->
     </modules>
 
     <properties>

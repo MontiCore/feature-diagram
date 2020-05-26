@@ -66,16 +66,53 @@ feature group with a parent feature (left-hand side) followed by an arrow
 The root of the feature tree is detected automatically. 
 Further, a feature model may define cross-tree constraints
 and use Java-like expressions to formulate these.
+The example below depicts the feature model `CarNavigation` with the root
+feature also named `CarNavigation`. This feature has three mandatory
+subfeatures `Display`, `GPS`, and `Memory`. Further, it
+has the optional subfeature `PreinstalledMaps`, indicated by the question 
+mark in the and group. Besides these four subfeatures, `CarNavigation` has
+wo further subfeatures `VoiceControl` and `TouchControl`that are in an 
+xor group, which means that each configuration must contain exactly one of 
+these two features.
+Groups can have arbitrary members. For instance, `Memory` has three
+subfeatures `Small`, `Medium`, and `Large` that are in a common xor group.
+The `Display` of the navigation must have either a `SmallScreen` behin the 
+steering wheel or a `LargeScreen` (e.g., in the center of the dashobard),
+or both. This is realized as an or group in the feature model. 
+Further, the navigation system can have preinstalled maps. If maps are preinstalled,
+at least one and at most three region maps can be selected. 
+The available regions are `Europe`, `NorthAmerica`, `SouthAmerica`, `Asia`, and 
+`Africa`.
+
+The feature model further continas three cross-tree constraints. Selecting 
+`TouchControl` in a configuration requires also to select `LargeScreen` for
+this configuration. On the other hand, selecting `SmallScreen` in a configuration
+prohibits selecting `TouchControl` in the same configuration as well. 
+Apart from these constraints between two features, feature modls may contain
+more complex constraints that involve more than two features. In the example 
+feature model below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`, 
+and `Asia` requires to select either a `Large` or a `Medium` memory.
+ 
 ```
 /* (c) https://github.com/MontiCore/monticore */
-featurediagram Phone {
-  Phone -> Memory & OS & Camera? & Screen;
-  Memory -> Internal & External?;
-  Internal -> [1..2] of {Small, Medium, Large};
-  OS -> iOS ^ Android;
-  Screen -> Flexible | FullHD;
+featurediagram CarNavigation {
 
-  Camera => (iOS && External) || Android;
+  CarNavigation -> Display & GPS & PreinstalledMaps? & Memory ; //and group
+
+  CarNavigation -> VoiceControl ^ TouchControl; //xor group
+
+  Memory -> Small ^ Medium ^ Large ;
+
+  Display -> SmallScreen | LargeScreen; //or group
+
+  PreinstalledMaps -> [1..3] of {Europe, NorthAmerica, SouthAmerica, Asia, Africa}; //cardinality group
+
+  TouchControl requires LargeScreen ;
+
+  SmallScreen  excludes TouchControl ;
+
+  (Europe && NorthAmerica && Asia) => (Large || Medium) ;
+
 }
 ```
 

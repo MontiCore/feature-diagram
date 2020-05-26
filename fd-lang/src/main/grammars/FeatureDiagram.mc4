@@ -100,6 +100,8 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   Excludes implements Expression <116>, InfixExpression =
     left:Expression operator:"excludes" right:Expression;
 
+  Implies implements Expression <60>, InfixExpression =
+    left:Expression operator:"=>" right:Expression;
 
   symbolrule FeatureDiagram =
                    rootFeature:featurediagram._symboltable.FeatureSymbol

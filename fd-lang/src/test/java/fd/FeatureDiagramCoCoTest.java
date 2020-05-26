@@ -38,6 +38,7 @@ public class FeatureDiagramCoCoTest {
     String dir = "src/test/resources/fdvalid/";
     FeatureDiagramCoCos.checkAll(readFile(dir + "BasicElements.fd"));
     FeatureDiagramCoCos.checkAll(readFile(dir + "Car.fd"));
+    FeatureDiagramCoCos.checkAll(readFile(dir + "CarNavigation.fd"));
     FeatureDiagramCoCos.checkAll(readFile(dir + "GraphLibrary.fd"));
     FeatureDiagramCoCos.checkAll(readFile(dir + "Phone.fd"));
     assertEquals(0, Log.getErrorCount());

@@ -19,8 +19,8 @@ public class FeatureDiagramParserTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    //        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    LogStub.init();
+            Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+//    LogStub.init();
   }
 
   protected static void assertPresent(Optional<?> opt) {
@@ -76,6 +76,7 @@ public class FeatureDiagramParserTest {
     assertPresent(parser.parse("src/test/resources/fdvalid/GraphLibrary.fd"));
     assertPresent(parser.parse("src/test/resources/fdvalid/Phone.fd"));
     assertPresent(parser.parse("src/test/resources/fdvalid/PhoneComplex.fd"));
+    assertPresent(parser.parse("src/test/resources/fdvalid/CarNavigation.fd"));
   }
 
 }
