@@ -2,6 +2,7 @@
 package featurediagram._symboltable;
 
 import de.se_rwth.commons.logging.Log;
+import featurediagram._visitor.FeatureDiagramVisitor;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -92,6 +93,10 @@ public abstract class FeatureGroup {
 
   public void setMax(int max) {
     this.max = max;
+  }
+
+  public void accept(FeatureDiagramVisitor visitor){
+    visitor.handle(this);
   }
 
 }

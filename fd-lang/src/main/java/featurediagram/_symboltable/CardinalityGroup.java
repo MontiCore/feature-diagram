@@ -5,9 +5,9 @@ import featurediagram._visitor.FeatureDiagramVisitor;
 
 import java.util.List;
 
-public class XOrGroup extends FeatureGroup{
-  public XOrGroup(FeatureSymbol parent, List<FeatureSymbol> members) {
-    super(parent, members, 1, 1);
+public class CardinalityGroup extends FeatureGroup{
+  public CardinalityGroup(FeatureSymbol parent, List<FeatureSymbol> members, int min, int max) {
+    super(parent, members, min, max);
   }
 
   public void accept(FeatureDiagramVisitor visitor){

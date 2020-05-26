@@ -2,14 +2,12 @@
 package featurediagram._symboltable.serialization;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
-import featurediagram._symboltable.AndGroup;
-import featurediagram._symboltable.CardinalitiyGroup;
-import featurediagram._symboltable.FeatureGroup;
-import featurediagram._symboltable.FeatureSymbol;
+import featurediagram._symboltable.*;
+import featurediagram._visitor.FeatureDiagramVisitor;
 
 import java.util.List;
 
-public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTablePrinterTOP {
+public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTablePrinterTOP implements FeatureDiagramVisitor {
 
   public FeatureDiagramSymbolTablePrinter() {
     super();
@@ -28,16 +26,7 @@ public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTableP
     printer.beginArray("children");
     for (FeatureGroup group : children) {
       printer.beginObject();
-      printer.member("kind", group.getClass().getName());
-      if (group instanceof CardinalitiyGroup) {
-        printer.member("min", group.getMin());
-        printer.member("max", group.getMax());
-      }
-      if (group instanceof AndGroup){
-        printer.beginArray("optionals");
-        ((AndGroup) group).getOptionalFeatures().forEach(b->printer.value(b));
-        printer.endArray();
-      }
+      group.accept(this);
       printer.beginArray("members");
       for (FeatureSymbol member : group.getMembers()) {
         printer.value(member.getName());
@@ -48,6 +37,24 @@ public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTableP
     printer.endArray();
   }
 
+  public void visit(AndGroup group){
+    printer.member("kind", "AndGroup");
+    printer.beginArray("optionals");
+    group.getOptionalFeatures().forEach(feature -> printer.value(feature));
+    printer.endArray();
+  }
 
+  public void visit(OrGroup group){
+    printer.member("kind", "OrGroup");
+  }
 
+  public void visit(XOrGroup group){
+    printer.member("kind", "XOrGroup");
+  }
+
+  public void visit(CardinalityGroup group){
+    printer.member("kind", "CardinalityGroup");
+    printer.member("min", group.getMin());
+    printer.member("max", group.getMax());
+  }
 }

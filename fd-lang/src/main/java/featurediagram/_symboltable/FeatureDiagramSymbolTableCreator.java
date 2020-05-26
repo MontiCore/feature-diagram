@@ -121,7 +121,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
       FeatureSymbol fs = getResolveOrCreateFeatureSymbol(child);
       children.add(fs);
     }
-    putFeatureGroup(new CardinalitiyGroup(parent, children, node.getCardinality().getLowerBound(), node.getCardinality().getUpperBound()));
+    putFeatureGroup(new CardinalityGroup(parent, children, node.getCardinality().getLowerBound(), node.getCardinality().getUpperBound()));
   }
 
   protected void putFeatureGroup(FeatureGroup group) {

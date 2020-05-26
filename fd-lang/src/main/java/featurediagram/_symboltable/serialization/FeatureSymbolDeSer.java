@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package featurediagram._symboltable.serialization;
 
-import de.monticore.symboltable.serialization.json.JsonBoolean;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import featurediagram.FeatureDiagramMill;
@@ -28,20 +27,20 @@ public class FeatureSymbolDeSer extends FeatureSymbolDeSerTOP {
     FeatureSymbol parent = enclosingScope.resolveFeature(parentFeatureName).orElse(null);
     List<FeatureSymbol> members = deserializeMembers(o, enclosingScope);
     String kind = o.getStringMember("kind");
-    if(kind.equals(AndGroup.class.getName())){
+    if(kind.equals("AndGroup")){
         return new AndGroup(parent,members,
                 o.getArrayMember("optionals").stream().map(jsonElement ->
                   jsonElement.getAsJsonBoolean().getValue()
                 ).collect(Collectors.toList()));
     }
-    if(kind.equals(OrGroup.class.getName())){
+    if(kind.equals("OrGroup")){
         return new OrGroup(parent, members);
     }
-    if(kind.equals(XOrGroup.class.getName())){
+    if(kind.equals("XOrGroup")){
       return new XOrGroup(parent, members);
     }
-    if(kind.equals(CardinalitiyGroup.class.getName())){
-      return new CardinalitiyGroup(parent, members, o.getIntegerMember("min"), o.getIntegerMember("max"));
+    if(kind.equals("CardinalityGroup")){
+      return new CardinalityGroup(parent, members, o.getIntegerMember("min"), o.getIntegerMember("max"));
     }
     return null;
   }

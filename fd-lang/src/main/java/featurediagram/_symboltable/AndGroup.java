@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package featurediagram._symboltable;
 
+import featurediagram._visitor.FeatureDiagramVisitor;
+
 import java.util.List;
 
 public class AndGroup extends FeatureGroup{
@@ -14,5 +16,9 @@ public class AndGroup extends FeatureGroup{
 
   public List<Boolean> getOptionalFeatures() {
     return optionalFeatures;
+  }
+
+  public void accept(FeatureDiagramVisitor visitor){
+    visitor.handle(this);
   }
 }
