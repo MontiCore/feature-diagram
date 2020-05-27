@@ -84,7 +84,7 @@ at least one and at most three region maps can be selected.
 The available regions are `Europe`, `NorthAmerica`, `SouthAmerica`, `Asia`, and 
 `Africa`.
 
-The feature model further continas three cross-tree constraints. Selecting 
+The feature model further contains three cross-tree constraints. Selecting 
 `TouchControl` in a configuration requires also to select `LargeScreen` for
 this configuration. On the other hand, selecting `SmallScreen` in a configuration
 prohibits selecting `TouchControl` in the same configuration as well. 
