@@ -88,7 +88,7 @@ The feature model further contains three cross-tree constraints. Selecting
 `TouchControl` in a configuration requires also to select `LargeScreen` for
 this configuration. On the other hand, selecting `SmallScreen` in a configuration
 prohibits selecting `TouchControl` in the same configuration as well. 
-Apart from these constraints between two features, feature modls may contain
+Apart from these constraints between two features, feature models may contain
 more complex constraints that involve more than two features. In the example 
 feature model below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`, 
 and `Asia` requires to select either a `Large` or a `Medium` memory.
