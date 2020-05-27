@@ -71,7 +71,7 @@ feature also named `CarNavigation`. This feature has three mandatory
 subfeatures `Display`, `GPS`, and `Memory`. Further, it
 has the optional subfeature `PreinstalledMaps`, indicated by the question 
 mark in the and group. Besides these four subfeatures, `CarNavigation` has
-wo further subfeatures `VoiceControl` and `TouchControl`that are in an 
+two further subfeatures `VoiceControl` and `TouchControl`that are in an 
 xor group, which means that each configuration must contain exactly one of 
 these two features.
 Groups can have arbitrary members. For instance, `Memory` has three
