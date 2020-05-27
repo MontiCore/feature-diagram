@@ -1,9 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import featurediagram._ast.ASTConstraintExpression;
+import featurediagram._ast.ASTConstraint;
 import featurediagram._symboltable.FeatureDiagramSymbol;
+import featurediagram._symboltable.FeatureSymbol;
 import tool.analyses.Analysis;
 import tool.solver.ISolver;
 import tool.solver.choco.ChocoSolver;
@@ -17,12 +17,13 @@ import tool.util.FeatureNameCollector;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FeatureModelAnalysisTool {
 
   private FeatureDiagramSymbol featureSymbol;
 
-  private List<ASTConstraintExpression> expressions = new ArrayList<>();
+  private List<ASTConstraint> expressions = new ArrayList<>();
 
   private List<Analysis> analyses = new ArrayList<>();
 
@@ -35,7 +36,7 @@ public class FeatureModelAnalysisTool {
     this.solver = solver;
     trafos.add(new BasicTrafo());
     trafos.add(new RootFeatureSelected());
-    trafos.add(new ComplexConstraint2FZN(expressions));
+    trafos.add(new ComplexConstraint2FZN());
   }
 
   public FeatureModelAnalysisTool(FeatureDiagramSymbol featureSymbol) {
@@ -47,11 +48,11 @@ public class FeatureModelAnalysisTool {
     trafos.add(trafo);
   }
 
-  public void addComplexConstraint(ASTConstraintExpression expression) {
+  public void addComplexConstraint(ASTConstraint expression) {
     expressions.add(expression);
   }
 
-  public void addAllComplexConstraints(Collection<ASTConstraintExpression> expressions) {
+  public void addAllComplexConstraints(Collection<ASTConstraint> expressions) {
     this.expressions.addAll(expressions);
   }
 
@@ -82,8 +83,6 @@ public class FeatureModelAnalysisTool {
   }
 
   private List<String> getAllFeatureNames() {
-    FeatureNameCollector namesCollector = new FeatureNameCollector();
-    featureSymbol.accept(namesCollector);
-    return namesCollector.getNames();
+    return featureSymbol.getAllFeatures().stream().map(FeatureSymbol::getName).collect(Collectors.toList());
   }
 }

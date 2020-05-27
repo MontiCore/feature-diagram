@@ -1,15 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos;
 
-import complexconstraint._ast.ASTExcludes;
-import complexconstraint._ast.ASTRequires;
-import complexconstraintfeaturediagram._ast.ASTConstraint;
-import complexconstraintfeaturediagram._visitor.ComplexConstraintFeatureDiagramVisitor;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import featurediagram._ast.ASTConstraintExpression;
+import featurediagram._ast.ASTConstraint;
+import featurediagram._ast.ASTExcludes;
+import featurediagram._ast.ASTRequires;
 import featurediagram._symboltable.FeatureDiagramSymbol;
+import featurediagram._visitor.FeatureDiagramVisitor;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
 import tool.transform.flatzinc.Variable;
@@ -23,15 +22,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ComplexConstraint2FZN
-        implements ComplexConstraintFeatureDiagramVisitor, FeatureModel2FlatZincModelTrafo {
+        implements FeatureModel2FlatZincModelTrafo, FeatureDiagramVisitor {
 
   private List<Constraint> fznConstraints = new ArrayList<>();
 
   private Map<String, Variable> variables = new HashMap<>();
 
   private Map<String, Variable> otherVariables;
-
-  private List<ASTConstraintExpression> constraints;
 
   private List<String> usedNames;
 
@@ -42,10 +39,6 @@ public class ComplexConstraint2FZN
   private int i = 1;
 
   private FeatureDiagramSymbol featureModel;
-
-  public ComplexConstraint2FZN(List<ASTConstraintExpression> constraints) {
-    this.constraints = constraints;
-  }
 
   public List<Variable> getVariables() {
     return new ArrayList<>(variables.values());
@@ -58,18 +51,9 @@ public class ComplexConstraint2FZN
     otherVariables = det.getVariables().stream()
             .collect(Collectors.toMap(Variable::getName, Function.identity()));
     NameCalculator calculator = new NameCalculator();
-    constraints.forEach(astExpression -> {
-      astExpression.accept(calculator);
-    });
+    featureModel.getAstNode().accept(calculator);
     names = calculator.getNames();
-    constraints.forEach(astCommonExpressionsNode -> astCommonExpressionsNode.accept(this));
-    constraints.forEach(constraint -> {
-      if (constraint instanceof ASTConstraint) {
-        fznConstraints.add(new Constraint("bool_eq", "true", names.get(((ASTConstraint)constraint).getExpression())));
-      } else {
-        fznConstraints.add(new Constraint("bool_eq", "true", names.get(constraint)));
-      }
-    });
+    featureModel.getAstNode().accept(this);
   }
 
   @Override
@@ -98,6 +82,11 @@ public class ComplexConstraint2FZN
   @Override
   public void endVisit(ASTNode node) {
 
+  }
+
+  @Override
+  public void endVisit(ASTConstraint node) {
+    fznConstraints.add(new Constraint("bool_eq", "true", names.get(node.getExpression())));
   }
 
   @Override
@@ -238,6 +227,7 @@ public class ComplexConstraint2FZN
     Variable helpervariable = new Variable();
     helpervariable.setType(Variable.Type.BOOL);
     helpervariable.setName(helperName);
+    helpervariable.setAnnotation("var_is_introduced");
     variables.put(helperName, helpervariable);
     String type = getTypeFromName(node.getTrueExpression());
     fznConstraints.add(new Constraint("bool_not", names.get(node.getCondition()), helperName));
@@ -255,6 +245,7 @@ public class ComplexConstraint2FZN
     Variable helpervariable = new Variable();
     helpervariable.setType(Variable.Type.BOOL);
     helpervariable.setName(helperName);
+    helpervariable.setAnnotation("var_is_introduced");
     variables.put(helperName, helpervariable);
     fznConstraints.add(new Constraint("bool_not", names.get(node.getLeft()), helperName));
     fznConstraints.add(new Constraint("bool_or", helperName, names.get(node.getRight()), name));
@@ -267,6 +258,7 @@ public class ComplexConstraint2FZN
     Variable helpervariable = new Variable();
     helpervariable.setType(Variable.Type.BOOL);
     helpervariable.setName(helperName);
+    helpervariable.setAnnotation("var_is_introduced");
     variables.put(helperName, helpervariable);
     fznConstraints.add(new Constraint("bool_not", name, helperName));
     fznConstraints.add(
@@ -321,11 +313,12 @@ public class ComplexConstraint2FZN
     Variable variable = new Variable();
     variable.setType(type);
     variable.setName(name);
+    variable.setAnnotation("var_is_introduced");
     variables.put(name, variable);
     return name;
   }
 
-  private class NameCalculator implements ComplexConstraintFeatureDiagramVisitor {
+  private class NameCalculator implements FeatureDiagramVisitor {
 
     private int i = 1;
 

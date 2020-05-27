@@ -2,22 +2,31 @@
 package tool.util;
 
 import featureconfiguration._ast.ASTFeatureConfiguration;
+import featureconfiguration._ast.ASTFeatures;
+import featureconfiguration._visitor.FeatureConfigurationVisitor;
 import featurediagram._symboltable.FeatureDiagramSymbol;
+import featurediagram._visitor.FeatureDiagramVisitor;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CompleteConfigToPartialConfig {
+public class CompleteConfigToPartialConfig implements FeatureConfigurationVisitor {
+
+  private Map<String, Boolean> config = new HashMap<>();
 
   public static Map<String, Boolean> getConfiguration(ASTFeatureConfiguration astConfiguration,
       FeatureDiagramSymbol featureDiagram, boolean notEqualsNull) {
-    Map<String, Boolean> configuration = new HashMap<>();
+    CompleteConfigToPartialConfig visitor = new CompleteConfigToPartialConfig();
     featureDiagram.getAllFeatures().stream().
-        forEach(featureSymbol -> configuration
-            .put(featureSymbol.getName(), notEqualsNull ? null : Boolean.FALSE));
-    astConfiguration.getSelectedFeatureList().stream().
-        forEach(feature -> configuration.replace(feature, Boolean.TRUE));
-    return configuration;
+            forEach(featureSymbol -> visitor.config
+                    .put(featureSymbol.getName(), notEqualsNull ? null : Boolean.FALSE));
+    astConfiguration.accept(visitor);
+    return visitor.config;
+  }
+
+  public void visit(ASTFeatures features){
+    features.streamFeatures().forEach(feature ->
+      config.replace(feature, Boolean.TRUE));
   }
 
 }

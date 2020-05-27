@@ -12,6 +12,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -29,7 +31,7 @@ public class FeatureDiagramSymbolTableTest {
   }
 
   protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
-      throws IOException {
+          throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
     FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
@@ -39,8 +41,8 @@ public class FeatureDiagramSymbolTableTest {
   }
 
   protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile)
-      throws IOException {
-    return setupSymbolTable(modelFile, new ModelPath());
+          throws IOException {
+    return setupSymbolTable(modelFile, new ModelPath(Paths.get("src", "test", "resources")));
   }
 
   @Test
@@ -68,4 +70,13 @@ public class FeatureDiagramSymbolTableTest {
     assertFalse(fdScope.resolveFeature("NotAFeature").isPresent());
   }
 
+  @Test
+  public void testImport() throws IOException {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable("src/test/resources/fdvalid/Imports.fd");
+    Optional<FeatureSymbol> featureSymbolOpt = featureDiagramArtifactScope.resolveFeature("C");
+    assertTrue(featureSymbolOpt.isPresent());
+    FeatureSymbol featureSymbol = featureSymbolOpt.get();
+    assertEquals("fdvalid.BasicElements.C", featureSymbol.getFullName());
+    System.out.println(featureSymbol.getChildrenList().toString());
+  }
 }
