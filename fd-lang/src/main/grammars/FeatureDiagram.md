@@ -230,7 +230,7 @@ and, optionally, additional information (depends on the analysis kinds).
 
 | Analysis Class | Input | Result | Explanation |
 | ---    | ---      |  ------  |---------|
-| [AllProducts][AllProducts]           | FM m | Set\<FC\> | Returns all valid FCs in m |
+| [AllProducts][AllProducts]           | FM m | Set\<FC\> | Returns all valid FCs in m. **Warning: The result set can be very large and the analysis can be very inefficient for larger feature models.** |
 | [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional\<FC\> | Can c be completed to a valid FC of m? If yes, return one example. |
 | [DeadFeatures][DeadFeature]           | FM m | Set\<Feature\> | Set of features that are contained in m, but no valid FC of m uses them. |
 | [FalseOptional][FalseOptional]       | FM m | Set\<Feature\> | Set of features that are optional in m, but are contained in all valid FCs of m. |
