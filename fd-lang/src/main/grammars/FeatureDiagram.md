@@ -27,6 +27,7 @@
 <!-- The following references should point towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
 [MCBasicTypes MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/types/MCBasicTypes.mc4
+[CommonExpressions MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/expressions/CommonExpressions.mc4
 [FeatureConfiguration MLC]: FeatureConfiguration.md
 
 > NOTE: <br>
@@ -227,6 +228,11 @@ which coordinates the execution of one or more several analyses against a featur
 and, optionally, additional information (depends on the analysis kinds).
 
 ### Supported Feature Analyses
+The following table presents an overview of supported feature diagram analysis classes
+regarding their input in form of arguments and their output in form of the analysis result.
+In this table, we use `FM` as abbreviated form of `FeatureDiagramSymbol`, 
+`FC` as abbreviated form of `FeatureConfigurationSymbol`, and `Feature` as abbreviated 
+form of `FeatureSymbol`.
 
 | Analysis Class | Input | Result | Explanation |
 | ---    | ---      |  ------  |---------|
@@ -241,6 +247,7 @@ and, optionally, additional information (depends on the analysis kinds).
 ## Related Language Components
 * This language component uses the language component **[de.monticore.Cardinality][Cardinality MLC]**
 * This language component uses the language component **[de.monticore.types.MCBasicTypes][MCBasicTypes MLC]**
+* This language component uses the language component **[de.monticore.espressions.CommonExpressions][CommonExpressions MLC]**
 * This language component can be used in combination with the language component **[FeatureConfiguration][FeatureConfiguration MLC]**
 * There are language components for partial configurations of feature models and for feature models with attributes
 
