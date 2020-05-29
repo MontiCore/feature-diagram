@@ -31,4 +31,10 @@ grammar FeatureConfiguration extends FeatureDiagram {
   */
   Features implements FCElement = feature:( Name || "," )+;
 
+  symbolrule FeatureConfiguration =
+                   selectedFeatures:Name*
+                   unselectedFeatures:Name*
+                   undecidedFeatures:Name*
+                   ;
+
 }
