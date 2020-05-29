@@ -13,7 +13,7 @@ public class NonUniqueNameInGroup implements FeatureDiagramASTFeatureGroupCoCo {
 
   @Override public void check(ASTFeatureGroup node) {
     List<String> featureNames = new ArrayList<>();
-    for (FeatureSymbol f : node.getFeatures()) {
+    for (FeatureSymbol f : node.getSubFeatureSymbols()) {
       if (featureNames.contains(f.getName())) {
         Log.error(
             "0xFD009 A Feature group must not contain a feature more than once! '" + f.getName()

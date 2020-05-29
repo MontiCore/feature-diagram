@@ -2,23 +2,38 @@
 package featurediagram._cocos;
 
 import de.se_rwth.commons.logging.Log;
-import featurediagram._ast.ASTFeature;
 import featurediagram._ast.ASTFeatureDiagram;
 import featurediagram._ast.ASTFeatureTreeRule;
 import featurediagram._symboltable.FeatureSymbol;
+import featurediagram._visitor.FeatureNamesCollector;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class HasTreeShape
         implements FeatureDiagramASTFeatureDiagramCoCo, FeatureDiagramASTFeatureTreeRuleCoCo {
 
+
+  protected FeatureNamesCollector collector = new FeatureNamesCollector();
+
   @Override
   public void check(ASTFeatureDiagram node) {
     checkParents(node);
+  }
+
+  private String calculateRootFeature(ASTFeatureDiagram node){
+    List<String> rootfeatures = collector.getOccurrences(FeatureNamesCollector.Occurrence.LEFT);
+    if(rootfeatures.size() == 0){
+      Log.error("0xFD003 Featurediagram" + node.getName() +
+          "has no root node.");
+      return "";
+    }
+    if (rootfeatures.size() > 1) {
+      Log.error("0xFD001 Featurediagram" + node.getName() +
+          "has multiple root nodes.");
+      return "";
+    }
+    return rootfeatures.get(0);
   }
 
 
@@ -35,11 +50,9 @@ public class HasTreeShape
     Map<String, String> parents = getAllParents(node);
     features.removeAll(parents.keySet());
 
-    //remove the root feature(s), which must not have a parent
-    String rootFeature = node.getRootFeature();
-
+    //remove the root feature, which must not have a parent
+    String rootFeature =  calculateRootFeature(node);
     features.remove(rootFeature);
-
 
     for (String feature : features) {
       Log.error("0xFD004 Each feature except the root feature must have a parent feature! '"
@@ -51,7 +64,7 @@ public class HasTreeShape
   @Override
   public void check(ASTFeatureTreeRule node) {
     String lhs = node.getName();
-    for (FeatureSymbol f : node.getFeatureGroup().getFeatures()) {
+    for (FeatureSymbol f : node.getFeatureGroup().getSubFeatureSymbols()) {
       if (f.getName().equals(lhs)) {
         Log.error("0xFD007 Feature diagram rules must not introduce self loops!",
                 node.get_SourcePositionStart());
@@ -82,7 +95,7 @@ public class HasTreeShape
 
     for (ASTFeatureTreeRule rule : featureTreeRules) {
       String parentName = rule.getName();
-      for (FeatureSymbol f : rule.getFeatureGroup().getFeatures()) {
+      for (FeatureSymbol f : rule.getFeatureGroup().getSubFeatureSymbols()) {
         String featureName = f.getName();
         if (parents.containsKey(featureName)) {
           //get the parent name that was found

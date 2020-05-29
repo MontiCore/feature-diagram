@@ -9,6 +9,7 @@
 [HasTreeShape]: ../java/featurediagram/_cocos/HasTreeShape.java
 [CTCFeatureNamesExist]: ../java/featurediagram/_cocos/CTCFeatureNamesExist.java
 [NonUniqueNameInGroup]: ../java/featurediagram/_cocos/NonUniqueNameInGroup.java
+[ValidConstraintExpression]: ../java/featurediagram/_cocos/ValidConstraintExpression.java
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 
 [AllProducts]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/AllProducts.java
@@ -52,8 +53,9 @@ have been developed. This language uses feature models with the following charac
     * alternative features (XORGroup)
     * selection of features (ORGroup)
     * lower and upper bound for number of selected features (CardinalityGroup)
-* Cross tree constraints are expressions over any features with logic operators, 
-  such as **and** `&&`, **or** `||`, **implication** `=>`
+* Cross-tree constraints are expressions over any features with logic operators, 
+  such as **and** `&&`, **or** `||`. Cross-tree constraints can further use the operators
+  `requires` and `excludes`.
 * Obligation or optionality of a feature in any group except ANDGroup is discarded. 
 All features that are members of such groups are regarded as optional features
 
@@ -112,7 +114,7 @@ featurediagram CarNavigation {
 
   SmallScreen  excludes TouchControl ;
 
-  (Europe && NorthAmerica && Asia) => (Large || Medium) ;
+  (Europe && NorthAmerica && Asia) requires (Large || Medium) ;
 
 }
 ```
@@ -132,14 +134,14 @@ feature models. Design decisions are documented inline.
 
 The grammar contains several extension points that can be used to tailor the language to 
 different applications. For instance, it is possible to add feature attributes.
-
+The extension points are:
 * The interface nonterminal **FDElement** can be implemented to add further 
 elements to the feature diagram's body.
 * The interface nonterminal **FeatureGroup** can be implemented to add further 
 kinds of feature groups. However, each implementation must contain a (non-empty)
 iteration of 'Feature' nonterminals. Please note, that these should be added to
 the *GroupKind* enumeration in the symbol table as well.
-* The interface nonterminal **ConstraintExpression** can be implemented to add further
+* The interface nonterminal **Expression** can be implemented to add further
 syntax for cross-tree constraints. 
 
 ### Handwritten AST & Symbol Table Classes
@@ -213,6 +215,7 @@ feature diagram symbol tables is implemented as well.
 | (see above)                                  | 0xFD010 | The parent feature does not exist.  |
 | [CTCFeatureNamesExist][CTCFeatureNamesExist] | 0xFD006 | A cross-tree constraint must operate on features that are available in the current feature model. |
 | [NonUniqueNameInGroup][NonUniqueNameInGroup] | 0xFD009 | A Feature group must not contain a feature more than once. |
+| [ValidConstraintExpression][ValidConstraintExpression] | 0xFD011 | A cross-tree constraint is only allowed to use some kinds of expressions inherited from the common expression language component. |
 
 ## Generator
 

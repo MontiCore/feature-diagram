@@ -14,12 +14,14 @@ import featurediagram._symboltable.FeatureDiagramLanguage;
 import featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class FeatureDiagramCoCoTest {
 
   @BeforeClass

@@ -47,78 +47,53 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   */
   FeatureTreeRule implements FDElement = Name@Feature "->" FeatureGroup ";";
 
-  FeatureConstraint implements FDElement = ConstraintExpression ";" ;
+  /**
+    The "Expression" nonterminal is an extension point that can be used via language extension or
+    language embedding to add further kinds of cross-tree constraint expressions
+  */
+  FeatureConstraint implements FDElement = constraint:Expression ";" ;
 
-  // TODO: change `Name`to `Name@Feature` after MC Issue #2520 is resolved
-  interface FeatureGroup = Name+;
+  /*
+  This is an extension point for adding novel kinds of feature groups to the language.
+  Each feature group must contain a non-empty list of GroupParts.
+  */
+  interface FeatureGroup = GroupPart+;
 
   /**
     This producton produces an AST class for the optionality. Through this,
     the optionality can be associated with a feature name in the AST.
   */
-  Opt= optional:["?"]?;
+  GroupPart = Name@Feature optional:["?"]?;
 
   /**
     This demands: All features must be chosen ( e.g., A = B & C & D; )
+    A group with single feature is parsed as AndGroup.
   */
-  AndGroup implements FeatureGroup = Name@Feature Opt ("&" Name@Feature Opt)*;
+  AndGroup implements FeatureGroup = (GroupPart || "&")+;
 
   /**
     This demands: Exactly one feature must be chosen ( e.g., A = B ^ C ^ D; )
+    This group must contain at least two features
   */
-  XorGroup implements FeatureGroup = Name@Feature ( "^" Name@Feature )+;
+  XorGroup implements FeatureGroup = GroupPart ( "^" GroupPart )+;
 
   /**
     This demands: One or more features must be chosen ( e.g.,  A = B | C | D; )
+    This group must contain at least two features
   */
-  OrGroup implements FeatureGroup = Name@Feature ( "|" Name@Feature )+;
+  OrGroup implements FeatureGroup = GroupPart ( "|" GroupPart )+;
 
   /** 
     Specify a range of features ( e.g., A = [2..3] (B, C, D); )
     selectable at that level (subfeatures do not count)
-    TODO: change to ( Name@Feature || "," )+ if MC-Issue #2521 is fixed.
   */
   CardinalizedGroup implements FeatureGroup =
-                               Cardinality "of" "{" ( Name@Feature | "," )+ "}";
-
-  /**
-    This is an extension point that can be used via language extension or
-    language embedding to add further kinds of cross-tree constraint expressions
-  */
-  interface ConstraintExpression;
-
-  /**
-   Through this, all nonterminals that implement the Expression interface can be used to
-   model cross-tree constraints. Through extending the language component "CommonExpressions",
-   standard logical expressions (e.g., `&&``, `||`, `=>` are available here by default.
-  */
-  Constraint implements ConstraintExpression = Expression;
+                               Cardinality "of" "{" ( GroupPart || "," )+ "}";
 
   Requires implements Expression <115>, InfixExpression =
     left:Expression operator:"requires" right:Expression;
 
   Excludes implements Expression <116>, InfixExpression =
     left:Expression operator:"excludes" right:Expression;
-
-  Implies implements Expression <60>, InfixExpression =
-    left:Expression operator:"=>" right:Expression;
-
-  symbolrule FeatureDiagram =
-                   rootFeature:featurediagram._symboltable.FeatureSymbol
-                   features:featurediagram._symboltable.FeatureSymbol*
-                   ;
-
-  astrule FeatureDiagram =
-                   features:String*
-                   rootFeature:String
-                   ;
-
-  /**
-    Feature Symbols carry their names (already there),
-    and the list of subfeatures (TODO: ! reicht das?)
-  */
-  symbolrule Feature =
-                   children:featurediagram._symboltable.FeatureGroup*
-                   ;
 
 }

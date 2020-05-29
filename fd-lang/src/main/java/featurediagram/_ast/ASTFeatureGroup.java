@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 public interface ASTFeatureGroup extends ASTFeatureGroupTOP {
 
-  public default List<FeatureSymbol> getFeatures(){
-    List<FeatureSymbol> features = getNameList().stream()
-            .map(n -> getEnclosingScope().resolveFeature(n))
+  default List<FeatureSymbol> getSubFeatureSymbols(){
+    List<FeatureSymbol> features = getGroupPartList().stream()
+            .map(n -> getEnclosingScope().resolveFeature(n.getName()))
             .filter(Optional::isPresent)
             .map(Optional::get)
             .collect(Collectors.toList());

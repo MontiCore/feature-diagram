@@ -11,6 +11,7 @@ public class FeatureDiagramCoCos {
     checker.addCoCo((FeatureDiagramASTFeatureTreeRuleCoCo) new HasTreeShape());
     checker.addCoCo(new NonUniqueNameInGroup());
     checker.addCoCo(new CTCFeatureNameExists());
+    checker.addCoCo(new ValidConstraintExpression());
     return checker;
   }
 

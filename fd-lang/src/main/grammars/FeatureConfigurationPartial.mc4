@@ -15,14 +15,10 @@ grammar FeatureConfigurationPartial extends FeatureConfiguration {
   */
   start FCCompilationUnit;
 
-  // TODO: change to feature:(Name@Feature || "," )+ if MC-Issue #2521 is fixed.
-  Select implements FCElement = "select" "{" feature:( Name || "," )+ "}" ;
+  // TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
+  Select implements FCElement = "select" "{" ( Name || "," )+ "}" ;
 
-  // TODO: change to feature:(Name@Feature || "," )+ if MC-Issue #2521 is fixed.
-  Unselect implements FCElement = "unselect" "{" feature:( Name || "," )+ "}" ;
-
-  // TODO: change to feature:(Name@Feature || "," )+ if MC-Issue #2521 is fixed.
-  // TODO AB: Erklärung notwendig. Woher kommt das?
-  Undecided implements FCElement = "undecided" "{" feature:( Name || "," )+ "}" ;
+  // TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
+  Unselect implements FCElement = "unselect" "{" ( Name || "," )+ "}" ;
 
 }

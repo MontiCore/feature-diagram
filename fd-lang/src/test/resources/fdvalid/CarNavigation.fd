@@ -18,6 +18,6 @@ featurediagram CarNavigation {
 
   SmallScreen  excludes TouchControl ;
 
-  (Europe && NorthAmerica && Asia) => (Large || Medium) ;
+  (Europe && NorthAmerica && Asia) requires (Large || Medium) ;
 
 }

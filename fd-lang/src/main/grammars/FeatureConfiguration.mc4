@@ -27,14 +27,12 @@ grammar FeatureConfiguration extends FeatureDiagram {
 
   /**
     This language enables to use a list of feature names in the body of a feature configuration.
-    TODO: change to feature:(Name@Feature || "," )+ if MC-Issue #2521 is fixed.
+    TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
   */
-  Features implements FCElement = feature:( Name || "," )+;
+  Features implements FCElement = ( Name || "," )+;
 
-  symbolrule FeatureConfiguration =
-                   selectedFeatures:Name*
-                   unselectedFeatures:Name*
-                   undecidedFeatures:Name*
-                   ;
+symbolrule FeatureConfiguration =
+                  fdName:Name
+                  selectedFeatures:featurediagram._symboltable.FeatureSymbol*;
 
 }
