@@ -7,7 +7,7 @@
     <parent>
         <groupId>de.monticore.lang</groupId>
         <artifactId>feature-diagrams-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>feature-diagram-language</artifactId>
@@ -68,6 +68,37 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.plugin}</version>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${assembly.plugin}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>de.monticore</groupId>
+                        <artifactId>mc-assemblies</artifactId>
+                        <version>0.0.8</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>grammars</id>
+                        <configuration>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
+                            <descriptorRefs>
+                                <descriptorRef>grammars-assembly</descriptorRef>
+                            </descriptorRefs>
+                            <formats>
+                                <format>jar</format>
+                            </formats>
+                        </configuration>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
 
     </build>

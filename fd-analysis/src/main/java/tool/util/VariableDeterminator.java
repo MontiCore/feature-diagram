@@ -2,14 +2,14 @@
 package tool.util;
 
 import featurediagram._symboltable.FeatureSymbol;
-import featurediagram._visitor.FeatureDiagramSymbolVisitor;
+import featurediagram._visitor.FeatureDiagramVisitor;
 import tool.transform.flatzinc.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-public class VariableDeterminator implements FeatureDiagramSymbolVisitor {
+public class VariableDeterminator implements FeatureDiagramVisitor {
 
   List<Variable> variables = new ArrayList<>();
 

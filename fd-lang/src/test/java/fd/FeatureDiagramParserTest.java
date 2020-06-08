@@ -19,8 +19,8 @@ public class FeatureDiagramParserTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-    //        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    LogStub.init();
+            Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+//    LogStub.init();
   }
 
   protected static void assertPresent(Optional<?> opt) {
@@ -64,13 +64,11 @@ public class FeatureDiagramParserTest {
     assertPresent(parser.parse_StringCardinalizedGroup("[2] of {A,B}"));
     assertEmpty(parser.parse_StringCardinalizedGroup("[-2 .. 3] of {A,B}"));
     assertEmpty(parser.parse_StringCardinalizedGroup("[2] ()"));
-
-    assertPresent(parser.parse_StringFeature("A"));
-    assertPresent(parser.parse_StringFeature("A?"));
-    assertPresent(parser.parse_StringFeature("A123456789a_z"));
-
-    assertPresent(parser.parse_StringConstraintExpression("A requires B"));
-    assertPresent(parser.parse_StringConstraintExpression("A excludes B"));
+    assertPresent(parser.parse_StringFeatureConstraint("A requires B;"));
+    assertPresent(parser.parse_StringFeatureConstraint("A excludes B;"));
+    assertPresent(parser.parse_StringFeatureConstraint("A == B;"));
+    assertPresent(parser.parse_StringFeatureConstraint("A != B;"));
+    assertPresent(parser.parse_StringFeatureConstraint("!A && B || C;"));
   }
 
   @Test
@@ -80,6 +78,8 @@ public class FeatureDiagramParserTest {
     assertPresent(parser.parse("src/test/resources/fdvalid/Car.fd"));
     assertPresent(parser.parse("src/test/resources/fdvalid/GraphLibrary.fd"));
     assertPresent(parser.parse("src/test/resources/fdvalid/Phone.fd"));
+    assertPresent(parser.parse("src/test/resources/fdvalid/PhoneComplex.fd"));
+    assertPresent(parser.parse("src/test/resources/fdvalid/CarNavigation.fd"));
   }
 
 }

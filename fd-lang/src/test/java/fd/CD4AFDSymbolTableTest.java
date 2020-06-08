@@ -6,7 +6,7 @@ import cdfeaturediagram.CDTypeFeatureDiagramTool;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import featurediagram._symboltable.FeatureDiagramArtifactScope;
-import featurediagram._symboltable.FeatureDiagramSymTabMill;
+import featurediagram.FeatureDiagramMill;
 import featurediagram._symboltable.FeatureDiagramSymbol;
 import featurediagram._symboltable.FeatureSymbol;
 import org.junit.AfterClass;
@@ -31,7 +31,7 @@ public class CD4AFDSymbolTableTest {
   @AfterClass
   public static void resetMill() {
     //Important: reset Mill, because otherwise all "normal feature diagrams" cannot be processed
-    FeatureDiagramSymTabMill.reset();
+    FeatureDiagramMill.reset();
   }
 
   @Before

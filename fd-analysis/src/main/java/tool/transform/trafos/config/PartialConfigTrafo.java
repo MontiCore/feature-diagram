@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos.config;
 
-import featureconfigurationpartial._ast.ASTFeatureConfiguration;
+import featureconfiguration._ast.ASTFeatureConfiguration;
 import featureconfigurationpartial._ast.ASTSelect;
 import featureconfigurationpartial._ast.ASTUndecided;
 import featureconfigurationpartial._ast.ASTUnselect;

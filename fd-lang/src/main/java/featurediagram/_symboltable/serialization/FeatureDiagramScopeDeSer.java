@@ -2,12 +2,26 @@
 package featurediagram._symboltable.serialization;
 
 import featurediagram._symboltable.FeatureDiagramArtifactScope;
-import featurediagram._symboltable.FeatureDiagramLanguage;
+
+import java.nio.file.Paths;
 
 public class FeatureDiagramScopeDeSer extends FeatureDiagramScopeDeSerTOP {
 
-  public static void store(FeatureDiagramLanguage lang, FeatureDiagramArtifactScope modelTopScope) {
-    new FeatureDiagramScopeDeSer().store(modelTopScope, lang, "target/symbols");
+  private static FeatureDiagramScopeDeSer instance;
+
+  public static FeatureDiagramScopeDeSer getInstance() {
+    if (null == instance) {
+      instance = new FeatureDiagramScopeDeSer();
+    }
+    return instance;
+  }
+
+  public static void setInstance(FeatureDiagramScopeDeSer instance) {
+    FeatureDiagramScopeDeSer.instance = instance;
+  }
+
+  public static void store(FeatureDiagramArtifactScope modelTopScope) {
+    getInstance().store(modelTopScope, Paths.get("target/symbols"));
   }
 
 }

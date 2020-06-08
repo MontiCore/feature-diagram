@@ -2,12 +2,12 @@
 package tool.util;
 
 import featurediagram._symboltable.FeatureSymbol;
-import featurediagram._visitor.FeatureDiagramSymbolVisitor;
+import featurediagram._visitor.FeatureDiagramVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeatureNameCollector implements FeatureDiagramSymbolVisitor {
+public class FeatureNameCollector implements FeatureDiagramVisitor {
 
   List<String> names = new ArrayList<>();
 

@@ -9,8 +9,9 @@ public class FeatureDiagramCoCos {
     FeatureDiagramCoCoChecker checker = new FeatureDiagramCoCoChecker();
     checker.addCoCo((FeatureDiagramASTFeatureDiagramCoCo) new HasTreeShape());
     checker.addCoCo((FeatureDiagramASTFeatureTreeRuleCoCo) new HasTreeShape());
-    checker.addCoCo(new CTCFeatureNamesExist());
     checker.addCoCo(new NonUniqueNameInGroup());
+    checker.addCoCo(new CTCFeatureNameExists());
+    checker.addCoCo(new ValidConstraintExpression());
     return checker;
   }
 

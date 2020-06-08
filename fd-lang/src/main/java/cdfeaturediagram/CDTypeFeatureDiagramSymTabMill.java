@@ -2,10 +2,10 @@
 
 package cdfeaturediagram;
 
+import featurediagram.FeatureDiagramMill;
 import featurediagram._symboltable.FeatureDiagramScopeBuilder;
-import featurediagram._symboltable.FeatureDiagramSymTabMill;
 
-public class CDTypeFeatureDiagramSymTabMill extends FeatureDiagramSymTabMill {
+public class CDTypeFeatureDiagramSymTabMill extends FeatureDiagramMill {
 
   @Override protected FeatureDiagramScopeBuilder _featureDiagramScopeBuilder() {
     return new CDTypeFeatureDiagramScopeBuilder();

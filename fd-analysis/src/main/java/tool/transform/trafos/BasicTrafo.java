@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos;
 
-import featurediagram._symboltable.FeatureDiagramSymbol;
-import featurediagram._symboltable.FeatureGroup;
-import featurediagram._symboltable.FeatureSymbol;
+import featurediagram._symboltable.*;
 import featurediagram._visitor.HierachicalFeatureSymbolVisitor;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
@@ -65,33 +63,35 @@ public class BasicTrafo
     variable.setLowerLimit("0");
     variable.setUpperLimit("1");
     variable.setAnnotation("output_var");
+  }
 
-    for (FeatureGroup group : feature.getChildrenList()) {
-      switch (group.getKind()) {
-        case CARDINALITY:
-        case OR:
-        case XOR:
-          addCardinalGroup(feature, group, "" + group.getMin(), "" + group.getMax());
-          break;
-        case AND:
-          group.getMembers().forEach(child -> {
-            FeatureSymbol childFeature = child.getLoadedSymbol();
-            Constraint constraint = new Constraint();
-            String min;
-            String max;
-            if (childFeature.isIsOptional()) {
-              min = "0";
-              max = "1";
-            }
-            else {
-              min = "1";
-              max = "1";
-            }
-            addCardinalFeature(feature, childFeature, min, max);
-          });
-          break;
+  public void visit(AndGroup andGroup){
+    for(int i = 0; i < andGroup.size(); i++) {
+      FeatureSymbol childFeature = andGroup.get(i);
+      String min;
+      String max;
+      if (andGroup.getOptionalFeatures().get(i)) {
+        min = "0";
+        max = "1";
       }
+      else {
+        min = "1";
+        max = "1";
+      }
+      addCardinalFeature(andGroup.getParent(), childFeature, min, max);
     }
+  }
+
+  public void visit(OrGroup orGroup){
+    addCardinalGroup(orGroup.getParent(), orGroup, "1", ""+orGroup.size());
+  }
+
+  public void visit(XOrGroup xOrGroup){
+    addCardinalGroup(xOrGroup.getParent(), xOrGroup, "1", "1");
+  }
+
+  public void visit(CardinalityGroup cardinalityGroup){
+    addCardinalGroup(cardinalityGroup.getParent(), cardinalityGroup, ""+cardinalityGroup.getMin(), ""+cardinalityGroup.getMax());
   }
 
   private void addCardinalFeature(FeatureSymbol parent, FeatureSymbol child, String min,
@@ -103,17 +103,15 @@ public class BasicTrafo
     //if(parent = 0) then child = 0
     Constraint constraint1 = new Constraint("int_eq_reif", "0", parent.getName(), helperName1);
     Constraint constraint2 = new Constraint("int_eq_reif", "0", child.getName(), helperName2);
-    Constraint constraint3 = new Constraint("bool_or", helperName3, helperName2, "true");
+    Constraint constraint3 = new Constraint("bool_not", helperName1, helperName3);
+    Constraint constraint4 = new Constraint("bool_or", helperName3, helperName2, "true");
     //else child in {min, max}
-    Constraint constraint4 = new Constraint("bool_not", helperName1, helperName3);
     Constraint constraint5 = new Constraint("int_le_reif", min, child.getName(), helperName3);
-    Constraint constraint6 = new Constraint("int_le", child.getName(), max);
     constraints.add(constraint1);
     constraints.add(constraint2);
     constraints.add(constraint3);
     constraints.add(constraint4);
     constraints.add(constraint5);
-    constraints.add(constraint6);
   }
 
   private void addCardinalGroup(FeatureSymbol parent, FeatureGroup children, String min,
@@ -122,8 +120,6 @@ public class BasicTrafo
     String helperName2 = createNewHelper(parent.getName() + "HasZeroChildren", Variable.Type.BOOL);
     String helperName3 = createNewHelper(parent.getName() + "IsNotZero", Variable.Type.BOOL);
     String subfeatures = children.getMembers().stream()
-        .map(f -> f.loadSymbol()).filter(Optional::isPresent)
-        .map(Optional::get)
         .map(FeatureSymbol::getName).collect(Collectors.joining(","));
     String factors = children.getMembers().stream().map(t -> "1").collect(Collectors.joining(","));
     String negativeFactors = children.getMembers().stream().map(t -> "-1")

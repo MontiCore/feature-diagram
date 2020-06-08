@@ -1,16 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import tool.transform.trafos.ComplexConstraint2FZN;
+import featurediagram.FeatureDiagramMill;
+import featurediagram._ast.ASTConstraint;
+import featurediagram._ast.ASTFeatureConstraint;
 
 import java.util.*;
 
 public class GeneralFilter extends Analysis<Set<Map<String, Boolean>>> {
 
-  public GeneralFilter(List<ASTExpression> filters) {
+  public GeneralFilter(List<ASTConstraint> filters) {
     super();
-    super.getModelBuilder().addFeatureModelFZNTrafo(new ComplexConstraint2FZN(filters));
+    filters.forEach(filter ->{
+      ASTFeatureConstraint fd = FeatureDiagramMill.featureConstraintBuilder().setConstraintExpression(filter).build();
+      super.getFeatureModel().getAstNode().addFDElement(fd);
+            });
   }
 
   @Override

@@ -3,12 +3,12 @@
 package fdvalid;
 
 featurediagram Phone {
-  root Phone;
-  Phone = Memory & OS & Camera? & Screen;
-  Memory = Internal & External?;
-  Internal = [1..2] of {Small, Medium, Large};
-  OS = iOS ^ Android;
-  Screen = Flexible | FullHD;
+
+  Phone -> Memory & OS & Camera? & Screen;
+  Memory -> Internal & External?;
+  Internal -> [1..2] of {Small, Medium, Large};
+  OS -> iOS ^ Android;
+  Screen -> Flexible | FullHD;
 
   iOS excludes External;
   Flexible requires Android;

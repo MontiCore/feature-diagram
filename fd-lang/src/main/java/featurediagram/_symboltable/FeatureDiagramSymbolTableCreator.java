@@ -2,38 +2,35 @@
 package featurediagram._symboltable;
 
 import de.monticore.symboltable.ImportStatement;
-import de.se_rwth.commons.logging.Log;
-import featurediagram._ast.*;
+import featurediagram.FeatureDiagramMill;
+import featurediagram._ast.ASTFDCompilationUnit;
+import featurediagram._ast.ASTFeatureTreeRule;
+import featurediagram._ast.ASTGroupPart;
 
-import java.util.*;
+import java.util.Deque;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableCreatorTOP {
 
-  protected Map<String, List<FeatureGroup>> groups;
-
-  protected List<FeatureSymbol> featureSymbols;
-
   public FeatureDiagramSymbolTableCreator(IFeatureDiagramScope enclosingScope) {
     super(enclosingScope);
-    this.groups = new HashMap<>();
-    this.featureSymbols = new ArrayList<>();
   }
 
   public FeatureDiagramSymbolTableCreator(Deque<? extends IFeatureDiagramScope> scopeStack) {
     super(scopeStack);
-    this.groups = new HashMap<>();
-    this.featureSymbols = new ArrayList<>();
   }
 
-  @Override public FeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
+  @Override
+  public FeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
     List<ImportStatement> importStatements = rootNode
         .getMCImportStatementList().stream()
         .map(i -> new ImportStatement(i.getQName(), i.isStar()))
         .collect(Collectors.toList());
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
 
-    FeatureDiagramArtifactScope artifactScope = FeatureDiagramSymTabMill
+    FeatureDiagramArtifactScope artifactScope = FeatureDiagramMill
         .featureDiagramArtifactScopeBuilder()
         .addAllImports(importStatements)
         .setPackageName(packageName)
@@ -46,97 +43,53 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
   }
 
   /**
-   * This method is overriden to set the root feature as attribute
+   * This method adds features on the right-hand side of feature tree rules to the symbl table
    *
-   * @param symbol
-   * @param ast
+   * @param node
    */
-  @Override protected void initialize_FeatureDiagram(FeatureDiagramSymbol symbol,
-      ASTFeatureDiagram ast) {
-    List<ASTRootFeature> roots = ast.getFDElementList().stream()
-        .filter(e -> e instanceof ASTRootFeature)
-        .map(e -> (ASTRootFeature) e)
-        .collect(Collectors.toList());
-    if (1 == roots.size()) {
-      FeatureSymbolLoader rootLoader = FeatureDiagramSymTabMill
-          .featureSymbolLoaderBuilder()
-          .setEnclosingScope(this.getCurrentScope().get())
-          .setName(roots.get(0).getFeature().getName())
-          .build();
-      symbol.setRootFeature(rootLoader);
-    }
+  @Override public void visit(ASTGroupPart node) {
+    super.visit(node);
+    createOrFindFeatureSymbolOnFirstOccurrence(node.getName());
   }
 
-  @Override protected void initialize_Feature(FeatureSymbol symbol, ASTFeature ast) {
-    //store all feature symbols to a list, to set their groups in the endVisit of the FD
-    featureSymbols.add(symbol);
-  }
-
-  @Override public void endVisit(ASTFeatureDiagram node) {
-    super.endVisit(node);
-    for (FeatureSymbol symbol : featureSymbols) {
-      if (groups.containsKey(symbol.getName())) {
-        symbol.setChildrenList(groups.get(symbol.getName()));
-      }
-      else {
-        symbol.setChildrenList(new ArrayList<>());
-      }
-    }
-  }
-
+  /**
+   * This method adds features on the left-hand side of feature tree rules to the symbl table
+   *
+   * @param node
+   */
   @Override public void visit(ASTFeatureTreeRule node) {
     super.visit(node);
-    FeatureSymbolLoader parent = createFeatureSymbolLoader(node.getName());
-    List<FeatureSymbolLoader> children = new ArrayList<>();
-    for (ASTFeature child : node.getFeatureGroup().getFeatureList()) {
-      FeatureSymbolLoader fsl = createFeatureSymbolLoader(child.getName());
-      children.add(fsl);
+    createOrFindFeatureSymbolOnFirstOccurrence(node.getName());
+  }
+
+  protected void createOrFindFeatureSymbolOnFirstOccurrence(String name) {
+    IFeatureDiagramScope encScope = getCurrentScope().get();
+    // if this feature name has already occured in the current feature model, stop
+    if (encScope.resolveFeatureLocally(name).isPresent()) {
+      return;
     }
-    GroupKind kind = getGroupKind(node.getFeatureGroup());
-    if (GroupKind.CARDINALITY == kind) {
-      ASTCardinalizedGroup g = (ASTCardinalizedGroup) node.getFeatureGroup();
-      int min = g.getCardinality().getLowerBound();
-      int max = g.getCardinality().getUpperBound();
-      putFeatureGroup(new FeatureGroup(parent, children, min, max));
+
+    // else, we need to find an existing or create a new feature symbol for this name
+    FeatureSymbol symbol;
+
+    // try to find existing feature symbol
+    Optional<FeatureSymbol> resolvedFeatureSymbol = encScope.resolveFeature(name);
+
+    // if a symbol was found, use this
+    if (resolvedFeatureSymbol.isPresent()) {
+      symbol = resolvedFeatureSymbol.get();
     }
+
+    // else, create new symbol
     else {
-      putFeatureGroup(new FeatureGroup(parent, children, kind));
+      symbol = FeatureDiagramMill
+          .featureSymbolBuilder()
+          .setName(name)
+          .build();
     }
 
+    //connect symbol with environment
+    addToScope(symbol);
   }
 
-  protected void putFeatureGroup(FeatureGroup group) {
-    String parentName = group.getParent().getName();
-    if (!groups.containsKey(parentName)) {
-      groups.put(parentName, new ArrayList<>());
-    }
-    groups.get(parentName).add(group);
-  }
-
-  protected FeatureSymbolLoader createFeatureSymbolLoader(String featureName) {
-    return FeatureDiagramSymTabMill
-        .featureSymbolLoaderBuilder()
-        .setEnclosingScope(getCurrentScope().get())
-        .setName(featureName)
-        .build();
-  }
-
-  protected GroupKind getGroupKind(ASTFeatureGroup featureGroup) {
-    if (featureGroup instanceof ASTOrGroup) {
-      return GroupKind.OR;
-    }
-    else if (featureGroup instanceof ASTXorGroup) {
-      return GroupKind.XOR;
-    }
-    else if (featureGroup instanceof ASTAndGroup) {
-      return GroupKind.AND;
-    }
-    else if (featureGroup instanceof ASTCardinalizedGroup) {
-      return GroupKind.CARDINALITY;
-    }
-    else {
-      Log.error("0xFD0004 Unknown feature group kind '" + featureGroup.getClass().getName() + "'");
-      return null;
-    }
-  }
 }

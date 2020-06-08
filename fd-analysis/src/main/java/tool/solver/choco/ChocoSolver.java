@@ -28,7 +28,7 @@ public class ChocoSolver extends Flatzinc implements ISolver {
         .filter(v -> v instanceof IntVar)
         .map(v -> ((IntVar) v))
         .map(ChocoSolver::map)
-        .forEach(vars -> config.putAll(vars));
+        .forEach(config::putAll);
     return config;
   }
 
@@ -37,6 +37,7 @@ public class ChocoSolver extends Flatzinc implements ISolver {
     switch (chocoVariable.getValue()) {
       case 0:
         ret.put(chocoVariable.getName(), false);
+        break;
       case 1:
         ret.put(chocoVariable.getName(), true);
     }

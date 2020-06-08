@@ -2,6 +2,8 @@
 package tool.transform;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import featurediagram._ast.ASTConstraint;
+import featurediagram._ast.ASTConstraintExpression;
 import featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.flatzinc.FlatZincModel;
 import tool.transform.trafos.BasicTrafo;
@@ -69,10 +71,6 @@ public class FZNModelBuilder {
   public void addDefaultFMTrafos() {
     trafos.add(new BasicTrafo());
     trafos.add(new RootFeatureSelected());
-  }
-
-  public void addComplexConstraints(List<ASTExpression> constraints) {
-    trafos.add(new ComplexConstraint2FZN(constraints));
   }
 
 }

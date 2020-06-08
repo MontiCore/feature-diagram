@@ -4,6 +4,7 @@ package featurediagram;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import featurediagram._ast.ASTFDCompilationUnit;
+import featurediagram._ast.ASTFeature;
 import featurediagram._cocos.FeatureDiagramCoCos;
 import featurediagram._parser.FeatureDiagramParser;
 import featurediagram._symboltable.FeatureDiagramArtifactScope;
@@ -11,10 +12,15 @@ import featurediagram._symboltable.FeatureDiagramGlobalScope;
 import featurediagram._symboltable.FeatureDiagramLanguage;
 import featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import featurediagram._symboltable.serialization.FeatureDiagramScopeDeSer;
+import featurediagram._visitor.FeatureNamesCollector;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class FeatureDiagramTool {
 
@@ -26,6 +32,8 @@ public class FeatureDiagramTool {
     final ASTFDCompilationUnit ast = parse(modelFile);
     Log.info(modelFile + " parsed successfully!", "FeatureDiagramTool");
 
+    transform(ast);
+
     // setup the symbol table
     FeatureDiagramArtifactScope modelTopScope = createSymbolTable(lang, modelPath, ast);
 
@@ -33,7 +41,7 @@ public class FeatureDiagramTool {
     FeatureDiagramCoCos.checkAll(ast);
 
     // store artifact scope after context conditions have been checked
-    FeatureDiagramScopeDeSer.store(lang, modelTopScope);
+    FeatureDiagramScopeDeSer.store(modelTopScope);
     return modelTopScope;
   }
 
@@ -51,10 +59,9 @@ public class FeatureDiagramTool {
       if (!parser.hasErrors() && optFD.isPresent()) {
         return optFD.get();
       }
-      Log.error("0xFD1000 Model could not be parsed.");
-    }
-    catch (RecognitionException | IOException e) {
-      Log.error("0xFD1001 Failed to parse " + model, e);
+      Log.error("0xFD100 Model could not be parsed.");
+    } catch (RecognitionException | IOException e) {
+      Log.error("0xFD101 Failed to parse " + model, e);
     }
     return null;
   }
@@ -67,10 +74,14 @@ public class FeatureDiagramTool {
    * @return
    */
   public static FeatureDiagramArtifactScope createSymbolTable(FeatureDiagramLanguage lang,
-      ModelPath mp, ASTFDCompilationUnit ast) {
+                                                              ModelPath mp, ASTFDCompilationUnit ast) {
     FeatureDiagramGlobalScope globalScope = new FeatureDiagramGlobalScope(mp, lang);
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
     return symbolTable.createFromAST(ast);
+  }
+
+  public static void transform(ASTFDCompilationUnit ast) {
+
   }
 
   /**
@@ -80,7 +91,7 @@ public class FeatureDiagramTool {
    */
   public static void main(String[] args) {
     if (args.length != 1) {
-      Log.error("0xFD1002 Please specify only one single path to the input model.");
+      Log.error("0xFD102 Please specify only one single path to the input model.");
       return;
     }
     FeatureDiagramTool.run(args[0], new ModelPath());

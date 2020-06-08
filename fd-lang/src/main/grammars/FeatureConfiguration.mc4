@@ -1,14 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 
+/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+
 /**
   FeatureConfiguration defines a concrete list of
   features for an externally given Featurediagram.
 */
-
-// TODO AB: 
-// replace:: selectedFeature:Name@Feature ( "," selectedFeature:Name@Feature )*
-//       by        {Name@Feature || "," }*
-
 grammar FeatureConfiguration extends FeatureDiagram {
 
   FCCompilationUnit = ("package" package:MCQualifiedName ";")?
@@ -20,9 +17,24 @@ grammar FeatureConfiguration extends FeatureDiagram {
     These Features must be defined in the cited FD
    */
   symbol scope FeatureConfiguration =
-    "featureconfig" Name "for" featureDiagram:Name@FeatureDiagram
-    "{"
-      selectedFeature:Name@Feature ( "," selectedFeature:Name@Feature )*
+    "featureconfig" Name "for" fdName:Name@FeatureDiagram "{"
+      FCElement*
     "}";
+
+  /*
+    This is an extension point that can be used to add further language elements
+    to a feature configuration model.
+  */
+  interface FCElement;
+
+  /**
+    This language enables to use a list of feature names in the body of a feature configuration.
+    TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
+  */
+  Features implements FCElement = ( Name || "," )+;
+
+  symbolrule FeatureConfiguration =
+                fdName:Name
+                selectedFeatures:featurediagram._symboltable.FeatureSymbol*;
 
 }

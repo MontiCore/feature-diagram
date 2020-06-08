@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package fdvalid;
+
+featurediagram CarNavigation {
+
+  CarNavigation -> Display & GPS & PreinstalledMaps? & Memory ; //and group
+
+  CarNavigation -> VoiceControl ^ TouchControl; //xor group
+
+  Memory -> Small ^ Medium ^ Large ;
+
+  Display -> SmallScreen | LargeScreen; //or group
+
+  PreinstalledMaps -> [1..3] of {Europe, NorthAmerica, SouthAmerica, Asia, Africa}; //cardinality group
+
+  TouchControl requires LargeScreen ;
+
+  SmallScreen  excludes TouchControl ;
+
+  (Europe && NorthAmerica && Asia) requires (Large || Medium) ;
+
+}

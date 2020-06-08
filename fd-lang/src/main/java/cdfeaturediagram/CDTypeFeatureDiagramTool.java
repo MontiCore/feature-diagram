@@ -10,7 +10,7 @@ import featurediagram._cocos.FeatureDiagramCoCos;
 import featurediagram._parser.FeatureDiagramParser;
 import featurediagram._symboltable.FeatureDiagramArtifactScope;
 import featurediagram._symboltable.FeatureDiagramLanguage;
-import featurediagram._symboltable.FeatureDiagramSymTabMill;
+import featurediagram.FeatureDiagramMill;
 import featurediagram._symboltable.FeatureDiagramSymbolTableCreator;
 import featurediagram._symboltable.serialization.FeatureDiagramScopeDeSer;
 
@@ -30,7 +30,7 @@ public class CDTypeFeatureDiagramTool {
    */
   public static void main(String[] args) {
     if (args.length != 1) {
-      Log.error("0xFD1002 Please specify only one single path to the input model.");
+      Log.error("0xFD200 Please specify only one single path to the input model.");
       return;
     }
     FeatureDiagramTool.run(args[0], new ModelPath());
@@ -73,7 +73,7 @@ public class CDTypeFeatureDiagramTool {
     FeatureDiagramCoCos.checkAll(ast);
 
     // store artifact scope after context conditions have been checked
-    FeatureDiagramScopeDeSer.store(lang, modelTopScope);
+    FeatureDiagramScopeDeSer.store(modelTopScope);
     return modelTopScope;
   }
 
@@ -90,10 +90,10 @@ public class CDTypeFeatureDiagramTool {
       if (parseResult.isPresent()) {
         return parseResult.get();
       }
-      Log.error("0xFD0011 Error while parsing '" + fileName + "'!");
+      Log.error("0xFD201 Error while parsing '" + fileName + "'!");
     }
     catch (IOException e) {
-      Log.error("0xFD0012 Error while parsing '" + fileName + "'!", e);
+      Log.error("0xFD202 Error while parsing '" + fileName + "'!", e);
     }
     return null;
   }
@@ -107,7 +107,7 @@ public class CDTypeFeatureDiagramTool {
    */
   public static FeatureDiagramArtifactScope createSymbolTable(FeatureDiagramLanguage lang,
       ModelPath mp, ASTFDCompilationUnit ast) {
-    FeatureDiagramSymTabMill.initMe(new CDTypeFeatureDiagramSymTabMill());
+    FeatureDiagramMill.initMe(new CDTypeFeatureDiagramSymTabMill());
     CDTypeFeatureDiagramGlobalScope gs = new CDTypeFeatureDiagramGlobalScope(mp);
     FeatureDiagramSymbolTableCreator creator = new FeatureDiagramSymbolTableCreator(gs);
     FeatureDiagramArtifactScope as = creator.createFromAST(ast);

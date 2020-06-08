@@ -8,14 +8,14 @@
 
     <groupId>de.monticore.lang</groupId>
     <artifactId>feature-diagrams-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Feature Diagrams</name>
 
     <modules>
         <module>fd-lang</module>
-        <module>fd-analysis</module>
+       <!-- <module>fd-analysis</module> -->
     </modules>
 
     <properties>

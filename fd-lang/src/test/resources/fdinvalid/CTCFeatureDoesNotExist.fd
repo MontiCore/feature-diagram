@@ -1,8 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 featurediagram CTCFeatureDoesNotExist {
-  root A;
-  A = B & C? & D;
+  A -> B & C? & D;
 
   Foo excludes Bar;
 

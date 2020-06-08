@@ -1,0 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+featureconfig PremiumCarNavigation for CarNavigation {
+  CarNavigation, VoiceControl, Display, SmallScreen, GPS, Memory, Small;
+}
