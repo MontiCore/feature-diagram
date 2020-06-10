@@ -76,7 +76,6 @@ public class FeatureModelAnalysisTool {
           modelPrinter.buildFlatZincModel(featureSymbol);
           analysis.setFeatureModel(featureSymbol);
           String s = modelPrinter.getFlatZincModel().print();
-          System.out.println(s);
           analysis.perform(solver.solve(s, getAllFeatureNames(), modelPrinter.isAllSolutions()));
         }
     );

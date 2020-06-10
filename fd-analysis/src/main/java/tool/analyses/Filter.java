@@ -12,7 +12,8 @@ import java.util.Set;
 public class Filter extends Analysis<Set<ASTFeatureConfiguration>> {
   public Filter(ASTFeatureConfiguration configuration) {
     super();
-    super.getModelBuilder().addFeatureModelFZNTrafo(new ConfigurationTrafo(configuration));
+    super.getModelBuilder().addFeatureModelFZNTrafo(new ConfigurationTrafo(configuration, false));
+    builder.setAllSolutions(true);
   }
 
   @Override

@@ -6,7 +6,7 @@ import featureconfiguration._ast.ASTFeatureConfiguration;
 import java.util.Collection;
 import java.util.Map;
 
-public class CompleteToValidConfig extends Analysis<ASTFeatureConfiguration> {
+public class FindValidConfig extends Analysis<ASTFeatureConfiguration> {
   @Override
   public void perform(Collection<ASTFeatureConfiguration> configurations) {
     if (configurations.isEmpty()) {

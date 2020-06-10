@@ -11,7 +11,7 @@ public class IsVoidFeatureModel extends Analysis<Boolean> {
 
   @Override
   public void perform(Collection<ASTFeatureConfiguration> configurations) {
-    setResult(!configurations.isEmpty());
+    setResult(configurations.isEmpty());
   }
 
   @Override

@@ -70,10 +70,10 @@ public class ConfigurationTrafo
         return;
       }
       if (isSelected) {
-        constraints.add(new Constraint("int_le", "1", name));
+        constraints.add(new Constraint("int_eq", "1", name));
       }
       if (!isSelected) {
-        constraints.add(new Constraint("int_le", name, "0"));
+        constraints.add(new Constraint("int_eq", name, "0"));
       }
     });
   }

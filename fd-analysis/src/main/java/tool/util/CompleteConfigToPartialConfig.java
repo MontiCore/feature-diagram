@@ -19,7 +19,7 @@ public class CompleteConfigToPartialConfig implements FeatureConfigurationVisito
     CompleteConfigToPartialConfig visitor = new CompleteConfigToPartialConfig();
     featureDiagram.getAllFeatures().stream().
             forEach(featureSymbol -> visitor.config
-                    .put(featureSymbol.getName(), notEqualsNull ? null : Boolean.FALSE));
+                    .put(featureSymbol.getName(), notEqualsNull ? Boolean.FALSE: null));
     astConfiguration.accept(visitor);
     return visitor.config;
   }
