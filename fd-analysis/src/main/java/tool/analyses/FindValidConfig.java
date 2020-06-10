@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
+import featureconfiguration._ast.ASTFeatureConfiguration;
+
 import java.util.Collection;
 import java.util.Map;
 
-public class CompleteToValidConfig extends Analysis<Map<String, Boolean>> {
+public class FindValidConfig extends Analysis<ASTFeatureConfiguration> {
   @Override
-  public void perform(Collection<Map<String, Boolean>> configurations) {
+  public void perform(Collection<ASTFeatureConfiguration> configurations) {
     if (configurations.isEmpty()) {
       setResult(null);
     }

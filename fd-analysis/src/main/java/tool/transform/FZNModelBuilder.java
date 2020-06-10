@@ -2,8 +2,6 @@
 package tool.transform;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import featurediagram._ast.ASTConstraint;
-import featurediagram._ast.ASTConstraintExpression;
 import featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.flatzinc.FlatZincModel;
 import tool.transform.trafos.BasicTrafo;

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool;
 
-import featurediagram._ast.ASTConstraint;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import featurediagram._symboltable.FeatureDiagramSymbol;
 import featurediagram._symboltable.FeatureSymbol;
 import tool.analyses.Analysis;
@@ -12,7 +12,6 @@ import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.trafos.BasicTrafo;
 import tool.transform.trafos.ComplexConstraint2FZN;
 import tool.transform.trafos.RootFeatureSelected;
-import tool.util.FeatureNameCollector;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +22,7 @@ public class FeatureModelAnalysisTool {
 
   private FeatureDiagramSymbol featureSymbol;
 
-  private List<ASTConstraint> expressions = new ArrayList<>();
+  private List<ASTExpression> expressions = new ArrayList<>();
 
   private List<Analysis> analyses = new ArrayList<>();
 
@@ -48,11 +47,11 @@ public class FeatureModelAnalysisTool {
     trafos.add(trafo);
   }
 
-  public void addComplexConstraint(ASTConstraint expression) {
+  public void addComplexConstraint(ASTExpression expression) {
     expressions.add(expression);
   }
 
-  public void addAllComplexConstraints(Collection<ASTConstraint> expressions) {
+  public void addAllComplexConstraints(Collection<ASTExpression> expressions) {
     this.expressions.addAll(expressions);
   }
 
@@ -69,6 +68,7 @@ public class FeatureModelAnalysisTool {
   }
 
   public void performAnalyses() {
+    solver.setFeatureDiagrammName(featureSymbol.getName());
     analyses.forEach(
         analysis -> {
           FZNModelBuilder modelPrinter = analysis.getModelBuilder();
@@ -76,7 +76,6 @@ public class FeatureModelAnalysisTool {
           modelPrinter.buildFlatZincModel(featureSymbol);
           analysis.setFeatureModel(featureSymbol);
           String s = modelPrinter.getFlatZincModel().print();
-          System.out.println(s);
           analysis.perform(solver.solve(s, getAllFeatureNames(), modelPrinter.isAllSolutions()));
         }
     );

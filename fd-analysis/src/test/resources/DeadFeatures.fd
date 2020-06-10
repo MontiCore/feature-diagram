@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+featurediagram DeadFeatures {
+  A -> B?;
+  A -> C?;
+  A excludes B;
+}

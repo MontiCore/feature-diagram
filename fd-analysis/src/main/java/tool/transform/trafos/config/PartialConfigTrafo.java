@@ -3,7 +3,6 @@ package tool.transform.trafos.config;
 
 import featureconfiguration._ast.ASTFeatureConfiguration;
 import featureconfigurationpartial._ast.ASTSelect;
-import featureconfigurationpartial._ast.ASTUndecided;
 import featureconfigurationpartial._ast.ASTUnselect;
 import featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
 import featurediagram._symboltable.FeatureDiagramSymbol;
@@ -54,18 +53,13 @@ public class PartialConfigTrafo
 
   @Override
   public void visit(ASTSelect node) {
-    node.streamFeatures().
+    node.streamNames().
         forEach(f -> constraints.add(new Constraint("int_eq", f, "1")));
   }
 
   @Override
   public void visit(ASTUnselect node) {
-    node.streamFeatures().
+    node.streamNames().
         forEach(f -> constraints.add(new Constraint("int_eq", f, "0")));
-  }
-
-  @Override
-  public void visit(ASTUndecided node) {
-
   }
 }

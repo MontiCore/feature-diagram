@@ -31,7 +31,7 @@ grammar FeatureConfiguration extends FeatureDiagram {
     This language enables to use a list of feature names in the body of a feature configuration.
     TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
   */
-  Features implements FCElement = ( Name || "," )+;
+  Features implements FCElement = ( Name || "," )+ ";" ;
 
   symbolrule FeatureConfiguration =
                 fdName:Name

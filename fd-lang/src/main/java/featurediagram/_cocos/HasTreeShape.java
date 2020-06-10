@@ -22,6 +22,7 @@ public class HasTreeShape
   }
 
   private String calculateRootFeature(ASTFeatureDiagram node){
+    node.accept(collector);
     List<String> rootfeatures = collector.getOccurrences(FeatureNamesCollector.Occurrence.LEFT);
     if(rootfeatures.size() == 0){
       Log.error("0xFD003 Featurediagram" + node.getName() +

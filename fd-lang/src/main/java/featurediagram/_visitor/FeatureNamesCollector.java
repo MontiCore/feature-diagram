@@ -2,6 +2,7 @@
 package featurediagram._visitor;
 
 import featurediagram._ast.ASTFeatureTreeRule;
+import featurediagram._ast.ASTGroupPart;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,12 +21,12 @@ public class FeatureNamesCollector implements FeatureDiagramVisitor {
       occurrences.put(name, Occurrence.LEFT);
     }
 
-    node.getFeatureGroup().getGroupPartList().stream()
+    node.getFeatureGroup().streamGroupParts().map(ASTGroupPart::getName)
             .forEach(rightName -> {
               if(occurrences.getOrDefault(rightName, Occurrence.RIGHT) != Occurrence.RIGHT){
-                occurrences.put(rightName.getName(), Occurrence.BOTH);
+                occurrences.put(rightName, Occurrence.BOTH);
               }else {
-                occurrences.put(rightName.getName(), Occurrence.RIGHT);
+                occurrences.put(rightName, Occurrence.RIGHT);
               }
             });
   }

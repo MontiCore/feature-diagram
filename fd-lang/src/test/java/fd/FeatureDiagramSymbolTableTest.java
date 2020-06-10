@@ -76,7 +76,8 @@ public class FeatureDiagramSymbolTableTest {
     Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("C");
     assertTrue(featureSymbolOpt.isPresent());
     FeatureSymbol featureSymbol = featureSymbolOpt.get();
-//    assertEquals("fdvalid.BasicElements.C", featureSymbol.getFullName());
+    assertEquals("fdvalid.Imports.C", featureSymbol.getFullName());
+    assertTrue(featureSymbol.getEnclosingScope().resolveFeature("Y").isPresent());
     //TODO: proper evaluation of imported feature tree
   }
 }

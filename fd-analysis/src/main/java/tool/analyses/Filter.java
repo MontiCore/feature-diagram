@@ -9,14 +9,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Filter extends Analysis<Set<Map<String, Boolean>>> {
+public class Filter extends Analysis<Set<ASTFeatureConfiguration>> {
   public Filter(ASTFeatureConfiguration configuration) {
     super();
-    super.getModelBuilder().addFeatureModelFZNTrafo(new ConfigurationTrafo(configuration));
+    super.getModelBuilder().addFeatureModelFZNTrafo(new ConfigurationTrafo(configuration, false));
+    builder.setAllSolutions(true);
   }
 
   @Override
-  public void perform(Collection<Map<String, Boolean>> configurations) {
+  public void perform(Collection<ASTFeatureConfiguration> configurations) {
     setResult(new HashSet<>(configurations));
   }
 }

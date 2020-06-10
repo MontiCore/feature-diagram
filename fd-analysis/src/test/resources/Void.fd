@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+featurediagram Void {
+  A -> B;
+  A -> C | D;
+  A excludes B;
+}

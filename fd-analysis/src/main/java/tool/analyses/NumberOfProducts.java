@@ -1,8 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
+import featureconfiguration._ast.ASTFeatureConfiguration;
+
 import java.util.Collection;
-import java.util.Map;
 
 public class NumberOfProducts extends Analysis<Integer> {
   public NumberOfProducts() {
@@ -11,7 +12,7 @@ public class NumberOfProducts extends Analysis<Integer> {
   }
 
   @Override
-  public void perform(Collection<Map<String, Boolean>> configurations) {
+  public void perform(Collection<ASTFeatureConfiguration> configurations) {
     setResult(configurations.size());
   }
 
