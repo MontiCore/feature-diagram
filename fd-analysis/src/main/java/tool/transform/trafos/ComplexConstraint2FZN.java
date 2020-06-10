@@ -241,29 +241,15 @@ public class ComplexConstraint2FZN
   @Override
   public void endVisit(ASTRequires node) {
     String name = createVariable(node, Variable.Type.BOOL);
-    String helperName = "helper" + name;
-    Variable helpervariable = new Variable();
-    helpervariable.setType(Variable.Type.BOOL);
-    helpervariable.setName(helperName);
-    helpervariable.setAnnotation("var_is_introduced");
-    variables.put(helperName, helpervariable);
-    fznConstraints.add(new Constraint("bool_not", names.get(node.getLeft()), helperName));
-    fznConstraints.add(new Constraint("bool_or", helperName, names.get(node.getRight()), name));
+    fznConstraints.add(new Constraint("bool_or", names.get(node.getLeft())+"IsUnselected", names.get(node.getRight())+"IsSelected", name));
   }
 
   @Override
   public void endVisit(ASTExcludes node) {
     String name = createVariable(node, Variable.Type.BOOL);
-    String helperName = "helper" + name;
-    Variable helpervariable = new Variable();
-    helpervariable.setType(Variable.Type.BOOL);
-    helpervariable.setName(helperName);
-    helpervariable.setAnnotation("var_is_introduced");
-    variables.put(helperName, helpervariable);
-    fznConstraints.add(new Constraint("bool_not", name, helperName));
     fznConstraints.add(
-            new Constraint("bool_and", names.get(node.getLeft()), names.get(node.getRight()),
-                    helperName));
+            new Constraint("bool_or", names.get(node.getLeft())+"IsUnselected", names.get(node.getRight())+"IsUnselected",
+                    name));
   }
 
   @Override

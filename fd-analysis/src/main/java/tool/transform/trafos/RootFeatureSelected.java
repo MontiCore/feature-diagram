@@ -43,7 +43,7 @@ public class RootFeatureSelected implements FeatureModel2FlatZincModelTrafo {
 
   @Override
   public void perform() {
-    Constraint rootFeature = new Constraint("int_eq", "1", featureModel.getName());
+    Constraint rootFeature = new Constraint("int_eq", "1", featureModel.getAstNode().getRootFeature());
     constraints.add(rootFeature);
   }
 }

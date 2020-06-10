@@ -20,7 +20,7 @@ public class DeadFeature extends Analysis<List<String>> implements FeatureConfig
   @Override
   public void perform(Collection<ASTFeatureConfiguration> configurations) {
     FeatureNameCollector collector = new FeatureNameCollector();
-    getFeatureModel().accept(collector);
+    getFeatureModel().getAstNode().accept(collector);
     deadFeatures = collector.getNames();
     configurations.forEach(configuration -> {
       configuration.accept(this);

@@ -16,7 +16,7 @@ public class FalseOptional extends Analysis<List<String>> implements FeatureConf
   @Override
   public void perform(Collection<ASTFeatureConfiguration> configurations) {
     OptionalFeatureFinder finder = new OptionalFeatureFinder();
-    getFeatureModel().accept(finder);
+    getFeatureModel().getAstNode().accept(finder);
     falseOptionals = finder.getOptionalFeatures();
     for (ASTFeatureConfiguration config : configurations) {
       config.accept(this);
