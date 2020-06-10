@@ -55,7 +55,7 @@ public class BasicTrafo
 
   @Override
   public void perform() {
-    featureModel.accept(this);
+    featureModel.getSpannedScope().accept(this);
   }
 
   public void visit(FeatureSymbol feature) {

@@ -16,7 +16,7 @@ public class IsValid extends Analysis<Boolean> {
     this.builder.addFeatureModelFZNTrafo(new ConfigurationTrafo(configuration));
   }
 
-  public void perform(Collection<Map<String, Boolean>> configurations) {
+  public void perform(Collection<ASTFeatureConfiguration> configurations) {
     setResult(!configurations.isEmpty());
   }
 

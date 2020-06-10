@@ -1,37 +1,35 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
-import featurediagram._symboltable.FeatureSymbol;
+import featureconfiguration._ast.ASTFeatureConfiguration;
+import featureconfigurationpartial._ast.ASTUnselect;
+import featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
 import tool.transform.FZNModelBuilder;
 import tool.util.OptionalFeatureFinder;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-public class FalseOptional extends Analysis<List<String>> {
+public class FalseOptional extends Analysis<List<String>> implements FeatureConfigurationPartialVisitor {
+
+  private List<String> falseOptionals;
   @Override
-  public void perform(Collection<Map<String, Boolean>> configurations) {
+  public void perform(Collection<ASTFeatureConfiguration> configurations) {
     OptionalFeatureFinder finder = new OptionalFeatureFinder();
     getFeatureModel().accept(finder);
-    List<String> optionalFeatures = finder.getOptionalFeatures().stream()
-        .map(FeatureSymbol::getName).collect(Collectors.toList());
-    for (Map<String, Boolean> config : configurations) {
-      List<String> selected = config.entrySet().stream()
-          .filter(e -> e.getValue() != null && e.getValue()).map(Map.Entry::getKey)
-          .collect(Collectors.toList());
-      optionalFeatures = optionalFeatures.stream().filter(selected::contains)
-          .collect(Collectors.toList());
-      if (optionalFeatures.isEmpty()) {
-        break;
-      }
+    falseOptionals = finder.getOptionalFeatures();
+    for (ASTFeatureConfiguration config : configurations) {
+      config.accept(this);
     }
-    setResult(optionalFeatures);
+    setResult(falseOptionals);
   }
 
   @Override
   public FZNModelBuilder getModelBuilder() {
     return new FZNModelBuilder(true);
+  }
+
+  public void visit(ASTUnselect node){
+    node.streamNames().forEach(name -> falseOptionals.remove(name));
   }
 }
