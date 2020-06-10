@@ -2,9 +2,7 @@
 package featurediagram;
 
 import de.monticore.io.paths.ModelPath;
-import featurediagram._ast.ASTConstraintExpression;
 import featurediagram._ast.ASTFDCompilationUnit;
-import featurediagram._ast.ASTFeatureConstraint;
 import featurediagram._parser.FeatureDiagramParser;
 import featurediagram._symboltable.*;
 import org.junit.Assert;
@@ -12,12 +10,9 @@ import org.junit.Test;
 import tool.FeatureModelAnalysisTool;
 import tool.analyses.Analysis;
 import tool.analyses.NumberOfProducts;
-import tool.transform.trafos.ComplexConstraint2FZN;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertNotNull;
 

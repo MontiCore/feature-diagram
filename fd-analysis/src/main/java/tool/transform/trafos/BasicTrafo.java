@@ -1,20 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos;
 
-import featurediagram._symboltable.*;
-import featurediagram._visitor.HierachicalFeatureSymbolVisitor;
+import featurediagram._ast.*;
+import featurediagram._symboltable.FeatureDiagramSymbol;
+import featurediagram._symboltable.FeatureSymbol;
+import featurediagram._visitor.FeatureDiagramVisitor;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
 import tool.transform.flatzinc.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 public class BasicTrafo
-    implements FeatureModel2FlatZincModelTrafo, HierachicalFeatureSymbolVisitor {
+    implements FeatureModel2FlatZincModelTrafo, FeatureDiagramVisitor {
   private FeatureDiagramSymbol featureModel;
 
   private List<String> names = new ArrayList<>();
@@ -24,6 +25,8 @@ public class BasicTrafo
   private List<Variable> variables = new ArrayList<>();
 
   private Random random = new Random();
+
+  private ASTFeatureTreeRule currentGroupparent;
 
   @Override
   public void setNames(List<String> names) {
@@ -65,12 +68,17 @@ public class BasicTrafo
     variable.setAnnotation("output_var");
   }
 
-  public void visit(AndGroup andGroup){
-    for(int i = 0; i < andGroup.size(); i++) {
-      FeatureSymbol childFeature = andGroup.get(i);
+  @Override
+  public void visit(ASTFeatureTreeRule node){
+    currentGroupparent = node;
+  }
+
+  public void visit(ASTAndGroup andGroup){
+    for(int i = 0; i < andGroup.sizeGroupParts(); i++) {
+      ASTGroupPart childFeature = andGroup.getGroupPart(i);
       String min;
       String max;
-      if (andGroup.getOptionalFeatures().get(i)) {
+      if (childFeature.isOptional()) {
         min = "0";
         max = "1";
       }
@@ -78,20 +86,20 @@ public class BasicTrafo
         min = "1";
         max = "1";
       }
-      addCardinalFeature(andGroup.getParent(), childFeature, min, max);
+      addCardinalFeature(currentGroupparent.getNameSymbol(), childFeature.getNameSymbol(), min, max);
     }
   }
 
-  public void visit(OrGroup orGroup){
-    addCardinalGroup(orGroup.getParent(), orGroup, "1", ""+orGroup.size());
+  public void visit(ASTOrGroup orGroup){
+    addCardinalGroup(currentGroupparent.getNameSymbol(), orGroup, "1", ""+orGroup.sizeGroupParts());
   }
 
-  public void visit(XOrGroup xOrGroup){
-    addCardinalGroup(xOrGroup.getParent(), xOrGroup, "1", "1");
+  public void visit(ASTXorGroup xOrGroup){
+    addCardinalGroup(currentGroupparent.getNameSymbol(), xOrGroup, "1", "1");
   }
 
-  public void visit(CardinalityGroup cardinalityGroup){
-    addCardinalGroup(cardinalityGroup.getParent(), cardinalityGroup, ""+cardinalityGroup.getMin(), ""+cardinalityGroup.getMax());
+  public void visit(ASTCardinalizedGroup cardinalityGroup){
+    addCardinalGroup(currentGroupparent.getNameSymbol(), cardinalityGroup, ""+cardinalityGroup.getCardinality().getLowerBound(), ""+cardinalityGroup.getCardinality().getUpperBound());
   }
 
   private void addCardinalFeature(FeatureSymbol parent, FeatureSymbol child, String min,
@@ -114,15 +122,15 @@ public class BasicTrafo
     constraints.add(constraint5);
   }
 
-  private void addCardinalGroup(FeatureSymbol parent, FeatureGroup children, String min,
+  private void addCardinalGroup(FeatureSymbol parent, ASTFeatureGroup children, String min,
       String max) {
     String helperName1 = createNewHelper(parent.getName() + "IsZero", Variable.Type.BOOL);
     String helperName2 = createNewHelper(parent.getName() + "HasZeroChildren", Variable.Type.BOOL);
     String helperName3 = createNewHelper(parent.getName() + "IsNotZero", Variable.Type.BOOL);
-    String subfeatures = children.getMembers().stream()
-        .map(FeatureSymbol::getName).collect(Collectors.joining(","));
-    String factors = children.getMembers().stream().map(t -> "1").collect(Collectors.joining(","));
-    String negativeFactors = children.getMembers().stream().map(t -> "-1")
+    String subfeatures = children.streamGroupParts()
+        .map(ASTGroupPart::getName).collect(Collectors.joining(","));
+    String factors = children.streamGroupParts().map(t -> "1").collect(Collectors.joining(","));
+    String negativeFactors = children.streamGroupParts().map(t -> "-1")
         .collect(Collectors.joining(","));
     //if (parent = 0) then children = 0
     Constraint constraint1 = new Constraint("int_eq_reif", "0", parent.getName(), helperName1);

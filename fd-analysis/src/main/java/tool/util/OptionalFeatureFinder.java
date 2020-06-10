@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.util;
 
-import featurediagram._symboltable.AndGroup;
+import featurediagram._ast.ASTAndGroup;
 import featurediagram._symboltable.FeatureSymbol;
 import featurediagram._visitor.FeatureDiagramVisitor;
 
@@ -12,10 +12,10 @@ public class OptionalFeatureFinder implements FeatureDiagramVisitor {
   private List<FeatureSymbol> optionalFeatures = new ArrayList<>();
 
   @Override
-  public void visit(AndGroup andGroup) {
-    for(int i = 0; i < andGroup.size(); i++){
-      if(andGroup.getOptionalFeatures().get(i)){
-        optionalFeatures.add(andGroup.get(i));
+  public void visit(ASTAndGroup andGroup) {
+    for(int i = 0; i < andGroup.sizeGroupParts(); i++){
+      if(andGroup.getGroupPart(i).isOptional()){
+        optionalFeatures.add(andGroup.getGroupPart(i).getNameSymbol());
       }
     }
   }

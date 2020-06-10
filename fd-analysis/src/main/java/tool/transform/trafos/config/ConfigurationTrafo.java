@@ -3,7 +3,6 @@ package tool.transform.trafos.config;
 
 import featureconfiguration._ast.ASTFeatureConfiguration;
 import featurediagram._symboltable.FeatureDiagramSymbol;
-import featurediagram._visitor.HierachicalFeatureSymbolVisitor;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
 import tool.transform.flatzinc.Variable;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ConfigurationTrafo
-    implements FeatureModel2FlatZincModelTrafo, HierachicalFeatureSymbolVisitor {
+    implements FeatureModel2FlatZincModelTrafo {
 
   private Map<String, Boolean> configuration;
 

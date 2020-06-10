@@ -4,8 +4,8 @@ package tool.transform.trafos;
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import featurediagram._ast.ASTConstraint;
 import featurediagram._ast.ASTExcludes;
+import featurediagram._ast.ASTFeatureConstraint;
 import featurediagram._ast.ASTRequires;
 import featurediagram._symboltable.FeatureDiagramSymbol;
 import featurediagram._visitor.FeatureDiagramVisitor;
@@ -85,8 +85,8 @@ public class ComplexConstraint2FZN
   }
 
   @Override
-  public void endVisit(ASTConstraint node) {
-    fznConstraints.add(new Constraint("bool_eq", "true", names.get(node.getExpression())));
+  public void endVisit(ASTFeatureConstraint node) {
+    fznConstraints.add(new Constraint("bool_eq", "true", names.get(node.getConstraint())));
   }
 
   @Override

@@ -25,7 +25,7 @@ public class CompleteConfigToPartialConfig implements FeatureConfigurationVisito
   }
 
   public void visit(ASTFeatures features){
-    features.streamFeatures().forEach(feature ->
+    features.streamNames().forEach(feature ->
       config.replace(feature, Boolean.TRUE));
   }
 
