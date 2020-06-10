@@ -68,6 +68,7 @@ public class FeatureModelAnalysisTool {
   }
 
   public void performAnalyses() {
+    solver.setFeatureDiagrammName(featureSymbol.getName());
     analyses.forEach(
         analysis -> {
           FZNModelBuilder modelPrinter = analysis.getModelBuilder();
