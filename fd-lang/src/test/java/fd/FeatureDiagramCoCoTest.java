@@ -21,7 +21,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-@Ignore
+
 public class FeatureDiagramCoCoTest {
 
   @BeforeClass
@@ -73,7 +73,7 @@ public class FeatureDiagramCoCoTest {
 
   @Test
   public void testTwoRoots() throws IOException {
-    testCoCo("TwoRoots.fd", "0xFD001", "0xFD004");
+    testCoCo("TwoRoots.fd", "0xFD001", "0xFD004", "0xFD004");
   }
 
   protected void testCoCo(String modelName, String... errorCode) throws IOException {

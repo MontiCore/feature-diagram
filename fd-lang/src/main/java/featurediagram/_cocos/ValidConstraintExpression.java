@@ -10,13 +10,14 @@ import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 import featurediagram._ast.ASTFeatureConstraint;
+import featurediagram._visitor.FeatureDiagramVisitor;
 
 /**
  * This CoCo checks, whether an Expression used as cross- tree constraint
  * uses a forbidden kind of expression.
  */
 public class ValidConstraintExpression
-    implements FeatureDiagramASTFeatureConstraintCoCo, CommonExpressionsVisitor {
+    implements FeatureDiagramASTFeatureConstraintCoCo, FeatureDiagramVisitor {
 
   protected ASTExpression expression;
 
