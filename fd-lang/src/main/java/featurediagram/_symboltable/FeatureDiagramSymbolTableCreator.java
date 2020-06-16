@@ -6,7 +6,9 @@ import featurediagram.FeatureDiagramMill;
 import featurediagram._ast.ASTFDCompilationUnit;
 import featurediagram._ast.ASTFeatureTreeRule;
 import featurediagram._ast.ASTGroupPart;
+import featurediagram._visitor.SubFeatureFinder;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
@@ -75,9 +77,10 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
     // try to find existing feature symbol
     Optional<FeatureSymbol> resolvedFeatureSymbol = encScope.resolveFeature(name);
 
-    // if a symbol was found, use this
+    // if a symbol was found, use this and also add transitive Subfeatures
     if (resolvedFeatureSymbol.isPresent()) {
       symbol = resolvedFeatureSymbol.get();
+      addSubfeaturesRecursively(encScope, symbol);
     }
 
     // else, create new symbol
@@ -90,6 +93,19 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
 
     //connect symbol with environment
     addToScope(symbol);
+  }
+
+  private void addSubfeaturesRecursively(IFeatureDiagramScope encScope, FeatureSymbol symbol){
+    if(symbol.getEnclosingScope() != encScope) {
+      List<String> subfeatures = new SubFeatureFinder().getAllSubfeatures(symbol);
+      subfeatures.forEach(subfeature -> {
+        Optional<FeatureSymbol> subFeatureSybolOpt = symbol.getEnclosingScope().resolveFeature(subfeature);
+        if (subFeatureSybolOpt.isPresent()) {
+          addSubfeaturesRecursively(subFeatureSybolOpt.get().getEnclosingScope(), subFeatureSybolOpt.get());
+          addToScope(subFeatureSybolOpt.get());
+        }
+      });
+    }
   }
 
 }

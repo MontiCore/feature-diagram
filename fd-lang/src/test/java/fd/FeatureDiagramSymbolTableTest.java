@@ -77,7 +77,29 @@ public class FeatureDiagramSymbolTableTest {
     assertTrue(featureSymbolOpt.isPresent());
     FeatureSymbol featureSymbol = featureSymbolOpt.get();
     assertEquals("fdvalid.Imports.C", featureSymbol.getFullName());
-    assertTrue(featureSymbol.getEnclosingScope().resolveFeature("Y").isPresent());
-    //TODO: proper evaluation of imported feature tree
+
+    Optional<FeatureSymbol> featureSymbolOptH = fdScope.resolveFeature("fdvalid.Imports.H");
+    assertTrue(featureSymbolOptH.isPresent());
+    FeatureSymbol featureSymbolH = featureSymbolOptH.get();
+    assertEquals("fdvalid.Imports.H", featureSymbolH.getFullName());
+  }
+
+  @Test
+  public void testTransitiveImport() throws IOException {
+    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/TransitiveImport.fd");
+    Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("fdvalid.TransitiveImport.AA");
+    assertTrue(featureSymbolOpt.isPresent());
+    FeatureSymbol featureSymbol = featureSymbolOpt.get();
+    assertEquals("fdvalid.TransitiveImport.AA", featureSymbol.getFullName());
+
+    featureSymbolOpt = fdScope.resolveFeature("fdvalid.TransitiveImport.X");
+    assertTrue(featureSymbolOpt.isPresent());
+    featureSymbol = featureSymbolOpt.get();
+    assertEquals("fdvalid.TransitiveImport.X", featureSymbol.getFullName());
+
+    Optional<FeatureSymbol> featureSymbolOptH = fdScope.resolveFeature("fdvalid.TransitiveImport.H");
+    assertTrue(featureSymbolOptH.isPresent());
+    FeatureSymbol featureSymbolH = featureSymbolOptH.get();
+    assertEquals("fdvalid.TransitiveImport.H", featureSymbolH.getFullName());
   }
 }
