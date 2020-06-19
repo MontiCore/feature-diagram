@@ -46,21 +46,24 @@ The language is extensible to tailor it for various different applications.
 Many notational and semantic variations of the original feature diagrams
 as presented in [[KCH+90]](https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf)
 have been developed. This language uses feature models with the following characteristics:
-* Each feature diagram must have a root feature
-* A feature may not be member of more than one feature group
+* Each feature models must have a root feature
+* The features of a feature model are in a tree structure described by feature groups
 * The supported kinds of groups are: 
     * usual "is child of" (ANDGroup)
     * alternative features (XORGroup)
     * selection of features (ORGroup)
     * lower and upper bound for number of selected features (CardinalityGroup)
+* A feature may not be member of more than one feature group
+* Obligation or optionality of a feature in any group except ANDGroup is discarded. 
+All features that are members of such groups are regarded as optional features
+* A feature model may import other feature models. Through this, the root feature of an
+  imported feature model can be used in the current model.   The tree induced by 
+  the imported feature, as well as all cross-tree constraints, are imported as well.
 * Cross-tree constraints are expressions over any features with logic operators, 
   such as **and** `&&`, **or** `||`. Cross-tree constraints can further use the operators
   `requires` and `excludes`.
-* Obligation or optionality of a feature in any group except ANDGroup is discarded. 
-All features that are members of such groups are regarded as optional features
 
 ## Syntax Teaser
-
 
 Each feature model has a name and a body that is surrounded by curly brackets.
 The body contains rules that define the feature tree. Each rule describes a 
@@ -138,17 +141,31 @@ The extension points are:
 * The interface nonterminal **FDElement** can be implemented to add further 
 elements to the feature diagram's body.
 * The interface nonterminal **FeatureGroup** can be implemented to add further 
-kinds of feature groups. However, each implementation must contain a (non-empty)
-iteration of 'Feature' nonterminals. Please note, that these should be added to
-the *GroupKind* enumeration in the symbol table as well.
-* The interface nonterminal **Expression** can be implemented to add further
-syntax for cross-tree constraints. 
+kinds of feature groups. As indicated by the right-hand side of the 
+interface nonterminal, each implementation must contain a (non-empty)
+iteration of 'GroupPart' nonterminals (i.e., a feature name and the question 
+mark indicating optionality). 
+* The interface nonterminal **Expression** inherited from the language component
+**CommonExpressions** can be implemented to add further syntax for cross-tree 
+constraints. 
+* The nonterminal **Feature** is never instantiated by the parser, but produces a
+**FeatureSymbol** that is an extension point in the symbol table.
+The name of a feature symbol is used throughout different places in the grammar. 
+By adding an adapter that adapts a foreign symbol kind to a feature symbol, language
+users can indicate that the feature name refers to a name of a certain kind defined 
+in another model.
 
 ### Handwritten AST & Symbol Table Classes
-The AST data structure has not been customized with any handwritten extensions to the generated classes.
+The AST data structure has been customized with handwritten extensions to the 
+generated classes as follows:
+* The `ASTFeatureDiagram` contains a method `String getRootFeature()` for 
+obtaining the root feature of the feature models as String and a method 
+`List<String> getFeatures` to obtain all features of a feature diagram as list of Strings.
+* The `ASTFeatureGroup` defines a method `List<FeatureSymbol> getSubFeatureSymbols()` 
+for retrieving all FeatureSymbols of features that are children of this group. 
 
-The symbol table data structure has been extended with several handwritten classes as described in the 
-following:
+The symbol table data structure has been extended with handwritten classes as 
+described in the following:
 
 * The `FeatureDiagramSymbol` has been extended with the TOP mechanism. For convenience, we added a 
 method for retrieving all features contained in the feature diagram.
@@ -200,6 +217,7 @@ feature diagram symbol tables is implemented as well.
 ### Symbols exported by Feature Diagrams:
 - A feature diagram exports the feature diagram symbol and its feature symbols
   for external reference.
+- The tree structure, groups, and cross-tree constraints are **not** represented in the symbol table
 - The artifact scope of a feature diagram "F.fd" is stored in "F.fdsym".
 
 
