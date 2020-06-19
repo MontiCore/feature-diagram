@@ -166,13 +166,9 @@ for retrieving all FeatureSymbols of features that are children of this group.
 
 The symbol table data structure has been extended with handwritten classes as 
 described in the following:
-
 * The `FeatureDiagramSymbol` has been extended with the TOP mechanism. For convenience, we added a 
-method for retrieving all features contained in the feature diagram.
-* FeatureSymbols contain a list of `FeatureGroup`. Feature groups have a `GroupKind` that is either
-`AND`, `XOR`, or `OR`. A feature group has children in form of a list of feature symbols.
-Feature groups are instantiated during symbol table creation in the (handwritten) class
-`FeatureDiagramSymbolTableCreator`.
+method `List<FeatureSymbol> getAllFeatures()` for retrieving all features contained in the feature diagram.
+
 
 <div align="center">
 <img width="800" src="../../../../doc/SymbolTableDataStructure.png">
@@ -202,7 +198,6 @@ feature diagram symbol tables is implemented as well.
   ```
   class FeatureSymbol {
       String name;
-      List<FeatureGroup> children;
   }
   ```
   - A FeatureDiagramSymbol is defined as:
@@ -239,21 +234,21 @@ feature diagram symbol tables is implemented as well.
 
 * For minimal use: This language component provides a generator that translates feature models to 
 [FlatZinc][flatzinc] models. FlatZinc, as part of MiniZinc, is a modeling language
-enabling to model constraint satisfaction (and optimization) problems. Different
+enabling to model constraint satisfaction (and optimization) problems. Several
 constraint solvers support FlatZinc as input format. The generator is located [here][generator].
 
 ## Tool
 
 The feature model language component provides the [FeatureModelAnalysisTool][tool],
-which coordinates the execution of one or more several analyses against a featurre model
+which coordinates the execution of one or more several analyses against a feature model
 and, optionally, additional information (depends on the analysis kinds).
 
 ### Supported Feature Analyses
 The following table presents an overview of supported feature diagram analysis classes
 regarding their input in form of arguments and their output in form of the analysis result.
-In this table, we use `FM` as abbreviated form of `FeatureDiagramSymbol`, 
-`FC` as abbreviated form of `FeatureConfigurationSymbol`, and `Feature` as abbreviated 
-form of `FeatureSymbol`.
+In this table, we use `FM` as abbreviated form of `ASTFeatureDiagram`, 
+`FC` as abbreviated form of `ASTFeatureConfiguration`, and `Feature` as abbreviated 
+form of `ASTFeature`.
 
 | Analysis Class | Input | Result | Explanation |
 | ---    | ---      |  ------  |---------|
