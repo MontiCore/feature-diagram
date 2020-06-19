@@ -169,14 +169,6 @@ described in the following:
 * The `FeatureDiagramSymbol` has been extended with the TOP mechanism. For convenience, we added a 
 method `List<FeatureSymbol> getAllFeatures()` for retrieving all features contained in the feature diagram.
 
-
-<div align="center">
-<img width="800" src="../../../../doc/SymbolTableDataStructure.png">
-<br>
-<b>Figure 1:</b>Symbol Table Data Structure
-</div>
-<br>
-
 The symbol table is instantiated by the class [FeatureDiagramSymbolTableCreator][fdstc]. Functionality to load and store 
 feature diagram symbol tables is implemented as well.
 
