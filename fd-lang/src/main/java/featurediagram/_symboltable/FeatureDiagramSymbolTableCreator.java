@@ -6,9 +6,7 @@ import featurediagram.FeatureDiagramMill;
 import featurediagram._ast.ASTFDCompilationUnit;
 import featurediagram._ast.ASTFeatureTreeRule;
 import featurediagram._ast.ASTGroupPart;
-import featurediagram._visitor.SubFeatureFinder;
 
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
@@ -27,19 +25,26 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
   @Override
   public FeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
     List<ImportStatement> importStatements = rootNode
-        .getMCImportStatementList().stream()
-        .map(i -> new ImportStatement(i.getQName(), i.isStar()))
-        .collect(Collectors.toList());
+            .getMCImportStatementList().stream()
+            .map(i -> new ImportStatement(i.getQName(), i.isStar()))
+            .collect(Collectors.toList());
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
 
     FeatureDiagramArtifactScope artifactScope = FeatureDiagramMill
-        .featureDiagramArtifactScopeBuilder()
-        .addAllImports(importStatements)
-        .setPackageName(packageName)
-        .setEnclosingScopeAbsent()
-        .build();
+            .featureDiagramArtifactScopeBuilder()
+            .addAllImports(importStatements)
+            .setPackageName(packageName)
+            .setEnclosingScopeAbsent()
+            .build();
 
     putOnStack(artifactScope);
+    importStatements.forEach(importStatement -> {
+      Optional<FeatureDiagramSymbol> diagramOpt = artifactScope.resolveFeatureDiagram(importStatement.getStatement());
+      if(diagramOpt.isPresent()){
+        rootNode.getFeatureDiagram().addAllFDElements(diagramOpt.get().getAstNode().getFDElementList());
+      }
+    });
+
     rootNode.accept(getRealThis());
     return artifactScope;
   }
@@ -49,7 +54,8 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
    *
    * @param node
    */
-  @Override public void visit(ASTGroupPart node) {
+  @Override
+  public void visit(ASTGroupPart node) {
     super.visit(node);
     createOrFindFeatureSymbolOnFirstOccurrence(node.getName());
   }
@@ -59,7 +65,8 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
    *
    * @param node
    */
-  @Override public void visit(ASTFeatureTreeRule node) {
+  @Override
+  public void visit(ASTFeatureTreeRule node) {
     super.visit(node);
     createOrFindFeatureSymbolOnFirstOccurrence(node.getName());
   }
@@ -71,41 +78,16 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
       return;
     }
 
-    // else, we need to find an existing or create a new feature symbol for this name
-    FeatureSymbol symbol;
+    // else, we need to create a new feature symbol for this name
+    FeatureSymbol symbol = FeatureDiagramMill
+            .featureSymbolBuilder()
+            .setName(name)
+            .build();
 
-    // try to find existing feature symbol
-    Optional<FeatureSymbol> resolvedFeatureSymbol = encScope.resolveFeature(name);
-
-    // if a symbol was found, use this and also add transitive Subfeatures
-    if (resolvedFeatureSymbol.isPresent()) {
-      symbol = resolvedFeatureSymbol.get();
-      addSubfeaturesRecursively(encScope, symbol);
-    }
-
-    // else, create new symbol
-    else {
-      symbol = FeatureDiagramMill
-          .featureSymbolBuilder()
-          .setName(name)
-          .build();
-    }
 
     //connect symbol with environment
     addToScope(symbol);
   }
 
-  private void addSubfeaturesRecursively(IFeatureDiagramScope encScope, FeatureSymbol symbol){
-    if(symbol.getEnclosingScope() != encScope) {
-      List<String> subfeatures = new SubFeatureFinder().getAllSubfeatures(symbol);
-      subfeatures.forEach(subfeature -> {
-        Optional<FeatureSymbol> subFeatureSybolOpt = symbol.getEnclosingScope().resolveFeature(subfeature);
-        if (subFeatureSybolOpt.isPresent()) {
-          addSubfeaturesRecursively(subFeatureSybolOpt.get().getEnclosingScope(), subFeatureSybolOpt.get());
-          addToScope(subFeatureSybolOpt.get());
-        }
-      });
-    }
-  }
 
 }

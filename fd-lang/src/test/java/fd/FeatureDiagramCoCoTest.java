@@ -107,7 +107,6 @@ public class FeatureDiagramCoCoTest {
       throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
-    FeatureDiagramTool.transform(ast);
     FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
     FeatureDiagramGlobalScope globalScope = new FeatureDiagramGlobalScope(mp, lang);
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);

@@ -2,7 +2,7 @@
 
 package fdvalid;
 
-import fdvalid.BasicElements.C;
+import fdvalid.BasicElements;
 
 featurediagram Imports {
   X -> Y;

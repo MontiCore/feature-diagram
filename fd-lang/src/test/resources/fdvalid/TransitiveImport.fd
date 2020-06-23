@@ -2,7 +2,7 @@
 
 package fdvalid;
 
-import fdvalid.Imports.X;
+import fdvalid.Imports;
 
 featurediagram TransitiveImport {
   AA -> X;

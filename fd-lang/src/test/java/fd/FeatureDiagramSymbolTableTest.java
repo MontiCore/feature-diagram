@@ -73,7 +73,7 @@ public class FeatureDiagramSymbolTableTest {
   @Test
   public void testImport() throws IOException {
     FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/Imports.fd");
-    Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("C");
+    Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("fdvalid.Imports.C");
     assertTrue(featureSymbolOpt.isPresent());
     FeatureSymbol featureSymbol = featureSymbolOpt.get();
     assertEquals("fdvalid.Imports.C", featureSymbol.getFullName());
