@@ -4,7 +4,7 @@ package fdvalid;
 
 import fdvalid.BasicElements;
 
-featurediagram Imports {
-  X -> Y;
-  Y -> C;
+featurediagram RootImport {
+  M -> Y;
+  Y -> Z;
 }

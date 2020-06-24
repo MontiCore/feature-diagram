@@ -72,16 +72,16 @@ public class FeatureDiagramSymbolTableTest {
 
   @Test
   public void testImport() throws IOException {
-    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/Imports.fd");
-    Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("fdvalid.Imports.C");
+    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/LeafImport.fd");
+    Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("fdvalid.LeafImport.C");
     assertTrue(featureSymbolOpt.isPresent());
     FeatureSymbol featureSymbol = featureSymbolOpt.get();
-    assertEquals("fdvalid.Imports.C", featureSymbol.getFullName());
+    assertEquals("fdvalid.LeafImport.C", featureSymbol.getFullName());
 
-    Optional<FeatureSymbol> featureSymbolOptH = fdScope.resolveFeature("fdvalid.Imports.H");
+    Optional<FeatureSymbol> featureSymbolOptH = fdScope.resolveFeature("fdvalid.LeafImport.H");
     assertTrue(featureSymbolOptH.isPresent());
     FeatureSymbol featureSymbolH = featureSymbolOptH.get();
-    assertEquals("fdvalid.Imports.H", featureSymbolH.getFullName());
+    assertEquals("fdvalid.LeafImport.H", featureSymbolH.getFullName());
   }
 
   @Test
@@ -101,5 +101,38 @@ public class FeatureDiagramSymbolTableTest {
     assertTrue(featureSymbolOptH.isPresent());
     FeatureSymbol featureSymbolH = featureSymbolOptH.get();
     assertEquals("fdvalid.TransitiveImport.H", featureSymbolH.getFullName());
+  }
+
+  @Test
+  public void testRootImport() throws IOException {
+    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/RootImport.fd");
+    Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("fdvalid.RootImport.Y");
+    assertTrue(featureSymbolOpt.isPresent());
+    FeatureSymbol featureSymbol = featureSymbolOpt.get();
+    assertEquals("fdvalid.RootImport.Y", featureSymbol.getFullName());
+
+    featureSymbolOpt = fdScope.resolveFeature("fdvalid.RootImport.M");
+    assertTrue(featureSymbolOpt.isPresent());
+    featureSymbol = featureSymbolOpt.get();
+    assertEquals("fdvalid.RootImport.M", featureSymbol.getFullName());
+
+    Optional<FeatureDiagramSymbol> featureDiagramSymbolOpt = fdScope.resolveFeatureDiagram("fdvalid.RootImport");
+    assertTrue(featureDiagramSymbolOpt.isPresent());
+    FeatureDiagramSymbol featureDiagramSymbol = featureDiagramSymbolOpt.get();
+    assertEquals("A", featureDiagramSymbol.getAstNode().getRootFeature());
+  }
+
+  @Test
+  public void testSurroundedImport() throws IOException {
+    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/SurroundedImport.fd");
+    Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("fdvalid.SurroundedImport.C");
+    assertTrue(featureSymbolOpt.isPresent());
+    FeatureSymbol featureSymbol = featureSymbolOpt.get();
+    assertEquals("fdvalid.SurroundedImport.C", featureSymbol.getFullName());
+
+    Optional<FeatureSymbol> featureSymbolOptH = fdScope.resolveFeature("fdvalid.SurroundedImport.H");
+    assertTrue(featureSymbolOptH.isPresent());
+    FeatureSymbol featureSymbolH = featureSymbolOptH.get();
+    assertEquals("fdvalid.SurroundedImport.H", featureSymbolH.getFullName());
   }
 }
