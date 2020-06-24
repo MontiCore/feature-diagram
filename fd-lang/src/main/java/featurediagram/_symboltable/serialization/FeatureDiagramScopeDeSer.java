@@ -7,6 +7,10 @@ import java.nio.file.Paths;
 
 public class FeatureDiagramScopeDeSer extends FeatureDiagramScopeDeSerTOP {
 
+  public FeatureDiagramScopeDeSer(){
+    this.setSymbolFileExtension("fdsym");
+  }
+
   private static FeatureDiagramScopeDeSer instance;
 
   public static FeatureDiagramScopeDeSer getInstance() {

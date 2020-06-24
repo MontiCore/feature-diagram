@@ -78,6 +78,9 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
     // if a symbol was found, use this
     if (resolvedFeatureSymbol.isPresent()) {
       symbol = resolvedFeatureSymbol.get();
+
+      // create AST frmo symbol, find feature tree with symbol as root
+      // resolve all features from this tree, and add all symbols to scope
     }
 
     // else, create new symbol

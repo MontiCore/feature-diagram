@@ -7,11 +7,14 @@ import de.se_rwth.commons.logging.LogStub;
 import featurediagram._ast.ASTFDCompilationUnit;
 import featurediagram._parser.FeatureDiagramParser;
 import featurediagram._symboltable.*;
+import featurediagram._symboltable.serialization.FeatureDiagramScopeDeSer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
@@ -79,5 +82,12 @@ public class FeatureDiagramSymbolTableTest {
     assertEquals("fdvalid.Imports.C", featureSymbol.getFullName());
     assertTrue(featureSymbol.getEnclosingScope().resolveFeature("Y").isPresent());
     //TODO: proper evaluation of imported feature tree
+  }
+
+  @Test
+  public void testDeSer() throws IOException {
+    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/CarNavigation.fd");
+    FeatureDiagramScopeDeSer.getInstance().store(fdScope);
+    assertTrue(new File("target/symbols/CarNavigation.fdsym").exists());
   }
 }
