@@ -6,6 +6,7 @@ import featurediagram.FeatureDiagramMill;
 import featurediagram._ast.ASTFDCompilationUnit;
 import featurediagram._ast.ASTFeatureTreeRule;
 import featurediagram._ast.ASTGroupPart;
+import net.sourceforge.plantuml.Log;
 
 import java.util.Deque;
 import java.util.List;
@@ -24,27 +25,16 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
 
   @Override
   public FeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
-    List<ImportStatement> importStatements = rootNode
-            .getMCImportStatementList().stream()
-            .map(i -> new ImportStatement(i.getQName(), i.isStar()))
-            .collect(Collectors.toList());
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
 
     FeatureDiagramArtifactScope artifactScope = FeatureDiagramMill
-            .featureDiagramArtifactScopeBuilder()
-            .addAllImports(importStatements)
-            .setPackageName(packageName)
-            .setEnclosingScopeAbsent()
-            .build();
+        .featureDiagramArtifactScopeBuilder()
+        .setPackageName(packageName)
+        .setEnclosingScopeAbsent()
+        .build();
+    handleImportStatements(rootNode, artifactScope);
 
     putOnStack(artifactScope);
-    importStatements.forEach(importStatement -> {
-      Optional<FeatureDiagramSymbol> diagramOpt = artifactScope.resolveFeatureDiagram(importStatement.getStatement());
-      if(diagramOpt.isPresent()){
-        rootNode.getFeatureDiagram().addAllFDElements(diagramOpt.get().getAstNode().getFDElementList());
-      }
-    });
-
     rootNode.accept(getRealThis());
     return artifactScope;
   }
@@ -71,6 +61,31 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
     createOrFindFeatureSymbolOnFirstOccurrence(node.getName());
   }
 
+  protected void handleImportStatements(ASTFDCompilationUnit rootNode,
+      FeatureDiagramArtifactScope artifactScope) {
+    List<ImportStatement> importStatements = rootNode
+        .getMCImportStatementList().stream()
+        .map(i -> new ImportStatement(i.getQName(), i.isStar()))
+        .collect(Collectors.toList());
+
+    for (ImportStatement i : importStatements) {
+      FeatureDiagramSymbol fd = artifactScope.resolveFeatureDiagram(i.getStatement()).orElse(null);
+      if (null == fd) {
+        Log.error("0xFD133 Cannot find feature diagram '" + i.getStatement()
+            + "' that is imported in the feature diagram '"
+            + rootNode.getFeatureDiagram().getName() + "'!");
+        return;
+      }
+      if (!fd.isPresentAstNode()) {
+        Log.error("0xFD133 Cannot find AST of feature diagram '" + i.getStatement()
+            + "' that is imported in the feature diagram '"
+            + rootNode.getFeatureDiagram().getName() + "'!");
+        return;
+      }
+      rootNode.getFeatureDiagram().addAllFDElements(fd.getAstNode().getFDElementList());
+    }
+  }
+
   protected void createOrFindFeatureSymbolOnFirstOccurrence(String name) {
     IFeatureDiagramScope encScope = getCurrentScope().get();
     // if this feature name has already occured in the current feature model, stop
@@ -84,12 +99,9 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
     // try to find existing feature symbol
     Optional<FeatureSymbol> resolvedFeatureSymbol = encScope.resolveFeature(name);
 
-    // if a symbol was found, use this
+    // if a symbol was found, use this (is only the case in combination with language composition)
     if (resolvedFeatureSymbol.isPresent()) {
       symbol = resolvedFeatureSymbol.get();
-
-      // create AST frmo symbol, find feature tree with symbol as root
-      // resolve all features from this tree, and add all symbols to scope
     }
 
     // else, create new symbol
