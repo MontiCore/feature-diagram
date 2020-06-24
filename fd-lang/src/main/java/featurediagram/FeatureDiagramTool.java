@@ -7,10 +7,7 @@ import featurediagram._ast.ASTFDCompilationUnit;
 import featurediagram._ast.ASTFeature;
 import featurediagram._cocos.FeatureDiagramCoCos;
 import featurediagram._parser.FeatureDiagramParser;
-import featurediagram._symboltable.FeatureDiagramArtifactScope;
-import featurediagram._symboltable.FeatureDiagramGlobalScope;
-import featurediagram._symboltable.FeatureDiagramLanguage;
-import featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
+import featurediagram._symboltable.*;
 import featurediagram._symboltable.serialization.FeatureDiagramScopeDeSer;
 import featurediagram._visitor.FeatureNamesCollector;
 import org.antlr.v4.runtime.RecognitionException;
@@ -31,8 +28,6 @@ public class FeatureDiagramTool {
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
     Log.info(modelFile + " parsed successfully!", "FeatureDiagramTool");
-
-    transform(ast);
 
     // setup the symbol table
     FeatureDiagramArtifactScope modelTopScope = createSymbolTable(lang, modelPath, ast);
@@ -80,9 +75,6 @@ public class FeatureDiagramTool {
     return symbolTable.createFromAST(ast);
   }
 
-  public static void transform(ASTFDCompilationUnit ast) {
-
-  }
 
   /**
    * Use the single argument for specifying the single input feature diagram file.

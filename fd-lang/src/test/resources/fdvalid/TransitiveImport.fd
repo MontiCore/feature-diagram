@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package fdvalid;
+
+import fdvalid.LeafImport;
+
+featurediagram TransitiveImport {
+  AA -> X;
+}

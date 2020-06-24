@@ -2,9 +2,9 @@
 
 package fdvalid;
 
-import fdvalid.BasicElements.C;
+import fdvalid.BasicElements;
 
-featurediagram Imports {
+featurediagram LeafImport {
   X -> Y;
-  Y -> C;
+  Y -> A;
 }

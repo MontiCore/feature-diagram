@@ -25,19 +25,26 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
   @Override
   public FeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
     List<ImportStatement> importStatements = rootNode
-        .getMCImportStatementList().stream()
-        .map(i -> new ImportStatement(i.getQName(), i.isStar()))
-        .collect(Collectors.toList());
+            .getMCImportStatementList().stream()
+            .map(i -> new ImportStatement(i.getQName(), i.isStar()))
+            .collect(Collectors.toList());
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
 
     FeatureDiagramArtifactScope artifactScope = FeatureDiagramMill
-        .featureDiagramArtifactScopeBuilder()
-        .addAllImports(importStatements)
-        .setPackageName(packageName)
-        .setEnclosingScopeAbsent()
-        .build();
+            .featureDiagramArtifactScopeBuilder()
+            .addAllImports(importStatements)
+            .setPackageName(packageName)
+            .setEnclosingScopeAbsent()
+            .build();
 
     putOnStack(artifactScope);
+    importStatements.forEach(importStatement -> {
+      Optional<FeatureDiagramSymbol> diagramOpt = artifactScope.resolveFeatureDiagram(importStatement.getStatement());
+      if(diagramOpt.isPresent()){
+        rootNode.getFeatureDiagram().addAllFDElements(diagramOpt.get().getAstNode().getFDElementList());
+      }
+    });
+
     rootNode.accept(getRealThis());
     return artifactScope;
   }
@@ -47,7 +54,8 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
    *
    * @param node
    */
-  @Override public void visit(ASTGroupPart node) {
+  @Override
+  public void visit(ASTGroupPart node) {
     super.visit(node);
     createOrFindFeatureSymbolOnFirstOccurrence(node.getName());
   }
@@ -57,7 +65,8 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
    *
    * @param node
    */
-  @Override public void visit(ASTFeatureTreeRule node) {
+  @Override
+  public void visit(ASTFeatureTreeRule node) {
     super.visit(node);
     createOrFindFeatureSymbolOnFirstOccurrence(node.getName());
   }
