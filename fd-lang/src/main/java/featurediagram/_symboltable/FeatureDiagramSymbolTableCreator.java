@@ -70,7 +70,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
         Log.error("0xFD132 Feature diagrams may not use stars '*' in import statements!");
         continue;
       }
-      FeatureDiagramSymbol fd = getFirstCreatedScope()
+      FeatureDiagramSymbol fd = getCurrentScope().get()
           .resolveFeatureDiagram(i.getQName()).orElse(null);
       if (null == fd) {
         Log.error("0xFD133 Cannot find imported feature diagram '" + i.getQName() + "' in '"

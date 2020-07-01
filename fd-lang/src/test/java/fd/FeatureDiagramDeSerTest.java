@@ -14,7 +14,9 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
@@ -91,6 +93,13 @@ public class FeatureDiagramDeSerTest {
         actualSymbol.getSpannedScope().getLocalFeatureDiagramSymbols().size());
     assertEquals(expectedSymbol.getSpannedScope().getSpanningSymbol().getName(),
         actualSymbol.getSpannedScope().getSpanningSymbol().getName());
+  }
+
+  @Test
+  public void testDeSer() throws IOException {
+    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/CarNavigation.fd");
+    new FeatureDiagramScopeDeSer().store(fdScope, Paths.get("target/test-symbols"));
+    assertTrue(new File("target/test-symbols/CarNavigation.fdsym").exists());
   }
 
 }
