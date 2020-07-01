@@ -48,6 +48,8 @@ public class FeatureConfigurationSymbolTableCreator extends FeatureConfiguration
   @Override
   public void visit(ASTFeatureConfiguration node) {
     super.visit(node);
-    fd = node.getFdNameSymbol();
+    if(node.isPresentFdNameSymbol()){
+      fd = node.getFdNameSymbol();
+    }
   }
 }

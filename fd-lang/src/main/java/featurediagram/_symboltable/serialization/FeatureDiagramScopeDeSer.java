@@ -1,31 +1,37 @@
 /* (c) https://github.com/MontiCore/monticore */
 package featurediagram._symboltable.serialization;
 
-import featurediagram._symboltable.FeatureDiagramArtifactScope;
+import de.monticore.symboltable.serialization.json.JsonElement;
+import de.monticore.symboltable.serialization.json.JsonObject;
+import featurediagram.FeatureDiagramMill;
+import featurediagram._symboltable.FeatureDiagramSymbol;
+import featurediagram._symboltable.FeatureSymbol;
+import featurediagram._symboltable.IFeatureDiagramScope;
 
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FeatureDiagramScopeDeSer extends FeatureDiagramScopeDeSerTOP {
 
-  public FeatureDiagramScopeDeSer(){
+  public FeatureDiagramScopeDeSer() {
     this.setSymbolFileExtension("fdsym");
   }
 
-  private static FeatureDiagramScopeDeSer instance;
+  @Override protected void deserializeFeatureDiagramSymbol(JsonObject symbolJson,
+      IFeatureDiagramScope scope) {
+    FeatureDiagramSymbol symbol = featureDiagramSymbolDeSer
+        .deserializeFeatureDiagramSymbol(symbolJson, scope);
+    scope.add(symbol);
 
-  public static FeatureDiagramScopeDeSer getInstance() {
-    if (null == instance) {
-      instance = new FeatureDiagramScopeDeSer();
+    IFeatureDiagramScope fdScope = symbol.getSpannedScope();
+    List<FeatureSymbol> featureSymbols = new ArrayList<>();
+    for (JsonElement e : symbolJson.getArrayMember("features")) {
+      FeatureSymbol featureSymbol = FeatureDiagramMill
+          .featureSymbolBuilder()
+          .setName(e.getAsJsonString().getValue())
+          .setEnclosingScope(fdScope)
+          .build();
+      featureSymbols.add(featureSymbol);
     }
-    return instance;
   }
-
-  public static void setInstance(FeatureDiagramScopeDeSer instance) {
-    FeatureDiagramScopeDeSer.instance = instance;
-  }
-
-  public static void store(FeatureDiagramArtifactScope modelTopScope) {
-    getInstance().store(modelTopScope, Paths.get("target/symbols"));
-  }
-
 }

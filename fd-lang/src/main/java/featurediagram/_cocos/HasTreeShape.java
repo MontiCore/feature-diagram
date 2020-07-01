@@ -6,6 +6,7 @@ import featurediagram._ast.ASTFeatureDiagram;
 import featurediagram._ast.ASTFeatureTreeRule;
 import featurediagram._symboltable.FeatureSymbol;
 import featurediagram._visitor.FeatureNamesCollector;
+import featurediagram._visitor.Occurrence;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class HasTreeShape
 
   private String calculateRootFeature(ASTFeatureDiagram node){
     node.accept(collector);
-    List<String> rootfeatures = collector.getOccurrences(FeatureNamesCollector.Occurrence.LEFT);
+    List<String> rootfeatures = collector.getOccurrences(Occurrence.LEFT);
     if(rootfeatures.size() == 0){
       Log.error("0xFD003 Featurediagram" + node.getName() +
           "has no root node.");

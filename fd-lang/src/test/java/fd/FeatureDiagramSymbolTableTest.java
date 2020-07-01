@@ -147,7 +147,7 @@ public class FeatureDiagramSymbolTableTest {
   @Test
   public void testDeSer() throws IOException {
     FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/CarNavigation.fd");
-    FeatureDiagramScopeDeSer.getInstance().store(fdScope);
+    new FeatureDiagramScopeDeSer().store(fdScope, Paths.get("target/test-symbols"));
     assertTrue(new File("target/symbols/CarNavigation.fdsym").exists());
   }
 }

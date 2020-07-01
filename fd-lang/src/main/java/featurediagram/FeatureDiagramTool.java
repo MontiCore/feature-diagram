@@ -4,39 +4,43 @@ package featurediagram;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import featurediagram._ast.ASTFDCompilationUnit;
-import featurediagram._ast.ASTFeature;
 import featurediagram._cocos.FeatureDiagramCoCos;
 import featurediagram._parser.FeatureDiagramParser;
-import featurediagram._symboltable.*;
+import featurediagram._symboltable.FeatureDiagramArtifactScope;
+import featurediagram._symboltable.FeatureDiagramGlobalScope;
+import featurediagram._symboltable.FeatureDiagramLanguage;
+import featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import featurediagram._symboltable.serialization.FeatureDiagramScopeDeSer;
-import featurediagram._visitor.FeatureNamesCollector;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class FeatureDiagramTool {
 
+  public static final Path SYMBOL_LOCATION = Paths.get("target/symbols");
+
+  protected static final FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
+
+  protected static final FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
+
   public static FeatureDiagramArtifactScope run(String modelFile, ModelPath modelPath) {
-    // setup the language infrastructure
-    final FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
     Log.info(modelFile + " parsed successfully!", "FeatureDiagramTool");
 
     // setup the symbol table
-    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(lang, modelPath, ast);
+    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(modelPath, ast);
 
     // execute default context conditions
     FeatureDiagramCoCos.checkAll(ast);
 
     // store artifact scope after context conditions have been checked
-    FeatureDiagramScopeDeSer.store(modelTopScope);
+    deser.store(modelTopScope, SYMBOL_LOCATION);
+
     return modelTopScope;
   }
 
@@ -55,7 +59,8 @@ public class FeatureDiagramTool {
         return optFD.get();
       }
       Log.error("0xFD100 Model could not be parsed.");
-    } catch (RecognitionException | IOException e) {
+    }
+    catch (RecognitionException | IOException e) {
       Log.error("0xFD101 Failed to parse " + model, e);
     }
     return null;
@@ -68,13 +73,12 @@ public class FeatureDiagramTool {
    * @param ast
    * @return
    */
-  public static FeatureDiagramArtifactScope createSymbolTable(FeatureDiagramLanguage lang,
-                                                              ModelPath mp, ASTFDCompilationUnit ast) {
+  public static FeatureDiagramArtifactScope createSymbolTable(ModelPath mp,
+      ASTFDCompilationUnit ast) {
     FeatureDiagramGlobalScope globalScope = new FeatureDiagramGlobalScope(mp, lang);
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
     return symbolTable.createFromAST(ast);
   }
-
 
   /**
    * Use the single argument for specifying the single input feature diagram file.
