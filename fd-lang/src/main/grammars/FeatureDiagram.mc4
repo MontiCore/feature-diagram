@@ -91,10 +91,18 @@ grammar FeatureDiagram extends de.monticore.Cardinality,
   */
   CardinalizedGroup implements FeatureGroup =
                                Cardinality "of" "{" ( GroupPart || "," )+ "}";
-
+  
+  /**
+    This is syntactic sugar for "!$left || $right" that increases the 
+    readability of such expressions in the context of feature diagrams.
+  */
   Requires implements Expression <115>, InfixExpression =
     left:Expression operator:"requires" right:Expression;
 
+  /**
+    This is syntactic sugar for "!($left && $right)" that increases the 
+    readability of such expressions in the context of feature diagrams.
+  */
   Excludes implements Expression <116>, InfixExpression =
     left:Expression operator:"excludes" right:Expression;
 
