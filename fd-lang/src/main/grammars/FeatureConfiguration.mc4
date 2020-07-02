@@ -34,7 +34,7 @@ grammar FeatureConfiguration extends FeatureDiagram {
   Features implements FCElement = ( Name || "," )+ ";" ;
 
   symbolrule FeatureConfiguration =
-                fdName:Name
+                featureDiagram:featurediagram._symboltable.FeatureDiagramSymbol
                 selectedFeatures:featurediagram._symboltable.FeatureSymbol*;
 
 }
