@@ -1,7 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore;
 
-/* Beta-version: This is intended to become a MontiCore stable grammar. */
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
 
 /**
   FeatureConfiguration defines a concrete list of
@@ -29,9 +30,10 @@ grammar FeatureConfiguration extends FeatureDiagram {
   interface FCElement;
 
   /**
-    This language enables to use a list of feature names in the body of a feature configuration.
-    TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
+    This language enables to use a list of feature names in the body of a 
+    feature configuration.
   */
+  //  TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
   Features implements FCElement = ( Name || "," )+ ";" ;
 
   symbolrule FeatureConfiguration =
