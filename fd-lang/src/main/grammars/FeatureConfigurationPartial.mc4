@@ -1,4 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
   FeatureConfigurationPartial defines models for partial feature configurations.
@@ -15,9 +18,15 @@ grammar FeatureConfigurationPartial extends FeatureConfiguration {
   */
   start FCCompilationUnit;
 
+  /*
+    Positive selection of a set of features (they must be included)
+  */
   // TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
   Select implements FCElement = "select" "{" ( Name || "," )+ "}" ;
 
+  /*
+    Negative un-selection of a set of features (the are not allowed
+  */
   // TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
   Unselect implements FCElement = "unselect" "{" ( Name || "," )+ "}" ;
 

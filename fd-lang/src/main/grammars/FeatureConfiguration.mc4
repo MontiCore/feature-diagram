@@ -1,10 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
 
-/* Alpha-version: This is intended to become a MontiCore stable grammar. */
+/* Beta-version: This is intended to become a MontiCore stable grammar. */
 
 /**
   FeatureConfiguration defines a concrete list of
-  features for an externally given Featurediagram.
+  features for a given (imported) Featurediagram.
 */
 grammar FeatureConfiguration extends FeatureDiagram {
 
