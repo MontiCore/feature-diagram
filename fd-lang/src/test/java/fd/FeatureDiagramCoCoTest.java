@@ -5,16 +5,14 @@ import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import featurediagram.FeatureDiagramTool;
 import featurediagram._ast.ASTFDCompilationUnit;
-import featurediagram._cocos.FeatureDiagramCoCos;
+import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import featurediagram._parser.FeatureDiagramParser;
 import featurediagram._symboltable.FeatureDiagramGlobalScope;
-import featurediagram._symboltable.FeatureDiagramLanguage;
+import de.monticore.featurediagram._symboltable.FeatureDiagramLanguage;
 import featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;

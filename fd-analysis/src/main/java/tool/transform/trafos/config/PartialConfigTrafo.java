@@ -5,7 +5,7 @@ import featureconfiguration._ast.ASTFeatureConfiguration;
 import featureconfigurationpartial._ast.ASTSelect;
 import featureconfigurationpartial._ast.ASTUnselect;
 import featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
-import featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
 import tool.transform.flatzinc.Variable;

@@ -1,13 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package fd;
 
+import de.monticore.featurediagram._symboltable.FeatureDiagramLanguage;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import featurediagram.FeatureDiagramMill;
 import featurediagram._ast.ASTFDCompilationUnit;
 import featurediagram._parser.FeatureDiagramParser;
-import featurediagram._symboltable.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -1,12 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
-import featureconfiguration._ast.ASTFeatureConfiguration;
-import featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.FZNModelBuilder;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 public abstract class Analysis<T> {

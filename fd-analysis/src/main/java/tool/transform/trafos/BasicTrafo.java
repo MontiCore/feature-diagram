@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos;
 
-import featurediagram._ast.*;
-import featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._ast.ASTFeatureGroup;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import featurediagram._symboltable.FeatureSymbol;
 import featurediagram._visitor.FeatureDiagramVisitor;
 import tool.transform.FeatureModel2FlatZincModelTrafo;

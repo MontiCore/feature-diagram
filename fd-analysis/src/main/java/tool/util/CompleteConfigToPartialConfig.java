@@ -4,7 +4,7 @@ package tool.util;
 import featureconfiguration._ast.ASTFeatureConfiguration;
 import featureconfiguration._ast.ASTFeatures;
 import featureconfiguration._visitor.FeatureConfigurationVisitor;
-import featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import featurediagram._visitor.FeatureDiagramVisitor;
 
 import java.util.HashMap;

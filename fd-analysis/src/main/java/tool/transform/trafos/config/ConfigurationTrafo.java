@@ -2,7 +2,7 @@
 package tool.transform.trafos.config;
 
 import featureconfiguration._ast.ASTFeatureConfiguration;
-import featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
 import tool.transform.flatzinc.Variable;

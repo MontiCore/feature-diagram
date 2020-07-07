@@ -2,7 +2,7 @@
 package tool;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import featurediagram._symboltable.FeatureSymbol;
 import tool.analyses.Analysis;
 import tool.solver.ISolver;

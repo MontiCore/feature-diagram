@@ -7,7 +7,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import featurediagram._ast.ASTExcludes;
 import featurediagram._ast.ASTFeatureConstraint;
 import featurediagram._ast.ASTRequires;
-import featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import featurediagram._visitor.FeatureDiagramVisitor;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
