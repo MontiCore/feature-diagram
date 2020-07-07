@@ -7,17 +7,17 @@ cache:
 
 stages:
   - build-sources
-  - it-test
+#  - it-test
 
 build_sources:
   stage: build-sources
   script:
     - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install
     
-trigger_langexp:                        
-  stage: it-test                           
-  trigger:                              
-    project: monticore/langexperiments  
-    branch: dev                         
-  only:
-    - develop
+# trigger_langexp:                        
+#  stage: it-test                           
+#  trigger:                              
+#    project: monticore/langexperiments  
+#    branch: dev                         
+#  only:
+#    - develop
