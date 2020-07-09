@@ -1,16 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package fd;
 
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
+import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
+import de.monticore.featurediagram._parser.FeatureDiagramParser;
+import de.monticore.featurediagram._symboltable.FeatureDiagramGlobalScope;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import featurediagram._ast.ASTFDCompilationUnit;
-import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
-import featurediagram._parser.FeatureDiagramParser;
-import featurediagram._symboltable.FeatureDiagramGlobalScope;
-import de.monticore.featurediagram._symboltable.FeatureDiagramLanguage;
-import featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,7 +18,6 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
-
 
 public class FeatureDiagramCoCoTest {
 
@@ -105,9 +104,17 @@ public class FeatureDiagramCoCoTest {
       throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
-    FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
-    FeatureDiagramGlobalScope globalScope = new FeatureDiagramGlobalScope(mp, lang);
-    FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
+    FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
+        .featureDiagramGlobalScopeBuilder()
+        .setModelPath(mp)
+        .setModelFileExtension("fd")
+        .build();
+
+    FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
+        .featureDiagramSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
+
     symbolTable.createFromAST(ast);
     return ast;
   }

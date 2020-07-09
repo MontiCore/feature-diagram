@@ -22,13 +22,11 @@ grammar FeatureConfigurationPartial extends FeatureConfiguration {
   /*
     Positive selection of a set of features (they must be included)
   */
-  // TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
-  Select implements FCElement = "select" "{" ( Name || "," )+ "}" ;
+  Select implements FCElement = "select" "{" ( Name@Feature || "," )+ "}" ;
 
   /*
     Negative un-selection of a set of features (the are not allowed
   */
-  // TODO: change to (Name@Feature || "," )+ if MC-Issue #2521 is fixed.
-  Unselect implements FCElement = "unselect" "{" ( Name || "," )+ "}" ;
+  Unselect implements FCElement = "unselect" "{" ( Name@Feature || "," )+ "}" ;
 
 }

@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._symboltable;
 
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
+import de.monticore.featurediagram._ast.ASTFeatureTreeRule;
+import de.monticore.featurediagram._ast.ASTGroupPart;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
-import featurediagram.FeatureDiagramMill;
-import featurediagram._ast.ASTFDCompilationUnit;
-import featurediagram._ast.ASTFeatureTreeRule;
-import featurediagram._ast.ASTGroupPart;
 
 import java.util.Deque;
 

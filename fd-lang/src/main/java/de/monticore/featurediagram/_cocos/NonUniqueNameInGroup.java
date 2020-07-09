@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._cocos;
 
-import de.se_rwth.commons.logging.Log;
-import featurediagram._ast.ASTFeature;
 import de.monticore.featurediagram._ast.ASTFeatureGroup;
-import featurediagram._symboltable.FeatureSymbol;
+import de.monticore.featurediagram._symboltable.FeatureSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.List;

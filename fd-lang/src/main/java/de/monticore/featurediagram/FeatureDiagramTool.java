@@ -1,16 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram;
 
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
-import de.monticore.featurediagram._symboltable.FeatureDiagramLanguage;
-import de.monticore.featurediagram._symboltable.serialization.FeatureDiagramScopeDeSer;
+import de.monticore.featurediagram._parser.FeatureDiagramParser;
+import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
+import de.monticore.featurediagram._symboltable.FeatureDiagramGlobalScope;
+import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
-import featurediagram._ast.ASTFDCompilationUnit;
-import featurediagram._parser.FeatureDiagramParser;
-import featurediagram._symboltable.FeatureDiagramArtifactScope;
-import featurediagram._symboltable.FeatureDiagramGlobalScope;
-import featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import org.antlr.v4.runtime.RecognitionException;
 
 import java.io.IOException;
@@ -21,8 +20,6 @@ import java.util.Optional;
 public class FeatureDiagramTool {
 
   public static final Path SYMBOL_LOCATION = Paths.get("target/symbols");
-
-  protected static final FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
 
   protected static final FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
 
@@ -75,8 +72,16 @@ public class FeatureDiagramTool {
    */
   public static FeatureDiagramArtifactScope createSymbolTable(ModelPath mp,
       ASTFDCompilationUnit ast) {
-    FeatureDiagramGlobalScope globalScope = new FeatureDiagramGlobalScope(mp, lang);
-    FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
+    FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
+        .featureDiagramGlobalScopeBuilder()
+        .setModelPath(mp)
+        .setModelFileExtension("fd")
+        .build();
+
+    FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
+        .featureDiagramSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
     return symbolTable.createFromAST(ast);
   }
 

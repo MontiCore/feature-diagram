@@ -1,25 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featureconfigurationpartial._symboltable;
 
-import de.se_rwth.commons.logging.Log;
-import featureconfiguration._ast.ASTFeatureConfiguration;
-import featureconfigurationpartial._ast.ASTSelect;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfigurationpartial._ast.ASTSelect;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
-import featurediagram._symboltable.FeatureSymbol;
+import de.monticore.featurediagram._symboltable.FeatureSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
-public class FeatureConfigurationPartialSymbolTableCreator extends FeatureConfigurationPartialSymbolTableCreatorTOP{
+public class FeatureConfigurationPartialSymbolTableCreator
+    extends FeatureConfigurationPartialSymbolTableCreatorTOP {
 
-
-  public FeatureConfigurationPartialSymbolTableCreator(IFeatureConfigurationPartialScope enclosingScope) {
+  public FeatureConfigurationPartialSymbolTableCreator(
+      IFeatureConfigurationPartialScope enclosingScope) {
     super(enclosingScope);
   }
 
-  public FeatureConfigurationPartialSymbolTableCreator(Deque<? extends IFeatureConfigurationPartialScope> scopeStack) {
+  public FeatureConfigurationPartialSymbolTableCreator(
+      Deque<? extends IFeatureConfigurationPartialScope> scopeStack) {
     super(scopeStack);
   }
 
@@ -30,12 +32,14 @@ public class FeatureConfigurationPartialSymbolTableCreator extends FeatureConfig
   @Override
   public void visit(ASTSelect node) {
     super.visit(node);
-    node.streamNames().forEach(name ->{
+    node.streamNames().forEach(name -> {
       Optional<FeatureSymbol> optFeature = fd.getSpannedScope().resolveFeature(name);
-      if(optFeature.isPresent()){
+      if (optFeature.isPresent()) {
         selectedSymbols.add(optFeature.get());
-      }else {
-        Log.error("0xFC001 The selected Feature "+ name + " does not exist in Feature Model "+ fd.getFullName());  //TODO
+      }
+      else {
+        Log.error("0xFC001 The selected Feature " + name + " does not exist in Feature Model " + fd
+            .getFullName());  //TODO
       }
     });
   }

@@ -1,15 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package fd;
 
-import de.monticore.featurediagram._symboltable.FeatureDiagramLanguage;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
+import de.monticore.featurediagram._parser.FeatureDiagramParser;
+import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import featurediagram.FeatureDiagramMill;
-import featurediagram._ast.ASTFDCompilationUnit;
-import featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.serialization.FeatureDiagramScopeDeSer;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -38,9 +36,15 @@ public class FeatureDiagramDeSerTest {
       throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
-    FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
-    FeatureDiagramGlobalScope globalScope = new FeatureDiagramGlobalScope(mp, lang);
-    FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
+    FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
+        .featureDiagramGlobalScopeBuilder()
+        .setModelFileExtension("fd")
+        .setModelPath(mp)
+        .build();
+    FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
+        .featureDiagramSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
     return symbolTable.createFromAST(ast);
   }
 
@@ -61,11 +65,11 @@ public class FeatureDiagramDeSerTest {
 
     FeatureDiagramGlobalScope gs = FeatureDiagramMill
         .featureDiagramGlobalScopeBuilder()
-        .setFeatureDiagramLanguage(new FeatureDiagramLanguage())
+        .setModelFileExtension("fd")
         .setModelPath(new ModelPath())
         .build();
     IFeatureDiagramScope deserializedScope = new FeatureDiagramScopeDeSer()
-        .deserialize(serialized, gs);
+        .deserialize(serialized);
     assertTrue(deserializedScope instanceof FeatureDiagramArtifactScope);
     FeatureDiagramArtifactScope deserialized = (FeatureDiagramArtifactScope) deserializedScope;
 
@@ -98,7 +102,8 @@ public class FeatureDiagramDeSerTest {
 
   @Test
   public void testDeSer() throws IOException {
-    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/CarNavigation.fd");
+    FeatureDiagramArtifactScope fdScope = setupSymbolTable(
+        "src/test/resources/fdvalid/CarNavigation.fd");
     new FeatureDiagramScopeDeSer().store(fdScope, Paths.get("target/test-symbols"));
     assertTrue(new File("target/test-symbols/CarNavigation.fdsym").exists());
   }

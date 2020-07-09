@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._ast;
 
-import featurediagram._symboltable.FeatureSymbol;
+import de.monticore.featurediagram._symboltable.FeatureSymbol;
 
 import java.util.List;
 import java.util.Optional;

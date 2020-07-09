@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package fd;
 
+import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import featurediagram._parser.FeatureDiagramParser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -19,8 +18,8 @@ public class FeatureDiagramParserTest {
 
   @BeforeClass
   public static void disableFailQuick() {
-            Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-//    LogStub.init();
+    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+    //    LogStub.init();
   }
 
   protected static void assertPresent(Optional<?> opt) {

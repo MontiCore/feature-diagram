@@ -1,16 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._cocos;
 
-import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
-import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
+import de.monticore.featurediagram._ast.ASTFeatureConstraint;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
-import featurediagram._ast.ASTFeatureConstraint;
-import featurediagram._visitor.FeatureDiagramVisitor;
 
 /**
  * This CoCo checks, whether an Expression used as cross- tree constraint

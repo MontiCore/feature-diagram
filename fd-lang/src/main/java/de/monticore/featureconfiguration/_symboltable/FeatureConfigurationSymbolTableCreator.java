@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featureconfiguration._symboltable;
 
-import de.se_rwth.commons.logging.Log;
-import featureconfiguration._ast.ASTFeatureConfiguration;
-import featureconfiguration._ast.ASTFeatures;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfiguration._ast.ASTFeatures;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
-import featurediagram._symboltable.FeatureSymbol;
+import de.monticore.featurediagram._symboltable.FeatureSymbol;
+import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Deque;
