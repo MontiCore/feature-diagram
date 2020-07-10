@@ -7,7 +7,7 @@
     <!-- == PROJECT COORDINATES ============================================= -->
 
     <groupId>de.monticore.lang</groupId>
-    <artifactId>feature-diagrams-parent</artifactId>
+    <artifactId>feature-diagram-parent</artifactId>
     <version>0.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
