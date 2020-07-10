@@ -4,6 +4,7 @@ package de.monticore.featurediagram.prettyprint;
 
 import de.monticore.featurediagram._ast.*;
 import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 
@@ -21,9 +22,10 @@ public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
   }
 
   @Override public void visit(ASTFDCompilationUnit node) {
+    CommentPrettyPrinter.printPreComments(node, printer);
     if (node.isPresentPackage()) {
       printer.print("package ");
-      printer.print(node.getPackage());
+      printer.print(node.getPackage().getQName());
       printer.println(";");
       printer.println();
     }
@@ -32,6 +34,12 @@ public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
     }
     if (!node.isEmptyMCImportStatements()) {
       printer.println();
+    }
+  }
+
+  public void traverse(ASTFDCompilationUnit node) {
+    if (null != node.getFeatureDiagram()) {
+      node.getFeatureDiagram().accept(getRealThis());
     }
   }
 
@@ -74,7 +82,7 @@ public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
 
   @Override public void endVisit(ASTCardinalizedGroup node) {
     printer.print(" of {");
-    printGroup(node.getGroupPartList(), " , ");
+    printGroup(node.getGroupPartList(), ", ");
     printer.print("}");
   }
 
