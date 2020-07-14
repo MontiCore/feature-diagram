@@ -2,6 +2,7 @@
 package de.monticore.featurediagram;
 
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
@@ -33,27 +34,7 @@ public class FeatureDiagramTool {
       Log.error("0xFD102 Please specify only one single path to the input model.");
       return;
     }
-    String modelFile = args[0];
-
-    // parse the model and create the AST representation
-    final ASTFDCompilationUnit ast = parse(modelFile);
-    Log.info(modelFile + " parsed successfully!", "FeatureDiagramTool");
-
-    //reconstruct modelpath from input file
-    Path path = Paths.get(modelFile).getParent();
-    for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
-      path = path.getParent();
-    }
-
-    // setup the symbol table
-    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(new ModelPath(path), ast);
-
-    // execute default context conditions
-    FeatureDiagramCoCos.checkAll(ast);
-
-    // store artifact scope after context conditions have been checked
-    deser.store(modelTopScope, SYMBOL_LOCATION);
-
+    run(args[0]);
   }
 
   /**
@@ -68,6 +49,7 @@ public class FeatureDiagramTool {
       Optional<ASTFDCompilationUnit> optFD = parser.parse(model);
 
       if (!parser.hasErrors() && optFD.isPresent()) {
+        Log.info(model + " parsed successfully!", "FeatureDiagramTool");
         return optFD.get();
       }
       Log.error("0xFD100 Model could not be parsed.");
@@ -111,6 +93,46 @@ public class FeatureDiagramTool {
         .setModelPath(mp)
         .setModelFileExtension("fd")
         .build();
+  }
+
+  public static ASTFeatureDiagram run(String modelFile, ModelPath mp) {
+
+    // parse the model and create the AST representation
+    final ASTFDCompilationUnit ast = parse(modelFile);
+
+    // setup the symbol table
+    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(mp, ast);
+
+    // execute default context conditions
+    FeatureDiagramCoCos.checkAll(ast);
+
+    // store artifact scope after context conditions have been checked
+    deser.store(modelTopScope, SYMBOL_LOCATION);
+
+    return ast.getFeatureDiagram();
+  }
+
+  public static ASTFeatureDiagram run(String modelFile) {
+
+    // parse the model and create the AST representation
+    final ASTFDCompilationUnit ast = parse(modelFile);
+
+    //reconstruct modelpath from input file
+    Path path = Paths.get(modelFile).getParent();
+    for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
+      path = path.getParent();
+    }
+
+    // setup the symbol table
+    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(new ModelPath(path), ast);
+
+    // execute default context conditions
+    FeatureDiagramCoCos.checkAll(ast);
+
+    // store artifact scope after context conditions have been checked
+    deser.store(modelTopScope, SYMBOL_LOCATION);
+
+    return ast.getFeatureDiagram();
   }
 
 }

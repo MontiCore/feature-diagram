@@ -2,6 +2,7 @@
 package de.monticore.featureconfiguration;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScope;
@@ -28,23 +29,7 @@ public class FeatureConfigurationTool {
       Log.error("0xFC102 Please specify only one single path to the input model.");
       return;
     }
-    String modelFile = args[0];
-    // parse the model and create the AST representation
-    final ASTFCCompilationUnit ast = parse(modelFile);
-    Log.info(modelFile + " parsed successfully!", "FeatureConfigurationTool");
-
-    //reconstruct modelpath from input file
-    Path path = Paths.get(modelFile).getParent();
-    for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
-      path = path.getParent();
-    }
-
-    // setup the symbol table
-    createSymbolTable(new ModelPath(path), ast);
-
-    // currently no context conditions exist for feature configurations
-
-    // do not store artifact scope
+    run(args[0]);
   }
 
   /**
@@ -59,6 +44,7 @@ public class FeatureConfigurationTool {
       Optional<ASTFCCompilationUnit> optFC = parser.parse(model);
 
       if (!parser.hasErrors() && optFC.isPresent()) {
+        Log.info(model + " parsed successfully!", "FeatureConfigurationTool");
         return optFC.get();
       }
       Log.error("0xFC100 Model could not be parsed.");
@@ -103,6 +89,39 @@ public class FeatureConfigurationTool {
         .setModelFileExtension("fc")
         .addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(mp))
         .build();
+  }
+
+  public static ASTFeatureConfiguration run(String modelFile, ModelPath mp) {
+
+    // parse the model and create the AST representation
+    final ASTFCCompilationUnit ast = parse(modelFile);
+
+    // setup the symbol table
+    createSymbolTable(mp, ast);
+
+    // currently no context conditions exist for feature configurations
+
+    // do not store artifact scope
+    return ast.getFeatureConfiguration();
+  }
+
+  public static ASTFeatureConfiguration run(String modelFile) {
+    // parse the model and create the AST representation
+    final ASTFCCompilationUnit ast = parse(modelFile);
+
+    //reconstruct modelpath from input file
+    Path path = Paths.get(modelFile).getParent();
+    for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
+      path = path.getParent();
+    }
+
+    // setup the symbol table
+    createSymbolTable(new ModelPath(path), ast);
+
+    // currently no context conditions exist for feature configurations
+
+    // do not store artifact scope
+    return ast.getFeatureConfiguration();
   }
 
 }
