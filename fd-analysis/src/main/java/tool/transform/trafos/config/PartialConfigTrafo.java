@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos.config;
 
-import featureconfiguration._ast.ASTFeatureConfiguration;
-import featureconfigurationpartial._ast.ASTSelect;
-import featureconfigurationpartial._ast.ASTUnselect;
-import featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfigurationpartial._ast.ASTSelect;
+import de.monticore.featureconfigurationpartial._ast.ASTUnselect;
+import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;

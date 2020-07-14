@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fcvalid;
+
+import fdvalid.*;
+
+featureconfig InvalidStarImport for BasicElements {
+  A;
+}

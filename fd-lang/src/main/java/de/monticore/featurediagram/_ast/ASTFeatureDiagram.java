@@ -4,27 +4,25 @@ package de.monticore.featurediagram._ast;
 import de.monticore.featurediagram._visitor.FeatureNamesCollector;
 import de.monticore.featurediagram._visitor.Occurrence;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class ASTFeatureDiagram extends ASTFeatureDiagramTOP {
 
-//  private List<String> features;
+  //  private List<String> features;
 
   private String rootFeature;
 
-//  /**
-//   * Lazy calculation of list of features
-//   *
-//   * @return
-//   */
-//  public List<String> getFeaturesList() {
-//    if (features == null) {
-//      initFeaturesAndRoot();
-//    }
-//    return features;
-//  }
+  //  /**
+  //   * Lazy calculation of list of features
+  //   *
+  //   * @return
+  //   */
+  //  public List<String> getFeaturesList() {
+  //    if (features == null) {
+  //      initFeaturesAndRoot();
+  //    }
+  //    return features;
+  //  }
 
   /**
    * Lazy calculation of root feature
@@ -49,9 +47,9 @@ public class ASTFeatureDiagram extends ASTFeatureDiagramTOP {
     FeatureNamesCollector collector = new FeatureNamesCollector();
     this.accept(collector);
     HashMap<String, Occurrence> featuresMap = collector.getOccurrences();
-//    features = new ArrayList<>();
+    //    features = new ArrayList<>();
     featuresMap.forEach((k, v) -> {
-//      features.add(k);
+      //      features.add(k);
       if (v == Occurrence.LEFT) {
         // the CoCo "HasTreeShape" checks if no root or more than one root exists
         rootFeature = k;

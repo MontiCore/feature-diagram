@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import test.AbstractTest;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -14,26 +15,7 @@ import java.util.Optional;
 /**
  * This class tests the parser of feature diagram and feature configuration languages
  */
-public class FeatureDiagramParserTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
-    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    //    LogStub.init();
-  }
-
-  protected static void assertPresent(Optional<?> opt) {
-    Assert.assertTrue(opt.isPresent());
-  }
-
-  protected static void assertEmpty(Optional<?> opt) {
-    Assert.assertTrue(!opt.isPresent());
-  }
-
-  @Before
-  public void clearFindings() {
-    Log.getFindings().clear();
-  }
+public class FeatureDiagramParserTest extends AbstractTest {
 
   @Test
   public void testParseStringsForIndividualGrammarRules() throws IOException {

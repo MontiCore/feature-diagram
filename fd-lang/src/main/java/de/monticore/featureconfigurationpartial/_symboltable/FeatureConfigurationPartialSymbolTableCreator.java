@@ -15,6 +15,10 @@ import java.util.Optional;
 public class FeatureConfigurationPartialSymbolTableCreator
     extends FeatureConfigurationPartialSymbolTableCreatorTOP {
 
+  private List<FeatureSymbol> selectedSymbols = new ArrayList<>();
+
+  private FeatureDiagramSymbol fd;
+
   public FeatureConfigurationPartialSymbolTableCreator(
       IFeatureConfigurationPartialScope enclosingScope) {
     super(enclosingScope);
@@ -24,10 +28,6 @@ public class FeatureConfigurationPartialSymbolTableCreator
       Deque<? extends IFeatureConfigurationPartialScope> scopeStack) {
     super(scopeStack);
   }
-
-  private List<FeatureSymbol> selectedSymbols = new ArrayList<>();
-
-  private FeatureDiagramSymbol fd;
 
   @Override
   public void visit(ASTSelect node) {

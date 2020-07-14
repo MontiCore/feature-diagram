@@ -14,23 +14,13 @@ import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import test.AbstractTest;
 
 import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class FeatureDiagramCoCoTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
-    //        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    LogStub.init();
-  }
-
-  @Before
-  public void clearFindings() {
-    Log.getFindings().clear();
-  }
+public class FeatureDiagramCoCoTest extends AbstractTest {
 
   @Test
   public void testValid() throws IOException {
@@ -76,28 +66,6 @@ public class FeatureDiagramCoCoTest {
   protected void testCoCo(String modelName, String... errorCode) throws IOException {
     FeatureDiagramCoCos.checkAll(readFile("src/test/resources/fdinvalid/" + modelName));
     assertErrorCode(errorCode);
-  }
-
-  protected void assertErrorCode(String... errorCodes) {
-    for (String errorCode : errorCodes) {
-      assertErrorCode(errorCode);
-    }
-    for (Finding finding : Log.getFindings()) {
-      if (finding.isError()) {
-        fail("Found error '" + finding.getMsg() + "' that was not expected!");
-      }
-    }
-  }
-
-  protected void assertErrorCode(String errorCode) {
-    for (Finding finding : Log.getFindings()) {
-      if (finding.getMsg().startsWith(errorCode)) {
-        //remove finding to enable finding the same error code multiple times
-        Log.getFindings().remove(finding);
-        return;
-      }
-    }
-    fail("Expected to find an error with the code '" + errorCode + "', but it did not occur!");
   }
 
   protected ASTFDCompilationUnit readFile(String modelFile, ModelPath mp)

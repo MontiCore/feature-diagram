@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.util;
 
-import featurediagram._ast.ASTGroupPart;
-import featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._ast.ASTGroupPart;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ public class OptionalFeatureFinder implements FeatureDiagramVisitor {
 
   @Override
   public void visit(ASTGroupPart part) {
-    if(part.isOptional()){
+    if (part.isOptional()) {
       optionalFeatures.add(part.getName());
     }
   }

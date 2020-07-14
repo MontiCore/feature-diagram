@@ -27,6 +27,6 @@ grammar FeatureConfigurationPartial extends FeatureConfiguration {
   /*
     Negative un-selection of a set of features (the are not allowed
   */
-  Unselect implements FCElement = "unselect" "{" ( Name@Feature || "," )+ "}" ;
+  Unselect implements FCElement = "exclude" "{" ( Name@Feature || "," )+ "}" ;
 
 }

@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
-import featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import tool.transform.trafos.config.ConfigurationTrafo;
 
 import java.util.Collection;
-import java.util.Map;
 
 public class IsValid extends Analysis<Boolean> {
 

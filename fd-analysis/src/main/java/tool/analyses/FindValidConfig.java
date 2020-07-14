@@ -1,10 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
-import featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 
 import java.util.Collection;
-import java.util.Map;
 
 public class FindValidConfig extends Analysis<ASTFeatureConfiguration> {
   @Override

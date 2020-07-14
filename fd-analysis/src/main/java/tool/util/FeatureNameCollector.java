@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.util;
 
-import featurediagram._symboltable.FeatureSymbol;
-import featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._symboltable.FeatureSymbol;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
 
 import java.util.ArrayList;
 import java.util.List;

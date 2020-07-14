@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import test.AbstractTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,18 +20,7 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-public class FeatureDiagramDeSerTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
-    //        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    LogStub.init();
-  }
-
-  @Before
-  public void clearFindings() {
-    Log.getFindings().clear();
-  }
+public class FeatureDiagramDeSerTest extends AbstractTest {
 
   protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
       throws IOException {

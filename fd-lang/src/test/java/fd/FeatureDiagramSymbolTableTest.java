@@ -11,6 +11,7 @@ import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import test.AbstractTest;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -18,18 +19,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class FeatureDiagramSymbolTableTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
-            Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-//    LogStub.init();
-  }
-
-  @Before
-  public void clearFindings() {
-    Log.getFindings().clear();
-  }
+public class FeatureDiagramSymbolTableTest extends AbstractTest {
 
   protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
           throws IOException {

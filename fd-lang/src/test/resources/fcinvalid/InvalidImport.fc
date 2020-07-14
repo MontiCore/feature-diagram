@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fcinvalid;
+
+import fdvalid.NOTBasicElements;
+
+featureconfig InvalidImport for BasicElements {
+  A;
+}
