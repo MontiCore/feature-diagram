@@ -23,14 +23,30 @@ public class FeatureDiagramTool {
 
   protected static final FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
 
-  public static FeatureDiagramArtifactScope run(String modelFile, ModelPath modelPath) {
+  /**
+   * Use the single argument for specifying the single input feature diagram file.
+   *
+   * @param args
+   */
+  public static void main(String[] args) {
+    if (args.length != 1) {
+      Log.error("0xFD102 Please specify only one single path to the input model.");
+      return;
+    }
+    String modelFile = args[0];
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
     Log.info(modelFile + " parsed successfully!", "FeatureDiagramTool");
 
+    //reconstruct modelpath from input file
+    Path path = Paths.get(modelFile).getParent();
+    for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
+      path = path.getParent();
+    }
+
     // setup the symbol table
-    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(modelPath, ast);
+    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(new ModelPath(path), ast);
 
     // execute default context conditions
     FeatureDiagramCoCos.checkAll(ast);
@@ -38,7 +54,6 @@ public class FeatureDiagramTool {
     // store artifact scope after context conditions have been checked
     deser.store(modelTopScope, SYMBOL_LOCATION);
 
-    return modelTopScope;
   }
 
   /**
@@ -64,6 +79,17 @@ public class FeatureDiagramTool {
   }
 
   /**
+   * Create the symbol table from a model file location
+   *
+   * @param model
+   * @param mp
+   * @return
+   */
+  public static FeatureDiagramArtifactScope createSymbolTable(String model, ModelPath mp) {
+    return createSymbolTable(mp, parse(model));
+  }
+
+  /**
    * Create the symbol table from the parsed AST.
    *
    * @param mp
@@ -72,29 +98,19 @@ public class FeatureDiagramTool {
    */
   public static FeatureDiagramArtifactScope createSymbolTable(ModelPath mp,
       ASTFDCompilationUnit ast) {
-    FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
-        .featureDiagramGlobalScopeBuilder()
-        .setModelPath(mp)
-        .setModelFileExtension("fd")
-        .build();
-
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
         .featureDiagramSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
+        .setGlobalScope(createGlobalScope(mp))
         .build();
     return symbolTable.createFromAST(ast);
   }
 
-  /**
-   * Use the single argument for specifying the single input feature diagram file.
-   *
-   * @param args
-   */
-  public static void main(String[] args) {
-    if (args.length != 1) {
-      Log.error("0xFD102 Please specify only one single path to the input model.");
-      return;
-    }
-    FeatureDiagramTool.run(args[0], new ModelPath());
+  public static FeatureDiagramGlobalScope createGlobalScope(ModelPath mp) {
+    return FeatureDiagramMill
+        .featureDiagramGlobalScopeBuilder()
+        .setModelPath(mp)
+        .setModelFileExtension("fd")
+        .build();
   }
+
 }

@@ -1,12 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.featureconfiguration;
+package de.monticore.featureconfigurationpartial;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
-import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScope;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbolTableCreatorDelegator;
 import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
+import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCoChecker;
+import de.monticore.featureconfigurationpartial._cocos.UseSelectBlock;
+import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
+import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialArtifactScope;
+import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialGlobalScope;
+import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialSymbolTableCreatorDelegator;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
@@ -16,22 +18,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class FeatureConfigurationTool {
+public class FeatureConfigurationPartialTool {
 
   /**
-   * Use the single argument for specifying the single input feature configuration file.
+   * Use the single argument for specifying the single input feature diagram file.
    *
    * @param args
    */
   public static void main(String[] args) {
     if (args.length != 1) {
-      Log.error("0xFC102 Please specify only one single path to the input model.");
+      Log.error("0xFD102 Please specify only one single path to the input model.");
       return;
     }
     String modelFile = args[0];
     // parse the model and create the AST representation
     final ASTFCCompilationUnit ast = parse(modelFile);
-    Log.info(modelFile + " parsed successfully!", "FeatureConfigurationTool");
+    Log.info(modelFile + " parsed successfully!", "FeatureConfigurationPartialTool");
 
     //reconstruct modelpath from input file
     Path path = Paths.get(modelFile).getParent();
@@ -42,9 +44,13 @@ public class FeatureConfigurationTool {
     // setup the symbol table
     createSymbolTable(new ModelPath(path), ast);
 
-    // currently no context conditions exist for feature configurations
+    // check context conditions for partial feature configurations
+    FeatureConfigurationPartialCoCoChecker checker = new FeatureConfigurationPartialCoCoChecker();
+    checker.addCoCo(new UseSelectBlock());
+    checker.checkAll(ast);
 
     // do not store artifact scope
+
   }
 
   /**
@@ -55,16 +61,16 @@ public class FeatureConfigurationTool {
    */
   public static ASTFCCompilationUnit parse(String model) {
     try {
-      FeatureConfigurationParser parser = new FeatureConfigurationParser();
+      FeatureConfigurationPartialParser parser = new FeatureConfigurationPartialParser();
       Optional<ASTFCCompilationUnit> optFC = parser.parse(model);
 
       if (!parser.hasErrors() && optFC.isPresent()) {
         return optFC.get();
       }
-      Log.error("0xFC100 Model could not be parsed.");
+      Log.error("0xFC200 Model could not be parsed.");
     }
     catch (RecognitionException | IOException e) {
-      Log.error("0xFC101 Failed to parse " + model, e);
+      Log.error("0xFC201 Failed to parse " + model, e);
     }
     return null;
   }
@@ -76,7 +82,7 @@ public class FeatureConfigurationTool {
    * @param mp
    * @return
    */
-  public static FeatureConfigurationArtifactScope createSymbolTable(String model, ModelPath mp) {
+  public static FeatureConfigurationPartialArtifactScope createSymbolTable(String model, ModelPath mp) {
     return createSymbolTable(mp, parse(model));
   }
 
@@ -87,18 +93,18 @@ public class FeatureConfigurationTool {
    * @param ast
    * @return
    */
-  public static FeatureConfigurationArtifactScope createSymbolTable(ModelPath mp,
+  public static FeatureConfigurationPartialArtifactScope createSymbolTable(ModelPath mp,
       ASTFCCompilationUnit ast) {
-    FeatureConfigurationSymbolTableCreatorDelegator symbolTable = FeatureConfigurationMill
-        .featureConfigurationSymbolTableCreatorDelegatorBuilder()
+    FeatureConfigurationPartialSymbolTableCreatorDelegator symbolTable = FeatureConfigurationPartialMill
+        .featureConfigurationPartialSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(createGlobalScope(mp))
         .build();
     return symbolTable.createFromAST(ast);
   }
 
-  public static FeatureConfigurationGlobalScope createGlobalScope(ModelPath mp) {
-    return FeatureConfigurationMill
-        .featureConfigurationGlobalScopeBuilder()
+  public static FeatureConfigurationPartialGlobalScope createGlobalScope(ModelPath mp) {
+    return FeatureConfigurationPartialMill
+        .featureConfigurationPartialGlobalScopeBuilder()
         .setModelPath(mp)
         .setModelFileExtension("fc")
         .addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(mp))

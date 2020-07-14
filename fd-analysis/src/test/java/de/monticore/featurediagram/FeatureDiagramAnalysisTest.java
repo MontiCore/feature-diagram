@@ -1,16 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
-import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
-import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScope;
+import de.monticore.featureconfiguration.FeatureConfigurationTool;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbolTableCreatorDelegator;
-import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
-import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.FeatureDiagramGlobalScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.LogStub;
@@ -32,25 +26,8 @@ public class FeatureDiagramAnalysisTest {
     LogStub.init();
   }
 
-  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
-      throws IOException {
-    ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
-    assertNotNull(ast);
-    FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
-        .featureDiagramGlobalScopeBuilder()
-        .setModelFileExtension("fd")
-        .setModelPath(mp)
-        .build();
-    return FeatureDiagramMill
-        .featureDiagramSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build()
-        .createFromAST(ast);
-  }
-
-  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile)
-      throws IOException {
-    return setupSymbolTable(modelFile, new ModelPath());
+  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
+    return FeatureDiagramTool.createSymbolTable(modelFile, new ModelPath());
   }
 
   protected FeatureDiagramSymbol setupFeatureDiagramm(FeatureDiagramArtifactScope scope,
@@ -61,32 +38,22 @@ public class FeatureDiagramAnalysisTest {
   }
 
   protected FeatureConfigurationSymbol setupConfigSymTab(String modelFile, ModelPath modelPath,
-      String name) throws IOException {
-    ASTFCCompilationUnit ast = new FeatureConfigurationParser().parse(modelFile).orElse(null);
-    assertNotNull(ast);
-    FeatureConfigurationGlobalScope globalScope = FeatureConfigurationMill
-        .featureConfigurationGlobalScopeBuilder()
-        .setModelFileExtension("fc")
-        .setModelPath(modelPath)
-        .build();
-    FeatureConfigurationSymbolTableCreatorDelegator symbolTable =  FeatureConfigurationMill
-        .featureConfigurationSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
+      String name) {
+    FeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool
+        .createSymbolTable(modelFile, modelPath);
 
-    Optional<FeatureConfigurationSymbol> featureConfOpt = symbolTable.createFromAST(ast)
+    Optional<FeatureConfigurationSymbol> featureConfOpt = symbolTable
         .resolveFeatureConfiguration(name);
     assertTrue(featureConfOpt.isPresent());
     return featureConfOpt.get();
   }
 
-  protected FeatureConfigurationSymbol setupConfigSymTab(String modelFile, String name)
-      throws IOException {
+  protected FeatureConfigurationSymbol setupConfigSymTab(String modelFile, String name) {
     return setupConfigSymTab(modelFile, new ModelPath(), name);
   }
 
   @Test
-  public void testPhoneExample() throws IOException {
+  public void testPhoneExample() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "../fd-lang/src/test/resources/fdvalid/Phone.fd");
     FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
@@ -102,7 +69,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testPhoneComplexExample() throws IOException {
+  public void testPhoneComplexExample() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "../fd-lang/src/test/resources/fdvalid/PhoneComplex.fd");
     FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
@@ -116,7 +83,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testDeadFeatures() throws IOException {
+  public void testDeadFeatures() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/DeadFeatures.fd");
     FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
@@ -133,7 +100,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testFalseOptional() throws IOException {
+  public void testFalseOptional() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/FalseOptional.fd");
     FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
@@ -150,7 +117,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testVoid1() throws IOException {
+  public void testVoid1() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/Void.fd");
     FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
@@ -164,7 +131,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testVoid2() throws IOException {
+  public void testVoid2() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/DeadFeatures.fd");
     FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
@@ -178,7 +145,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testFilter1() throws IOException {
+  public void testFilter1() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/FalseOptional.fd");
     FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
@@ -196,7 +163,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testFilter2() throws IOException {
+  public void testFilter2() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/FalseOptional.fd");
     FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
@@ -214,7 +181,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testFilter3() throws IOException {
+  public void testFilter3() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/FalseOptional.fd");
     FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
@@ -231,7 +198,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testisValid1() throws IOException {
+  public void testisValid1() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/FalseOptional.fd");
     FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
@@ -248,7 +215,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testisValid2() throws IOException {
+  public void testisValid2() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/FalseOptional.fd");
     FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
@@ -265,7 +232,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testisValid3() throws IOException {
+  public void testisValid3() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/DeadFeatures.fd");
     FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
@@ -282,7 +249,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testAllProducts() throws IOException {
+  public void testAllProducts() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "../fd-lang/src/test/resources/fdvalid/Phone.fd");
     FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
@@ -298,7 +265,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testFindValid1() throws IOException {
+  public void testFindValid1() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "../fd-lang/src/test/resources/fdvalid/Phone.fd");
     FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
@@ -312,7 +279,7 @@ public class FeatureDiagramAnalysisTest {
   }
 
   @Test
-  public void testFindValid2() throws IOException {
+  public void testFindValid2() {
     FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
         "src/test/resources/Void.fd");
     FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,

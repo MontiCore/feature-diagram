@@ -32,13 +32,14 @@ public class FeatureConfigurationSymbolTableCreator
   }
 
   @Override public FeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
-    Log.errorIfNull(rootNode,
-        "0xA7004x1009671022 Error by creating of the FeatureConfigurationSymbolTableCreator symbol table: top ast node is null");
+    String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
+
     FeatureConfigurationArtifactScope artifactScope = de.monticore.featureconfiguration.FeatureConfigurationMill
         .featureConfigurationArtifactScopeBuilder()
-        .setPackageName(rootNode.getPackage().getQName())
         .setImportList(new ArrayList<>())
+        .setPackageName(packageName)
         .build();
+
     putOnStack(artifactScope);
     handleImportStatements(rootNode);
     rootNode.accept(getRealThis());
