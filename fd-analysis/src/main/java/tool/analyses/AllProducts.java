@@ -1,11 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
-import featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class AllProducts extends Analysis<Set<ASTFeatureConfiguration>> {

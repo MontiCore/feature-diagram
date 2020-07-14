@@ -1,12 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.featurediagram._symboltable.serialization;
+package de.monticore.featurediagram._symboltable;
 
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
-import featurediagram.FeatureDiagramMill;
-import featurediagram._symboltable.FeatureSymbol;
-import featurediagram._symboltable.IFeatureDiagramScope;
 
 import java.util.ArrayList;
 import java.util.List;

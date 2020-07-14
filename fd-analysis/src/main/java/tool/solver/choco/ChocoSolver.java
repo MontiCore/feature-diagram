@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.solver.choco;
 
-import featureconfiguration._ast.ASTFeatureConfiguration;
-import featureconfiguration._ast.ASTFeatureConfigurationBuilder;
-import featureconfigurationpartial.FeatureConfigurationPartialMill;
-import featureconfigurationpartial._ast.ASTSelectBuilder;
-import featureconfigurationpartial._ast.ASTUnselectBuilder;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfigurationBuilder;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
+import de.monticore.featureconfigurationpartial._ast.ASTSelectBuilder;
+import de.monticore.featureconfigurationpartial._ast.ASTUnselectBuilder;
 import org.apache.commons.io.IOUtils;
 import org.chocosolver.parser.flatzinc.Flatzinc;
 import org.chocosolver.parser.flatzinc.FznSettings;
@@ -18,6 +18,7 @@ import java.util.*;
 
 public class ChocoSolver extends Flatzinc implements ISolver {
   private FznSettings settings;
+
   private String featureModelName;
 
   public ChocoSolver() {
@@ -32,7 +33,8 @@ public class ChocoSolver extends Flatzinc implements ISolver {
   }
 
   ASTFeatureConfiguration transformModelToASTConfiguration(Model model, List<String> features) {
-    ASTFeatureConfigurationBuilder builder = FeatureConfigurationPartialMill.featureConfigurationBuilder();
+    ASTFeatureConfigurationBuilder builder = FeatureConfigurationPartialMill
+        .featureConfigurationBuilder();
     ASTSelectBuilder selectBuilder = FeatureConfigurationPartialMill.selectBuilder();
     ASTUnselectBuilder unselectBuilder = FeatureConfigurationPartialMill.unselectBuilder();
 
@@ -42,20 +44,21 @@ public class ChocoSolver extends Flatzinc implements ISolver {
         .map(v -> ((IntVar) v))
         .map(ChocoSolver::map)
         .forEach(stringBooleanMap -> {
-          stringBooleanMap.forEach((name, value)->{
-            if(value){
+          stringBooleanMap.forEach((name, value) -> {
+            if (value) {
               selectBuilder.addName(name);
-            }else {
+            }
+            else {
               unselectBuilder.addName(name);
             }
           });
         });
     return builder
-            .setFdName(featureModelName)
-            .setName("Analysis")
-            .addFCElement(selectBuilder.build())
-            .addFCElement(unselectBuilder.build())
-            .build();
+        .setFdName(featureModelName)
+        .setName("Analysis")
+        .addFCElement(selectBuilder.build())
+        .addFCElement(unselectBuilder.build())
+        .build();
   }
 
   static Map<String, Boolean> map(IntVar chocoVariable) {
@@ -72,7 +75,7 @@ public class ChocoSolver extends Flatzinc implements ISolver {
 
   @Override
   public List<ASTFeatureConfiguration> solve(String model, List<String> features,
-                                             Boolean allSolutions) {
+      Boolean allSolutions) {
     List<ASTFeatureConfiguration> ret = new ArrayList<>();
     portfolio.addModel(new Model());
     Model m = getModel();

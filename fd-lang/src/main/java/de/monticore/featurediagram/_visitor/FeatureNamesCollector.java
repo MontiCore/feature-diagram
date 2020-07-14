@@ -1,8 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._visitor;
 
-import featurediagram._ast.ASTFeatureTreeRule;
-import featurediagram._ast.ASTGroupPart;
+import de.monticore.featurediagram._ast.ASTFeatureTreeRule;
+import de.monticore.featurediagram._ast.ASTGroupPart;
 
 import java.util.HashMap;
 import java.util.List;

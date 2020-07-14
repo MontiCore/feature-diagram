@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._cocos;
 
-import featurediagram._ast.ASTFeatureDiagramNode;
+import de.monticore.featurediagram._ast.ASTFeatureDiagramNode;
 
 public class FeatureDiagramCoCos {
 

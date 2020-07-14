@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fcvalid;
+
+import fdvalid.TransitiveImport;
+
+featureconfig SelectImported for TransitiveImport {
+  AA, B;
+}

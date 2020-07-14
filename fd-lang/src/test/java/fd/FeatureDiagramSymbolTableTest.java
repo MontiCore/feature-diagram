@@ -1,17 +1,17 @@
 /* (c) https://github.com/MontiCore/monticore */
 package fd;
 
-import de.monticore.featurediagram._symboltable.FeatureDiagramLanguage;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import featurediagram.FeatureDiagramMill;
-import featurediagram._ast.ASTFDCompilationUnit;
-import featurediagram._parser.FeatureDiagramParser;
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
+import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import test.AbstractTest;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -19,18 +19,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class FeatureDiagramSymbolTableTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
-    //        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    LogStub.init();
-  }
-
-  @Before
-  public void clearFindings() {
-    Log.getFindings().clear();
-  }
+public class FeatureDiagramSymbolTableTest extends AbstractTest {
 
   protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
           throws IOException {
@@ -39,7 +28,7 @@ public class FeatureDiagramSymbolTableTest {
     FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
         .featureDiagramGlobalScopeBuilder()
         .setModelPath(mp)
-        .setFeatureDiagramLanguage(new FeatureDiagramLanguage())
+        .setModelFileExtension("fd")
         .build();
     return FeatureDiagramMill
         .featureDiagramSymbolTableCreatorBuilder()
@@ -104,6 +93,11 @@ public class FeatureDiagramSymbolTableTest {
     assertTrue(featureSymbolOpt.isPresent());
     featureSymbol = featureSymbolOpt.get();
     assertEquals("fdvalid.TransitiveImport.X", featureSymbol.getFullName());
+
+    featureSymbolOpt = fdScope.resolveFeature("fdvalid.TransitiveImport.Y");
+    assertTrue(featureSymbolOpt.isPresent());
+    featureSymbol = featureSymbolOpt.get();
+    assertEquals("fdvalid.TransitiveImport.Y", featureSymbol.getFullName());
 
     Optional<FeatureSymbol> featureSymbolOptH = fdScope.resolveFeature("fdvalid.TransitiveImport.H");
     assertTrue(featureSymbolOptH.isPresent());

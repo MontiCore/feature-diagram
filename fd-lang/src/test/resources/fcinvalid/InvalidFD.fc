@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fcinvalid;
+
+import nothing.ThisFeatureDiagramDoesNotExist;
+
+featureconfig InvalidFD for ThisFeatureDiagramDoesNotExist {
+  A;
+}

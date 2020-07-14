@@ -1,19 +1,21 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._cocos;
 
-import de.se_rwth.commons.logging.Log;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
-import featurediagram._ast.ASTFeatureTreeRule;
-import featurediagram._symboltable.FeatureSymbol;
+import de.monticore.featurediagram._ast.ASTFeatureTreeRule;
+import de.monticore.featurediagram._symboltable.FeatureSymbol;
 import de.monticore.featurediagram._visitor.FeatureNamesCollector;
 import de.monticore.featurediagram._visitor.Occurrence;
+import de.se_rwth.commons.logging.Log;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class HasTreeShape
-        implements FeatureDiagramASTFeatureDiagramCoCo, FeatureDiagramASTFeatureTreeRuleCoCo {
-
+    implements FeatureDiagramASTFeatureDiagramCoCo, FeatureDiagramASTFeatureTreeRuleCoCo {
 
   protected FeatureNamesCollector collector = new FeatureNamesCollector();
 
@@ -22,10 +24,10 @@ public class HasTreeShape
     checkParents(node);
   }
 
-  private String calculateRootFeature(ASTFeatureDiagram node){
+  private String calculateRootFeature(ASTFeatureDiagram node) {
     node.accept(collector);
     List<String> rootfeatures = collector.getOccurrences(Occurrence.LEFT);
-    if(rootfeatures.size() == 0){
+    if (rootfeatures.size() == 0) {
       Log.error("0xFD003 Featurediagram" + node.getName() +
           "has no root node.");
       return "";
@@ -38,11 +40,10 @@ public class HasTreeShape
     return rootfeatures.get(0);
   }
 
-
   protected void checkParents(ASTFeatureDiagram node) {
     if (!node.isPresentSymbol() || null == node.getSymbol()) {
       Log.error("0xFD005 Feature diagram symbol table has to be created before cocos are checked!",
-              node.get_SourcePositionStart());
+          node.get_SourcePositionStart());
     }
 
     //get all feature names used in the feature diagram
@@ -53,13 +54,13 @@ public class HasTreeShape
     features.removeAll(parents.keySet());
 
     //remove the root feature, which must not have a parent
-    String rootFeature =  calculateRootFeature(node);
+    String rootFeature = calculateRootFeature(node);
     features.remove(rootFeature);
 
     for (String feature : features) {
       Log.error("0xFD004 Each feature except the root feature must have a parent feature! '"
-                      + feature + "' does not have a parent feature",
-              node.get_SourcePositionStart());
+              + feature + "' does not have a parent feature",
+          node.get_SourcePositionStart());
     }
   }
 
@@ -69,16 +70,16 @@ public class HasTreeShape
     for (FeatureSymbol f : node.getFeatureGroup().getSubFeatureSymbols()) {
       if (f.getName().equals(lhs)) {
         Log.error("0xFD007 Feature diagram rules must not introduce self loops!",
-                node.get_SourcePositionStart());
+            node.get_SourcePositionStart());
       }
     }
   }
 
   protected Set<String> getAllFeatureNames(ASTFeatureDiagram node) {
     return node.getSymbol()
-            .getAllFeatures()
-            .stream().map(f -> f.getName())
-            .collect(Collectors.toSet());
+        .getAllFeatures()
+        .stream().map(f -> f.getName())
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -91,9 +92,9 @@ public class HasTreeShape
   protected Map<String, String> getAllParents(ASTFeatureDiagram node) {
     Map<String, String> parents = new HashMap<>();
     List<ASTFeatureTreeRule> featureTreeRules = node.getFDElementList().stream()
-            .filter(e -> e instanceof ASTFeatureTreeRule)
-            .map(e -> (ASTFeatureTreeRule) e)
-            .collect(Collectors.toList());
+        .filter(e -> e instanceof ASTFeatureTreeRule)
+        .map(e -> (ASTFeatureTreeRule) e)
+        .collect(Collectors.toList());
 
     for (ASTFeatureTreeRule rule : featureTreeRules) {
       String parentName = rule.getName();
@@ -104,14 +105,15 @@ public class HasTreeShape
           String parentName2 = parents.get(featureName);
           if (!parentName.equals(parentName2)) {
             Log.error("0xFD008 A feature must not have more than one parent feature! '"
-                            + featureName + "' has parents '" + parentName + "' and '" + parentName2 + "'",
-                    node.get_SourcePositionStart());
+                    + featureName + "' has parents '" + parentName + "' and '" + parentName2 + "'",
+                node.get_SourcePositionStart());
           }
-        } else {
+        }
+        else {
           if (node.getSpannedScope().resolveFeatureMany(parentName).isEmpty()) {
             Log.error("0xFD010 The feature '" + featureName + "' has the unknown parent feature '"
-                            + parentName + "'",
-                    node.get_SourcePositionStart());
+                    + parentName + "'",
+                node.get_SourcePositionStart());
           }
           parents.put(featureName, parentName);
         }

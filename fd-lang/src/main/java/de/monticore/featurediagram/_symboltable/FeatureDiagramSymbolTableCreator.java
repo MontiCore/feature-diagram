@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._symboltable;
 
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
+import de.monticore.featurediagram._ast.ASTFeatureTreeRule;
+import de.monticore.featurediagram._ast.ASTGroupPart;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
-import featurediagram.FeatureDiagramMill;
-import featurediagram._ast.ASTFDCompilationUnit;
-import featurediagram._ast.ASTFeatureTreeRule;
-import featurediagram._ast.ASTGroupPart;
 
 import java.util.Deque;
 
@@ -18,6 +18,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
 
   public FeatureDiagramSymbolTableCreator(Deque<? extends IFeatureDiagramScope> scopeStack) {
     super(scopeStack);
+    firstCreatedScope = !scopeStack.isEmpty() ? scopeStack.peekLast() : null;
   }
 
   @Override
@@ -28,9 +29,9 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
         .featureDiagramArtifactScopeBuilder()
         .setPackageName(packageName)
         .build();
-    handleImportStatements(rootNode);
-
+    firstCreatedScope.addSubScope(artifactScope);
     putOnStack(artifactScope);
+    handleImportStatements(rootNode);
     rootNode.accept(getRealThis());
     return artifactScope;
   }
@@ -70,7 +71,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
         Log.error("0xFD132 Feature diagrams may not use stars '*' in import statements!");
         continue;
       }
-      FeatureDiagramSymbol fd = getCurrentScope().get()
+      FeatureDiagramSymbol fd = getFirstCreatedScope()
           .resolveFeatureDiagram(i.getQName()).orElse(null);
       if (null == fd) {
         Log.error("0xFD133 Cannot find imported feature diagram '" + i.getQName() + "' in '"
