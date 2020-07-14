@@ -1,31 +1,38 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfigurationpartial._ast.ASTSelect;
+import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
 import tool.transform.FZNModelBuilder;
 import tool.util.FeatureNameCollector;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-public class DeadFeature extends Analysis<List<String>> {
+public class DeadFeature extends Analysis<List<String>>
+    implements FeatureConfigurationPartialVisitor {
+
+  private List<String> deadFeatures;
+
   @Override
-  public void perform(Collection<Map<String, Boolean>> configurations) {
+  public void perform(Collection<ASTFeatureConfiguration> configurations) {
     FeatureNameCollector collector = new FeatureNameCollector();
-    getFeatureModel().accept(collector);
-    List<String> features = collector.getNames();
+    getFeatureModel().getAstNode().accept(collector);
+    deadFeatures = collector.getNames();
     configurations.forEach(configuration -> {
-      configuration.forEach((k, v) -> {
-        if (v != null && v) {
-          features.remove(k);
-        }
-      });
+      configuration.accept(this);
     });
-    setResult(features);
+    setResult(deadFeatures);
   }
 
   @Override
   public FZNModelBuilder getModelBuilder() {
     return new FZNModelBuilder(true);
+  }
+
+  @Override
+  public void visit(ASTSelect node) {
+    node.streamNames().forEach(name -> deadFeatures.remove(name));
   }
 }

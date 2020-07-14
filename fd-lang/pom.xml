@@ -6,8 +6,8 @@
 
     <parent>
         <groupId>de.monticore.lang</groupId>
-        <artifactId>feature-diagrams-parent</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <artifactId>feature-diagram-parent</artifactId>
+        <version>0.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>feature-diagram-language</artifactId>

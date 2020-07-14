@@ -1,11 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.analyses;
 
-import featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.FZNModelBuilder;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 
 public abstract class Analysis<T> {
@@ -29,7 +29,7 @@ public abstract class Analysis<T> {
     this.featureModel = featureModel;
   }
 
-  public abstract void perform(Collection<Map<String, Boolean>> configurations);
+  public abstract void perform(Collection<ASTFeatureConfiguration> configurations);
 
   public FZNModelBuilder getModelBuilder() {
     return builder;
@@ -40,7 +40,7 @@ public abstract class Analysis<T> {
   }
 
   protected void setResult(T result) {
-    this.result = Optional.of(result);
+    this.result = Optional.ofNullable(result);
   }
 
 }

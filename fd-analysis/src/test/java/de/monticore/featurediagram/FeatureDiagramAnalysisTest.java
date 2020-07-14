@@ -1,0 +1,295 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.featurediagram;
+
+import de.monticore.featureconfiguration.FeatureConfigurationTool;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
+import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.io.paths.ModelPath;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.Test;
+import tool.FeatureModelAnalysisTool;
+import tool.analyses.*;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
+
+public class FeatureDiagramAnalysisTest {
+
+  @Before
+  public void init() {
+    LogStub.init();
+  }
+
+  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
+    return FeatureDiagramTool.createSymbolTable(modelFile, new ModelPath());
+  }
+
+  protected FeatureDiagramSymbol setupFeatureDiagramm(FeatureDiagramArtifactScope scope,
+      String name) {
+    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = scope.resolveFeatureDiagram(name);
+    assertTrue(optionalFeatureDiagramSymbol.isPresent());
+    return optionalFeatureDiagramSymbol.get();
+  }
+
+  protected FeatureConfigurationSymbol setupConfigSymTab(String modelFile, ModelPath modelPath,
+      String name) {
+    FeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool
+        .createSymbolTable(modelFile, modelPath);
+
+    Optional<FeatureConfigurationSymbol> featureConfOpt = symbolTable
+        .resolveFeatureConfiguration(name);
+    assertTrue(featureConfOpt.isPresent());
+    return featureConfOpt.get();
+  }
+
+  protected FeatureConfigurationSymbol setupConfigSymTab(String modelFile, String name) {
+    return setupConfigSymTab(modelFile, new ModelPath(), name);
+  }
+
+  @Test
+  public void testPhoneExample() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "../fd-lang/src/test/resources/fdvalid/Phone.fd");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "Phone");
+
+    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    Analysis<Integer> numberOfProducts = new NumberOfProducts();
+    modelAnalysisTool.addAnalysis(numberOfProducts);
+    modelAnalysisTool.performAnalyses();
+    assertTrue(numberOfProducts.getResult().isPresent());
+    assertEquals(new Integer(84), numberOfProducts.getResult().get());
+
+  }
+
+  @Test
+  public void testPhoneComplexExample() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "../fd-lang/src/test/resources/fdvalid/PhoneComplex.fd");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "Phone");
+    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    Analysis<Integer> numberOfProducts = new NumberOfProducts();
+    modelAnalysisTool.addAnalysis(numberOfProducts);
+    modelAnalysisTool.performAnalyses();
+    assertTrue(numberOfProducts.getResult().isPresent());
+    assertEquals(new Integer(48), numberOfProducts.getResult().get());
+  }
+
+  @Test
+  public void testDeadFeatures() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/DeadFeatures.fd");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "DeadFeatures");
+    DeadFeature deadFeature = new DeadFeature();
+    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    tool.addAnalysis(deadFeature);
+    tool.performAnalyses();
+    assertTrue(deadFeature.getResult().isPresent());
+    List<String> deadFeatures = deadFeature.getResult().get();
+
+    assertTrue(deadFeatures.contains("B"));
+    assertEquals(1, deadFeatures.size());
+  }
+
+  @Test
+  public void testFalseOptional() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/FalseOptional.fd");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "FalseOptional");
+    FalseOptional falseOptional = new FalseOptional();
+    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    tool.addAnalysis(falseOptional);
+    tool.performAnalyses();
+    assertTrue(falseOptional.getResult().isPresent());
+    List<String> falseOpts = falseOptional.getResult().get();
+
+    assertTrue(falseOpts.contains("B"));
+    assertEquals(1, falseOpts.size());
+  }
+
+  @Test
+  public void testVoid1() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/Void.fd");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "Void");
+    IsVoidFeatureModel voidFeatureModel = new IsVoidFeatureModel();
+    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    tool.addAnalysis(voidFeatureModel);
+    tool.performAnalyses();
+    assertTrue(voidFeatureModel.getResult().isPresent());
+    assertTrue(voidFeatureModel.getResult().get());
+  }
+
+  @Test
+  public void testVoid2() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/DeadFeatures.fd");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "DeadFeatures");
+    IsVoidFeatureModel voidFeatureModel = new IsVoidFeatureModel();
+    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    tool.addAnalysis(voidFeatureModel);
+    tool.performAnalyses();
+    assertTrue(voidFeatureModel.getResult().isPresent());
+    assertFalse(voidFeatureModel.getResult().get());
+  }
+
+  @Test
+  public void testFilter1() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/FalseOptional.fd");
+    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
+        "src/test/resources/CompleteToValid.fc", "CompleteToValid");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "FalseOptional");
+    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    Filter filter = new Filter(featureConfiguration.getAstNode());
+    tool.addAnalysis(filter);
+    tool.performAnalyses();
+
+    assertTrue(filter.getResult().isPresent());
+    assertFalse(filter.getResult().get().isEmpty());
+    assertEquals(1, filter.getResult().get().size());
+  }
+
+  @Test
+  public void testFilter2() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/FalseOptional.fd");
+    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
+        "src/test/resources/ValidConfig.fc", "ValidConfig");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "FalseOptional");
+    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    Filter filter = new Filter(featureConfiguration.getAstNode());
+    tool.addAnalysis(filter);
+    tool.performAnalyses();
+
+    assertTrue(filter.getResult().isPresent());
+    assertFalse(filter.getResult().get().isEmpty());
+    assertEquals(2, filter.getResult().get().size());
+  }
+
+  @Test
+  public void testFilter3() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/FalseOptional.fd");
+    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
+        "src/test/resources/InvalidConfig.fc", "InvalidConfig");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "FalseOptional");
+    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    Filter filter = new Filter(featureConfiguration.getAstNode());
+    tool.addAnalysis(filter);
+    tool.performAnalyses();
+
+    assertTrue(filter.getResult().isPresent());
+    assertFalse(filter.getResult().get().isEmpty());
+  }
+
+  @Test
+  public void testisValid1() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/FalseOptional.fd");
+    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
+        "src/test/resources/CompleteToValid.fc", "CompleteToValid");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "FalseOptional");
+    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    IsValid isValid = new IsValid(featureConfiguration.getAstNode());
+    tool.addAnalysis(isValid);
+    tool.performAnalyses();
+
+    assertTrue(isValid.getResult().isPresent());
+    assertFalse(isValid.getResult().get());
+  }
+
+  @Test
+  public void testisValid2() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/FalseOptional.fd");
+    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
+        "src/test/resources/ValidConfig.fc", "ValidConfig");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "FalseOptional");
+    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    IsValid isValid = new IsValid(featureConfiguration.getAstNode());
+    tool.addAnalysis(isValid);
+    tool.performAnalyses();
+
+    assertTrue(isValid.getResult().isPresent());
+    assertTrue(isValid.getResult().get());
+  }
+
+  @Test
+  public void testisValid3() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/DeadFeatures.fd");
+    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
+        "src/test/resources/InvalidConfig.fc", "InvalidConfig");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "DeadFeatures");
+    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    IsValid isValid = new IsValid(featureConfiguration.getAstNode());
+    tool.addAnalysis(isValid);
+    tool.performAnalyses();
+
+    assertTrue(isValid.getResult().isPresent());
+    assertFalse(isValid.getResult().get());
+  }
+
+  @Test
+  public void testAllProducts() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "../fd-lang/src/test/resources/fdvalid/Phone.fd");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "Phone");
+
+    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    AllProducts allProducts = new AllProducts();
+    modelAnalysisTool.addAnalysis(allProducts);
+    modelAnalysisTool.performAnalyses();
+    assertTrue(allProducts.getResult().isPresent());
+    assertEquals(84, allProducts.getResult().get().size());
+
+  }
+
+  @Test
+  public void testFindValid1() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "../fd-lang/src/test/resources/fdvalid/Phone.fd");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "Phone");
+
+    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    FindValidConfig findValidConfig = new FindValidConfig();
+    modelAnalysisTool.addAnalysis(findValidConfig);
+    modelAnalysisTool.performAnalyses();
+    assertTrue(findValidConfig.getResult().isPresent());
+  }
+
+  @Test
+  public void testFindValid2() {
+    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
+        "src/test/resources/Void.fd");
+    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
+        "Void");
+
+    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    FindValidConfig findValidConfig = new FindValidConfig();
+    modelAnalysisTool.addAnalysis(findValidConfig);
+    modelAnalysisTool.performAnalyses();
+    assertFalse(findValidConfig.getResult().isPresent());
+  }
+
+}

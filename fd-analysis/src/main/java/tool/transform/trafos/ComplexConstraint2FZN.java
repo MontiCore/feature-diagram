@@ -3,12 +3,13 @@ package tool.transform.trafos;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
-import featurediagram._ast.ASTConstraint;
-import featurediagram._ast.ASTExcludes;
-import featurediagram._ast.ASTRequires;
-import featurediagram._symboltable.FeatureDiagramSymbol;
-import featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._ast.ASTExcludes;
+import de.monticore.featurediagram._ast.ASTFeatureConstraint;
+import de.monticore.featurediagram._ast.ASTRequires;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
 import tool.transform.flatzinc.Variable;
@@ -22,7 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ComplexConstraint2FZN
-        implements FeatureModel2FlatZincModelTrafo, FeatureDiagramVisitor {
+    implements FeatureModel2FlatZincModelTrafo, FeatureDiagramVisitor {
 
   private List<Constraint> fznConstraints = new ArrayList<>();
 
@@ -49,7 +50,7 @@ public class ComplexConstraint2FZN
     VariableDeterminator det = new VariableDeterminator();
     featureModel.accept(det);
     otherVariables = det.getVariables().stream()
-            .collect(Collectors.toMap(Variable::getName, Function.identity()));
+        .collect(Collectors.toMap(Variable::getName, Function.identity()));
     NameCalculator calculator = new NameCalculator();
     featureModel.getAstNode().accept(calculator);
     names = calculator.getNames();
@@ -85,8 +86,8 @@ public class ComplexConstraint2FZN
   }
 
   @Override
-  public void endVisit(ASTConstraint node) {
-    fznConstraints.add(new Constraint("bool_eq", "true", names.get(node.getExpression())));
+  public void endVisit(ASTFeatureConstraint node) {
+    fznConstraints.add(new Constraint("bool_eq", "true", names.get(node.getConstraint())));
   }
 
   @Override
@@ -111,8 +112,8 @@ public class ComplexConstraint2FZN
     String name = createVariable(node, Variable.Type.INT);
     String constraintName = getTypeFromName(node.getLeft()) + "_times";
     fznConstraints.add(
-            new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
-                    name));
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
@@ -120,15 +121,15 @@ public class ComplexConstraint2FZN
     String name = createVariable(node, variables.get(names.get(node.getLeft())).getType());
     String constraintName = getTypeFromName(node.getLeft()) + "_div";
     fznConstraints.add(
-            new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
-                    name));
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
   public void endVisit(ASTModuloExpression node) {
     String name = createVariable(node, Variable.Type.INT);
     fznConstraints.add(
-            new Constraint("int_mod", names.get(node.getLeft()), names.get(node.getRight()), name));
+        new Constraint("int_mod", names.get(node.getLeft()), names.get(node.getRight()), name));
   }
 
   @Override
@@ -136,8 +137,8 @@ public class ComplexConstraint2FZN
     String name = createVariable(node, variables.get(names.get(node.getLeft())).getType());
     String constraintName = getTypeFromName(node.getLeft()) + "_plus";
     fznConstraints.add(
-            new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
-                    name));
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
@@ -146,7 +147,7 @@ public class ComplexConstraint2FZN
     // l-r=d <=> d+r=l
     String constraintName = getTypeFromName(node.getLeft()) + "_plus";
     fznConstraints.add(new Constraint(constraintName, names.get(node.getRight()), name,
-            names.get(node.getLeft())));
+        names.get(node.getLeft())));
   }
 
   @Override
@@ -154,8 +155,8 @@ public class ComplexConstraint2FZN
     String name = createVariable(node, Variable.Type.BOOL);
     String constraintName = getTypeFromName(node.getLeft()) + "_eq_reif";
     fznConstraints.add(
-            new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
-                    name));
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
@@ -163,8 +164,8 @@ public class ComplexConstraint2FZN
     String name = createVariable(node, Variable.Type.BOOL);
     String constraintName = getTypeFromName(node.getLeft()) + "_le_reif";
     fznConstraints.add(
-            new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
-                    name));
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
@@ -173,8 +174,8 @@ public class ComplexConstraint2FZN
     String constraintName = getTypeFromName(node.getLeft()) + "_le_reif";
     // l>=r <=> r<=l
     fznConstraints.add(
-            new Constraint(constraintName, names.get(node.getRight()), names.get(node.getLeft()),
-                    name));
+        new Constraint(constraintName, names.get(node.getRight()), names.get(node.getLeft()),
+            name));
   }
 
   @Override
@@ -182,8 +183,8 @@ public class ComplexConstraint2FZN
     String name = createVariable(node, Variable.Type.BOOL);
     String constraintName = getTypeFromName(node.getLeft()) + "_lt_reif";
     fznConstraints.add(
-            new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
-                    name));
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
@@ -192,8 +193,8 @@ public class ComplexConstraint2FZN
     String constraintName = getTypeFromName(node.getLeft()) + "_le_reif";
     // l>r <=> r<l
     fznConstraints.add(
-            new Constraint(constraintName, names.get(node.getRight()), names.get(node.getLeft()),
-                    name));
+        new Constraint(constraintName, names.get(node.getRight()), names.get(node.getLeft()),
+            name));
   }
 
   @Override
@@ -201,28 +202,28 @@ public class ComplexConstraint2FZN
     String name = createVariable(node, Variable.Type.BOOL);
     String constraintName = getTypeFromName(node.getLeft()) + "_ne_reif";
     fznConstraints.add(
-            new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
-                    name));
+        new Constraint(constraintName, names.get(node.getLeft()), names.get(node.getRight()),
+            name));
   }
 
   @Override
   public void endVisit(ASTBooleanAndOpExpression node) {
     String name = createVariable(node, Variable.Type.BOOL);
     fznConstraints.add(
-            new Constraint("bool_and", names.get(node.getLeft()), names.get(node.getRight()), name));
+        new Constraint("bool_and", names.get(node.getLeft()), names.get(node.getRight()), name));
   }
 
   @Override
   public void endVisit(ASTBooleanOrOpExpression node) {
     String name = createVariable(node, Variable.Type.BOOL);
     fznConstraints.add(
-            new Constraint("bool_or", names.get(node.getLeft()), names.get(node.getRight()), name));
+        new Constraint("bool_or", names.get(node.getLeft()), names.get(node.getRight()), name));
   }
 
   @Override
   public void endVisit(ASTConditionalExpression node) {
     String name = createVariable(node,
-            variables.get(names.get(node.getTrueExpression())).getType());
+        variables.get(names.get(node.getTrueExpression())).getType());
     String helperName = "helper" + name;
     Variable helpervariable = new Variable();
     helpervariable.setType(Variable.Type.BOOL);
@@ -232,38 +233,26 @@ public class ComplexConstraint2FZN
     String type = getTypeFromName(node.getTrueExpression());
     fznConstraints.add(new Constraint("bool_not", names.get(node.getCondition()), helperName));
     fznConstraints.add(new Constraint(type + "_eq_reif", names.get(node.getTrueExpression()), name,
-            names.get(node.getCondition())));
+        names.get(node.getCondition())));
     fznConstraints.add(
-            new Constraint(type + "_eq_reif", names.get(node.getFalseExpression()), name, helperName));
+        new Constraint(type + "_eq_reif", names.get(node.getFalseExpression()), name, helperName));
 
   }
 
   @Override
   public void endVisit(ASTRequires node) {
     String name = createVariable(node, Variable.Type.BOOL);
-    String helperName = "helper" + name;
-    Variable helpervariable = new Variable();
-    helpervariable.setType(Variable.Type.BOOL);
-    helpervariable.setName(helperName);
-    helpervariable.setAnnotation("var_is_introduced");
-    variables.put(helperName, helpervariable);
-    fznConstraints.add(new Constraint("bool_not", names.get(node.getLeft()), helperName));
-    fznConstraints.add(new Constraint("bool_or", helperName, names.get(node.getRight()), name));
+    fznConstraints.add(new Constraint("bool_or", names.get(node.getLeft()) + "IsUnselected",
+        names.get(node.getRight()) + "IsSelected", name));
   }
 
   @Override
   public void endVisit(ASTExcludes node) {
     String name = createVariable(node, Variable.Type.BOOL);
-    String helperName = "helper" + name;
-    Variable helpervariable = new Variable();
-    helpervariable.setType(Variable.Type.BOOL);
-    helpervariable.setName(helperName);
-    helpervariable.setAnnotation("var_is_introduced");
-    variables.put(helperName, helpervariable);
-    fznConstraints.add(new Constraint("bool_not", name, helperName));
     fznConstraints.add(
-            new Constraint("bool_and", names.get(node.getLeft()), names.get(node.getRight()),
-                    helperName));
+        new Constraint("bool_or", names.get(node.getLeft()) + "IsUnselected",
+            names.get(node.getRight()) + "IsUnselected",
+            name));
   }
 
   @Override
@@ -290,8 +279,8 @@ public class ComplexConstraint2FZN
     String constraintname = "";
     try {
       switch (variables.containsKey(names.get(node)) ?
-              variables.get(names.get(node)).getType() :
-              otherVariables.get(names.get(node)).getType()) {
+          variables.get(names.get(node)).getType() :
+          otherVariables.get(names.get(node)).getType()) {
         case BOOL:
           constraintname = "bool";
           break;
@@ -302,7 +291,8 @@ public class ComplexConstraint2FZN
           constraintname = "float";
           break;
       }
-    } catch (NullPointerException e) {
+    }
+    catch (NullPointerException e) {
       return "int";
     }
     return constraintname;

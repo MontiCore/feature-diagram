@@ -1,5 +1,0 @@
-/* (c) https://github.com/MontiCore/monticore */
-
-featureconfig Select1 for BasicElements {
-  A,B,C,E;
-}

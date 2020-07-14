@@ -1,39 +1,26 @@
 /* (c) https://github.com/MontiCore/monticore */
 package fd;
 
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
+import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
+import de.monticore.featurediagram._parser.FeatureDiagramParser;
+import de.monticore.featurediagram._symboltable.FeatureDiagramGlobalScope;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import featurediagram.FeatureDiagramTool;
-import featurediagram._ast.ASTFDCompilationUnit;
-import featurediagram._cocos.FeatureDiagramCoCos;
-import featurediagram._parser.FeatureDiagramParser;
-import featurediagram._symboltable.FeatureDiagramGlobalScope;
-import featurediagram._symboltable.FeatureDiagramLanguage;
-import featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+import test.AbstractTest;
 
 import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-@Ignore
-public class FeatureDiagramCoCoTest {
-
-  @BeforeClass
-  public static void disableFailQuick() {
-    //        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    LogStub.init();
-  }
-
-  @Before
-  public void clearFindings() {
-    Log.getFindings().clear();
-  }
+public class FeatureDiagramCoCoTest extends AbstractTest {
 
   @Test
   public void testValid() throws IOException {
@@ -73,7 +60,7 @@ public class FeatureDiagramCoCoTest {
 
   @Test
   public void testTwoRoots() throws IOException {
-    testCoCo("TwoRoots.fd", "0xFD001", "0xFD004");
+    testCoCo("TwoRoots.fd", "0xFD001", "0xFD004", "0xFD004");
   }
 
   protected void testCoCo(String modelName, String... errorCode) throws IOException {
@@ -81,36 +68,21 @@ public class FeatureDiagramCoCoTest {
     assertErrorCode(errorCode);
   }
 
-  protected void assertErrorCode(String... errorCodes) {
-    for (String errorCode : errorCodes) {
-      assertErrorCode(errorCode);
-    }
-    for (Finding finding : Log.getFindings()) {
-      if (finding.isError()) {
-        fail("Found error '" + finding.getMsg() + "' that was not expected!");
-      }
-    }
-  }
-
-  protected void assertErrorCode(String errorCode) {
-    for (Finding finding : Log.getFindings()) {
-      if (finding.getMsg().startsWith(errorCode)) {
-        //remove finding to enable finding the same error code multiple times
-        Log.getFindings().remove(finding);
-        return;
-      }
-    }
-    fail("Expected to find an error with the code '" + errorCode + "', but it did not occur!");
-  }
-
   protected ASTFDCompilationUnit readFile(String modelFile, ModelPath mp)
       throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
-    FeatureDiagramTool.transform(ast);
-    FeatureDiagramLanguage lang = new FeatureDiagramLanguage();
-    FeatureDiagramGlobalScope globalScope = new FeatureDiagramGlobalScope(mp, lang);
-    FeatureDiagramSymbolTableCreatorDelegator symbolTable = lang.getSymbolTableCreator(globalScope);
+    FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
+        .featureDiagramGlobalScopeBuilder()
+        .setModelPath(mp)
+        .setModelFileExtension("fd")
+        .build();
+
+    FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
+        .featureDiagramSymbolTableCreatorDelegatorBuilder()
+        .setGlobalScope(globalScope)
+        .build();
+
     symbolTable.createFromAST(ast);
     return ast;
   }

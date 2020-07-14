@@ -1,9 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos.config;
 
-import featureconfiguration._ast.ASTFeatureConfiguration;
-import featurediagram._symboltable.FeatureDiagramSymbol;
-import featurediagram._visitor.HierachicalFeatureSymbolVisitor;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
 import tool.transform.flatzinc.Variable;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ConfigurationTrafo
-    implements FeatureModel2FlatZincModelTrafo, HierachicalFeatureSymbolVisitor {
+    implements FeatureModel2FlatZincModelTrafo {
 
   private Map<String, Boolean> configuration;
 
@@ -71,10 +70,10 @@ public class ConfigurationTrafo
         return;
       }
       if (isSelected) {
-        constraints.add(new Constraint("int_le", "1", name));
+        constraints.add(new Constraint("int_eq", "1", name));
       }
       if (!isSelected) {
-        constraints.add(new Constraint("int_le", name, "0"));
+        constraints.add(new Constraint("int_eq", name, "0"));
       }
     });
   }

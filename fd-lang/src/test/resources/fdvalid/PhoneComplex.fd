@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package fdvalid;
 
 featurediagram Phone {
@@ -8,7 +7,5 @@ featurediagram Phone {
   Internal -> [1..2] of {Small, Medium, Large};
   OS -> iOS ^ Android;
   Screen -> Flexible | FullHD;
-
-  External ? Flexible requires Android  : iOS && Android ;
-
+  External ? Flexible requires Android : iOS && Android;
 }

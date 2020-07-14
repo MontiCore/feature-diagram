@@ -2,9 +2,9 @@
 > NOTE: <br>
 This documentation is intended for  **modelers** who use the feature diagram languages.
 The documentation for **language engineers** using or extending the feature diagram language is 
-located **[here](fd-lang/src/main/grammars/FeatureDiagram.md)** and the documentation for using 
+located **[here](fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md)** and the documentation for using 
 or extending the feature configuration language is located 
-**[here](fd-lang/src/main/grammars/FeatureConfiguration.md)**.
+**[here](fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.md)**.
 
 # Feature Diagram Languages in MontiCore
 

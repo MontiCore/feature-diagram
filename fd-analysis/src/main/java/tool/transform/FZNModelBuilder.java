@@ -1,13 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.transform;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
-import featurediagram._ast.ASTConstraint;
-import featurediagram._ast.ASTConstraintExpression;
-import featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.flatzinc.FlatZincModel;
 import tool.transform.trafos.BasicTrafo;
-import tool.transform.trafos.ComplexConstraint2FZN;
 import tool.transform.trafos.RootFeatureSelected;
 
 import java.util.*;

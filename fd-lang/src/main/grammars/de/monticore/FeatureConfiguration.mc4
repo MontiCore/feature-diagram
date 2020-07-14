@@ -1,0 +1,42 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore;
+
+/* This is a MontiCore stable grammar.
+ * Adaptations -- if any -- are conservative. */
+
+/**
+  FeatureConfiguration defines a concrete list of
+  features for a given (imported) Featurediagram.
+*/
+grammar FeatureConfiguration extends FeatureDiagram {
+
+  FCCompilationUnit = ("package" package:MCQualifiedName ";")?
+                      MCImportStatement*
+                      FeatureConfiguration;
+
+  /**
+    A FeatureConfiguration describes a set of features.
+    These Features must be defined in the cited FD
+   */
+  symbol scope FeatureConfiguration =
+    "featureconfig" Name "for" fdName:Name@FeatureDiagram "{"
+      FCElement*
+    "}";
+
+  /*
+    This is an extension point that can be used to add further language elements
+    to a feature configuration model.
+  */
+  interface FCElement;
+
+  /**
+    This language enables to use a list of feature names in the body of a 
+    feature configuration.
+  */
+  Features implements FCElement = ( Name@Feature || "," )+ ";" ;
+
+  symbolrule FeatureConfiguration =
+                featureDiagram:de.monticore.featurediagram._symboltable.FeatureDiagramSymbol
+                selectedFeatures:de.monticore.featurediagram._symboltable.FeatureSymbol*;
+
+}

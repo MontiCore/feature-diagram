@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+featurediagram FalseOptional {
+  A -> B?;
+  A -> C?;
+  A requires B;
+}
