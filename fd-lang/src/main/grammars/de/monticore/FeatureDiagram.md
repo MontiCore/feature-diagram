@@ -5,14 +5,16 @@
 <!-- List with all references used within this markdown file: -->
 [Readme]: ../../../../../../../../README.md
 [Grammar]: FeatureDiagram.mc4
-[fdstc]: ../../../../../java/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
-[HasTreeShape]: ../../../../../java/featurediagram/_cocos/HasTreeShape.java
+[fdstc]: ../../../../../java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
+[serialization]: ../../../../../java/de/monticore/featurediagram/_symboltable/
+[HasTreeShape]: ../../../../../java/de/monticore/featurediagram/_cocos/HasTreeShape.java
 [CTCFeatureNamesExist]: ../../../java/de/monticore/featurediagram/_cocos/CTCFeatureNamesExist.java
-[NonUniqueNameInGroup]: ../../../../../java/featurediagram/_cocos/NonUniqueNameInGroup.java
-[ValidConstraintExpression]: ../../../../../java/featurediagram/_cocos/ValidConstraintExpression.java
+[NonUniqueNameInGroup]: ../../../../../java/de/monticore/featurediagram/_cocos/NonUniqueNameInGroup.java
+[ValidConstraintExpression]: ../../../../../java/de/monticore/featurediagram/_cocos/ValidConstraintExpression.java
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 
-[AllProducts]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/AllProducts.java
+<!--[AllProducts]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/AllProducts.java-->
+[AllProducts]: ../../../../../../../../fd-analysis/src/main/java/tool/analyses/AllProducts.java
 [CompleteToValid]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/CompleteToValidConfig.java
 [DeadFeature]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/DeadFeature.java
 [FalseOptional]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/FalseOptional.java
@@ -22,8 +24,7 @@
 
 [generator]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses
 [tool]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
-[serialization]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/serialization
-[stc]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
+
 
 <!-- The following references should point towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
@@ -174,7 +175,7 @@ feature diagram symbol tables is implemented as well.
 
 ### Symboltable
 - De-/Serialization functionality for the symbol table ([`serialization`][serialization])
-- [`FeatureDiagramSymbolTableCreator`][stc] handles the creation and linking of the symbols
+- [`FeatureDiagramSymbolTableCreator`][fdstc] handles the creation and linking of the symbols
 
 ### Symbol kinds used by Feature Diagrams (importable):
 - A feature model may import feature symbols of another feature diagram. Through 
