@@ -3,28 +3,26 @@
 <!-- This is a MontiCore stable explanation. -->
 
 <!-- List with all references used within this markdown file: -->
-[Readme]: ../../../../../../../../README.md
-[Grammar]: FeatureDiagram.mc4
-[fdstc]: ../../../../../java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
-[serialization]: ../../../../../java/de/monticore/featurediagram/_symboltable/
-[HasTreeShape]: ../../../../../java/de/monticore/featurediagram/_cocos/HasTreeShape.java
-[CTCFeatureNamesExist]: ../../../java/de/monticore/featurediagram/_cocos/CTCFeatureNamesExist.java
-[NonUniqueNameInGroup]: ../../../../../java/de/monticore/featurediagram/_cocos/NonUniqueNameInGroup.java
-[ValidConstraintExpression]: ../../../../../java/de/monticore/featurediagram/_cocos/ValidConstraintExpression.java
+[Readme]:                    ../../../../../../../../README.md
+[Grammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4
+[fdstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
+[serialization]:             ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/
+[HasTreeShape]:              ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/HasTreeShape.java
+[CTCFeatureNamesExist]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/CTCFeatureNameExists.java
+[NonUniqueNameInGroup]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/NonUniqueNameInGroup.java
+[ValidConstraintExpression]: ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/ValidConstraintExpression.java
+[AllProducts]:               ../../../../../../../../fd-analysis/src/main/java/tool/analyses/AllProducts.java
+[CompleteToValid]:           ../../../../../../../../fd-analysis/src/main/java/tool/analyses/Filter.java
+[DeadFeature]:               ../../../../../../../../fd-analysis/src/main/java/tool/analyses/DeadFeature.java
+[FalseOptional]:             ../../../../../../../../fd-analysis/src/main/java/tool/analyses/FalseOptional.java
+[IsValid]:                   ../../../../../../../../fd-analysis/src/main/java/tool/analyses/IsValid.java
+[IsVoid]:                    ../../../../../../../../fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java
+[NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
+[generator]:                 ../../../../../../../../fd-analysis/src/main/java/tool/analyses
+[tool]:                      ../../../../../../../../fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
+
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
-
-<!--[AllProducts]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/AllProducts.java-->
-[AllProducts]: ../../../../../../../../fd-analysis/src/main/java/tool/analyses/AllProducts.java
-[CompleteToValid]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/CompleteToValidConfig.java
-[DeadFeature]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/DeadFeature.java
-[FalseOptional]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/FalseOptional.java
-[IsValid]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/IsValid.java
-[IsVoid]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java
-[NumberOfProducts]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
-
-[generator]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses
-[tool]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
-
+[KTC90]: https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf
 
 <!-- The following references should point towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
@@ -45,7 +43,7 @@ The purpose of the language is to represent feature models used in product line 
 The language is extensible to tailor it for various different applications.
 
 Many notational and semantic variations of the original feature diagrams
-as presented in [[KCH+90]](https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf)
+as presented in [[KCH+90]][KTC90]
 have been developed. This language uses feature models with the following characteristics:
 * Each feature model must have a root feature
 * The features of a feature model are in a tree structure described by feature groups
