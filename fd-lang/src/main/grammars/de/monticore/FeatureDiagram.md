@@ -3,27 +3,26 @@
 <!-- This is a MontiCore stable explanation. -->
 
 <!-- List with all references used within this markdown file: -->
-[Readme]: ../../../../../../../../README.md
-[Grammar]: FeatureDiagram.mc4
-[fdstc]: ../../../../../java/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
-[HasTreeShape]: ../../../../../java/featurediagram/_cocos/HasTreeShape.java
-[CTCFeatureNamesExist]: ../../../java/de/monticore/featurediagram/_cocos/CTCFeatureNamesExist.java
-[NonUniqueNameInGroup]: ../../../../../java/featurediagram/_cocos/NonUniqueNameInGroup.java
-[ValidConstraintExpression]: ../../../../../java/featurediagram/_cocos/ValidConstraintExpression.java
+[Readme]:                    ../../../../../../../../README.md
+[Grammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4
+[fdstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
+[serialization]:             ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/
+[HasTreeShape]:              ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/HasTreeShape.java
+[CTCFeatureNamesExist]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/CTCFeatureNameExists.java
+[NonUniqueNameInGroup]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/NonUniqueNameInGroup.java
+[ValidConstraintExpression]: ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/ValidConstraintExpression.java
+[AllProducts]:               ../../../../../../../../fd-analysis/src/main/java/tool/analyses/AllProducts.java
+[CompleteToValid]:           ../../../../../../../../fd-analysis/src/main/java/tool/analyses/Filter.java
+[DeadFeature]:               ../../../../../../../../fd-analysis/src/main/java/tool/analyses/DeadFeature.java
+[FalseOptional]:             ../../../../../../../../fd-analysis/src/main/java/tool/analyses/FalseOptional.java
+[IsValid]:                   ../../../../../../../../fd-analysis/src/main/java/tool/analyses/IsValid.java
+[IsVoid]:                    ../../../../../../../../fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java
+[NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
+[generator]:                 ../../../../../../../../fd-analysis/src/main/java/tool/analyses
+[tool]:                      ../../../../../../../../fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
+
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
-
-[AllProducts]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/AllProducts.java
-[CompleteToValid]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/CompleteToValidConfig.java
-[DeadFeature]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/DeadFeature.java
-[FalseOptional]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/FalseOptional.java
-[IsValid]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/IsValid.java
-[IsVoid]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java
-[NumberOfProducts]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
-
-[generator]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/analyses
-[tool]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
-[serialization]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/serialization
-[stc]: https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
+[KTC90]: https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf
 
 <!-- The following references should point towards the markdown files, once these exist -->
 [Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
@@ -44,7 +43,7 @@ The purpose of the language is to represent feature models used in product line 
 The language is extensible to tailor it for various different applications.
 
 Many notational and semantic variations of the original feature diagrams
-as presented in [[KCH+90]](https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf)
+as presented in [[KCH+90]][KTC90]
 have been developed. This language uses feature models with the following characteristics:
 * Each feature model must have a root feature
 * The features of a feature model are in a tree structure described by feature groups
@@ -169,16 +168,23 @@ described in the following:
 * The `FeatureDiagramSymbol` has been extended with the TOP mechanism. For convenience, we added a 
 method `List<FeatureSymbol> getAllFeatures()` for retrieving all features contained in the feature diagram.
 
-The symbol table is instantiated by the class [FeatureDiagramSymbolTableCreator][fdstc]. Functionality to load and store 
-feature diagram symbol tables is implemented as well.
-
 ### Symboltable
 - De-/Serialization functionality for the symbol table ([`serialization`][serialization])
-- [`FeatureDiagramSymbolTableCreator`][stc] handles the creation and linking of the symbols
+- [`FeatureDiagramSymbolTableCreator`][fdstc] handles the creation and linking of the symbols. The symbol table creator
+  creates:
+  - A FeatureDiagramSymbol for each feature model
+  - A FeatureSymbol on the first time that a feature name occurs in a feature model 
+- All occurences of a feature name in the model refer to the the same FeatureSymbol.
+- A feature model `FM` can import other feature diagrams. Importing a feature diagram `ImpFM` has the following characteristics:
+    - There is a flat namespace of feature names, i.e., a feature name cannot be qualified with a feature diagram name. 
+    - All feature diagram elements of `ImpFM` behave as if these were defined in `FM`. Especially, all names of imported features 
+      can be used in feature diagram elements of `FM`.
+    - All locally defined and imported feature tree rules of a feature model must still form a feature tree. Especially, a feature model
+      cannot be incomplete and provide, e.g., a forest of feature trees.
+    - The symbol table of a feature model does not distinguish feature symbols of locally defined and imported feature models. This enables
+      modularization of feature models that has no effect on the symbol table infrastructure. 
 
 ### Symbol kinds used by Feature Diagrams (importable):
-- A feature model may import feature symbols of another feature diagram. Through 
-  this, all (transitive) subfeatures are imported as well.
 - A feature diagram (as defined here) does not import any symbols from other 
   languages; it defines all features locally.
 - It also doesn't import classes, variables or other symbols.
@@ -196,8 +202,7 @@ feature diagram symbol tables is implemented as well.
   ```
   class FeatureDiagramSymbol {
       String name;
-      FeatureSymbol rootFeature;
-      List<FeatureSymbol> features;
+      /List<FeatureSymbol> allFeatures;
   }
   ```
 
@@ -205,7 +210,9 @@ feature diagram symbol tables is implemented as well.
 - A feature diagram exports the feature diagram symbol and its feature symbols
   for external reference.
 - The tree structure, groups, and cross-tree constraints are **not** represented in the symbol table
-- The artifact scope of a feature diagram "F.fd" is stored in "F.fdsym".
+- The artifact scope of a feature diagram "F.fd" is stored in "F.fdsym". Loading a stored symbol table 
+  of a feature diagram can be used, e.g., for checking that a feature configuration refers to an existing
+  feature model and that it uses only features that exist in this feature model.
 
 
 ### Context Conditions
