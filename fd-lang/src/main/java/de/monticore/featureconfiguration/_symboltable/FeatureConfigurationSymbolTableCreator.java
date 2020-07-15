@@ -77,10 +77,6 @@ public class FeatureConfigurationSymbolTableCreator
     //to identify symbols that could not be found
     List<String> featureNameList = new ArrayList<>(node.getNameList());
     if (null != fd) {
-      node.setNameList(
-          node.getNameList().stream().map(s -> Names.getQualifiedName(fd.getFullName(), s))
-              .collect(Collectors.toList()));
-
       for (FeatureSymbol symbol : fd.getAllFeatures()) {
         if (featureNameList.contains(symbol.getName())) {
           featureNameList.remove(symbol.getName());

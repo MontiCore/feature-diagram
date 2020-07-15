@@ -1,16 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
-package fc;
+package test.fc;
 
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.se_rwth.commons.logging.Log;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractTest;
 
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * This class tests the parser of feature diagram and feature configuration languages

@@ -2,294 +2,168 @@
 package de.monticore.featurediagram;
 
 import de.monticore.featureconfiguration.FeatureConfigurationTool;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
 import org.junit.Test;
 import tool.FeatureModelAnalysisTool;
 import tool.analyses.*;
 
-import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
-public class FeatureDiagramAnalysisTest {
+public class FeatureDiagramAnalysisTest extends AbstractTest {
 
-  @Before
-  public void init() {
-    LogStub.init();
-  }
+  public static final String TEST_RES = "src/test/resources/";
 
-  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
-    return FeatureDiagramTool.createSymbolTable(modelFile, new ModelPath());
-  }
+  protected FeatureDiagramSymbol getFD(String modelFile) {
+    FeatureDiagramArtifactScope as = FeatureDiagramTool
+        .createSymbolTable(TEST_RES + modelFile, new ModelPath());
+    String modelName = modelFile.replace(".fd", "");
+    if (modelName.contains("/")) {
+      modelName = modelName.substring(modelFile.lastIndexOf("/")+1);
+    }
 
-  protected FeatureDiagramSymbol setupFeatureDiagramm(FeatureDiagramArtifactScope scope,
-      String name) {
-    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = scope.resolveFeatureDiagram(name);
+    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = as
+        .resolveFeatureDiagram(modelName);
     assertTrue(optionalFeatureDiagramSymbol.isPresent());
+    assertNotNull(optionalFeatureDiagramSymbol.get());
     return optionalFeatureDiagramSymbol.get();
   }
 
-  protected FeatureConfigurationSymbol setupConfigSymTab(String modelFile, ModelPath modelPath,
-      String name) {
+  protected ASTFeatureConfiguration getFC(String modelFile) {
     FeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool
-        .createSymbolTable(modelFile, modelPath);
+        .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)));
+
+    String modelName = modelFile.replace(".fc", "");
+    if (modelName.contains("/")) {
+      modelName = modelName.substring(modelFile.lastIndexOf("/")+1);
+    }
 
     Optional<FeatureConfigurationSymbol> featureConfOpt = symbolTable
-        .resolveFeatureConfiguration(name);
+        .resolveFeatureConfiguration(modelName);
     assertTrue(featureConfOpt.isPresent());
-    return featureConfOpt.get();
+    assertNotNull(featureConfOpt.get());
+    return featureConfOpt.get().getAstNode();
   }
 
-  protected FeatureConfigurationSymbol setupConfigSymTab(String modelFile, String name) {
-    return setupConfigSymTab(modelFile, new ModelPath(), name);
+  protected <T> T performAnalysis(String fdModelFile, Analysis<T> analysis) {
+    FeatureDiagramSymbol featureDiagramSymbol = getFD(fdModelFile);
+    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    modelAnalysisTool.addAnalysis(analysis);
+    modelAnalysisTool.performAnalyses();
+    assertTrue(analysis.getResult().isPresent());
+    return analysis.getResult().get();
   }
 
   @Test
   public void testPhoneExample() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "../fd-lang/src/test/resources/fdvalid/Phone.fd");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "Phone");
-
-    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    Analysis<Integer> numberOfProducts = new NumberOfProducts();
-    modelAnalysisTool.addAnalysis(numberOfProducts);
-    modelAnalysisTool.performAnalyses();
-    assertTrue(numberOfProducts.getResult().isPresent());
-    assertEquals(new Integer(84), numberOfProducts.getResult().get());
-
+    Integer result = performAnalysis("fdvalid/Phone.fd", new NumberOfProducts());
+    assertEquals(new Integer(84), result);
   }
 
   @Test
   public void testPhoneComplexExample() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "../fd-lang/src/test/resources/fdvalid/PhoneComplex.fd");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "Phone");
-    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    Analysis<Integer> numberOfProducts = new NumberOfProducts();
-    modelAnalysisTool.addAnalysis(numberOfProducts);
-    modelAnalysisTool.performAnalyses();
-    assertTrue(numberOfProducts.getResult().isPresent());
-    assertEquals(new Integer(48), numberOfProducts.getResult().get());
+    Integer result = performAnalysis("fdvalid/PhoneComplex.fd", new NumberOfProducts());
+    assertEquals(new Integer(48), result);
   }
 
   @Test
   public void testDeadFeatures() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/DeadFeatures.fd");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "DeadFeatures");
-    DeadFeature deadFeature = new DeadFeature();
-    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    tool.addAnalysis(deadFeature);
-    tool.performAnalyses();
-    assertTrue(deadFeature.getResult().isPresent());
-    List<String> deadFeatures = deadFeature.getResult().get();
-
-    assertTrue(deadFeatures.contains("B"));
-    assertEquals(1, deadFeatures.size());
+    List<String> result = performAnalysis("DeadFeatures.fd", new DeadFeature());
+    assertTrue(result.contains("B"));
+    assertEquals(1, result.size());
   }
 
   @Test
   public void testFalseOptional() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/FalseOptional.fd");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "FalseOptional");
-    FalseOptional falseOptional = new FalseOptional();
-    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    tool.addAnalysis(falseOptional);
-    tool.performAnalyses();
-    assertTrue(falseOptional.getResult().isPresent());
-    List<String> falseOpts = falseOptional.getResult().get();
-
-    assertTrue(falseOpts.contains("B"));
-    assertEquals(1, falseOpts.size());
+    List<String> result = performAnalysis("FalseOptional.fd", new FalseOptional());
+    assertTrue(result.contains("B"));
+    assertEquals(1, result.size());
   }
 
   @Test
   public void testVoid1() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/Void.fd");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "Void");
-    IsVoidFeatureModel voidFeatureModel = new IsVoidFeatureModel();
-    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    tool.addAnalysis(voidFeatureModel);
-    tool.performAnalyses();
-    assertTrue(voidFeatureModel.getResult().isPresent());
-    assertTrue(voidFeatureModel.getResult().get());
+    Boolean result = performAnalysis("Void.fd", new IsVoidFeatureModel());
+    assertTrue(result);
   }
 
   @Test
   public void testVoid2() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/DeadFeatures.fd");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "DeadFeatures");
-    IsVoidFeatureModel voidFeatureModel = new IsVoidFeatureModel();
-    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    tool.addAnalysis(voidFeatureModel);
-    tool.performAnalyses();
-    assertTrue(voidFeatureModel.getResult().isPresent());
-    assertFalse(voidFeatureModel.getResult().get());
+    Boolean result = performAnalysis("DeadFeatures.fd", new IsVoidFeatureModel());
+    assertFalse(result);
   }
 
   @Test
   public void testFilter1() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/FalseOptional.fd");
-    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
-        "src/test/resources/CompleteToValid.fc", "CompleteToValid");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "FalseOptional");
-    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    Filter filter = new Filter(featureConfiguration.getAstNode());
-    tool.addAnalysis(filter);
-    tool.performAnalyses();
-
-    assertTrue(filter.getResult().isPresent());
-    assertFalse(filter.getResult().get().isEmpty());
-    assertEquals(1, filter.getResult().get().size());
+    Set<ASTFeatureConfiguration> result = performAnalysis("FalseOptional.fd",
+        new Filter(getFC("CompleteToValid.fc")));
+    assertFalse(result.isEmpty());
+    assertEquals(1, result.size());
   }
 
   @Test
   public void testFilter2() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/FalseOptional.fd");
-    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
-        "src/test/resources/ValidConfig.fc", "ValidConfig");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "FalseOptional");
-    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    Filter filter = new Filter(featureConfiguration.getAstNode());
-    tool.addAnalysis(filter);
-    tool.performAnalyses();
-
-    assertTrue(filter.getResult().isPresent());
-    assertFalse(filter.getResult().get().isEmpty());
-    assertEquals(2, filter.getResult().get().size());
+    Set<ASTFeatureConfiguration> result = performAnalysis(
+        "FalseOptional.fd", new Filter(getFC("ValidConfig.fc")));
+    assertFalse(result.isEmpty());
+    assertEquals(2, result.size());
   }
 
   @Test
   public void testFilter3() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/FalseOptional.fd");
-    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
-        "src/test/resources/InvalidConfig.fc", "InvalidConfig");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "FalseOptional");
-    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    Filter filter = new Filter(featureConfiguration.getAstNode());
-    tool.addAnalysis(filter);
-    tool.performAnalyses();
-
-    assertTrue(filter.getResult().isPresent());
-    assertFalse(filter.getResult().get().isEmpty());
+    Set<ASTFeatureConfiguration> result = performAnalysis(
+        "FalseOptional.fd", new Filter(getFC("InvalidConfig.fc")));
+    assertFalse(result.isEmpty());
   }
 
   @Test
   public void testisValid1() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/FalseOptional.fd");
-    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
-        "src/test/resources/CompleteToValid.fc", "CompleteToValid");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "FalseOptional");
-    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    IsValid isValid = new IsValid(featureConfiguration.getAstNode());
-    tool.addAnalysis(isValid);
-    tool.performAnalyses();
-
-    assertTrue(isValid.getResult().isPresent());
-    assertFalse(isValid.getResult().get());
+    Boolean result = performAnalysis("FalseOptional.fd",
+        new IsValid(getFC("CompleteToValid.fc")));
+    assertFalse(result);
   }
 
   @Test
   public void testisValid2() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/FalseOptional.fd");
-    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
-        "src/test/resources/ValidConfig.fc", "ValidConfig");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "FalseOptional");
-    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    IsValid isValid = new IsValid(featureConfiguration.getAstNode());
-    tool.addAnalysis(isValid);
-    tool.performAnalyses();
-
-    assertTrue(isValid.getResult().isPresent());
-    assertTrue(isValid.getResult().get());
+    Boolean result = performAnalysis("FalseOptional.fd",
+        new IsValid(getFC("ValidConfig.fc")));
+    assertTrue(result);
   }
 
   @Test
   public void testisValid3() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/DeadFeatures.fd");
-    FeatureConfigurationSymbol featureConfiguration = setupConfigSymTab(
-        "src/test/resources/InvalidConfig.fc", "InvalidConfig");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "DeadFeatures");
-    FeatureModelAnalysisTool tool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    IsValid isValid = new IsValid(featureConfiguration.getAstNode());
-    tool.addAnalysis(isValid);
-    tool.performAnalyses();
-
-    assertTrue(isValid.getResult().isPresent());
-    assertFalse(isValid.getResult().get());
+    Boolean result = performAnalysis("DeadFeatures.fd",
+        new IsValid(getFC("InvalidConfig.fc")));
+    assertFalse(result);
   }
 
   @Test
   public void testAllProducts() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "../fd-lang/src/test/resources/fdvalid/Phone.fd");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "Phone");
-
-    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    AllProducts allProducts = new AllProducts();
-    modelAnalysisTool.addAnalysis(allProducts);
-    modelAnalysisTool.performAnalyses();
-    assertTrue(allProducts.getResult().isPresent());
-    assertEquals(84, allProducts.getResult().get().size());
-
+    Set<ASTFeatureConfiguration> result = performAnalysis("fdvalid/Phone.fd", new AllProducts());
+    assertEquals(84, result.size());
   }
 
   @Test
   public void testFindValid1() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "../fd-lang/src/test/resources/fdvalid/Phone.fd");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "Phone");
-
-    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    FindValidConfig findValidConfig = new FindValidConfig();
-    modelAnalysisTool.addAnalysis(findValidConfig);
-    modelAnalysisTool.performAnalyses();
-    assertTrue(findValidConfig.getResult().isPresent());
+    performAnalysis("fdvalid/Phone.fd", new FindValidConfig());
   }
 
   @Test
   public void testFindValid2() {
-    FeatureDiagramArtifactScope featureDiagramArtifactScope = setupSymbolTable(
-        "src/test/resources/Void.fd");
-    FeatureDiagramSymbol featureDiagramSymbol = setupFeatureDiagramm(featureDiagramArtifactScope,
-        "Void");
-
+    FeatureDiagramSymbol featureDiagramSymbol = getFD("Void.fd");
     FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
-    FindValidConfig findValidConfig = new FindValidConfig();
-    modelAnalysisTool.addAnalysis(findValidConfig);
+    FindValidConfig analysis = new FindValidConfig();
+    modelAnalysisTool.addAnalysis(analysis);
     modelAnalysisTool.performAnalyses();
-    assertFalse(findValidConfig.getResult().isPresent());
+    assertFalse(analysis.getResult().isPresent());
   }
 
 }

@@ -111,8 +111,10 @@ public class FeatureConfigurationTool {
 
     //reconstruct modelpath from input file
     Path path = Paths.get(modelFile).getParent();
-    for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
-      path = path.getParent();
+    if(ast.isPresentPackage()){
+      for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
+        path = path.getParent();
+      }
     }
 
     // setup the symbol table
