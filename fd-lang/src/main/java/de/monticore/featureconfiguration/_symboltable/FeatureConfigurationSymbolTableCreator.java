@@ -13,6 +13,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FeatureConfigurationSymbolTableCreator
@@ -77,10 +78,6 @@ public class FeatureConfigurationSymbolTableCreator
     //to identify symbols that could not be found
     List<String> featureNameList = new ArrayList<>(node.getNameList());
     if (null != fd) {
-      node.setNameList(
-          node.getNameList().stream().map(s -> Names.getQualifiedName(fd.getFullName(), s))
-              .collect(Collectors.toList()));
-
       for (FeatureSymbol symbol : fd.getAllFeatures()) {
         if (featureNameList.contains(symbol.getName())) {
           featureNameList.remove(symbol.getName());
@@ -104,7 +101,9 @@ public class FeatureConfigurationSymbolTableCreator
   @Override
   public void visit(ASTFeatureConfiguration node) {
     super.visit(node);
-    if (node.isPresentFdNameSymbol()) {
+    Optional<FeatureDiagramSymbol> featureDiagramSymbol = this.getCurrentScope().get()
+        .resolveFeatureDiagram(node.getFdName());
+    if (featureDiagramSymbol.isPresent()) {
       fd = node.getFdNameSymbol();
     }
     else {

@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package tool.solver.choco;
+package tool.solver;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfigurationBuilder;
@@ -12,7 +12,6 @@ import org.chocosolver.parser.flatzinc.FznSettings;
 import org.chocosolver.parser.flatzinc.ast.Datas;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
-import tool.solver.ISolver;
 
 import java.util.*;
 

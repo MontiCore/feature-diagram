@@ -10,6 +10,10 @@ import de.se_rwth.commons.logging.Log;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Checks, whether the feature names used whithin cross-tree constraints refer to actual features
+ * of a feature model.
+ */
 public class CTCFeatureNameExists
     implements FeatureDiagramASTFeatureDiagramCoCo, FeatureDiagramVisitor {
 

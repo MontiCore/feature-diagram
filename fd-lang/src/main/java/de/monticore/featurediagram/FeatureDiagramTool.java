@@ -9,10 +9,12 @@ import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramGlobalScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +25,8 @@ public class FeatureDiagramTool {
   public static final Path SYMBOL_LOCATION = Paths.get("target/symbols");
 
   protected static final FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
+
+  protected static final FeatureDiagramParser parser = new FeatureDiagramParser();
 
   /**
    * Use the single argument for specifying the single input feature diagram file.
@@ -45,7 +49,6 @@ public class FeatureDiagramTool {
    */
   public static ASTFDCompilationUnit parse(String model) {
     try {
-      FeatureDiagramParser parser = new FeatureDiagramParser();
       Optional<ASTFDCompilationUnit> optFD = parser.parse(model);
 
       if (!parser.hasErrors() && optFD.isPresent()) {
@@ -68,18 +71,18 @@ public class FeatureDiagramTool {
    * @return
    */
   public static FeatureDiagramArtifactScope createSymbolTable(String model, ModelPath mp) {
-    return createSymbolTable(mp, parse(model));
+    return createSymbolTable(parse(model), mp);
   }
 
   /**
    * Create the symbol table from the parsed AST.
    *
-   * @param mp
    * @param ast
+   * @param mp
    * @return
    */
-  public static FeatureDiagramArtifactScope createSymbolTable(ModelPath mp,
-      ASTFDCompilationUnit ast) {
+  public static FeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast,
+      ModelPath mp) {
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
         .featureDiagramSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(createGlobalScope(mp))
@@ -87,6 +90,12 @@ public class FeatureDiagramTool {
     return symbolTable.createFromAST(ast);
   }
 
+  /**
+   * short-hand for creating a global scope via mill
+   *
+   * @param mp
+   * @return
+   */
   public static FeatureDiagramGlobalScope createGlobalScope(ModelPath mp) {
     return FeatureDiagramMill
         .featureDiagramGlobalScopeBuilder()
@@ -95,16 +104,46 @@ public class FeatureDiagramTool {
         .build();
   }
 
+  /**
+   * Check all feature diagram context conditions against passed ast
+   *
+   * @param ast
+   */
+  public static void checkCoCos(ASTFDCompilationUnit ast) {
+    FeatureDiagramCoCos.checkAll(ast);
+  }
+
+  /**
+   * stores the symbol table of a passed ast in a file with the passed fileName
+   *
+   * @param ast
+   * @param fileName
+   * @return
+   */
+  public static File storeSymbols(ASTFDCompilationUnit ast, String fileName) {
+    File f = new File(fileName);
+    FileReaderWriter.storeInFile(f.toPath(), deser.serialize(ast.getEnclosingScope()));
+    return f;
+  }
+
+  /**
+   * Processes a feature model (parsing, symbol table creation, context condition checking,
+   * and storing of symbol table)
+   *
+   * @param modelFile
+   * @param mp
+   * @return
+   */
   public static ASTFeatureDiagram run(String modelFile, ModelPath mp) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
 
     // setup the symbol table
-    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(mp, ast);
+    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, mp);
 
     // execute default context conditions
-    FeatureDiagramCoCos.checkAll(ast);
+    checkCoCos(ast);
 
     // store artifact scope after context conditions have been checked
     deser.store(modelTopScope, SYMBOL_LOCATION);
@@ -112,19 +151,28 @@ public class FeatureDiagramTool {
     return ast.getFeatureDiagram();
   }
 
+  /**
+   * Processes a feature model (parsing, symbol table creation, context condition checking,
+   * and storing of symbol table)
+   *
+   * @param modelFile
+   * @return
+   */
   public static ASTFeatureDiagram run(String modelFile) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
 
     //reconstruct modelpath from input file
-    Path path = Paths.get(modelFile).getParent();
-    for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
-      path = path.getParent();
+    Path path = Paths.get(modelFile).toAbsolutePath().getParent();
+    if (ast.isPresentPackage()) {
+      for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
+        path = path.getParent();
+      }
     }
 
     // setup the symbol table
-    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(new ModelPath(path), ast);
+    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, new ModelPath(path, SYMBOL_LOCATION));
 
     // execute default context conditions
     FeatureDiagramCoCos.checkAll(ast);

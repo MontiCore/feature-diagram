@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-featureconfig InvalidConfig for DeadFeatures {
+featureconfig InvalidConfig2 for ThisDoesNotExist {
   A,B,C;
 }

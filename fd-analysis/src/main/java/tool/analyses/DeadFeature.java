@@ -5,7 +5,7 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
 import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
 import tool.transform.FZNModelBuilder;
-import tool.util.FeatureNameCollector;
+import tool.visitors.FeatureNameCollector;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +18,7 @@ public class DeadFeature extends Analysis<List<String>>
   @Override
   public void perform(Collection<ASTFeatureConfiguration> configurations) {
     FeatureNameCollector collector = new FeatureNameCollector();
-    getFeatureModel().getAstNode().accept(collector);
+    getFeatureModel().accept(collector);
     deadFeatures = collector.getNames();
     configurations.forEach(configuration -> {
       configuration.accept(this);

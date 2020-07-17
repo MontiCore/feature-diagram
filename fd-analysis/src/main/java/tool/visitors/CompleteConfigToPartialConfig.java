@@ -1,9 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
-package tool.util;
+package tool.visitors;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatures;
 import de.monticore.featureconfiguration._visitor.FeatureConfigurationVisitor;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 
 import java.util.HashMap;
@@ -14,9 +15,9 @@ public class CompleteConfigToPartialConfig implements FeatureConfigurationVisito
   private Map<String, Boolean> config = new HashMap<>();
 
   public static Map<String, Boolean> getConfiguration(ASTFeatureConfiguration astConfiguration,
-      FeatureDiagramSymbol featureDiagram, boolean notEqualsNull) {
+      ASTFeatureDiagram featureDiagram, boolean notEqualsNull) {
     CompleteConfigToPartialConfig visitor = new CompleteConfigToPartialConfig();
-    featureDiagram.getAllFeatures().stream().
+    featureDiagram.getSymbol().getAllFeatures().stream().
         forEach(featureSymbol -> visitor.config
             .put(featureSymbol.getName(), notEqualsNull ? Boolean.FALSE : null));
     astConfiguration.accept(visitor);

@@ -7,13 +7,13 @@ import de.monticore.expressions.expressionsbasis._ast.ASTArguments;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.featurediagram._ast.ASTExcludes;
 import de.monticore.featurediagram._ast.ASTFeatureConstraint;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._ast.ASTRequires;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
 import tool.transform.flatzinc.Variable;
-import tool.util.VariableDeterminator;
+import tool.visitors.VariableDeterminator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class ComplexConstraint2FZN
 
   private int i = 1;
 
-  private FeatureDiagramSymbol featureModel;
+  private ASTFeatureDiagram featureModel;
 
   public List<Variable> getVariables() {
     return new ArrayList<>(variables.values());
@@ -52,9 +52,9 @@ public class ComplexConstraint2FZN
     otherVariables = det.getVariables().stream()
         .collect(Collectors.toMap(Variable::getName, Function.identity()));
     NameCalculator calculator = new NameCalculator();
-    featureModel.getAstNode().accept(calculator);
+    featureModel.accept(calculator);
     names = calculator.getNames();
-    featureModel.getAstNode().accept(this);
+    featureModel.accept(this);
   }
 
   @Override
@@ -63,12 +63,12 @@ public class ComplexConstraint2FZN
   }
 
   @Override
-  public FeatureDiagramSymbol getFeatureModel() {
+  public ASTFeatureDiagram getFeatureModel() {
     return featureModel;
   }
 
   @Override
-  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
+  public void setFeatureModel(ASTFeatureDiagram featureModel) {
     this.featureModel = featureModel;
   }
 

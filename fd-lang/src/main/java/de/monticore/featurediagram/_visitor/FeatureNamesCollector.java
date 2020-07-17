@@ -9,6 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * This visitor traverses the AST of a feature model and collects all feature names.
+ * One the same time, it collects for each feature name whether it occurs only on the left-hand side
+ * of feature tree rules, only on the right-hand side, or both. If a feature name occurs
+ *  - only on the left-hand side:  it is a candidate for a root feature.
+ *  - only on the right-hand side: it is a leaf feature.
+ *  - both: it is an inner feature in the feature tree
+ */
 public class FeatureNamesCollector implements FeatureDiagramVisitor {
 
   private HashMap<String, Occurrence> occurrences = new HashMap<>();

@@ -2,7 +2,6 @@
 package tool.transform.trafos;
 
 import de.monticore.featurediagram._ast.*;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
 import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class BasicTrafo
     implements FeatureModel2FlatZincModelTrafo, FeatureDiagramVisitor {
-  private FeatureDiagramSymbol featureModel;
+  private ASTFeatureDiagram featureModel;
 
   private List<String> names = new ArrayList<>();
 
@@ -34,12 +33,12 @@ public class BasicTrafo
   }
 
   @Override
-  public FeatureDiagramSymbol getFeatureModel() {
+  public ASTFeatureDiagram getFeatureModel() {
     return this.featureModel;
   }
 
   @Override
-  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
+  public void setFeatureModel(ASTFeatureDiagram featureModel) {
     this.featureModel = featureModel;
   }
 
@@ -55,7 +54,7 @@ public class BasicTrafo
 
   @Override
   public void perform() {
-    featureModel.getAstNode().accept(this);
+    featureModel.accept(this);
   }
 
   public void visit(FeatureSymbol feature) {

@@ -1,27 +1,24 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.transform;
 
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import tool.transform.flatzinc.FlatZincModel;
 import tool.transform.trafos.BasicTrafo;
 import tool.transform.trafos.RootFeatureSelected;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class FZNModelBuilder {
-  private List<FeatureModel2FlatZincModelTrafo> trafos = new ArrayList<>();
+
+  private List<FeatureModel2FlatZincModelTrafo> trafos;
 
   private List<String> names = new ArrayList<>();
 
-  private Map<String, Boolean> configuration;
-
   private boolean allSolutions;
 
-  private StringBuilder stringBuilder;
-
   private FlatZincModel flatZincModel = new FlatZincModel();
-
-  private Set<String> booleanVars;
 
   public FZNModelBuilder(List<FeatureModel2FlatZincModelTrafo> trafos, boolean allSolutions) {
     this.allSolutions = allSolutions;
@@ -49,7 +46,7 @@ public class FZNModelBuilder {
     this.trafos.addAll(trafos);
   }
 
-  public void buildFlatZincModel(FeatureDiagramSymbol featureModel) {
+  public void buildFlatZincModel(ASTFeatureDiagram featureModel) {
     trafos.forEach(trafo -> trafo.setNames(names));
     trafos.stream().filter(t -> t.getFeatureModel() == null)
         .forEach(t -> t.setFeatureModel(featureModel));

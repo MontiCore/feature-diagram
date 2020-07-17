@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package fc;
+package test.fc;
 
 import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;

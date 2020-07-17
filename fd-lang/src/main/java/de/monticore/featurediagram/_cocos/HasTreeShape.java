@@ -14,6 +14,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Checks, whether the feature tree rules of a feature model realize a tree. This is the case if
+ * it has exactly one root and no cycles.
+ */
 public class HasTreeShape
     implements FeatureDiagramASTFeatureDiagramCoCo, FeatureDiagramASTFeatureTreeRuleCoCo {
 

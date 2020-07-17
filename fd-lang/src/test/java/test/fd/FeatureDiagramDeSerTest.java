@@ -1,65 +1,37 @@
 /* (c) https://github.com/MontiCore/monticore */
-package fd;
+package test.fd;
 
-import de.monticore.featurediagram.FeatureDiagramMill;
-import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
-import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.*;
+import de.monticore.featurediagram.FeatureDiagramTool;
+import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
+import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import test.AbstractTest;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class FeatureDiagramDeSerTest extends AbstractTest {
 
-  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
-      throws IOException {
-    ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
-    assertNotNull(ast);
-    FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
-        .featureDiagramGlobalScopeBuilder()
-        .setModelFileExtension("fd")
-        .setModelPath(mp)
-        .build();
-    FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
-        .featureDiagramSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
-    return symbolTable.createFromAST(ast);
+  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
+    return FeatureDiagramTool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath());
   }
 
-  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile)
-      throws IOException {
-    return setupSymbolTable(modelFile, new ModelPath());
-  }
-
-  @Ignore //solange DeSer WIP ist
+  //  @Ignore //solange DeSer WIP ist
   @Test
-  public void testSerializeDeserialize() throws IOException {
-    String model = "src/test/resources/fdvalid/BasicElements.fd";
-    FeatureDiagramArtifactScope scope = setupSymbolTable(model);
+  public void testSerializeDeserialize() {
+    FeatureDiagramScopeDeSer deSer = new FeatureDiagramScopeDeSer();
+    FeatureDiagramArtifactScope scope = setupSymbolTable("fdvalid/BasicElements.fd");
     assertTrue(null != scope);
-    String serialized = new FeatureDiagramScopeDeSer().serialize(scope);
-    System.out.println(serialized);
+    String serialized = deSer.serialize(scope);
     assertTrue(null != serialized);
 
-    FeatureDiagramGlobalScope gs = FeatureDiagramMill
-        .featureDiagramGlobalScopeBuilder()
-        .setModelFileExtension("fd")
-        .setModelPath(new ModelPath())
-        .build();
-    IFeatureDiagramScope deserializedScope = new FeatureDiagramScopeDeSer()
-        .deserialize(serialized);
+    IFeatureDiagramScope deserializedScope = deSer.deserialize(serialized);
     assertTrue(deserializedScope instanceof FeatureDiagramArtifactScope);
     FeatureDiagramArtifactScope deserialized = (FeatureDiagramArtifactScope) deserializedScope;
 
@@ -91,9 +63,9 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
   }
 
   @Test
-  public void testDeSer() throws IOException {
+  public void testDeSer() {
     FeatureDiagramArtifactScope fdScope = setupSymbolTable(
-        "src/test/resources/fdvalid/CarNavigation.fd");
+        "fdvalid/CarNavigation.fd");
     new FeatureDiagramScopeDeSer().store(fdScope, Paths.get("target/test-symbols"));
     assertTrue(new File("target/test-symbols/CarNavigation.fdsym").exists());
   }

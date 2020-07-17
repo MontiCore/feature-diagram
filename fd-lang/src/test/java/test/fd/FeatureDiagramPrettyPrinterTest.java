@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package fd;
+package test.fd;
 
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
