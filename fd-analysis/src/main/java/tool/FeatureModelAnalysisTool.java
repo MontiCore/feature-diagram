@@ -24,8 +24,8 @@ public class FeatureModelAnalysisTool {
 
   private List<FeatureModel2FlatZincModelTrafo> trafos = new ArrayList<>();
 
-  public FeatureModelAnalysisTool(ASTFeatureDiagram featureModelSymbol, ISolver solver) {
-    this.featureModel = featureModelSymbol;
+  public FeatureModelAnalysisTool(ASTFeatureDiagram featureModel, ISolver solver) {
+    this.featureModel = featureModel;
     this.solver = solver;
     trafos.add(new BasicTrafo());
     trafos.add(new RootFeatureSelected());
@@ -34,7 +34,7 @@ public class FeatureModelAnalysisTool {
 
   public FeatureModelAnalysisTool(ASTFeatureDiagram featureModel) {
     this(featureModel, new ChocoSolver());
-  }
+}
 
   public void addFeatureModelTrafo(FeatureModel2FlatZincModelTrafo trafo) {
     trafos.add(trafo);
