@@ -1,0 +1,139 @@
+/* (c) https://github.com/MontiCore/monticore */
+import de.monticore.MCTask
+
+plugins {
+    id "java"
+    id "monticore"  version "6.2.0-SNAPSHOT" // MontiCore Plugin
+    id "maven-publish"
+}
+
+def monticore_version = '6.2.0-SNAPSHOT'
+def plexus_archiver_version = '2.8.2'
+def guava_version = '20.0'
+def junit_version = '4.12'
+def logback_version = '1.1.2'
+def choco_solver_version = '4.0.5'
+def choco_parser_version = '4.0.4'
+def commons_cli_version = '1.2'
+
+def grammarDir = 'src/main/grammars/de/monticore'
+
+allprojects {
+    group = 'de.monticore.lang'
+    version = '0.0.3-SNAPSHOT'
+
+    repositories {
+        maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            url repo
+        }
+        mavenLocal()
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    dependencies {
+        implementation group: 'de.monticore', name: 'monticore-runtime', version: monticore_version
+        implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
+        implementation group: 'com.google.guava', name: 'guava', version: guava_version
+        testImplementation group: 'junit', name: 'junit', version: junit_version
+        testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
+    }
+
+    // configure non-standard source sets
+    sourceSets {
+        main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+    }
+    buildDir = file("$projectDir/target")
+
+
+    sourceCompatibility = '1.8'
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from(components.java)
+            }
+        }
+    }
+
+    // build sources jar with handwritten + generated sources
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from(sourceSets.main.allJava)
+    }
+
+    // configure deployment
+    publishing {
+        // configure what artifacts to publish
+        publications {
+        }
+        repositories.maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
+project(':fd-lang') {
+    apply plugin : 'java'
+    apply plugin : 'monticore'
+
+    dependencies {
+        implementation group: 'de.monticore', name: 'monticore-grammar', version: monticore_version
+        grammar (group:'de.monticore', name:'monticore-grammar', version:monticore_version, classifier: "grammars",
+                changing: true) { force = true }
+        implementation group: 'de.monticore', name: 'monticore-generator', version: monticore_version
+    }
+
+    description = 'Feature Diagram Language'
+
+    task  generateFeatureDiagram (type: MCTask) {
+        grammar = file "$grammarDir/FeatureDiagram.mc4"
+        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+        def uptoDate = incCheck("FeatureDiagram.mc4")
+        outputs.upToDateWhen { uptoDate }
+    }
+
+    task  generateFeatureConfiguration (type: MCTask) {
+        grammar = file "$grammarDir/FeatureConfiguration.mc4"
+        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+        def uptoDate = incCheck("FeatureConfiguration.mc4")
+        outputs.upToDateWhen { uptoDate }
+    }
+
+    task  generateFeatureConfigurationPartial (type: MCTask) {
+        grammar = file "$grammarDir/FeatureConfigurationPartial.mc4"
+        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+        def uptoDate = incCheck("FeatureConfigurationPartial.mc4")
+        outputs.upToDateWhen { uptoDate }
+    }
+
+    compileJava {
+        dependsOn project.collect { it.tasks.withType(MCTask) }
+    }
+}
+
+
+//project(':fd-analysis') {
+//    apply plugin: 'java-gradle-plugin'
+//    dependencies {
+//        implementation project(':fd-lang')
+//        implementation group: 'org.choco-solver', name: 'choco-solver', version: choco_solver_version
+//        implementation group: 'org.choco-solver', name: 'choco-parsers', version: choco_parser_version
+//        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+//    }
+//
+//    description = 'Feature Diagram Analyses'
+//}
