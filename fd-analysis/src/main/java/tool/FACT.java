@@ -108,6 +108,10 @@ public class FACT {
       String analysisArg, String fdName) {
     if (cmd.hasOption(analysisArg)) {
       ASTFeatureConfiguration ast = FeatureConfigurationTool.run(cmd.getOptionValue(analysisArg));
+      if(!ast.isPresentFdNameSymbol()){
+        //elsewhere, an error is produced already
+        return ast;
+      }
       if (!ast.getFdNameSymbol().getFullName().equals(fdName)) {
         Log.error(
             "0xFC902 The feature configuration '" + ast.getName() + "' is for the feature diagram '"

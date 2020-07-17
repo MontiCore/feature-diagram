@@ -58,13 +58,17 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisInvalidFC() {
+    PrintStream originalErr = System.err;
+    ByteArrayOutputStream err = new ByteArrayOutputStream();
+    System.setErr(new PrintStream(err));
     FACT.main(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-isValid", "src/test/resources/InvalidConfig2.fc"
     });
-    String printed = out.toString().trim();
+    String printed = err.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.endsWith("false"));
+    assertTrue(printed.contains("0xFC002"));
+    System.setErr(originalErr);
   }
 
   @Test
