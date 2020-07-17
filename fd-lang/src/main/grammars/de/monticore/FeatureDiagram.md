@@ -18,8 +18,11 @@
 [IsValid]:                   ../../../../../../../../fd-analysis/src/main/java/tool/analyses/IsValid.java
 [IsVoid]:                    ../../../../../../../../fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java
 [NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
-[generator]:                 ../../../../../../../../fd-analysis/src/main/java/tool/analyses
+[generator]:                 ../../../../../../../../fd-analysis/src/main/java/tool/transform
 [tool]:                      ../../../../../../../../fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
+[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/tool/FeatureModelAnalysisCLITool.java
+[FDtool]:                    ../../../../../../../../fd-analysis/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
+
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [KTC90]: https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf
@@ -236,12 +239,6 @@ method `List<FeatureSymbol> getAllFeatures()` for retrieving all features contai
 enabling to model constraint satisfaction (and optimization) problems. Several
 constraint solvers support FlatZinc as input format. The generator is located [here][generator].
 
-## Tool
-
-The feature model language component provides the [FeatureModelAnalysisTool][tool],
-which coordinates the execution of one or more several analyses against a feature model
-and, optionally, additional information (depends on the analysis kinds).
-
 ### Supported Feature Analyses
 The following table presents an overview of supported feature diagram analysis classes
 regarding their input in form of arguments and their output in form of the analysis result.
@@ -258,6 +255,33 @@ form of `ASTFeature`.
 | [IsValid][IsValid]                   | FM m, FC c | Boolean | Is c a valid FC in m? |
 | [IsVoid][IsVoid]                     | FM m | Boolean | Is there a valid FC in m? |
 | [NumberOfProducts][NumberOfProducts] | FM m | int | Returns the number of valid FCs in m. |
+
+## Tools
+
+The feature model language component provides three tools: The [FeatureModelAnalysisTool][tool], the [FeatureModelAnalysisCLITool][clitool], and the [FeatureDiagramTool][FDtool].
+
+### [The FeatureModelAnalysisTool][tool] 
+The [FeatureModelAnalysisTool][FeatureModelAnalysisTool] coordinates the execution of one or more several analyses against a feature model
+and, optionally, additional information (depends on the analysis kinds) in form of a Java API.
+
+### [The FeatureModelAnalysisCLITool][clitool] 
+The FeatureModelAnalysisCLITool coordinates the execution of one or more several analyses against a feature model
+and, optionally, additional information (depends on the analysis kinds) in form of a CLI tool. It can be used as follows:
+`java -jar FACT.jar <fd> [analysis [analysisParam]]+`
+
+### [The FeatureDiagramTool][FDtool] 
+The [FeatureDiagramTool][FeatureDiagramTool] offers a Java API for processing FeatureDiagram models. 
+It contains the following (static) methods:
+* `ASTFDCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
+* `FeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at the passed path and 
+  instantiates the symbol table using passed modelpath entries for finding imported feature diagram models
+* `FeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp)` instantiates the symbol table 
+  using the passed AST as basis and the passed modelpath entries for finding imported feature diagram models
+* `void checkCoCos(ASTFDCompilationUnit ast)` checks all context conditions of the feature diagram language against the passed AST
+* `ASTFeatureDiagram run(String modelFile, ModelPath mp)` parses the passed modelFile, creates the symbol table, 
+  and checks the context cnoditions.
+* `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, and checks the context conditions 
+  without an explicit modelpath. Care: this can only take into account import feature diagrams if these are located next to the passed feature diagram modelFile.
 
 ## Related Language Components
 * This language component uses the language component **[de.monticore.Cardinality][Cardinality MLC]**
