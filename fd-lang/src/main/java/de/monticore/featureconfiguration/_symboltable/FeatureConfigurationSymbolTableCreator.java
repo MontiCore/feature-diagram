@@ -13,6 +13,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FeatureConfigurationSymbolTableCreator
@@ -100,7 +101,9 @@ public class FeatureConfigurationSymbolTableCreator
   @Override
   public void visit(ASTFeatureConfiguration node) {
     super.visit(node);
-    if (node.isPresentFdNameSymbol()) {
+    Optional<FeatureDiagramSymbol> featureDiagramSymbol = this.getCurrentScope().get()
+        .resolveFeatureDiagram(node.getFdName());
+    if (featureDiagramSymbol.isPresent()) {
       fd = node.getFdNameSymbol();
     }
     else {

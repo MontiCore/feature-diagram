@@ -57,6 +57,32 @@ public class FACTTest extends AbstractTest {
   }
 
   @Test
+  public void testAnalysisInvalidFC() {
+    FACT.main(new String[] {
+        "src/test/resources/DeadFeatures.fd",
+        "-isValid", "src/test/resources/InvalidConfig2.fc"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.endsWith("false"));
+  }
+
+  @Test
+  public void testInvalidArg() {
+    PrintStream originalErr = System.err;
+    ByteArrayOutputStream err = new ByteArrayOutputStream();
+    System.setErr(new PrintStream(err));
+    FACT.main(new String[] {
+        "src/test/resources/DeadFeatures.fd",
+        "-SomethingIsNotRightHere", "src/test/resources/InvalidConfig.fc"
+    });
+    String printed = err.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.contains("0xFC901"));
+    System.setErr(originalErr);
+  }
+
+  @Test
   public void testHelp() {
     FACT.main(new String[] { "-h" });
 

@@ -24,7 +24,6 @@ public class FACT {
   protected Optional<IsValid> isValid = Optional.empty();
 
   public static void main(String[] args) {
-    Log.initWARN();
     new FACT(args);
   }
 
@@ -32,7 +31,7 @@ public class FACT {
     try {
       CommandLineParser parser = new BasicParser();
       cmd = parser.parse(getOptions(), args);
-      if(processArguments()){
+      if (processArguments()) {
         tool.performAnalyses();
         printResults();
       }
@@ -45,7 +44,8 @@ public class FACT {
   public static Options getOptions() {
     Options options = new Options();
 
-    createAnalysisOption(options, ARG_IS_VALID, "test.fc", "check if <test.fc> is a valid configuration in the passed feature diagram");
+    createAnalysisOption(options, ARG_IS_VALID, "test.fc",
+        "check if <test.fc> is a valid configuration in the passed feature diagram");
     //TODO add other analyses here
 
     options.addOption("h", ARG_HELP, false, "show this explanation");
@@ -69,7 +69,8 @@ public class FACT {
     return true;
   }
 
-  protected static void createAnalysisOption(Options options, String key, String argName, String description) {
+  protected static void createAnalysisOption(Options options, String key, String argName,
+      String description) {
     Option opt = new Option(key, true, description);
     opt.setArgName(argName);
     options.addOption(opt);

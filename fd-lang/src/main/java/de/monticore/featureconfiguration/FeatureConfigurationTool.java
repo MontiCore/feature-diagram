@@ -8,6 +8,7 @@ import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifa
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbolTableCreatorDelegator;
 import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
+import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
@@ -118,7 +119,7 @@ public class FeatureConfigurationTool {
     }
 
     // setup the symbol table
-    createSymbolTable(new ModelPath(path), ast);
+    createSymbolTable(new ModelPath(path, FeatureDiagramTool.SYMBOL_LOCATION), ast);
 
     // currently no context conditions exist for feature configurations
 
