@@ -2,11 +2,11 @@
 package tool.transform.trafos.config;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
 import tool.transform.flatzinc.Variable;
-import tool.util.CompleteConfigToPartialConfig;
+import tool.visitors.CompleteConfigToPartialConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class ConfigurationTrafo
 
   private Map<String, Boolean> configuration;
 
-  private FeatureDiagramSymbol feature;
+  private ASTFeatureDiagram feature;
 
   private List<Constraint> constraints = new ArrayList<>();
 
@@ -42,12 +42,12 @@ public class ConfigurationTrafo
   }
 
   @Override
-  public FeatureDiagramSymbol getFeatureModel() {
+  public ASTFeatureDiagram getFeatureModel() {
     return this.feature;
   }
 
   @Override
-  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
+  public void setFeatureModel(ASTFeatureDiagram featureModel) {
     this.feature = featureModel;
   }
 

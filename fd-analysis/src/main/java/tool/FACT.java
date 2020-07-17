@@ -92,7 +92,7 @@ public class FACT {
     }
     else if (1 == cmd.getArgList().size()) {
       ASTFeatureDiagram ast = FeatureDiagramTool.run(cmd.getArgList().get(0).toString());
-      tool = new FeatureModelAnalysisTool(ast.getSymbol());
+      tool = new FeatureModelAnalysisTool(ast);
       return ast;
     }
     else {

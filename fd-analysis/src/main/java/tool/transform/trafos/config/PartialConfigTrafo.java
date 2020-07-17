@@ -5,7 +5,7 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
 import de.monticore.featureconfigurationpartial._ast.ASTUnselect;
 import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
 import tool.transform.flatzinc.Variable;
@@ -28,12 +28,12 @@ public class PartialConfigTrafo
   }
 
   @Override
-  public FeatureDiagramSymbol getFeatureModel() {
+  public ASTFeatureDiagram getFeatureModel() {
     return null;
   }
 
   @Override
-  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
+  public void setFeatureModel(ASTFeatureDiagram featureModel) {
   }
 
   @Override

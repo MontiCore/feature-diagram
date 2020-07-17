@@ -18,7 +18,7 @@ public class GeneralFilter extends Analysis<Set<ASTFeatureConfiguration>> {
     filters.forEach(filter -> {
       ASTFeatureConstraint fd = FeatureDiagramMill.featureConstraintBuilder().setConstraint(filter)
           .build();
-      super.getFeatureModel().getAstNode().addFDElement(fd);
+      super.getFeatureModel().addFDElement(fd);
     });
   }
 

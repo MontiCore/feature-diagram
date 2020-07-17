@@ -5,6 +5,7 @@ import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.io.paths.ModelPath;
@@ -23,7 +24,7 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
 
   public static final String TEST_RES = "src/test/resources/";
 
-  protected FeatureDiagramSymbol getFD(String modelFile) {
+  protected ASTFeatureDiagram getFD(String modelFile) {
     FeatureDiagramArtifactScope as = FeatureDiagramTool
         .createSymbolTable(TEST_RES + modelFile, new ModelPath());
     String modelName = modelFile.replace(".fd", "");
@@ -35,7 +36,8 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
         .resolveFeatureDiagram(modelName);
     assertTrue(optionalFeatureDiagramSymbol.isPresent());
     assertNotNull(optionalFeatureDiagramSymbol.get());
-    return optionalFeatureDiagramSymbol.get();
+    assertNotNull(optionalFeatureDiagramSymbol.get().getAstNode());
+    return optionalFeatureDiagramSymbol.get().getAstNode();
   }
 
   protected ASTFeatureConfiguration getFC(String modelFile) {
@@ -55,8 +57,8 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
   }
 
   protected <T> T performAnalysis(String fdModelFile, Analysis<T> analysis) {
-    FeatureDiagramSymbol featureDiagramSymbol = getFD(fdModelFile);
-    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    ASTFeatureDiagram featureDiagram = getFD(fdModelFile);
+    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagram);
     modelAnalysisTool.addAnalysis(analysis);
     modelAnalysisTool.performAnalyses();
     assertTrue(analysis.getResult().isPresent());
@@ -158,8 +160,8 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
 
   @Test
   public void testFindValid2() {
-    FeatureDiagramSymbol featureDiagramSymbol = getFD("Void.fd");
-    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagramSymbol);
+    ASTFeatureDiagram featureDiagram = getFD("Void.fd");
+    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagram);
     FindValidConfig analysis = new FindValidConfig();
     modelAnalysisTool.addAnalysis(analysis);
     modelAnalysisTool.performAnalyses();

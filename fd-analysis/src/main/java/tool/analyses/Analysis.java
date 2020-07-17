@@ -2,6 +2,7 @@
 package tool.analyses;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.FZNModelBuilder;
 
@@ -13,7 +14,7 @@ public abstract class Analysis<T> {
 
   protected FZNModelBuilder builder = new FZNModelBuilder(false);
 
-  private FeatureDiagramSymbol featureModel;
+  private ASTFeatureDiagram featureModel;
 
   public Analysis() {
     this.result = Optional.empty();
@@ -21,11 +22,11 @@ public abstract class Analysis<T> {
     this.builder = new FZNModelBuilder(false);
   }
 
-  public FeatureDiagramSymbol getFeatureModel() {
+  public ASTFeatureDiagram getFeatureModel() {
     return featureModel;
   }
 
-  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
+  public void setFeatureModel(ASTFeatureDiagram featureModel) {
     this.featureModel = featureModel;
   }
 

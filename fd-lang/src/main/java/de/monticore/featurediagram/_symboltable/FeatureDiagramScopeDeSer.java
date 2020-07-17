@@ -18,17 +18,20 @@ public class FeatureDiagramScopeDeSer extends FeatureDiagramScopeDeSerTOP {
       IFeatureDiagramScope scope) {
     FeatureDiagramSymbol symbol = featureDiagramSymbolDeSer
         .deserializeFeatureDiagramSymbol(symbolJson, scope);
+
+    IFeatureDiagramScope fdScope = FeatureDiagramMill.featureDiagramScopeBuilder().build();
+    symbol.setSpannedScope(fdScope); //for bidirectional link
+    scope.addSubScope(fdScope); //for bidirectional link
     scope.add(symbol);
 
-    IFeatureDiagramScope fdScope = symbol.getSpannedScope();
-    List<FeatureSymbol> featureSymbols = new ArrayList<>();
     for (JsonElement e : symbolJson.getArrayMember("features")) {
       FeatureSymbol featureSymbol = FeatureDiagramMill
           .featureSymbolBuilder()
           .setName(e.getAsJsonString().getValue())
           .setEnclosingScope(fdScope)
           .build();
-      featureSymbols.add(featureSymbol);
+      fdScope.add(featureSymbol);
     }
+
   }
 }

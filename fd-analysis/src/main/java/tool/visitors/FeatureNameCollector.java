@@ -1,5 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
-package tool.util;
+package tool.visitors;
 
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
 import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;

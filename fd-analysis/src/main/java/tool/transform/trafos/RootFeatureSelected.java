@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package tool.transform.trafos;
 
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import tool.transform.FeatureModel2FlatZincModelTrafo;
 import tool.transform.flatzinc.Constraint;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class RootFeatureSelected implements FeatureModel2FlatZincModelTrafo {
 
-  private FeatureDiagramSymbol featureModel;
+  private ASTFeatureDiagram featureModel;
 
   private List<Constraint> constraints = new ArrayList<>();
 
@@ -21,12 +22,12 @@ public class RootFeatureSelected implements FeatureModel2FlatZincModelTrafo {
   }
 
   @Override
-  public FeatureDiagramSymbol getFeatureModel() {
+  public ASTFeatureDiagram getFeatureModel() {
     return this.featureModel;
   }
 
   @Override
-  public void setFeatureModel(FeatureDiagramSymbol featureModel) {
+  public void setFeatureModel(ASTFeatureDiagram featureModel) {
     this.featureModel = featureModel;
 
   }
@@ -43,7 +44,7 @@ public class RootFeatureSelected implements FeatureModel2FlatZincModelTrafo {
 
   @Override
   public void perform() {
-    Constraint rootFeature = new Constraint("int_eq", "1", featureModel.getAstNode().getRootFeature());
+    Constraint rootFeature = new Constraint("int_eq", "1", featureModel.getRootFeature());
     constraints.add(rootFeature);
   }
 }
