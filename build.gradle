@@ -16,7 +16,7 @@ def choco_solver_version = '4.0.5'
 def choco_parser_version = '4.0.4'
 def commons_cli_version = '1.2'
 
-def grammarDir = 'src/main/grammars/de/monticore'
+def grammarDir = 'src/main/grammars'
 
 allprojects {
     group = 'de.monticore.lang'
@@ -105,23 +105,23 @@ project(':fd-lang') {
     description = 'Feature Diagram Language'
 
     task  generateFeatureDiagram (type: MCTask) {
-        grammar = file "$grammarDir/FeatureDiagram.mc4"
+        grammar = file "$grammarDir/de/monticore/FeatureDiagram.mc4"
         outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("FeatureDiagram.mc4")
+        def uptoDate = incCheck("de/monticore/FeatureDiagram.mc4")
         outputs.upToDateWhen { uptoDate }
     }
 
     task  generateFeatureConfiguration (type: MCTask) {
-        grammar = file "$grammarDir/FeatureConfiguration.mc4"
+        grammar = file "$grammarDir/de/monticore/FeatureConfiguration.mc4"
         outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("FeatureConfiguration.mc4")
+        def uptoDate = incCheck("de/monticore/FeatureConfiguration.mc4")
         outputs.upToDateWhen { uptoDate }
     }
 
     task  generateFeatureConfigurationPartial (type: MCTask) {
-        grammar = file "$grammarDir/FeatureConfigurationPartial.mc4"
+        grammar = file "$grammarDir/de/monticore/FeatureConfigurationPartial.mc4"
         outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("FeatureConfigurationPartial.mc4")
+        def uptoDate = incCheck("de/monticore/FeatureConfigurationPartial.mc4")
         outputs.upToDateWhen { uptoDate }
     }
 
