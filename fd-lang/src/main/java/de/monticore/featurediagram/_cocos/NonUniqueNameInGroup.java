@@ -8,6 +8,9 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Checks, whether a feature is unique among the members of a feature group.
+ */
 public class NonUniqueNameInGroup implements FeatureDiagramASTFeatureGroupCoCo {
 
   @Override public void check(ASTFeatureGroup node) {

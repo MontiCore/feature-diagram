@@ -8,6 +8,11 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * This handwritten symbol table printer extends the generated one, because the serialization
+ * strategy for FeatureSymbols deviates from the generated strategy. All FeatureSymbols are stored
+ * as a list of feature names that are a member of a stored FeatureDiagramSymbol.
+ */
 public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTablePrinterTOP {
 
   public FeatureDiagramSymbolTablePrinter() {

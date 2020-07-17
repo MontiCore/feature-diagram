@@ -90,6 +90,12 @@ public class FeatureDiagramTool {
     return symbolTable.createFromAST(ast);
   }
 
+  /**
+   * short-hand for creating a global scope via mill
+   *
+   * @param mp
+   * @return
+   */
   public static FeatureDiagramGlobalScope createGlobalScope(ModelPath mp) {
     return FeatureDiagramMill
         .featureDiagramGlobalScopeBuilder()
@@ -98,16 +104,36 @@ public class FeatureDiagramTool {
         .build();
   }
 
+  /**
+   * Check all feature diagram context conditions against passed ast
+   *
+   * @param ast
+   */
   public static void checkCoCos(ASTFDCompilationUnit ast) {
     FeatureDiagramCoCos.checkAll(ast);
   }
 
+  /**
+   * stores the symbol table of a passed ast in a file with the passed fileName
+   *
+   * @param ast
+   * @param fileName
+   * @return
+   */
   public static File storeSymbols(ASTFDCompilationUnit ast, String fileName) {
     File f = new File(fileName);
     FileReaderWriter.storeInFile(f.toPath(), deser.serialize(ast.getEnclosingScope()));
     return f;
   }
 
+  /**
+   * Processes a feature model (parsing, symbol table creation, context condition checking,
+   * and storing of symbol table)
+   *
+   * @param modelFile
+   * @param mp
+   * @return
+   */
   public static ASTFeatureDiagram run(String modelFile, ModelPath mp) {
 
     // parse the model and create the AST representation
@@ -125,6 +151,13 @@ public class FeatureDiagramTool {
     return ast.getFeatureDiagram();
   }
 
+  /**
+   * Processes a feature model (parsing, symbol table creation, context condition checking,
+   * and storing of symbol table)
+   *
+   * @param modelFile
+   * @return
+   */
   public static ASTFeatureDiagram run(String modelFile) {
 
     // parse the model and create the AST representation
