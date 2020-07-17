@@ -36,7 +36,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisIsValidTrue() {
-    FACT.main(new String[] {
+    new FACT(new String[] {
         "src/test/resources/FalseOptional.fd",
         "-isValid", "src/test/resources/ValidConfig.fc"
     });
@@ -47,7 +47,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisIsValidFalse() {
-    FACT.main(new String[] {
+    new FACT(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-isValid", "src/test/resources/InvalidConfig.fc"
     });
@@ -61,7 +61,7 @@ public class FACTTest extends AbstractTest {
     PrintStream originalErr = System.err;
     ByteArrayOutputStream err = new ByteArrayOutputStream();
     System.setErr(new PrintStream(err));
-    FACT.main(new String[] {
+    new FACT(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-isValid", "src/test/resources/InvalidConfig2.fc"
     });
@@ -76,7 +76,7 @@ public class FACTTest extends AbstractTest {
     PrintStream originalErr = System.err;
     ByteArrayOutputStream err = new ByteArrayOutputStream();
     System.setErr(new PrintStream(err));
-    FACT.main(new String[] {
+    new FACT(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-SomethingIsNotRightHere", "src/test/resources/InvalidConfig.fc"
     });
@@ -88,7 +88,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testHelp() {
-    FACT.main(new String[] { "-h" });
+    new FACT(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);

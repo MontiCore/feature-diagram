@@ -24,6 +24,7 @@ public class FACT {
   protected Optional<IsValid> isValid = Optional.empty();
 
   public static void main(String[] args) {
+    Log.initWARN();
     new FACT(args);
   }
 
