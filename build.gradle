@@ -52,6 +52,11 @@ subprojects {
     sourceSets {
         main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
     }
+
+
+    // Fixes issue with java plugin in projects without resources
+    compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
+
     buildDir = file("$projectDir/target")
 
 
@@ -126,14 +131,18 @@ project(':fd-lang') {
 }
 
 
-//project(':fd-analysis') {
-//    apply plugin: 'java-gradle-plugin'
-//    dependencies {
-//        implementation project(':fd-lang')
-//        implementation group: 'org.choco-solver', name: 'choco-solver', version: choco_solver_version
-//        implementation group: 'org.choco-solver', name: 'choco-parsers', version: choco_parser_version
-//        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
-//    }
-//
-//    description = 'Feature Diagram Analyses'
-//}
+project(':fd-analysis') {
+    apply plugin: 'java'
+
+    dependencies {
+        implementation project(':fd-lang')
+        implementation group: 'org.choco-solver', name: 'choco-solver', version: choco_solver_version
+        implementation (group: 'org.choco-solver', name: 'choco-parsers', version: choco_parser_version){
+            exclude group: "xcsp3", module:"xcsp3"
+        }
+        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+        implementation group: 'de.monticore', name: 'monticore-grammar', version: monticore_version
+    }
+
+    description = 'Feature Diagram Analyses'
+}

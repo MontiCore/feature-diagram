@@ -11,4 +11,4 @@ pluginManagement {
     }
 }
 rootProject.name = 'feature-diagram'
-include ":fd-lang"//, ":fd-analysis"
+include ":fd-lang", ":fd-analysis"
