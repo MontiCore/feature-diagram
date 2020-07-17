@@ -61,38 +61,6 @@ subprojects {
 
 
     sourceCompatibility = '1.8'
-
-    // build sources jar with handwritten + generated sources
-    task sourcesJar(type: Jar) {
-        archiveClassifier = 'sources'
-        from(sourceSets.main.allJava)
-    }
-
-    // build grammar jar as well
-    task grammarJar(type: Jar) {
-        from ("$projectDir/$grammarDir"){ include "**/*.mc4" }
-        archiveClassifier = "grammars"
-    }
-
-    // configure deployment
-    publishing {
-        // configure what artifacts to publish
-        publications {
-            mavenJava(MavenPublication) {
-                artifactId = "$project.name"
-                from components.java
-                artifact sourcesJar
-                artifact grammarJar
-            }
-        }
-        repositories.maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-        }
-    }
 }
 
 project(':fd-lang') {
@@ -132,6 +100,38 @@ project(':fd-lang') {
     compileJava {
         dependsOn project.collect { it.tasks.withType(MCTask) }
     }
+
+    // build sources jar with handwritten + generated sources
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from(sourceSets.main.allJava)
+    }
+
+    // build grammar jar as well
+    task grammarJar(type: Jar) {
+        from ("$projectDir/$grammarDir"){ include "**/*.mc4" }
+        archiveClassifier = "grammars"
+    }
+
+    // configure deployment
+    publishing {
+        // configure what artifacts to publish
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = "$project.name"
+                from components.java
+                artifact sourcesJar
+                artifact grammarJar
+            }
+        }
+        repositories.maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
 }
 
 
@@ -149,4 +149,29 @@ project(':fd-analysis') {
     }
 
     description = 'Feature Diagram Analyses'
+
+    // build sources jar with handwritten + generated sources
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from(sourceSets.main.allJava)
+    }
+
+    // configure deployment
+    publishing {
+        // configure what artifacts to publish
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = "$project.name"
+                from components.java
+                artifact sourcesJar
+            }
+        }
+        repositories.maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
 }
