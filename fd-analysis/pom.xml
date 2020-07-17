@@ -30,6 +30,8 @@
                     <execution>
                         <id>monticore-cli-assembly</id>
                         <configuration>
+                            <finalName>FACT</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
                             <attach>false</attach>
                             <formats>
                                 <format>jar</format>

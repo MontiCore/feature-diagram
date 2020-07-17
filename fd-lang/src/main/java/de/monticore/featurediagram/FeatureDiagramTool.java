@@ -164,7 +164,7 @@ public class FeatureDiagramTool {
     final ASTFDCompilationUnit ast = parse(modelFile);
 
     //reconstruct modelpath from input file
-    Path path = Paths.get(modelFile).getParent();
+    Path path = Paths.get(modelFile).toAbsolutePath().getParent();
     if (ast.isPresentPackage()) {
       for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
         path = path.getParent();
@@ -172,7 +172,7 @@ public class FeatureDiagramTool {
     }
 
     // setup the symbol table
-    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, new ModelPath(path));
+    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, new ModelPath(path, SYMBOL_LOCATION));
 
     // execute default context conditions
     FeatureDiagramCoCos.checkAll(ast);

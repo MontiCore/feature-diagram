@@ -81,7 +81,7 @@ public class FACT {
       if (!result.isPresent() || null == result.get()) {
         Log.error("0xFC919 There was an error conducting the 'isValid' analysis!");
       }
-      Log.warn("Result of isValid: " + result.get());
+      System.out.println("Result of isValid: " + result.get());
     }
   }
 

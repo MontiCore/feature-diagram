@@ -36,7 +36,7 @@ public class FeatureConfigurationPartialTool {
     Log.info(modelFile + " parsed successfully!", "FeatureConfigurationPartialTool");
 
     //reconstruct modelpath from input file
-    Path path = Paths.get(modelFile).getParent();
+    Path path = Paths.get(modelFile).toAbsolutePath().getParent();
     if(ast.isPresentPackage()){
       for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
         path = path.getParent();
