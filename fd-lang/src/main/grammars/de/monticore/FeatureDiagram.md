@@ -276,8 +276,8 @@ The result, in this case `true` or `false`, is printed to the console.
 
 
 ### [The FeatureModelAnalysisTool][tool] 
-The [FeatureModelAnalysisTool][tool] coordinates the execution of one or more several analyses against a feature model
-and, optionally, additional information (depends on the analysis kinds) in form of a Java API.
+The [FeatureModelAnalysisTool][tool] coordinates the execution of one or more analyses against a feature model
+and, optionally, additional information (depends on the analysis kinds) such as a feature configuration, in form of a Java API.
 It contains the following constructors and methods:
 * `FeatureModelAnalysisTool(ASTFeatureDiagram featureModel, ISolver solver)` instantiates the tool with the AST of the passed 
   featureModel and uses the passed solver for conducting the analses.
