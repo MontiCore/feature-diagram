@@ -20,11 +20,12 @@
 [NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
 [generator]:                 ../../../../../../../../fd-analysis/src/main/java/tool/transform
 [tool]:                      ../../../../../../../../fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
-[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/tool/FeatureModelAnalysisCLITool.java
+[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/tool/FACT.java
 [FDtool]:                    ../../../../../../../../fd-analysis/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
 
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
+[choco]: https://choco-solver.org
 [KTC90]: https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf
 
 <!-- The following references should point towards the markdown files, once these exist -->
@@ -260,17 +261,32 @@ form of `ASTFeature`.
 
 The feature model language component provides three tools: The [FeatureModelAnalysisTool][tool], the [FeatureModelAnalysisCLITool][clitool], and the [FeatureDiagramTool][FDtool].
 
-### [The FeatureModelAnalysisTool][tool] 
-The [FeatureModelAnalysisTool][FeatureModelAnalysisTool] coordinates the execution of one or more several analyses against a feature model
-and, optionally, additional information (depends on the analysis kinds) in form of a Java API.
-
 ### [The FeatureModelAnalysisCLITool][clitool] 
-The FeatureModelAnalysisCLITool coordinates the execution of one or more several analyses against a feature model
+The [FeatureModelAnalysisCLITool][clitool] coordinates the execution of one or more several analyses against a feature model
 and, optionally, additional information (depends on the analysis kinds) in form of a CLI tool. It can be used as follows:
-`java -jar FACT.jar <fd> [analysis [analysisParam]]+`
+```java -jar FACT.jar <Car.fd> [-<analysis>]+```, where
+* `<Car.fd>` is the (optionally, qualified) fileName of a feature model "Car"
+* `<analysis>` is the name of an analysis followed by arguments for the analysis that depend on the type of analysis.
+
+Currently, the FeatureModelAnalysisCLITool supports the following analyses:
+* `isValid <Basic.fc>`, the check whether a passed configuration "Basic" is valid w.r.t the feature model.
+
+For example, `java -jar FACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the feature model "Car". 
+The result, in this case `true` or `false`, is printed to the console.
+
+
+### [The FeatureModelAnalysisTool][tool] 
+The [FeatureModelAnalysisTool][tool] coordinates the execution of one or more several analyses against a feature model
+and, optionally, additional information (depends on the analysis kinds) in form of a Java API.
+It contains the following constructors and methods:
+* `FeatureModelAnalysisTool(ASTFeatureDiagram featureModel, ISolver solver)` instantiates the tool with the AST of the passed 
+  featureModel and uses the passed solver for conducting the analses.
+* `FeatureModelAnalysisTool(ASTFeatureDiagram featureModel)` instantiates the tool with the AST of the passed featureModel. By default, a Solver based on [Choco][choco] is employed.
+* `void addAnalysis(Analysis analysis)` adds an analysis to the set of analyses conducted in this tool. Arguments for the analysis have to be added to each analysis object individually. 
+* `void performAnalyses()` performs the analyses. The analysis results are then available in each Analysis object
 
 ### [The FeatureDiagramTool][FDtool] 
-The [FeatureDiagramTool][FeatureDiagramTool] offers a Java API for processing FeatureDiagram models. 
+The [FeatureDiagramTool][FDtool] offers a Java API for processing FeatureDiagram models. 
 It contains the following (static) methods:
 * `ASTFDCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
 * `FeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at the passed path and 
@@ -278,10 +294,12 @@ It contains the following (static) methods:
 * `FeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp)` instantiates the symbol table 
   using the passed AST as basis and the passed modelpath entries for finding imported feature diagram models
 * `void checkCoCos(ASTFDCompilationUnit ast)` checks all context conditions of the feature diagram language against the passed AST
+* `File storeSymbols(ASTFDCompilationUnit ast, String fileName)` stores the symbol table for the passed ast in a file with the path fileName. 
+  If the file exists, it is overridden. Otherwise, a new file is created.
 * `ASTFeatureDiagram run(String modelFile, ModelPath mp)` parses the passed modelFile, creates the symbol table, 
-  and checks the context cnoditions.
-* `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, and checks the context conditions 
-  without an explicit modelpath. Care: this can only take into account import feature diagrams if these are located next to the passed feature diagram modelFile.
+  checks the context conditions, and then stores the symbol table.
+* `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, checks the context conditions, and stores symbol table - all
+  without an explicit modelpath. Care: this can only take into account imported feature diagrams if these are located next to the passed feature diagram modelFile.
 
 ## Related Language Components
 * This language component uses the language component **[de.monticore.Cardinality][Cardinality MLC]**
