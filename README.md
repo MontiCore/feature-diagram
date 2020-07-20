@@ -61,6 +61,24 @@ of feature models.
 
 ## Feature Analyses
 
+Feature models and feature configurations can be analyzed to extract information
+about the software product line and its products.
+An overview of the different analyses is given by [[BSRC10]](https://doi.org/10.1016/j.is.2010.01.001).
+The following table shows the analyses currently implemented in the feature model analysis tool:
+
+| name | input | result |
+| ------ | ------ | ------ |
+| [all products](fd-analysis/src/main/java/tool/analyses/AllProducts.java) | feature model | list of feature configurations |
+| [dead features](fd-analysis/src/main/java/tool/analyses/DeadFeatures.java) | feature model | list of features |
+| [false optional features](fd-analysis/src/main/java/tool/analyses/FalseOptional.java) | feature model | list of features |
+| [filter](fd-analysis/src/main/java/tool/analyses/Filter.java) | feature model & feature configuration | list of feature configurations |
+| [find valid product](fd-analysis/src/main/java/tool/analyses/FindValidConfig.java) | feature model | feature configuration |
+| [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java)| feature model & feature configuration | boolean |
+| [is void](fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java) | feature model | boolean |
+| [number of products](fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java) | feature model | integer |
+
+
+
 ## Tool Usage Documentation
 
 ### Setting up the Tool
