@@ -88,7 +88,7 @@ public class BasicTrafo
 
   public void visit(ASTAndGroup andGroup) {
     for (int i = 0; i < andGroup.sizeGroupParts(); i++) {
-      ASTGroupPart childFeature = andGroup.getGroupPart(i);
+      ASTGroupPart childFeature = andGroup.getGroupParts(i);
       String min;
       String max;
       if (childFeature.isOptional()) {

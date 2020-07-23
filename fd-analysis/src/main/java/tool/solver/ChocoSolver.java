@@ -45,18 +45,18 @@ public class ChocoSolver extends Flatzinc implements ISolver {
         .forEach(stringBooleanMap -> {
           stringBooleanMap.forEach((name, value) -> {
             if (value) {
-              selectBuilder.addName(name);
+              selectBuilder.addNames(name);
             }
             else {
-              unselectBuilder.addName(name);
+              unselectBuilder.addNames(name);
             }
           });
         });
     return builder
         .setFdName(featureModelName)
         .setName("Analysis")
-        .addFCElement(selectBuilder.build())
-        .addFCElement(unselectBuilder.build())
+        .addFCElements(selectBuilder.build())
+        .addFCElements(unselectBuilder.build())
         .build();
   }
 

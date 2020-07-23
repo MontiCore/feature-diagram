@@ -66,7 +66,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
    * @param rootNode
    */
   protected void handleImportStatements(ASTFDCompilationUnit rootNode) {
-    for (ASTMCImportStatement i : rootNode.getMCImportStatementList()) {
+    for (ASTMCImportStatement i : rootNode.getMCImportStatementsList()) {
       if (i.isStar()) {
         Log.error("0xFD132 Feature diagrams may not use stars '*' in import statements!");
         continue;
@@ -83,7 +83,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
             + rootNode.getFeatureDiagram().getName() + "'!");
         continue;
       }
-      rootNode.getFeatureDiagram().addAllFDElements(fd.getAstNode().getFDElementList());
+      rootNode.getFeatureDiagram().addAllFDElements(fd.getAstNode().getFDElementsList());
     }
   }
 

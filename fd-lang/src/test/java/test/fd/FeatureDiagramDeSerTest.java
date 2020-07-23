@@ -37,7 +37,8 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
 
     assertEquals(scope.getName(), deserialized.getName());
     assertEquals(scope.getPackageName(), deserialized.getPackageName());
-    assertEquals(scope.getImportList().size(), deserialized.getImportList().size());
+    assertEquals(scope.getImportsList().size(),
+      deserialized.getImportsList().size());
     assertEquals(scope.getTopLevelSymbol().isPresent(),
         deserialized.getTopLevelSymbol().isPresent());
     assertEquals(scope.getTopLevelSymbol().get().getName(),

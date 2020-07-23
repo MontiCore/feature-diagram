@@ -33,7 +33,7 @@ public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
       printer.println(";");
       printer.println();
     }
-    for (ASTMCImportStatement imp : node.getMCImportStatementList()) {
+    for (ASTMCImportStatement imp : node.getMCImportStatementsList()) {
       printer.println(imp.printType());
     }
     if (!node.isEmptyMCImportStatements()) {
@@ -73,20 +73,20 @@ public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
   }
 
   @Override public void visit(ASTXorGroup node) {
-    printGroup(node.getGroupPartList(), " ^ ");
+    printGroup(node.getGroupPartsList(), " ^ ");
   }
 
   @Override public void visit(ASTOrGroup node) {
-    printGroup(node.getGroupPartList(), " | ");
+    printGroup(node.getGroupPartsList(), " | ");
   }
 
   @Override public void visit(ASTAndGroup node) {
-    printGroup(node.getGroupPartList(), " & ");
+    printGroup(node.getGroupPartsList(), " & ");
   }
 
   @Override public void endVisit(ASTCardinalizedGroup node) {
     printer.print(" of {");
-    printGroup(node.getGroupPartList(), ", ");
+    printGroup(node.getGroupPartsList(), ", ");
     printer.print("}");
   }
 

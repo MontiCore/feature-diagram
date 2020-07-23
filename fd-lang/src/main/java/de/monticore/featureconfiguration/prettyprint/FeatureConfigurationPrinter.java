@@ -36,7 +36,7 @@ public class FeatureConfigurationPrinter implements FeatureConfigurationVisitor 
       printer.println(";");
       printer.println();
     }
-    for (ASTMCImportStatement imp : node.getMCImportStatementList()) {
+    for (ASTMCImportStatement imp : node.getMCImportStatementsList()) {
       printer.println(imp.printType());
     }
     if (!node.isEmptyMCImportStatements()) {
