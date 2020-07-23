@@ -52,18 +52,17 @@ public class FeatureConfigurationPrinter implements FeatureConfigurationVisitor 
 
   @Override
   public void visit(ASTFeatureConfiguration node) {
-    printer.print("featureconfig");
+    printer.print("featureconfig ");
     printer.print(node.getName());
-    printer.print("for");
+    printer.print(" for ");
     printer.print(node.getFdName());
-    printer.println("{");
+    printer.println(" {");
     printer.indent();
   }
 
   @Override
   public void endVisit(ASTFeatureConfiguration node){
     printer.unindent();
-    printer.println();
     printer.println("}");
   }
 

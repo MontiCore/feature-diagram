@@ -2,6 +2,9 @@
 
 package de.monticore.featurediagram;
 
+import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
+import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
+import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +12,9 @@ import org.junit.Test;
 import tool.FACT;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -55,6 +60,107 @@ public class FACTTest extends AbstractTest {
     assertNotNull(printed);
     assertTrue(printed.endsWith("false"));
   }
+
+  @Test
+  public void testAnalysisAllProducts() throws IOException {
+    new FACT(new String[] {
+      "src/test/resources/DeadFeatures.fd",
+      "-allProducts"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    String[] products = printed.split("featureconfig");
+    FeatureConfigurationPartialParser parsers =
+      new FeatureConfigurationPartialParser();
+    Optional<ASTFCCompilationUnit> conf = parsers.parse_String("featureconfig" +products[products.length -1]);
+    assertTrue(conf.isPresent());
+  }
+
+  @Test
+  public void testAnalysisDeadFeatures(){
+    new FACT(new String[] {
+      "src/test/resources/DeadFeatures.fd",
+      "-dead"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.endsWith("B"));
+  }
+
+  @Test
+  public void testAnalysisFalseOpt() throws IOException {
+    new FACT(new String[] {
+      "src/test/resources/FalseOptional.fd",
+      "-falseOpt"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.endsWith("B"));
+  }
+
+  @Test
+  public void testAnalysisFilter() throws IOException {
+    new FACT(new String[] {
+      "src/test/resources/FalseOptional.fd",
+      "-filter", "src/test/resources/CompleteToValid.fc"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    String[] products = printed.split("featureconfig");
+    FeatureConfigurationPartialParser parsers =
+      new FeatureConfigurationPartialParser();
+    Optional<ASTFCCompilationUnit> conf = parsers.parse_String("featureconfig" +products[products.length -1]);
+    assertTrue(conf.isPresent());
+  }
+
+  @Test
+  public void testAnalysisFindValid() throws IOException {
+    new FACT(new String[] {
+      "src/test/resources/FalseOptional.fd",
+      "-findValid"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    String[] products = printed.split("featureconfig");
+    FeatureConfigurationPartialParser parsers =
+      new FeatureConfigurationPartialParser();
+    Optional<ASTFCCompilationUnit> conf = parsers.parse_String("featureconfig" +products[products.length -1]);
+    assertTrue(conf.isPresent());
+  }
+
+  @Test
+  public void testIsVoidFalse() {
+    new FACT(new String[] {
+      "src/test/resources/DeadFeatures.fd",
+      "-isVoid"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.endsWith("false"));
+  }
+
+  @Test
+  public void testIsVoidTrue() {
+    new FACT(new String[] {
+      "src/test/resources/Void.fd",
+      "-isVoid"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.endsWith("true"));
+  }
+
+  @Test
+  public void testAnalysisNumProducts() {
+    new FACT(new String[] {
+      "src/test/resources/DeadFeatures.fd",
+      "-numProducts"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.endsWith("2"));
+  }
+
 
   @Test
   public void testAnalysisInvalidFC() {

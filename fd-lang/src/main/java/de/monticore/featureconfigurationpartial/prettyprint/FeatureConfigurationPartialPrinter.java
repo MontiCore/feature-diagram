@@ -21,21 +21,25 @@ public class FeatureConfigurationPartialPrinter implements FeatureConfigurationP
 
   @Override
   public void visit(ASTSelect node) {
-    printer.print("select");
-    printer.print("{");
-    printer.print(
-      node.streamNames().collect(Collectors.joining(","))
-    );
-    printer.print("}");
+    if(!node.isEmptyNames()) {
+      printer.print("select ");
+      printer.print("{ ");
+      printer.print(
+        node.streamNames().collect(Collectors.joining(","))
+      );
+      printer.println(" }");
+    }
   }
 
   public void visit(ASTUnselect node){
-    printer.print("exclude");
-    printer.print("{");
-    printer.print(
-      node.streamNames().collect(Collectors.joining(","))
-    );
-    printer.print("}");
+    if(!node.isEmptyNames()) {
+      printer.print("exclude ");
+      printer.print("{ ");
+      printer.print(
+        node.streamNames().collect(Collectors.joining(","))
+      );
+      printer.println(" }");
+    }
   }
 
   @Override

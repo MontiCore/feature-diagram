@@ -159,7 +159,6 @@ public class FACT {
       result.get().forEach(
         config -> {
           System.out.println(FeatureConfigurationPartialPrettyPrinter.print(config));
-          System.out.println();
         }
       );
     }
@@ -196,7 +195,6 @@ public class FACT {
       result.get().forEach(
         config -> {
           System.out.println(FeatureConfigurationPartialPrettyPrinter.print(config));
-          System.out.println();
         }
       );
     }
