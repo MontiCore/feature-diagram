@@ -264,55 +264,9 @@ In this table, we use `FM` as abbreviation for type `ASTFeatureDiagram`,
 			Returns all valid FCs in m.
 			Warning: The result set can be very large. |
 
-## Tools
+## Related Information
 
-TODO: der Abschnitt gehört eher zu den Nutzern und weniger zu den Sprachdevelopern
+* Description of the language and tools  TODO --> Readme
 
-The FDL component provides the following three tools:
-
-### [The FeatureModelAnalysisCLITool][clitool] 
-
-The [FeatureModelAnalysisCLITool][clitool] coordinates the execution of one or more several analyses against a FD
-and, optionally, additional information (depends on the analysis kinds) in form of a CLI tool. It can be used as follows:
-```java -jar FACT.jar <Car.fd> [-<analysis>]+```, where
-* `<Car.fd>` is the (optionally, qualified) fileName of a FD "Car"
-* `<analysis>` is the name of an analysis followed by arguments for the analysis that depend on the type of analysis.
-
-Currently, the FeatureModelAnalysisCLITool supports the following analyses:
-* `isValid <Basic.fc>`, the check whether a passed configuration "Basic" is valid w.r.t the FD.
-
-For example, `java -jar FACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the FD "Car". 
-The result, in this case `true` or `false`, is printed to the console.
-
-
-### [The FeatureModelAnalysisTool][tool] 
-The [FeatureModelAnalysisTool][tool] coordinates the execution of one or more analyses against a FD
-and, optionally, additional information (depends on the analysis kinds) such as a feature configuration, in form of a Java API.
-It contains the following constructors and methods:
-* `FeatureModelAnalysisTool(ASTFeatureDiagram featureModel, ISolver solver)` instantiates the tool with the AST of the passed 
-  featureModel and uses the passed solver for conducting the analses.
-* `FeatureModelAnalysisTool(ASTFeatureDiagram featureModel)` instantiates the tool with the AST of the passed featureModel. By default, a Solver based on [Choco][choco] is employed.
-* `void addAnalysis(Analysis analysis)` adds an analysis to the set of analyses conducted in this tool. Arguments for the analysis have to be added to each analysis object individually. 
-* `void performAnalyses()` performs the analyses. The analysis results are then available in each Analysis object
-
-### [The FeatureDiagramTool][FDtool] 
-The [FeatureDiagramTool][FDtool] offers a Java API for processing FeatureDiagram models. 
-It contains the following (static) methods:
-* `ASTFDCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
-* `FeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at the passed path and 
-  instantiates the symbol table using passed modelpath entries for finding imported FDs
-* `FeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp)` instantiates the symbol table 
-  using the passed AST as basis and the passed modelpath entries for finding imported FDs
-* `void checkCoCos(ASTFDCompilationUnit ast)` checks all context conditions of the FDL against the passed AST
-* `File storeSymbols(ASTFDCompilationUnit ast, String fileName)` stores the symbol table for the passed ast in a file with the path fileName. 
-  If the file exists, it is overridden. Otherwise, a new file is created.
-* `ASTFeatureDiagram run(String modelFile, ModelPath mp)` parses the passed modelFile, creates the symbol table, 
-  checks the context conditions, and then stores the symbol table.
-* `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, checks the context conditions, and stores symbol table - all
-  without an explicit modelpath. Care: this can only take into account imported FDs if these are located next to the passed FD modelFile.
-
-## Related Language Components
-* This language component can be used in combination with the language component **[FeatureConfiguration][FeatureConfiguration MLC]**
-* There are language components for partial configurations of FDs and for FDs with attributes
-
+* **[Feature configuration language (FCL)][FeatureConfiguration MLC]**
   
