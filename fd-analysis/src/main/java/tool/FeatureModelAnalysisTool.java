@@ -14,6 +14,9 @@ import tool.transform.trafos.RootFeatureSelected;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: comment, explain class
+// TODO: Brauchen wir diese Metaklasse überhaupt oder wäre es sinnvoll, diese einfach wegzuexpandieren?
+
 public class FeatureModelAnalysisTool {
 
   private ASTFeatureDiagram featureModel;
@@ -34,20 +37,8 @@ public class FeatureModelAnalysisTool {
 
   public FeatureModelAnalysisTool(ASTFeatureDiagram featureModel) {
     this(featureModel, new ChocoSolver());
-}
-
-  public void addFeatureModelTrafo(FeatureModel2FlatZincModelTrafo trafo) {
-    trafos.add(trafo);
   }
-
-  public ASTFeatureDiagram getFeatureModel() {
-    return featureModel;
-  }
-
-  public void setFeatureModel(ASTFeatureDiagram featureModel) {
-    this.featureModel = featureModel;
-  }
-
+ 
   public void addAnalysis(Analysis analysis) {
     this.analyses.add(analysis);
   }

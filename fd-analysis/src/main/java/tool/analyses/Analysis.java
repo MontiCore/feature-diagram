@@ -9,6 +9,9 @@ import tool.transform.FZNModelBuilder;
 import java.util.Collection;
 import java.util.Optional;
 
+
+// TODO: Ich denke diese Meta-Klasse ist unnötig und sollte ersatzlos gestrichen werden
+
 public abstract class Analysis<T> {
   protected Optional<T> result;
 

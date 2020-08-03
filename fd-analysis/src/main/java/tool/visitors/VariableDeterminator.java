@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+// TODO: comment, explain class
+
 public class VariableDeterminator implements FeatureDiagramVisitor {
 
   List<Variable> variables = new ArrayList<>();

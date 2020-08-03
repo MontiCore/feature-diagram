@@ -10,6 +10,8 @@ import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: comment, explain class
+
 public class CompleteConfigToPartialConfig implements FeatureConfigurationVisitor {
 
   private Map<String, Boolean> config = new HashMap<>();

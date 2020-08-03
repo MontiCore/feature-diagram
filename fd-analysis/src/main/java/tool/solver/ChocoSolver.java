@@ -15,6 +15,8 @@ import org.chocosolver.solver.variables.IntVar;
 
 import java.util.*;
 
+// TODO: comment, explain class (hier besonders, weil komplex!)
+
 public class ChocoSolver extends Flatzinc implements ISolver {
   private FznSettings settings;
 

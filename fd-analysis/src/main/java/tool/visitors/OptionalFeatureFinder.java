@@ -7,6 +7,8 @@ import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: comment, explain class
+
 public class OptionalFeatureFinder implements FeatureDiagramVisitor {
   private List<String> optionalFeatures = new ArrayList<>();
 

@@ -7,6 +7,11 @@ import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Collects all Featurenames in List<String> result.
+ * (unsorted)
+ */
+
 public class FeatureNameCollector implements FeatureDiagramVisitor {
 
   List<String> names = new ArrayList<>();

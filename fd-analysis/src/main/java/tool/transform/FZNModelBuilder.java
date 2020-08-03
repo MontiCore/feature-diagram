@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+// TODO: comment, explain class
+
 public class FZNModelBuilder {
 
   private List<FeatureModel2FlatZincModelTrafo> trafos;
