@@ -69,7 +69,7 @@ public class FACT {
       ASTFDCompilationUnit fcu = parseModel(readModelName(cmd));
       ASTFeatureDiagram fd = fcu.getFeatureDiagram();
 
-      xxxtool = new FeatureModelAnalysisTool(fd);   // XXX ??? toDel
+      xxxtool = new FeatureModelAnalysisTool(fd);   // XXX toDel
       
       // handle --findValid
       if (cmd.hasOption("findValid")) {
@@ -84,9 +84,9 @@ public class FACT {
       // BITTE in Zukunft wieder FUNKTIONAL denken und keine Meta-Generischen Überstrukturen
       // aufbauen
       
-      if (processArguments(cmd,fd)) {
+      if (processArguments(cmd,fd)) {   /// XXX weiter durchexpandieren ...
         xxxtool.performAnalyses();   // does not handle findValid anymore
-        printResults();
+        printResults();              // does not handle findValid anymore
       }
     } catch (ParseException e) {
       Log.error("0xFC901 Error while parsing the command line options!", e);
@@ -129,8 +129,6 @@ public class FACT {
       System.out.println("Result of findValid: " + FeatureConfigurationPartialPrettyPrinter.print(res));
     }
   }
-  
-  //////////////////////////////////////////////////////////////////////////////////
   
   /**
    * Reading the FD name from commandline as first and only(!) argument
