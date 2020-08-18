@@ -14,7 +14,7 @@
 This document is intended for  **language engineers** who extend, adapt or embed the FC language.
 **modelers** please look **[here][Readme]**. 
 
-# MontiCore Feature Diagram Language (FDL)
+# MontiCore Feature Configuration Language
 
 [[_TOC_]]
 
