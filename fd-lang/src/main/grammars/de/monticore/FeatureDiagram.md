@@ -11,16 +11,16 @@
 [CTCFeatureNamesExist]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/CTCFeatureNameExists.java
 [NonUniqueNameInGroup]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/NonUniqueNameInGroup.java
 [ValidConstraintExpression]: ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/ValidConstraintExpression.java
-[AllProducts]:               ../../../../../../../../fd-analysis/src/main/java/tool/analyses/AllProducts.java
-[CompleteToValid]:           ../../../../../../../../fd-analysis/src/main/java/tool/analyses/Filter.java
-[DeadFeature]:               ../../../../../../../../fd-analysis/src/main/java/tool/analyses/DeadFeature.java
-[FalseOptional]:             ../../../../../../../../fd-analysis/src/main/java/tool/analyses/FalseOptional.java
-[IsValid]:                   ../../../../../../../../fd-analysis/src/main/java/tool/analyses/IsValid.java
-[IsVoid]:                    ../../../../../../../../fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java
-[NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
-[generator]:                 ../../../../../../../../fd-analysis/src/main/java/tool/transform
-[tool]:                      ../../../../../../../../fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
-[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/tool/FACT.java
+[AllProducts]:               ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/AllProducts.java
+[CompleteToValid]:           ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/Filter.java
+[DeadFeature]:               ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/DeadFeature.java
+[FalseOptional]:             ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/FalseOptional.java
+[IsValid]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsValid.java
+[IsVoid]:                    ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsVoidFeatureModel.java
+[NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/NumberOfProducts.java
+[generator]:                 ../../../../../../../../fd-analysis/src/main/java/mcfdtool/transform
+[tool]:                      ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FeatureModelAnalysisTool.java
+[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
 [FDtool]:                    ../../../../../../../../fd-analysis/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
 
 

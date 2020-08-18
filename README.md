@@ -1,7 +1,8 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-[tool]:                      ../../../../../../../../fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
-[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/tool/FACT.java
-[FDtool]:                    ../../../../../../../../fd-analysis/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
+[tool]:                      ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FeatureModelAnalysisTool.java
+[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
+[FDtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
+[FCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationTool.java
 
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html

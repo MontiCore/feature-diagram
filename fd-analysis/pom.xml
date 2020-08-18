@@ -41,7 +41,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>tool.FACT</mainClass>
+                                    <mainClass>mcfdtool.FACT</mainClass>
                                 </manifest>
                                 <manifestEntries>
                                     <Class-Path>./</Class-Path>

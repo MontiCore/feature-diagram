@@ -10,8 +10,8 @@ import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.io.paths.ModelPath;
 import org.junit.Test;
-import tool.FeatureModelAnalysisTool;
-import tool.analyses.*;
+import mcfdtool.FeatureModelAnalysisTool;
+import mcfdtool.analyses.*;
 
 import java.nio.file.Paths;
 import java.util.List;
