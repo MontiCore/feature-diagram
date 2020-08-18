@@ -20,7 +20,8 @@ The models of the feature diagram language (FDL) are called *feature diagrams (F
 the term feature model is used interchangeably. 
 An FD describes a software or system family in terms of 
 (user-experienceable) features. FDs are used as variability models in
-the context of software product lines. 
+the context of software product lines. *Feature configurations (FCs)* select features
+of a feature diagram and specify a product (or variant) of the product lines.
 This documentation does not provide a general holistic introduction to FDs
 and their applications, as this is provided by several books (e.g., 
 [[CE00]](https://dl.acm.org/doi/book/10.5555/345203), 
@@ -141,16 +142,16 @@ The following table shows the analyses currently implemented in the FD analysis 
 
 | name | input | result |
 | ------ | ------ | ------ |
-| [all products](fd-analysis/src/main/java/tool/analyses/AllProducts.java) | FD | list of feature configurations |
+| [all products](fd-analysis/src/main/java/tool/analyses/AllProducts.java) | FD | list of FCs |
 | [dead features](fd-analysis/src/main/java/tool/analyses/DeadFeatures.java) | FD | list of features |
 | [false optional features](fd-analysis/src/main/java/tool/analyses/FalseOptional.java) | FD | list of features |
-| [filter](fd-analysis/src/main/java/tool/analyses/Filter.java) | FD & feature configuration | list of feature configurations |
-| [find valid product](fd-analysis/src/main/java/tool/analyses/FindValidConfig.java) | FD | feature configuration |
-| [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java)| FD & feature configuration | boolean |
+| [filter](fd-analysis/src/main/java/tool/analyses/Filter.java) | FD & FC | list of FCs |
+| [find valid product](fd-analysis/src/main/java/tool/analyses/FindValidConfig.java) | FD | FC |
+| [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java)| FD & FC | boolean |
 | [is void](fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java) | FD | boolean |
 | [number of products](fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java) | FD | integer |
 
-## Tools (new)
+## Tools
 The FDL component provides the following three tools:
 
 ### [The FeatureModelAnalysisCLITool][clitool] 
