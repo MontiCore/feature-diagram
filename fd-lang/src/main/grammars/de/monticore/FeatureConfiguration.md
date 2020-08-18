@@ -43,7 +43,7 @@ For a detailed explanation of the meaning, please have a look at
 ## Syntax
 ### Grammar
 The syntax of the FC language is specified through the FC 
-[FeatureConfiguration grammar](#grammar) that is itself a 
+[FeatureConfiguration grammar][Grammar] that is itself a 
 documentation of the concrete and abstract syntax. The grammar
 extends the **[de.monticore.FeatureDiagram][FeatureDiagram MLC]**
 grammar to reuse the definitions of `FeatureDiagramSymbols` and 
