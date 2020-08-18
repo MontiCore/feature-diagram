@@ -35,7 +35,7 @@
 [FeatureConfiguration MLC]: FeatureConfiguration.md
 
 > NOTE: <br>
-This document is intended for  **language engineers** who extend, adapt or embedd the FD language.
+This document is intended for  **language engineers** who extend, adapt or embed the FD language.
 **modelers** please look **[here][Readme]**. 
 
 # MontiCore Feature Diagram Language (FDL)
@@ -43,14 +43,14 @@ This document is intended for  **language engineers** who extend, adapt or embed
 [[_TOC_]]
 
 The following documents the MontiCore feature diagram language FDL. 
-FDs represent feature diagrams (FD) consisting of features and their relationships
+Feature diagrams (FDs) consist of features and their relationships
 used in product line engineering. 
 
 The FDL is extensible and adaptible to tailor it for various different applications.
 The FDL does not presume what a feature actually is and how it is described.
 
 FDL provides many notational and semantic extensions of the original FDs
-[[KCH+90]][KTC90]. FDL has the following characteristics:
+[[KCH+90]][KTC90]. Models of the FDL have the following characteristics:
 * Each FD has a root feature
 * Features are organized in a tree structure described by feature groups
 * The supported kinds of groups are: 
@@ -59,12 +59,11 @@ FDL provides many notational and semantic extensions of the original FDs
     * selection of features (ORGroup)
     * lower and upper bound for number of selected features (CardinalityGroup)
 * A feature may not be member of more than one feature group to preserve a tree
-* Obligation or optionality of a feature is only usefula and allowed in ANDGroups. 
-* A FD may import other FDs and use the root feature of the
-  imported FD.
-  Technically this leads to a loading of the full imported FD and addition as a sub-diagramm.
+* Obligation or optionality of a feature is only useful and allowed in ANDGroups. 
+* An FD may import other FDs and use the root feature of the imported FD.
+  Technically this leads to loading of the full imported FD and addition as a sub-diagramm.
 * Cross-tree constraints are expressions over features using logic operators, 
-  such as **and** `&&`, **or** `||` and FD-specific operators 
+  such as **and** `&&`, **or** `||`, and FD-specific operators 
   `requires` and `excludes`.
 
 ## Syntax Example
@@ -139,7 +138,7 @@ generated classes using the TOP mechanism as follows:
 
 * `ASTFeatureDiagram` contains a method `String getRootFeature()` for 
 obtaining the root feature of the FD as String and a method 
-`List<String> getFeatures` to obtain all features of a FD as list of Strings.
+`List<String> getFeatures` to obtain all features of an FD as list of Strings.
 * `ASTFeatureGroup` defines a method `List<FeatureSymbol> getSubFeatureSymbols()` 
 for retrieving all FeatureSymbols of features that are (direct) children of this group. 
 * `FeatureDiagramSymbol` has a convenience
@@ -154,40 +153,34 @@ contained in the FD.
   - A `FeatureDiagramSymbol` 
   - A `FeatureSymbol` for each feature.
   Note that features are defined on the first time that a feature name
-  occurs in a FD. There is no other place to introduce a feature
-  (as a consequence: definition and use iof features are not strictly separated in the language.
-  We decided to take this option, because features have not really a "body")
+  occurs in an FD. There is no other place to introduce a feature
+  (as a consequence: definition and use of features are not strictly separated in the language.
+  We decided for this option, because features do not really have a "body").
 - If FD `Mine` imports another FD `Foreign` it holds:
-    - Flat namespace of feature names, i.e., a feature name are not qualified. 
+    - Flat namespace of feature names, i.e., a feature name is not qualified. 
       (If this needs adaptation: This is designed in the symbol resolution, but also
        in the use of feature names)
     - All FD diagram elements of `Foreign` are integrated into `Mine`.
       Especially, all imported features can be used in `Mine`.
-    - The result must still form a feature tree. Especially, a FD
+    - The result must still form a feature tree. Especially, an FD
       cannot be incomplete and provide, e.g., a forest of feature trees.
-      (This is however a context condition only that could be adapte).
-    - The symbol table of a FD does not distinguish symbols
+      (This is however a context condition only that could be adapted).
+    - The symbol table of an FD does not distinguish symbols
       of locally defined and imported features. (This is unusual, but more efficient as
       an imported FD needs to be loaded completely anyway, because features don't have
       a body that is worth encapsulating)
-    - The stored symboltable does not store imported symbols, so transitive imports
-      are needed in deeper hierarchies.
-vs TODO-clarify
     - The stored symboltable does also store imported symbols, so transitve import is
       not needed, but diamond import (i.e. a feature is imported via two different paths)
-      is currently also not possible.
-vs TODO-clarify
-    - The stored symboltable does also store imported symbols and their original definition 
-      source, so transitve import is not needed and diamond import
-      (i.e. a feature is imported via two different paths)
-      is possible.
+      is currently also not possible. This, however, is negligible as under the assumption of a 
+      flat namespace of features, a diamond import would contradict the fact that feature names 
+      within an FD are unique.
 
 ### Symbol kinds used by FD (importable):
-- A FD (as defined here) does not import any symbols from other 
+- An FD (as defined here) does not import any symbols from other 
   languages; it defines all symbols in its own language.
 
 ### Symbol kinds defined by FD (exported):
-- FD defines its own type of FeatureSymbols.
+- An FD defines its own type of FeatureSymbols.
 - A `FeatureSymbol` is defined as (and has no additional body):
   ```
   class FeatureSymbol {
@@ -204,14 +197,23 @@ vs TODO-clarify
   ```
 
 ### Symbols exported by FD in the stored symboltable:
-- A FD exports the diagram symbol and all its feature symbols.
+- An FD exports the diagram symbol and all its feature symbols.
 - Tree structure, groups, and cross-tree constraints are **not** represented in the
   symbol table, because otherwise symbol table and FD itself would contain the same
   information anyway. If you need those details, the diagram itself should be loaded.
-- The artifact scope of a FD "XY.fd" is stored in "XY.fdsym".
+- The artifact scope of an FD "XY.fd" is stored in "XY.fdsym".
   Structure:
   ```
-  TODO: show the fdsym-table of a small FD (2 FD symbols only)
+  {
+    "name": "XY",
+    "symbols": [
+      {
+        "kind": "de.monticore.featurediagram._symboltable.FeatureDiagramSymbol",
+        "name": "XY",
+        "features": [ "A", "B", "C" ]
+      }
+    ]
+  }
   ```
 
 ### Context Conditions
@@ -220,21 +222,20 @@ CoCo's are implemented the following classes:
 
 | CoCo defined in class   | Error Code | Explanation |
 | ---      |  ------  |---------|
-| [HasTreeShape][HasTreeShape]                 | 0xFD001 | Feature diagrams must not contain more than one root feature. |
-| (see above)                                  | 0xFD002 | Feature diagrams must not contain more than one root feature. |
-| (see above)                                  | 0xFD003 | Feature diagrams must contain a root feature. |
-| (see above)                                  | 0xFD007 | Feature diagram rules must not introduce self loops. | 
+| [HasTreeShape][HasTreeShape]                 | 0xFD001 | FDs must not contain more than one root feature. |
+| (see above)                                  | 0xFD002 | FDs must not contain more than one root feature. |
+| (see above)                                  | 0xFD003 | FDs must contain a root feature. |
+| (see above)                                  | 0xFD007 | FD rules must not introduce self loops. | 
 | (see above)                                  | 0xFD008 | Each feature except the root feature must have a parent feature. | 
 | (see above)                                  | 0xFD010 | The parent feature does not exist.  |
-| [CTCFeatureNamesExist][CTCFeatureNamesExist] | 0xFD006 | A cross-tree constraint must operate on features that are available in the current feature model. |
+| [CTCFeatureNamesExist][CTCFeatureNamesExist] | 0xFD006 | A cross-tree constraint must operate on features that are available in the current FD. |
 | [NonUniqueNameInGroup][NonUniqueNameInGroup] | 0xFD009 | A Feature group must not contain a feature more than once. |
 | [ValidConstraintExpression][ValidConstraintExpression] | 0xFD011 | A cross-tree constraint is only allowed to use some kinds of expressions inherited from the common expression language component. |
 
 ## [Generator][generator]
 
 * For minimal use: This language component provides a generator that translates
-a FD to a
-[FlatZinc][flatzinc] model, which 
+an FD to a [FlatZinc][flatzinc] model, which 
 handles constraint satisfaction (and optimization) problems. Several
 constraint solvers support FlatZinc as input format, which allows to find valid configurations.
 
@@ -245,24 +246,16 @@ In this table, we use `FM` as abbreviation for type `ASTFeatureDiagram`,
 `FC` for `ASTFeatureConfiguration`, and `Feature` for `ASTFeature`.
 
 | Analysis Class | Input | Result | Explanation |
-| ---    | ---      |  ------  |---------|
-| [IsValid][IsValid]                   | FM m, FC c | Boolean |
-			Is c a valid FC in m? |
-| [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional\<FC\> |
-			Can c be completed to a valid FC of m? If yes, return one example. |
-| ---    | ---      |  ------  |---------|
-| [DeadFeatures][DeadFeature]           | FM m | Set\<Feature\> |
-			Set of features of m not used by a valid FC. |
-| [FalseOptional][FalseOptional]       | FM m | Set\<Feature\> |
-			Features that are marked optional, but are contained in all valid FCs. |
-| [IsVoid][IsVoid]                     | FM m | Boolean |
-			Is there a valid FC in m? |
-| ---    | ---      |  ------  |---------|
-| [NumberOfProducts][NumberOfProducts] | FM m | int |
-			Returns the number of valid FCs in m. |
-| [AllProducts][AllProducts]           | FM m | Set\<FC\> |
-			Returns all valid FCs in m.
-			Warning: The result set can be very large. |
+| ---    | ---      |  ------  |--------- |
+| [IsValid][IsValid]                   | FM m, FC c | Boolean | Is c a valid FC in m? |
+| [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional\<FC\> | Can c be completed to a valid FC of m? If yes, return one example. |
+| ---    | ---      |  ------  |--------- |
+| [DeadFeatures][DeadFeature]           | FM m | Set\<Feature\> | Set of features of m not used by a valid FC. |
+| [FalseOptional][FalseOptional]       | FM m | Set\<Feature\> | Features that are marked optional, but are contained in all valid FCs. |
+| [IsVoid][IsVoid]                     | FM m | Boolean | Is there a valid FC in m? |
+| ---    | ---      |  ------  |--------- |
+| [NumberOfProducts][NumberOfProducts] | FM m | int | Returns the number of valid FCs in m. |
+| [AllProducts][AllProducts]           | FM m | Set\<FC\> | Returns all valid FCs in m. Warning: The result set can be very large. |
 
 ## Further Information
 

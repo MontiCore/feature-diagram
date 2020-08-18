@@ -2,63 +2,106 @@
 
 <!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
 
-[Readme]: ../../../../../../README.md
-[Grammar]: FeatureConfiguration.mc4
-[fdstc]: ../../../java/de/monticore/featureconfiguration/_symboltable/FeatureConfigurationSymbolTableCreator.java
-[HasTreeShape]: ../../../java/de/monticore/featurediagram/_cocos/HasTreeShape.java
+<!-- List with all references used within this markdown file: -->
+[Readme]:                    ../../../../../../../../README.md
+[Grammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.mc4
+[fcstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/_symboltable/FeatureConfigurationSymbolTableCreator.java
+[tool]:                      ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationTool.java
+[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/tool/FACT.java
+[FeatureDiagram MLC]: FeatureDiagram.md
 
 > NOTE: <br>
-This documentation is intended for  **language engineers** who use the feature 
-configueration language. The documentation for **modelers** is located 
-**[here][Readme]**. 
+This document is intended for  **language engineers** who extend, adapt or embed the FC language.
+**modelers** please look **[here][Readme]**. 
 
-# MontiCore Feature Configuration Language
+# MontiCore Feature Diagram Language (FDL)
 
-* The **[FeatureConfiguration grammar][Grammar]** describes the syntax
-of feature configurations. As feature configurations always exist in the context of a feature model, this 
-grammar reuses symbols from the FeatureDiagram language.
+[[_TOC_]]
 
-> UNDER CONSTRUCTION
+The following documents the MontiCore feature configuration language. 
+Feature configurations (FCs) select features from a feature model. 
+Hence, a FC model always exists in the context of a specific feature model.
 
-<!--
-- Pro Sprache soll eine eigene *.md Datei zu Dokumentationszwecken erstellt werden 
+The FC language is extensible and adaptible to tailor it for various different 
+applications.
 
-  - Die *.md Datei zur Dokumentation soll wie die Kerngrammatik heißen (wie die wichtigste Grammatik unter den Grammatiken der Sprache)
+## Syntax Example
+```
+/* (c) https://github.com/MontiCore/monticore */
+ import fdvalid.CarNavigation;
+ 
+ featureconfig BasicCarNavigation for CarNavigation {
+   CarNavigation, VoiceControl, Display, SmallScreen, GPS, Memory, Small;
+ }
+```
+The configuration `BasicCarNavigation` refers to the feature diagram `CarNavigation`
+and from this, selects seven features. It does not make any assertions about other
+features of `CarNavigation`. 
+For a detailed explanation of the meaning, please have a look at 
+**[the readme][Readme]**.
 
-  - Diese Dokumentation dient nicht dazu, um Modellierern die Sprachen zu erklären, sondern um eine Dokumentation für Sprachentwickler bereitzustellen 
+## Syntax
+### Grammar
+The syntax of the FC language is specified through the FC 
+[FeatureConfiguration grammar](#grammar) that is itself a 
+documentation of the concrete and abstract syntax. The grammar
+extends the **[de.monticore.FeatureDiagram][FeatureDiagram MLC]**
+grammar to reuse the definitions of `FeatureDiagramSymbols` and 
+`FeatureSymbols`.
 
-  - Für die Dokumentation, die an Modellierer gerichtet ist: individuell eine eigene geeignete Form nutzen
+The grammar contains an extension point that can be used to tailor the language to 
+different applications. For instance, it is possible to realize partial feature 
+configurations that distinguish explicitly excluded features from those for which
+no selection has been made yet.
+* The interface nonterminal **FCElement** can be implemented to add further 
+elements to the FC's body.
 
-  - Die Grammatiken dokumentieren die abstrakte Syntax und die Symboltabelle
+For realizing the FC language, it was not necessary to implement handwritten
+extensions of AST classes, symbol classes, or the scope class.
 
-  - In der Grammatik sollen unter anderem Kommentare eingebaut werden, die z.B. Designentscheidungen begründen
+### Symboltable
+- De-/Serialization functionality for the symbol table of the FC language does not exist,
+  because (to the best of our knowledge) there is no use case for which this is beneficial.
+   
+- The [`FeatureConfigurationSymbolTableCreator`][fcstc] handles the creation and linking of the
+  symbols after the FC is parsed. It creates a `FeatureConfigurationSymbol` and loads the 
+  referenced `FeatureDiagramSymbol` and te `FeatureSymbols` of selected features. 
 
-  
 
-- Inhalt der detaillierten Sprachdokus (Für Sprachentwickler): 
+### Symbol kinds used by FC (importable):
+- An FC (as defined here) imports `FeatureDiagramSymbols` and `FeatureSymbols` 
+  from the [FeatureDiagram][FeatureDiagram MLC] language. These symbols are used
+  to check whether the feature diagram name and feature names used in an FC model
+  are defined in an FD model. For performing more sophisticacted analyses on an FC
+  (as described in the [Readme][Readme]) loading stored symbols of the FD language 
+  is not sufficient. For these, the FD model has to be parsed.  
 
-  - Zweck der Sprache
+### Symbol kinds defined by FC (exported):
+ - For each FC there is a FeatureConfigurationSymbol defined as:
+  ```
+  class FeatureConfigurationSymbol {
+      String name;
+      /FeatureDiagramSymbol featureDiagram;
+      /List<FeatureSymbol> selectedFeatures;
+  }
+  ```
 
-  - Durch welche handgeschriebenen Klassen wurde die abstrakte Syntax erweitert?
+### Symbols exported by FC in the stored symboltable:
+No symbols are exported from an FC model. 
 
-  - Was sind die wichtigsten (handgeschriebenen) internen Funktionalitäten 
+### Context Conditions
+The feature configuration language does not define any CoCo classes.
+The existance of the feature diagram referred from an FC model is 
+checked during symbol table creation.
+Similarly, checking whether the features selected in an FC 
+exist in the referenced feature diagram is performed during symbol 
+table creation.
 
-    (Funktionen, die auf der abstrakten Syntax Informationen berechnen oder die abstrakte Syntax modifizieren), 
 
-    z.B. Trafos, Symboltabellenberechnungen, CoCo checks
 
-  - Welche Erweiterungspunkte für die Syntax sind vorgesehen? 
-
-    (z.B. in Form von Top-Mechanismus/Pattern zur Erweiterung)
-
-  - Welche Generatorfunktionalitäten existieren?
-
-    (z.B. PrettyPrinter)
-
-  - Welche Erweiterungspunkte für Generatoren sind vorgesehen?
-
-  - Verwandte Sprachen/ benutzte Sprachen (wie?, weshalb?, warum?)
--->
+## Generator and Supported Feature Analyses
+For a description of the generator and feature analyses, please have a look 
+at **[the FeatureDiagram description][FeatureDiagram MLC]**. 
 
 ## Further Information
 

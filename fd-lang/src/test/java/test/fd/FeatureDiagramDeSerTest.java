@@ -22,7 +22,6 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
     return FeatureDiagramTool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath());
   }
 
-  //  @Ignore //solange DeSer WIP ist
   @Test
   public void testSerializeDeserialize() {
     FeatureDiagramScopeDeSer deSer = new FeatureDiagramScopeDeSer();
