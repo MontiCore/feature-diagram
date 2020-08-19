@@ -32,9 +32,16 @@ research papers (e.g.,
 [[KCH+90]](https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf)).
 
 Instead, the purpose of this documentation is to 
-introduce the [textual syntax](#textual-syntax), 
-describe the [feature analyses](#feature-analyses) that our FD tool provides, and 
-support setting up the tool in form of a short [tutorial](#tool-usage-documentation).
+introduce the [textual syntax](#textual-syntax) of the FDL and
+describe the [tools](#tools) that the FDL provides to process FD models
+and to perform analyses on the FDs.
+
+## Project Structure
+* [**doc**](doc) contains slides and images used for the documentation of the language
+* [**fd-analysis**](fd-analysis) contains several FD analyses and a tool to execute these 
+* [**fd-lang**](fd-lang) contains the technical realization of the languages
+  * The FD language is documented [here](d-lang/src/main/grammars/de/monticore/FeatureDiagram.md)
+  * The FC languages are documented [here](d-lang/src/main/grammars/de/monticore/FeatureConfiguration.md)
 
 ## Textual Syntax
 This section presents two examples for FDs: The phone example gives an overview
@@ -133,25 +140,6 @@ more complex constraints that involve more than two features. In the example
 FD below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`, 
 and `Asia` requires to select either a `Large` or a `Medium` memory.
 
-
-## Feature Analyses
-
-FDs and feature configurations can be analyzed to extract information
-about the software product line and its products.
-An overview of the different analyses is given by [[BSRC10]](https://doi.org/10.1016/j.is.2010.01.001).
-The following table shows the analyses currently implemented in the FD analysis tool:
-
-| name | input | result |
-| ------ | ------ | ------ |
-| [all products](fd-analysis/src/main/java/tool/analyses/AllProducts.java) | FD | list of FCs |
-| [dead features](fd-analysis/src/main/java/tool/analyses/DeadFeatures.java) | FD | list of features |
-| [false optional features](fd-analysis/src/main/java/tool/analyses/FalseOptional.java) | FD | list of features |
-| [filter](fd-analysis/src/main/java/tool/analyses/Filter.java) | FD & FC | list of FCs |
-| [find valid product](fd-analysis/src/main/java/tool/analyses/FindValidConfig.java) | FD | FC |
-| [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java)| FD & FC | boolean |
-| [is void](fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java) | FD | boolean |
-| [number of products](fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java) | FD | integer |
-
 ## Tools
 The FDL component provides the following three tools:
 
@@ -168,6 +156,24 @@ Currently, the FeatureModelAnalysisCLITool supports the following analyses:
 
 For example, `java -jar FACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the FD "Car". 
 The result, in this case `true` or `false`, is printed to the console.
+
+#### Supported Feature Analyses
+
+FDs and feature configurations can be analyzed to extract information
+about the software product line and its products.
+An overview of the different analyses is given by [[BSRC10]](https://doi.org/10.1016/j.is.2010.01.001).
+The following table shows the analyses currently implemented in the FD analysis tool:
+
+| name | input | result |
+| ------ | ------ | ------ |
+| [all products](fd-analysis/src/main/java/tool/analyses/AllProducts.java) | FD | list of FCs |
+| [dead features](fd-analysis/src/main/java/tool/analyses/DeadFeatures.java) | FD | list of features |
+| [false optional features](fd-analysis/src/main/java/tool/analyses/FalseOptional.java) | FD | list of features |
+| [filter](fd-analysis/src/main/java/tool/analyses/Filter.java) | FD & FC | list of FCs |
+| [find valid product](fd-analysis/src/main/java/tool/analyses/FindValidConfig.java) | FD | FC |
+| [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java)| FD & FC | boolean |
+| [is void](fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java) | FD | boolean |
+| [number of products](fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java) | FD | integer |
 
 
 ### [The FeatureModelAnalysisTool][tool] 
