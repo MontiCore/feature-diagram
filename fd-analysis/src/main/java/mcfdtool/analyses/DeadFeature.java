@@ -1,38 +1,31 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool.analyses;
 
-import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featureconfigurationpartial._ast.ASTSelect;
 import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
-import mcfdtool.transform.FZNModelBuilder;
-import mcfdtool.visitors.FeatureNameCollector;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class DeadFeature extends Analysis<List<String>>
-    implements FeatureConfigurationPartialVisitor {
+/**
+ * This analysis returns all features of a passed FD that are not contained in any valid
+ * configuration of FD.
+ * !! WARNING: This analysis can be slow for large FDs !!
+ */
+public class DeadFeature implements FeatureConfigurationPartialVisitor {
 
-  private List<String> deadFeatures;
+  public List<String> perform(ASTFeatureDiagram fd) {
+    //Step 1: initialize a list with all features of the passed FD
+    List<String> allFeatures = new ArrayList<>(fd.getAllFeatures());
 
-  @Override
-  public void perform(Collection<ASTFeatureConfiguration> configurations) {
-    FeatureNameCollector collector = new FeatureNameCollector();
-    getFeatureModel().accept(collector);
-    deadFeatures = collector.getNames();
-    configurations.forEach(configuration -> {
-      configuration.accept(this);
-    });
-    setResult(deadFeatures);
+    // Step 2: populate a map that maps feature names to the number of times these occur
+    // in all valid configurations of fd
+    Map<String, Integer> occurrences = FDAnalyses.countOccurrencesInFCs(fd);
+
+    // Step 3: From the list of all features, remove all features occuring at least in one valid FC
+    allFeatures.removeAll(occurrences.keySet());
+    return allFeatures;
   }
 
-  @Override
-  public FZNModelBuilder getModelBuilder() {
-    return new FZNModelBuilder(true);
-  }
-
-  @Override
-  public void visit(ASTSelect node) {
-    node.streamNames().forEach(name -> deadFeatures.remove(name));
-  }
 }

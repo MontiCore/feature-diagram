@@ -12,6 +12,10 @@ public class Variable {
 
   private String annotation = "";
 
+  public Variable(String name, Type type) {
+    this(name, type, "");
+  }
+
   public Variable(String name, Type type, String annotation) {
     this.name = name;
     this.type = type;
@@ -19,6 +23,22 @@ public class Variable {
   }
 
   public Variable() {
+  }
+
+  public static Variable newIntVariable(String name){
+    return newIntVariable(name, "");
+  }
+
+  public static Variable newBoolVariable(String name){
+    return newBoolVariable(name, "");
+  }
+
+  public static Variable newIntVariable(String name, String annotation){
+    return new Variable(name, Type.INT, annotation);
+  }
+
+  public static Variable newBoolVariable(String name, String annotation){
+    return new Variable(name, Type.BOOL, annotation);
   }
 
   public String getName() {
@@ -49,7 +69,7 @@ public class Variable {
     this.type = type;
   }
 
-  public void append(StringBuilder stringBuilder) {
+  public void print(StringBuilder stringBuilder) {
     switch (type) {
       case INT:
       case FLOAT:

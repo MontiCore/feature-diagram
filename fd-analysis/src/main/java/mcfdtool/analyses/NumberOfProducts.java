@@ -2,18 +2,30 @@
 package mcfdtool.analyses;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
+import mcfdtool.solver.Solvers;
+import mcfdtool.transform.flatzinc.FlatZincModel;
+import mcfdtool.transform.trafos.FlatZincTrafo;
 
-import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
-public class NumberOfProducts extends Analysis<Integer> {
-  public NumberOfProducts() {
-    super();
-    builder.setAllSolutions(true);
-  }
+/**
+ * This analysis returns the number of valid configurations (=products) of the
+ * passed FD.
+ * !! WARNING: This analysis can be slow for large FDs !!
+ */
+public class NumberOfProducts {
 
-  @Override
-  public void perform(Collection<ASTFeatureConfiguration> configurations) {
-    setResult(configurations.size());
+  public Integer perform(ASTFeatureDiagram fd) {
+    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
+
+    //each solution is a valid configuration
+    List<Map<String, Integer>> allSolutions = Solvers.getSolver().getAllSolutions(model);
+    if (null != allSolutions) {
+      return allSolutions.size();
+    }
+    return null;
   }
 
 }

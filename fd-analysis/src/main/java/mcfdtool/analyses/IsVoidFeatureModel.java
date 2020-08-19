@@ -1,21 +1,19 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool.analyses;
 
-import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import mcfdtool.transform.FZNModelBuilder;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
+import mcfdtool.solver.Solvers;
+import mcfdtool.transform.flatzinc.FlatZincModel;
+import mcfdtool.transform.trafos.FlatZincTrafo;
 
-import java.util.Collection;
+/**
+ * This analysis returns true, if the passed FD has a valid configuration and false otherwise
+ */
+public class IsVoidFeatureModel {
 
-public class IsVoidFeatureModel extends Analysis<Boolean> {
-
-  @Override
-  public void perform(Collection<ASTFeatureConfiguration> configurations) {
-    setResult(configurations.isEmpty());
-  }
-
-  @Override
-  public FZNModelBuilder getModelBuilder() {
-    return new FZNModelBuilder(false);
+  public Boolean perform(ASTFeatureDiagram fd) {
+    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
+    return !Solvers.getSolver().hasSolution(model);
   }
 
 }

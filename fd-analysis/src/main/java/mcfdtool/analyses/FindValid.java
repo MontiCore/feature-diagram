@@ -7,18 +7,18 @@ import mcfdtool.solver.Solvers;
 import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.trafos.FlatZincTrafo;
 
-import java.util.List;
 import java.util.Map;
 
 /**
- * This analysis for finds all valid configurations (=products) of a passed FD.
- * !! WARNING: This analysis can be slow for large FDs !!
+ * This analysis returns any configuration that is valid w.r.t. the passed FD.
+ * If no such configuration exists, the analysis returns "null"
  */
-public class AllProducts {
+public class FindValid {
 
-  public List<ASTFeatureConfiguration> perform(ASTFeatureDiagram fd) {
+  public ASTFeatureConfiguration perform(ASTFeatureDiagram fd) {
     FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
-    List<Map<String, Integer>> allSolutions = Solvers.getSolver().getAllSolutions(model);
-    return Solvers.transformResultToFC("Configuration", allSolutions, fd);
+    Map<String, Integer> anySolution = Solvers.getSolver().getAnySolution(model);
+    return Solvers.transformResultToFC("ValidConfiguration", anySolution, fd);
   }
+
 }

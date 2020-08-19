@@ -2,6 +2,6 @@
 package mcfdtool.transform.flatzinc;
 
 public class Parameter {
-  public void append(StringBuilder stringBuilder) {
+  public void print(StringBuilder stringBuilder) {
   }
 }

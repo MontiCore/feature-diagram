@@ -1,29 +1,27 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool.analyses;
 
-import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featurediagram.FeatureDiagramMill;
-import de.monticore.featurediagram._ast.ASTFeatureConstraint;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
+import mcfdtool.solver.Solvers;
+import mcfdtool.transform.flatzinc.Constraint;
+import mcfdtool.transform.flatzinc.FlatZincModel;
+import mcfdtool.transform.trafos.FlatZincTrafo;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-public class GeneralFilter extends Analysis<Set<ASTFeatureConfiguration>> {
+/**
+ * Returns all configurations of a passed FD that satisfy a passed list of constraints
+ *  !! WARNING: This analysis can be slow for large FDs !!
+ */
+public class GeneralFilter {
 
-  public GeneralFilter(List<ASTExpression> filters) {
-    super();
-    filters.forEach(filter -> {
-      ASTFeatureConstraint fd = FeatureDiagramMill.featureConstraintBuilder().setConstraint(filter)
-          .build();
-      super.getFeatureModel().addFDElements(fd);
-    });
+  public List<ASTFeatureConfiguration> perform(ASTFeatureDiagram fd, List<Constraint> filters) {
+    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
+    model.addConstraints(filters);
+    List<Map<String, Integer>> allSolutions = Solvers.getSolver().getAllSolutions(model);
+    return Solvers.transformResultToFC("CompletedConfiguration", allSolutions, fd);
   }
 
-  @Override
-  public void perform(Collection<ASTFeatureConfiguration> configurations) {
-    setResult(new HashSet<>(configurations));
-  }
 }

@@ -134,7 +134,7 @@ public class FeatureDiagramTool {
    * @param mp
    * @return
    */
-  public static ASTFeatureDiagram run(String modelFile, ModelPath mp) {
+  public static ASTFeatureDiagram run(String modelFile, Path symbolStoreLocation, ModelPath mp) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
@@ -146,9 +146,21 @@ public class FeatureDiagramTool {
     checkCoCos(ast);
 
     // store artifact scope after context conditions have been checked
-    deser.store(modelTopScope, SYMBOL_LOCATION);
+    deser.store(modelTopScope, symbolStoreLocation);
 
     return ast.getFeatureDiagram();
+  }
+
+  /**
+   * Processes a feature model (parsing, symbol table creation, context condition checking,
+   * and storing of symbol table) and stores symbols at default location
+   *
+   * @param modelFile
+   * @param mp
+   * @return
+   */
+  public static ASTFeatureDiagram run(String modelFile, ModelPath mp) {
+    return run(modelFile, SYMBOL_LOCATION, mp);
   }
 
   /**

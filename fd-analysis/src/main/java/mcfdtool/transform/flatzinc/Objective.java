@@ -9,7 +9,7 @@ public class Objective {
     this.name = name;
   }
 
-  public void append(StringBuilder stringBuilder) {
+  public void print(StringBuilder stringBuilder) {
     stringBuilder.append("solve ")
         .append(name)
         .append(";");

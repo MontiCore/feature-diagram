@@ -11,17 +11,6 @@ public class Predicate {
 
   private String experession;
 
-  public void append(StringBuilder stringBuilder) {
-    stringBuilder
-        .append("predicate ")
-        .append(identifier)
-        .append("(")
-        .append(String.join(", ", parameters))
-        .append(") = ")
-        .append(experession)
-        .append(";\n");
-  }
-
   public void setIdentifier(String identifier) {
     this.identifier = identifier;
   }
@@ -32,5 +21,16 @@ public class Predicate {
 
   public void setExperession(String experession) {
     this.experession = experession;
+  }
+  
+  public void print(StringBuilder stringBuilder) {
+    stringBuilder
+        .append("predicate ")
+        .append(identifier)
+        .append("(")
+        .append(String.join(", ", parameters))
+        .append(") = ")
+        .append(experession)
+        .append(";\n");
   }
 }

@@ -100,9 +100,9 @@ public class FeatureConfigurationTool {
     // setup the symbol table
     createSymbolTable(mp, ast);
 
-    // currently no context conditions exist for feature configurations
+    // currently no context conditions exist for feature configurations.
+    // Also, do not store artifact scope
 
-    // do not store artifact scope
     return ast.getFeatureConfiguration();
   }
 
@@ -121,9 +121,9 @@ public class FeatureConfigurationTool {
     // setup the symbol table
     createSymbolTable(new ModelPath(path, FeatureDiagramTool.SYMBOL_LOCATION), ast);
 
-    // currently no context conditions exist for feature configurations
+    // currently no context conditions exist for feature configurations.
+    // Also, do not store artifact scope
 
-    // do not store artifact scope
     return ast.getFeatureConfiguration();
   }
 

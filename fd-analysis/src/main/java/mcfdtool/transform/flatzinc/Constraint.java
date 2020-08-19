@@ -31,7 +31,7 @@ public class Constraint {
     this.parameters.add(parameter);
   }
 
-  public void append(StringBuilder stringBuilder) {
+  public void print(StringBuilder stringBuilder) {
     stringBuilder.append("constraint ")
         .append(name)
         .append("(");

@@ -55,7 +55,7 @@ public class FlatZincModel {
     this.variables = variables;
   }
 
-  public void addVariable(Variable variable) {
+  public void add(Variable variable) {
     if (variable == null) {
       return;
     }
@@ -83,7 +83,7 @@ public class FlatZincModel {
     this.constraints = constraints;
   }
 
-  public void addConstraint(Constraint constraint) {
+  public void add(Constraint constraint) {
     if (constraint == null) {
       return;
     }
@@ -113,11 +113,11 @@ public class FlatZincModel {
 
   public String print() {
     StringBuilder stringBuilder = new StringBuilder();
-    predicates.forEach(p -> p.append(stringBuilder));
-    parameters.forEach(p -> p.append(stringBuilder));
-    variables.forEach(v -> v.append(stringBuilder));
-    constraints.forEach(c -> c.append(stringBuilder));
-    objective.append(stringBuilder);
+    predicates.forEach(p -> p.print(stringBuilder));
+    parameters.forEach(p -> p.print(stringBuilder));
+    variables.forEach(v -> v.print(stringBuilder));
+    constraints.forEach(c -> c.print(stringBuilder));
+    objective.print(stringBuilder);
     return stringBuilder.toString();
   }
 }

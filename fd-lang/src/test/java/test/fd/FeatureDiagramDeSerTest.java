@@ -2,10 +2,7 @@
 package test.fd;
 
 import de.monticore.featurediagram.FeatureDiagramTool;
-import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
+import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import org.junit.Test;
 import test.AbstractTest;

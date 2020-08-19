@@ -7,9 +7,11 @@ import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: comment, explain class
+/**
+ * Collects all optional features of a feature model as a List<String> result
+ */
+public class OptionalFeatureCollector implements FeatureDiagramVisitor {
 
-public class OptionalFeatureFinder implements FeatureDiagramVisitor {
   private List<String> optionalFeatures = new ArrayList<>();
 
   @Override
