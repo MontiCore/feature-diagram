@@ -6,20 +6,23 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import mcfdtool.transform.flatzinc.FlatZincModel;
 
+/**
+ * This singleton class manages Trafos for feature diagrams, feature configurations, and
+ * partial feature configurations. If different transformations should be applied, the trafos
+ * can be replaced by subclassing this class and set the instance via setInstance()
+ */
 public class FlatZincTrafo {
 
   protected FDTrafo fdTrafo = new FDTrafo();
 
   protected FCTrafo fcTrafo = new FCTrafo();
 
-  protected FCPTrafo fcpTrafo = new FCPTrafo();
-
   protected FlatZincModel model;
 
   protected static FlatZincTrafo INSTANCE;
 
   protected FlatZincTrafo() {
-
+    //do not access constructor, this is a singleton
   }
 
   public static FlatZincTrafo getInstance() {
@@ -49,16 +52,8 @@ public class FlatZincTrafo {
     this.fcTrafo = fcTrafo;
   }
 
-  public FCPTrafo getFcpTrafo() {
-    return fcpTrafo;
-  }
-
-  public void setFcpTrafo(FCPTrafo fcpTrafo) {
-    this.fcpTrafo = fcpTrafo;
-  }
-
   public FlatZincModel getModel() {
-    if(null == model){
+    if (null == model) {
       model = new FlatZincModel();
     }
     return model;
@@ -77,21 +72,12 @@ public class FlatZincTrafo {
     return this;
   }
 
-  public static FlatZincTrafo addFeatureConfiguration(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
-    return getInstance()._addFeatureConfiguration(fd, fc);
+  public static FlatZincTrafo addFeatureConfiguration(ASTFeatureConfiguration fc) {
+    return getInstance()._addFeatureConfiguration(fc);
   }
 
-  public FlatZincTrafo _addFeatureConfiguration(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
-    getFcTrafo().apply(fd, fc, getModel());
-    return this;
-  }
-
-  public static FlatZincTrafo addFeatureConfigurationPartial(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
-    return getInstance()._addFeatureConfigurationPartial(fd, fc);
-  }
-
-  public FlatZincTrafo _addFeatureConfigurationPartial(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
-    getFcpTrafo().apply(fd, fc, getModel());
+  public FlatZincTrafo _addFeatureConfiguration(ASTFeatureConfiguration fc) {
+    getFcTrafo().apply(fc, getModel());
     return this;
   }
 

@@ -40,8 +40,6 @@ public class FDTrafo implements FeatureDiagramVisitor {
     variable.setUpperLimit("1");
     flatZincModel.add(variable);
 
-    flatZincModel.add(Variable.newIntVariable(feature.getName()));
-
     //create and add variables holding whether a feature is selected or not
     Variable isSelected = Variable.newBoolVariable(feature.getName() + "IsSelected");
     flatZincModel.add(isSelected);

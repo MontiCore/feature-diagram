@@ -17,30 +17,18 @@ import java.util.List;
  */
 public class FCTrafo implements FeatureConfigurationPartialVisitor {
 
-  protected List<String> unvisitedFeatures;
-
   protected FlatZincModel flatZincModel;
 
-  public void apply(ASTFeatureDiagram fd, ASTFeatureConfiguration fc, FlatZincModel result) {
-    // Step 1: Reset attributes
-    unvisitedFeatures = fd.getAllFeatures();
+  public void apply(ASTFeatureConfiguration fc, FlatZincModel result) {
     flatZincModel = result;
-
-    //Step 2: run the visitor for add constraints for selected features
+    //run the visitor to add constraints for selected features
     fc.accept(this);
-
-    //Step 3: add constraints for features that aren not selected
-//    for (String fName : unvisitedFeatures) {
-//      flatZincModel.add(new Constraint("int_eq", fName, "0"));
-//    }
-
   }
 
   @Override
   public void visit(ASTFeatures node) {
     for (String fName : node.getNamesList()) {
       flatZincModel.add(new Constraint("int_eq", fName, "1"));
-      unvisitedFeatures.remove(node);
     }
   }
 
@@ -48,7 +36,6 @@ public class FCTrafo implements FeatureConfigurationPartialVisitor {
   public void visit(ASTSelect node) {
     for (String fName : node.getNamesList()) {
       flatZincModel.add(new Constraint("int_eq", fName, "1"));
-      unvisitedFeatures.remove(node);
     }
   }
 
@@ -56,7 +43,6 @@ public class FCTrafo implements FeatureConfigurationPartialVisitor {
   public void visit(ASTUnselect node) {
     for (String fName : node.getNamesList()) {
       flatZincModel.add(new Constraint("int_eq", fName, "0"));
-      unvisitedFeatures.remove(node);
     }
   }
 }
