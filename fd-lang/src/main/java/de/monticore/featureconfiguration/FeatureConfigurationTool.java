@@ -8,6 +8,7 @@ import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifa
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbolTableCreatorDelegator;
 import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
+import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
@@ -99,9 +100,9 @@ public class FeatureConfigurationTool {
     // setup the symbol table
     createSymbolTable(mp, ast);
 
-    // currently no context conditions exist for feature configurations
+    // currently no context conditions exist for feature configurations.
+    // Also, do not store artifact scope
 
-    // do not store artifact scope
     return ast.getFeatureConfiguration();
   }
 
@@ -110,7 +111,7 @@ public class FeatureConfigurationTool {
     final ASTFCCompilationUnit ast = parse(modelFile);
 
     //reconstruct modelpath from input file
-    Path path = Paths.get(modelFile).getParent();
+    Path path = Paths.get(modelFile).toAbsolutePath().getParent();
     if(ast.isPresentPackage()){
       for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
         path = path.getParent();
@@ -118,11 +119,11 @@ public class FeatureConfigurationTool {
     }
 
     // setup the symbol table
-    createSymbolTable(new ModelPath(path), ast);
+    createSymbolTable(new ModelPath(path, FeatureDiagramTool.SYMBOL_LOCATION), ast);
 
-    // currently no context conditions exist for feature configurations
+    // currently no context conditions exist for feature configurations.
+    // Also, do not store artifact scope
 
-    // do not store artifact scope
     return ast.getFeatureConfiguration();
   }
 

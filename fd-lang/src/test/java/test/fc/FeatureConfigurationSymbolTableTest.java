@@ -45,7 +45,8 @@ public class FeatureConfigurationSymbolTableTest extends AbstractTest {
     assertEquals("CarNavigation", fd.getFeatureDiagram().getName());
 
     assertEquals(7, fd.sizeSelectedFeatures());
-    List<String> selectedFeatureNames = fd.getSelectedFeatureList().stream().map(f -> f.getName())
+    List<String> selectedFeatureNames =
+      fd.getSelectedFeaturesList().stream().map(f -> f.getName())
         .collect(Collectors.toList());
 
     assertTrue(selectedFeatureNames.contains("CarNavigation"));
@@ -67,7 +68,8 @@ public class FeatureConfigurationSymbolTableTest extends AbstractTest {
         .orElse(null);
     assertTrue(null != fd);
     assertEquals(2, fd.sizeSelectedFeatures());
-    List<String> selectedFeatureNames = fd.getSelectedFeatureList().stream().map(f -> f.getName())
+    List<String> selectedFeatureNames =
+      fd.getSelectedFeaturesList().stream().map(f -> f.getName())
         .collect(Collectors.toList());
 
     assertTrue(selectedFeatureNames.contains("AA"));

@@ -10,6 +10,10 @@ import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 
 import java.util.List;
 
+/**
+ * This Printer prints all AST nodes that are introduced by the FeatueDiagram grammar. It realizes
+ * basic formatting through indentation and line breaks.
+ */
 public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
 
   protected IndentPrinter printer;
@@ -29,7 +33,7 @@ public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
       printer.println(";");
       printer.println();
     }
-    for (ASTMCImportStatement imp : node.getMCImportStatementList()) {
+    for (ASTMCImportStatement imp : node.getMCImportStatementsList()) {
       printer.println(imp.printType());
     }
     if (!node.isEmptyMCImportStatements()) {
@@ -69,21 +73,33 @@ public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
   }
 
   @Override public void visit(ASTXorGroup node) {
-    printGroup(node.getGroupPartList(), " ^ ");
+    printGroup(node.getGroupPartsList(), " ^ ");
   }
 
   @Override public void visit(ASTOrGroup node) {
-    printGroup(node.getGroupPartList(), " | ");
+    printGroup(node.getGroupPartsList(), " | ");
   }
 
   @Override public void visit(ASTAndGroup node) {
-    printGroup(node.getGroupPartList(), " & ");
+    printGroup(node.getGroupPartsList(), " & ");
   }
 
   @Override public void endVisit(ASTCardinalizedGroup node) {
     printer.print(" of {");
-    printGroup(node.getGroupPartList(), ", ");
+    printGroup(node.getGroupPartsList(), ", ");
     printer.print("}");
+  }
+
+  protected void printGroup(List<ASTGroupPart> groupPartList, String separator) {
+    String sep = "";
+    for (ASTGroupPart p : groupPartList) {
+      printer.print(sep);
+      printer.print(p.getName());
+      if (p.isOptional()) {
+        printer.print("?");
+      }
+      sep = separator;
+    }
   }
 
   @Override public void visit(ASTRequires node) {
@@ -114,18 +130,6 @@ public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
       node.getRight().accept(getRealThis());
     }
     getRealThis().endVisit(node);
-  }
-
-  protected void printGroup(List<ASTGroupPart> groupPartList, String separator) {
-    String sep = "";
-    for (ASTGroupPart p : groupPartList) {
-      printer.print(sep);
-      printer.print(p.getName());
-      if (p.isOptional()) {
-        printer.print("?");
-      }
-      sep = separator;
-    }
   }
 
   @Override public FeatureDiagramVisitor getRealThis() {

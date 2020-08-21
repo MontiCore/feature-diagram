@@ -5,8 +5,14 @@ package de.monticore.featurediagram._symboltable;
 import de.monticore.symboltable.serialization.JsonPrinter;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * This handwritten symbol table printer extends the generated one, because the serialization
+ * strategy for FeatureSymbols deviates from the generated strategy. All FeatureSymbols are stored
+ * as a list of feature names that are a member of a stored FeatureDiagramSymbol.
+ */
 public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTablePrinterTOP {
 
   public FeatureDiagramSymbolTablePrinter() {
@@ -17,22 +23,8 @@ public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTableP
     super(printer);
   }
 
-  @Override protected void serializeAdditionalFeatureDiagramSymbolAttributes(
-      FeatureDiagramSymbol node) {
-    //    getJsonPrinter().beginArray("features");
-    //    for (FeatureSymbol s : node.getAllFeatures()) {
-    //      getJsonPrinter().value(s.getName());
-    //    }
-    //    getJsonPrinter().endArray();
-    printArray("features", node.getAllFeatures(), FeatureSymbol::getName);
-  }
-
-  public <T> void printArray(String name, Collection<T> values, Function<T, String> printValue) {
-    getJsonPrinter().beginArray(name);
-    for (T t : values) {
-      getJsonPrinter().value(printValue.apply(t));
-    }
-    getJsonPrinter().endArray();
+  @Override protected void serializeAdditionalFeatureDiagramSymbolAttributes(FeatureDiagramSymbol node) {
+    printer.array("features", node.getAllFeatures(), f->("\""+f.getName()+"\""));
   }
 
   @Override public void traverse(IFeatureDiagramScope node) {
@@ -42,6 +34,10 @@ public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTableP
       node.getLocalFeatureDiagramSymbols().stream().forEach(s -> s.accept(getRealThis()));
       printer.endArray();
     }
+  }
+
+  public  void traverse (FeatureDiagramSymbol node)  {
+    //do not traverse spanned scope
   }
 
 }
