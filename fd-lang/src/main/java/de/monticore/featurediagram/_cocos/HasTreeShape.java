@@ -32,13 +32,13 @@ public class HasTreeShape
     node.accept(collector);
     List<String> rootfeatures = collector.getOccurrences(Occurrence.LEFT);
     if (rootfeatures.size() == 0) {
-      Log.error("0xFD003 Featurediagram" + node.getName() +
-          "has no root node.");
+      Log.error("0xFD003 Featurediagram '" + node.getName() +
+          "' has no root node.");
       return "";
     }
     if (rootfeatures.size() > 1) {
-      Log.error("0xFD001 Featurediagram" + node.getName() +
-          "has multiple root nodes.");
+      Log.error("0xFD001 Featurediagram '" + node.getName() +
+          "' has multiple root nodes.");
       return "";
     }
     return rootfeatures.get(0);

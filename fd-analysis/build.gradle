@@ -1,0 +1,42 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+plugins {
+    id "com.github.johnrengelman.shadow" version "4.0.4"
+}
+
+description = "Feature Diagram Analysis Tooling"
+
+dependencies {
+    implementation project(":fd-lang")
+    implementation group:"org.choco-solver", name:"choco-solver", version:"4.0.5"
+    implementation(group:"org.choco-solver", name:"choco-parsers", version:"4.0.4") {
+        exclude group:"xcsp3", module:"xcsp3"
+    }
+    implementation group:"commons-cli", name:"commons-cli", version:"1.2"
+}
+
+shadowJar { // all in one jar
+    manifest {
+        attributes "Main-Class": "mcfdtool.FACT"
+    }
+    minimize() // sort out unused files automatically (does not find everything we don't need)
+    // we do not need artifacts conforming to these regexes either:
+    exclude "freemarker/**"
+    exclude "com/**"
+    exclude "dk/**"
+    exclude "**/*.aut"
+
+    archiveFileName  =  "FACT.jar"
+}
+
+publishing {
+    // configure what artifacts to publish
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "$project.name"
+            from components.java
+            artifact shadowJar
+        }
+    }
+}
+

@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+description = "Feature Diagram Languages Frontend"
+
+dependencies {
+    grammar group:"de.monticore", name:"monticore-grammar", version:mc_version, classifier:"grammars"
+    grammar group:"de.monticore", name:"monticore-runtime", version:mc_version
+}
+
+fileTree(grammarDir).matching { include "**/*.mc4"}.each {
+    def g = it
+    task  "generate${it.getName().substring(0,it.getName().lastIndexOf("."))}" (type: MCTask) {
+        grammar = file g
+        outputDir = file outDir
+        def grammarIncludingPackage = file(grammarDir).toURI().relativize(g.toURI()).toString()
+        def uptoDate = incCheck(grammarIncludingPackage)
+        outputs.upToDateWhen { uptoDate }
+    }
+}
+generateFeatureConfiguration.dependsOn generateFeatureDiagram
+generateFeatureConfigurationPartial.dependsOn generateFeatureConfiguration
+
+
+publishing {
+    // configure what artifacts to publish
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "$project.name"
+        }
+    }
+}
