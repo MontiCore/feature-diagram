@@ -131,6 +131,22 @@ public class FACTTest extends AbstractTest {
   }
 
   @Test
+  public void testAnalysisFindValid2() throws IOException {
+    new FACT(new String[] {
+        "src/test/resources/fdvalid/CarNavigation.fd",
+        "-findValid"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    String[] products = printed.split("featureconfig");
+    FeatureConfigurationPartialParser parsers =
+        new FeatureConfigurationPartialParser();
+    Optional<ASTFCCompilationUnit> conf = parsers
+        .parse_String("featureconfig" + products[products.length - 1]);
+    assertTrue(conf.isPresent());
+  }
+
+  @Test
   public void testIsVoidFalse() {
     new FACT(new String[] {
         "src/test/resources/DeadFeatures.fd",
