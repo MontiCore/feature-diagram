@@ -66,18 +66,18 @@ public class Solvers {
         boolean isSelected =
             result.get(feature) != 0; // the feature is selected, if its valuation is not 0
         if (isSelected) {
-          selectBuilder.addNames(feature);
+          selectBuilder.addName(feature);
         }
         else {
-          unselectBuilder.addNames(feature);
+          unselectBuilder.addName(feature);
         }
       }
     }
     return builder
         .setName(resultName)
         .setFdName(fd.getName())
-        .addFCElements(selectBuilder.build())
-        .addFCElements(unselectBuilder.build())
+        .addFCElement(selectBuilder.build())
+        .addFCElement(unselectBuilder.build())
         .build();
   }
 

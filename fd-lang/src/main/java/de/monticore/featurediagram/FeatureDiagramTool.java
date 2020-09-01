@@ -5,10 +5,10 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.FeatureDiagramGlobalScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
@@ -70,7 +70,7 @@ public class FeatureDiagramTool {
    * @param mp
    * @return
    */
-  public static FeatureDiagramArtifactScope createSymbolTable(String model, ModelPath mp) {
+  public static IFeatureDiagramArtifactScope createSymbolTable(String model, ModelPath mp) {
     return createSymbolTable(parse(model), mp);
   }
 
@@ -81,7 +81,7 @@ public class FeatureDiagramTool {
    * @param mp
    * @return
    */
-  public static FeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast,
+  public static IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast,
       ModelPath mp) {
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
         .featureDiagramSymbolTableCreatorDelegatorBuilder()
@@ -96,7 +96,7 @@ public class FeatureDiagramTool {
    * @param mp
    * @return
    */
-  public static FeatureDiagramGlobalScope createGlobalScope(ModelPath mp) {
+  public static IFeatureDiagramGlobalScope createGlobalScope(ModelPath mp) {
     return FeatureDiagramMill
         .featureDiagramGlobalScopeBuilder()
         .setModelPath(mp)
@@ -140,7 +140,7 @@ public class FeatureDiagramTool {
     final ASTFDCompilationUnit ast = parse(modelFile);
 
     // setup the symbol table
-    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, mp);
+    IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, mp);
 
     // execute default context conditions
     checkCoCos(ast);
@@ -184,7 +184,7 @@ public class FeatureDiagramTool {
     }
 
     // setup the symbol table
-    FeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, new ModelPath(path, SYMBOL_LOCATION));
+    IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, new ModelPath(path, SYMBOL_LOCATION));
 
     // execute default context conditions
     FeatureDiagramCoCos.checkAll(ast);

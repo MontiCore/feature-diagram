@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class FeatureConfigurationSymbolTableCreator
     extends FeatureConfigurationSymbolTableCreatorTOP {
@@ -32,10 +31,10 @@ public class FeatureConfigurationSymbolTableCreator
     super(scopeStack);
   }
 
-  @Override public FeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
+  @Override public IFeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
 
-    FeatureConfigurationArtifactScope artifactScope = de.monticore.featureconfiguration.FeatureConfigurationMill
+    IFeatureConfigurationArtifactScope artifactScope = de.monticore.featureconfiguration.FeatureConfigurationMill
         .featureConfigurationArtifactScopeBuilder()
         .setImportsList(new ArrayList<>())
         .setPackageName(packageName)
@@ -48,7 +47,7 @@ public class FeatureConfigurationSymbolTableCreator
   }
 
   public void handleImportStatements(ASTFCCompilationUnit rootNode) {
-    List<ASTMCImportStatement> imports = rootNode.getMCImportStatementsList();
+    List<ASTMCImportStatement> imports = rootNode.getMCImportStatementList();
     if (1 < imports.size()) {
       Log.error("0xFC010 The feature configuration '" + rootNode.getFeatureConfiguration().getName()
           + "' must not import more than one other model!");
@@ -76,7 +75,7 @@ public class FeatureConfigurationSymbolTableCreator
     super.visit(node);
 
     //to identify symbols that could not be found
-    List<String> featureNameList = new ArrayList<>(node.getNamesList());
+    List<String> featureNameList = new ArrayList<>(node.getNameList());
     if (null != fd) {
       for (FeatureSymbol symbol : fd.getAllFeatures()) {
         if (featureNameList.contains(symbol.getName())) {

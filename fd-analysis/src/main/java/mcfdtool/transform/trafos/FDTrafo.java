@@ -60,7 +60,7 @@ public class FDTrafo implements FeatureDiagramVisitor {
 
   public void visit(ASTAndGroup andGroup) {
     for (int i = 0; i < andGroup.sizeGroupParts(); i++) {
-      ASTGroupPart childFeature = andGroup.getGroupParts(i);
+      ASTGroupPart childFeature = andGroup.getGroupPart(i);
       if (childFeature.isOptional()) {
         addFeature(currentGroupParent, childFeature.getName(), "0", "1");
       }

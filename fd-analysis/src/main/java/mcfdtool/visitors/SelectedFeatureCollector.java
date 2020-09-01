@@ -32,7 +32,7 @@ public class SelectedFeatureCollector implements FeatureConfigurationVisitor,
    */
   @Override
   public void visit(ASTFeatures ast) {
-    selectedFeatures.addAll(ast.getNamesList());
+    selectedFeatures.addAll(ast.getNameList());
   }
 
   /**
@@ -41,7 +41,7 @@ public class SelectedFeatureCollector implements FeatureConfigurationVisitor,
    */
   @Override
   public void visit(ASTSelect ast) {
-    selectedFeatures.addAll(ast.getNamesList());
+    selectedFeatures.addAll(ast.getNameList());
   }
 
   public List<String> getSelectedFeatures() {

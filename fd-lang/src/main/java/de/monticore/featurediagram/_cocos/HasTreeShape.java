@@ -96,7 +96,7 @@ public class HasTreeShape
   protected Map<String, String> getAllParents(ASTFeatureDiagram node) {
     Map<String, String> parents = new HashMap<>();
     List<ASTFeatureTreeRule> featureTreeRules =
-      node.getFDElementsList().stream()
+      node.getFDElementList().stream()
         .filter(e -> e instanceof ASTFeatureTreeRule)
         .map(e -> (ASTFeatureTreeRule) e)
         .collect(Collectors.toList());
