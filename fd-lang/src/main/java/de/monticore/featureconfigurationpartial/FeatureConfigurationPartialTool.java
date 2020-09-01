@@ -6,9 +6,9 @@ import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDel
 import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCoChecker;
 import de.monticore.featureconfigurationpartial._cocos.UseSelectBlock;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
-import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialArtifactScope;
-import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialGlobalScope;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialSymbolTableCreatorDelegator;
+import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
+import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
@@ -84,7 +84,7 @@ public class FeatureConfigurationPartialTool {
    * @param mp
    * @return
    */
-  public static FeatureConfigurationPartialArtifactScope createSymbolTable(String model, ModelPath mp) {
+  public static IFeatureConfigurationPartialArtifactScope createSymbolTable(String model, ModelPath mp) {
     return createSymbolTable(mp, parse(model));
   }
 
@@ -95,7 +95,7 @@ public class FeatureConfigurationPartialTool {
    * @param ast
    * @return
    */
-  public static FeatureConfigurationPartialArtifactScope createSymbolTable(ModelPath mp,
+  public static IFeatureConfigurationPartialArtifactScope createSymbolTable(ModelPath mp,
       ASTFCCompilationUnit ast) {
     FeatureConfigurationPartialSymbolTableCreatorDelegator symbolTable = FeatureConfigurationPartialMill
         .featureConfigurationPartialSymbolTableCreatorDelegatorBuilder()
@@ -104,7 +104,7 @@ public class FeatureConfigurationPartialTool {
     return symbolTable.createFromAST(ast);
   }
 
-  public static FeatureConfigurationPartialGlobalScope createGlobalScope(ModelPath mp) {
+  public static IFeatureConfigurationPartialGlobalScope createGlobalScope(ModelPath mp) {
     return FeatureConfigurationPartialMill
         .featureConfigurationPartialGlobalScopeBuilder()
         .setModelPath(mp)

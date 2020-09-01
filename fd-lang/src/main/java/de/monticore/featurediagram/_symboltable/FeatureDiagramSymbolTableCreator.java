@@ -22,10 +22,10 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
   }
 
   @Override
-  public FeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
+  public IFeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
 
-    FeatureDiagramArtifactScope artifactScope = FeatureDiagramMill
+    IFeatureDiagramArtifactScope artifactScope = FeatureDiagramMill
         .featureDiagramArtifactScopeBuilder()
         .setPackageName(packageName)
         .build();
@@ -66,7 +66,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
    * @param rootNode
    */
   protected void handleImportStatements(ASTFDCompilationUnit rootNode) {
-    for (ASTMCImportStatement i : rootNode.getMCImportStatementsList()) {
+    for (ASTMCImportStatement i : rootNode.getMCImportStatementList()) {
       if (i.isStar()) {
         Log.error("0xFD132 Feature diagrams may not use stars '*' in import statements!");
         continue;
@@ -83,7 +83,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
             + rootNode.getFeatureDiagram().getName() + "'!");
         continue;
       }
-      rootNode.getFeatureDiagram().addAllFDElements(fd.getAstNode().getFDElementsList());
+      rootNode.getFeatureDiagram().addAllFDElements(fd.getAstNode().getFDElementList());
     }
   }
 

@@ -1,19 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool.analyses;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCElement;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import mcfdtool.solver.Solvers;
 import mcfdtool.transform.flatzinc.FlatZincModel;
-import mcfdtool.transform.trafos.FCTrafo;
 import mcfdtool.transform.trafos.FlatZincTrafo;
 import mcfdtool.visitors.SelectedFeatureCollector;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -49,7 +46,7 @@ public class IsValid {
     List<ASTFCElement> newElements = new ArrayList<>();
     newElements.add(FeatureConfigurationPartialMill.selectBuilder().addAllNames(selectedFeatures).build());
     newElements.add(FeatureConfigurationPartialMill.unselectBuilder().addAllNames(excludedFeatures).build());
-    fc.setFCElementsList(newElements);
+    fc.setFCElementList(newElements);
 
   }
 

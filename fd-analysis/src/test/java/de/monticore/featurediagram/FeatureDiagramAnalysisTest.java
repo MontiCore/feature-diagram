@@ -3,15 +3,13 @@ package de.monticore.featurediagram;
 
 import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
-import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.io.paths.ModelPath;
-import de.se_rwth.commons.logging.Log;
 import mcfdtool.analyses.*;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -25,7 +23,7 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
   public static final String TEST_RES = "src/test/resources/";
 
   protected ASTFeatureDiagram getFD(String modelFile) {
-    FeatureDiagramArtifactScope as = FeatureDiagramTool
+    IFeatureDiagramArtifactScope as = FeatureDiagramTool
         .createSymbolTable(TEST_RES + modelFile, new ModelPath());
     String modelName = modelFile.replace(".fd", "");
     if (modelName.contains("/")) {
@@ -41,7 +39,7 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
   }
 
   protected ASTFeatureConfiguration getFC(String modelFile) {
-    FeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool
+    IFeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool
         .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)));
 
     String modelName = modelFile.replace(".fc", "");
