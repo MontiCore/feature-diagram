@@ -3,8 +3,8 @@
 package de.monticore.featureconfiguration._symboltable;
 
 import de.monticore.featurediagram.FeatureDiagramMill;
-import de.monticore.featurediagram._symboltable.FeatureDiagramGlobalScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramSymbolResolvingDelegate;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 
 public class FeatureDiagramResolvingDelegate implements IFeatureDiagramSymbolResolvingDelegate {
 
-  FeatureDiagramGlobalScope globalScope;
+  IFeatureDiagramGlobalScope globalScope;
 
   public FeatureDiagramResolvingDelegate(ModelPath mp) {
     globalScope = FeatureDiagramMill

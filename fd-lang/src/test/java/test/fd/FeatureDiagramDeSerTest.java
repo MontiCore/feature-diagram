@@ -2,10 +2,7 @@
 package test.fd;
 
 import de.monticore.featurediagram.FeatureDiagramTool;
-import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
+import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import org.junit.Test;
 import test.AbstractTest;
@@ -22,7 +19,6 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
     return FeatureDiagramTool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath());
   }
 
-  //  @Ignore //solange DeSer WIP ist
   @Test
   public void testSerializeDeserialize() {
     FeatureDiagramScopeDeSer deSer = new FeatureDiagramScopeDeSer();
@@ -37,7 +33,8 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
 
     assertEquals(scope.getName(), deserialized.getName());
     assertEquals(scope.getPackageName(), deserialized.getPackageName());
-    assertEquals(scope.getImportList().size(), deserialized.getImportList().size());
+    assertEquals(scope.getImportsList().size(),
+      deserialized.getImportsList().size());
     assertEquals(scope.getTopLevelSymbol().isPresent(),
         deserialized.getTopLevelSymbol().isPresent());
     assertEquals(scope.getTopLevelSymbol().get().getName(),

@@ -11,16 +11,16 @@
 [CTCFeatureNamesExist]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/CTCFeatureNameExists.java
 [NonUniqueNameInGroup]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/NonUniqueNameInGroup.java
 [ValidConstraintExpression]: ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/ValidConstraintExpression.java
-[AllProducts]:               ../../../../../../../../fd-analysis/src/main/java/tool/analyses/AllProducts.java
-[CompleteToValid]:           ../../../../../../../../fd-analysis/src/main/java/tool/analyses/Filter.java
-[DeadFeature]:               ../../../../../../../../fd-analysis/src/main/java/tool/analyses/DeadFeature.java
-[FalseOptional]:             ../../../../../../../../fd-analysis/src/main/java/tool/analyses/FalseOptional.java
-[IsValid]:                   ../../../../../../../../fd-analysis/src/main/java/tool/analyses/IsValid.java
-[IsVoid]:                    ../../../../../../../../fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java
-[NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java
-[generator]:                 ../../../../../../../../fd-analysis/src/main/java/tool/transform
-[tool]:                      ../../../../../../../../fd-analysis/src/main/java/tool/FeatureModelAnalysisTool.java
-[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/tool/FACT.java
+[AllProducts]:               ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/AllProducts.java
+[CompleteToValid]:           ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/Filter.java
+[DeadFeature]:               ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/DeadFeature.java
+[FalseOptional]:             ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/FalseOptional.java
+[IsValid]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsValid.java
+[IsVoid]:                    ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsVoidFeatureModel.java
+[NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/NumberOfProducts.java
+[generator]:                 ../../../../../../../../fd-analysis/src/main/java/mcfdtool/transform
+[tool]:                      ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FeatureModelAnalysisTool.java
+[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
 [FDtool]:                    ../../../../../../../../fd-analysis/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
 
 
@@ -35,73 +35,39 @@
 [FeatureConfiguration MLC]: FeatureConfiguration.md
 
 > NOTE: <br>
-This documentation is intended for  **language engineers** who use the feature diagram language.
-The documentation for **modelers** is located **[here][Readme]**. 
+This document is intended for  **language engineers** who extend, adapt or embed the FD language.
+**modelers** please look **[here][Readme]**. 
 
-# MontiCore Feature Diagram Language
+# MontiCore Feature Diagram Language (FDL)
 
 [[_TOC_]]
 
-The following documents a feature diagram language engineered with MontiCore. 
-The purpose of the language is to represent feature models used in product line engineering. 
-The language is extensible to tailor it for various different applications.
+The following documents the MontiCore feature diagram language FDL. 
+Feature diagrams (FDs) consist of features and their relationships
+used in product line engineering. 
 
-Many notational and semantic variations of the original feature diagrams
-as presented in [[KCH+90]][KTC90]
-have been developed. This language uses feature models with the following characteristics:
-* Each feature model must have a root feature
-* The features of a feature model are in a tree structure described by feature groups
+The FDL is extensible and adaptible to tailor it for various different applications.
+The FDL does not presume what a feature actually is and how it is described.
+
+FDL provides many notational and semantic extensions of the original FDs
+[[KCH+90]][KTC90]. Models of the FDL have the following characteristics:
+* Each FD has a root feature
+* Features are organized in a tree structure described by feature groups
 * The supported kinds of groups are: 
     * usual "is child of" (ANDGroup)
     * alternative features (XORGroup)
     * selection of features (ORGroup)
     * lower and upper bound for number of selected features (CardinalityGroup)
-* A feature may not be member of more than one feature group
-* Obligation or optionality of a feature in any group except ANDGroup is discarded. 
-All features that are members of such groups are regarded as optional features
-* A feature model may import other feature models. Through this, the root feature of an
-  imported feature model can be used in the current model.   The tree induced by 
-  the imported feature, as well as all cross-tree constraints, are imported as well.
-* Cross-tree constraints are expressions over any features with logic operators, 
-  such as **and** `&&`, **or** `||`. Cross-tree constraints can further use the operators
+* A feature may not be member of more than one feature group to preserve a tree
+* Obligation or optionality of a feature is only useful and allowed in ANDGroups. 
+* An FD may import other FDs and use the root feature of the imported FD.
+  Technically this leads to loading of the full imported FD and addition as a sub-diagramm.
+* Cross-tree constraints are expressions over features using logic operators, 
+  such as **and** `&&`, **or** `||`, and FD-specific operators 
   `requires` and `excludes`.
 
-## Syntax Teaser
+## Syntax Example
 
-Each feature model has a name and a body that is surrounded by curly brackets.
-The body contains rules that define the feature tree. Each rule describes a 
-feature group with a parent feature (left-hand side) followed by an arrow 
-(`->`) and children features (right-hand side). 
-The root of the feature tree is detected automatically. 
-Further, a feature model may define cross-tree constraints
-and use Java-like expressions to formulate these.
-The example below depicts the feature model `CarNavigation` with the root
-feature also named `CarNavigation`. This feature has three mandatory
-subfeatures `Display`, `GPS`, and `Memory`. Further, it
-has the optional subfeature `PreinstalledMaps`, indicated by the question 
-mark in the and group. Besides these four subfeatures, `CarNavigation` has
-two further subfeatures `VoiceControl` and `TouchControl`that are in an 
-xor group, which means that each configuration must contain exactly one of 
-these two features.
-Groups can have arbitrary members. For instance, `Memory` has three
-subfeatures `Small`, `Medium`, and `Large` that are in a common xor group.
-The `Display` of the navigation must have either a `SmallScreen` behin the 
-steering wheel or a `LargeScreen` (e.g., in the center of the dashobard),
-or both. This is realized as an or group in the feature model. 
-Further, the navigation system can have preinstalled maps. If maps are preinstalled,
-at least one and at most three region maps can be selected. 
-The available regions are `Europe`, `NorthAmerica`, `SouthAmerica`, `Asia`, and 
-`Africa`.
-
-The feature model further contains three cross-tree constraints. Selecting 
-`TouchControl` in a configuration requires also to select `LargeScreen` for
-this configuration. On the other hand, selecting `SmallScreen` in a configuration
-prohibits selecting `TouchControl` in the same configuration as well. 
-Apart from these constraints between two features, feature models may contain
-more complex constraints that involve more than two features. In the example 
-feature model below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`, 
-and `Asia` requires to select either a `Large` or a `Medium` memory.
- 
 ```
 /* (c) https://github.com/MontiCore/monticore */
 featurediagram CarNavigation {
@@ -125,24 +91,31 @@ featurediagram CarNavigation {
 }
 ```
 
+For a detailed explanation of the meaning, please have a look at 
+**[the readme][Readme]**.
 
 ## Syntax
 
-The syntax of the feature diagram language is specified through the feature model 
+The syntax of the FDL is specified through the FD 
 [grammar](#grammar), some handwritten extensions of the 
 [abstract syntax](#handwritten-ast-&-symbol-table-classes), and the 
 [context conditions](#context-conditions).
 
 ### Grammar
 The **[FeatureDiagram grammar][Grammar]** describes the syntax
-of feature models. The grammar itself is a good documentation of the concrete and abstract syntax of 
-feature models. Design decisions are documented inline. 
+of FDL and is itself a documentation of the
+concrete and abstract syntax.
+FDL is based on:
+* **[de.monticore.Cardinality][Cardinality MLC]**
+* **[de.monticore.types.MCBasicTypes][MCBasicTypes MLC]**
+* **[de.monticore.espressions.CommonExpressions][CommonExpressions MLC]**
 
 The grammar contains several extension points that can be used to tailor the language to 
 different applications. For instance, it is possible to add feature attributes.
 The extension points are:
+
 * The interface nonterminal **FDElement** can be implemented to add further 
-elements to the feature diagram's body.
+elements to the FD's body.
 * The interface nonterminal **FeatureGroup** can be implemented to add further 
 kinds of feature groups. As indicated by the right-hand side of the 
 interface nonterminal, each implementation must contain a (non-empty)
@@ -151,58 +124,71 @@ mark indicating optionality).
 * The interface nonterminal **Expression** inherited from the language component
 **CommonExpressions** can be implemented to add further syntax for cross-tree 
 constraints. 
-* The nonterminal **Feature** is never instantiated by the parser, but produces a
-**FeatureSymbol** that is an extension point in the symbol table.
+* The nonterminal **Feature** is not used for pasring, but defines a
+**FeatureSymbol** that is used in the symbol table.
 The name of a feature symbol is used throughout different places in the grammar. 
 By adding an adapter that adapts a foreign symbol kind to a feature symbol, language
 users can indicate that the feature name refers to a name of a certain kind defined 
 in another model.
 
 ### Handwritten AST & Symbol Table Classes
-The AST data structure has been customized with handwritten extensions to the 
-generated classes as follows:
-* The `ASTFeatureDiagram` contains a method `String getRootFeature()` for 
-obtaining the root feature of the feature models as String and a method 
-`List<String> getFeatures` to obtain all features of a feature diagram as list of Strings.
-* The `ASTFeatureGroup` defines a method `List<FeatureSymbol> getSubFeatureSymbols()` 
-for retrieving all FeatureSymbols of features that are children of this group. 
 
-The symbol table data structure has been extended with handwritten classes as 
-described in the following:
-* The `FeatureDiagramSymbol` has been extended with the TOP mechanism. For convenience, we added a 
-method `List<FeatureSymbol> getAllFeatures()` for retrieving all features contained in the feature diagram.
+The generated data structure has been extended to the 
+generated classes using the TOP mechanism as follows:
+
+* `ASTFeatureDiagram` contains a method `String getRootFeature()` for 
+obtaining the root feature of the FD as String and a method 
+`List<String> getFeatures` to obtain all features of an FD as list of Strings.
+* `ASTFeatureGroup` defines a method `List<FeatureSymbol> getSubFeatureSymbols()` 
+for retrieving all FeatureSymbols of features that are (direct) children of this group. 
+* `FeatureDiagramSymbol` has a convenience
+method `List<FeatureSymbol> getAllFeatures()` for retrieving all features
+contained in the FD.
 
 ### Symboltable
 - De-/Serialization functionality for the symbol table ([`serialization`][serialization])
-- [`FeatureDiagramSymbolTableCreator`][fdstc] handles the creation and linking of the symbols. The symbol table creator
-  creates:
-  - A FeatureDiagramSymbol for each feature model
-  - A FeatureSymbol on the first time that a feature name occurs in a feature model 
-- All occurences of a feature name in the model refer to the the same FeatureSymbol.
-- A feature model `FM` can import other feature diagrams. Importing a feature diagram `ImpFM` has the following characteristics:
-    - There is a flat namespace of feature names, i.e., a feature name cannot be qualified with a feature diagram name. 
-    - All feature diagram elements of `ImpFM` behave as if these were defined in `FM`. Especially, all names of imported features 
-      can be used in feature diagram elements of `FM`.
-    - All locally defined and imported feature tree rules of a feature model must still form a feature tree. Especially, a feature model
+- [`FeatureDiagramSymbolTableCreator`][fdstc] handles the creation and linking of the
+  symbols after the FD is parsed.
+  It creates:
+  - A `FeatureDiagramSymbol` 
+  - A `FeatureSymbol` for each feature.
+  Note that features are defined on the first time that a feature name
+  occurs in an FD. There is no other place to introduce a feature
+  (as a consequence: definition and use of features are not strictly separated in the language.
+  We decided for this option, because features do not really have a "body").
+- If FD `Mine` imports another FD `Foreign` it holds:
+    - Flat namespace of feature names, i.e., a feature name is not qualified. 
+      (If this needs adaptation: This is designed in the symbol resolution, but also
+       in the use of feature names)
+    - All FD diagram elements of `Foreign` are integrated into `Mine`.
+      Especially, all imported features can be used in `Mine`.
+    - The result must still form a feature tree. Especially, an FD
       cannot be incomplete and provide, e.g., a forest of feature trees.
-    - The symbol table of a feature model does not distinguish feature symbols of locally defined and imported feature models. This enables
-      modularization of feature models that has no effect on the symbol table infrastructure. 
+      (This is however a context condition only that could be adapted).
+    - The symbol table of an FD does not distinguish symbols
+      of locally defined and imported features. (This is unusual, but more efficient as
+      an imported FD needs to be loaded completely anyway, because features don't have
+      a body that is worth encapsulating)
+    - The stored symboltable does also store imported symbols, so transitve import is
+      not needed, but diamond import (i.e. a feature is imported via two different paths)
+      is currently also not possible. This, however, is negligible as under the assumption of a 
+      flat namespace of features, a diamond import would contradict the fact that feature names 
+      within an FD are unique.
 
-### Symbol kinds used by Feature Diagrams (importable):
-- A feature diagram (as defined here) does not import any symbols from other 
-  languages; it defines all features locally.
-- It also doesn't import classes, variables or other symbols.
+### Symbol kinds used by FD (importable):
+- An FD (as defined here) does not import any symbols from other 
+  languages; it defines all symbols in its own language.
 
-
-### Symbol kinds defined by Feature Diagrams (exported):
-- FD defines its own type of FeatureDiagramSymbols and FeatureSymbols.
-- A FeatureSymbol is defined as:
+### Symbol kinds defined by FD (exported):
+- An FD defines its own type of FeatureSymbols.
+- A `FeatureSymbol` is defined as (and has no additional body):
   ```
   class FeatureSymbol {
       String name;
   }
   ```
-  - A FeatureDiagramSymbol is defined as:
+  - For each FD there is also a DiagramSymbol defined as:
+  TODO: noch anpassen, dass es tatsächlich nur ein DiagramSymbol sein wird:
   ```
   class FeatureDiagramSymbol {
       String name;
@@ -210,102 +196,78 @@ method `List<FeatureSymbol> getAllFeatures()` for retrieving all features contai
   }
   ```
 
-### Symbols exported by Feature Diagrams:
-- A feature diagram exports the feature diagram symbol and its feature symbols
-  for external reference.
-- The tree structure, groups, and cross-tree constraints are **not** represented in the symbol table
-- The artifact scope of a feature diagram "F.fd" is stored in "F.fdsym". Loading a stored symbol table 
-  of a feature diagram can be used, e.g., for checking that a feature configuration refers to an existing
-  feature model and that it uses only features that exist in this feature model.
-
+### Symbols exported by FD in the stored symboltable:
+- An FD exports the diagram symbol and all its feature symbols.
+- Tree structure, groups, and cross-tree constraints are **not** represented in the
+  symbol table, because otherwise symbol table and FD itself would contain the same
+  information anyway. If you need those details, the diagram itself should be loaded.
+- The artifact scope of an FD "XY.fd" is stored in "XY.fdsym".
+  Structure:
+  ```
+  {
+    "name": "XY",
+    "symbols": [
+      {
+        "kind": "de.monticore.featurediagram._symboltable.FeatureDiagramSymbol",
+        "name": "XY",
+        "features": [ "A", "B", "C" ]
+      }
+    ]
+  }
+  ```
 
 ### Context Conditions
 
+CoCo's are implemented the following classes:
+
 | CoCo defined in class   | Error Code | Explanation |
 | ---      |  ------  |---------|
-| [HasTreeShape][HasTreeShape]                 | 0xFD001 | Feature diagrams must not contain more than one root feature. |
-| (see above)                                  | 0xFD002 | Feature diagrams must not contain more than one root feature. |
-| (see above)                                  | 0xFD003 | Feature diagrams must contain a root feature. |
-| (see above)                                  | 0xFD007 | Feature diagram rules must not introduce self loops. | 
+| [HasTreeShape][HasTreeShape]                 | 0xFD001 | FDs must not contain more than one root feature. |
+| (see above)                                  | 0xFD002 | FDs must not contain more than one root feature. |
+| (see above)                                  | 0xFD003 | FDs must contain a root feature. |
+| (see above)                                  | 0xFD007 | FD rules must not introduce self loops. | 
 | (see above)                                  | 0xFD008 | Each feature except the root feature must have a parent feature. | 
 | (see above)                                  | 0xFD010 | The parent feature does not exist.  |
-| [CTCFeatureNamesExist][CTCFeatureNamesExist] | 0xFD006 | A cross-tree constraint must operate on features that are available in the current feature model. |
+| [CTCFeatureNamesExist][CTCFeatureNamesExist] | 0xFD006 | A cross-tree constraint must operate on features that are available in the current FD. |
 | [NonUniqueNameInGroup][NonUniqueNameInGroup] | 0xFD009 | A Feature group must not contain a feature more than once. |
 | [ValidConstraintExpression][ValidConstraintExpression] | 0xFD011 | A cross-tree constraint is only allowed to use some kinds of expressions inherited from the common expression language component. |
 
-## Generator
+## [Generator][generator]
 
-* For minimal use: This language component provides a generator that translates feature models to 
-[FlatZinc][flatzinc] models. FlatZinc, as part of MiniZinc, is a modeling language
-enabling to model constraint satisfaction (and optimization) problems. Several
-constraint solvers support FlatZinc as input format. The generator is located [here][generator].
+* For minimal use: This language component provides a generator that translates
+an FD to a [FlatZinc][flatzinc] model, which 
+handles constraint satisfaction (and optimization) problems. Several
+constraint solvers support FlatZinc as input format, which allows to find valid configurations.
 
 ### Supported Feature Analyses
-The following table presents an overview of supported feature diagram analysis classes
-regarding their input in form of arguments and their output in form of the analysis result.
-In this table, we use `FM` as abbreviated form of `ASTFeatureDiagram`, 
-`FC` as abbreviated form of `ASTFeatureConfiguration`, and `Feature` as abbreviated 
-form of `ASTFeature`.
+
+The following table presents an overview of supported analyses and what they do.
+In this table, we use `FM` as abbreviation for type `ASTFeatureDiagram`, 
+`FC` for `ASTFeatureConfiguration`, and `Feature` for `ASTFeature`.
 
 | Analysis Class | Input | Result | Explanation |
-| ---    | ---      |  ------  |---------|
-| [AllProducts][AllProducts]           | FM m | Set\<FC\> | Returns all valid FCs in m. **Warning: The result set can be very large and the analysis can be very inefficient for larger feature models.** |
-| [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional\<FC\> | Can c be completed to a valid FC of m? If yes, return one example. |
-| [DeadFeatures][DeadFeature]           | FM m | Set\<Feature\> | Set of features that are contained in m, but no valid FC of m uses them. |
-| [FalseOptional][FalseOptional]       | FM m | Set\<Feature\> | Set of features that are optional in m, but are contained in all valid FCs of m. |
+| ---    | ---      |  ------  |--------- |
 | [IsValid][IsValid]                   | FM m, FC c | Boolean | Is c a valid FC in m? |
+| [CompleteToValid][CompleteToValid]   | FM m, FC c | Optional\<FC\> | Can c be completed to a valid FC of m? If yes, return one example. |
+| ---    | ---      |  ------  |--------- |
+| [DeadFeatures][DeadFeature]           | FM m | Set\<Feature\> | Set of features of m not used by a valid FC. |
+| [FalseOptional][FalseOptional]       | FM m | Set\<Feature\> | Features that are marked optional, but are contained in all valid FCs. |
 | [IsVoid][IsVoid]                     | FM m | Boolean | Is there a valid FC in m? |
+| ---    | ---      |  ------  |--------- |
 | [NumberOfProducts][NumberOfProducts] | FM m | int | Returns the number of valid FCs in m. |
+| [AllProducts][AllProducts]           | FM m | Set\<FC\> | Returns all valid FCs in m. Warning: The result set can be very large. |
 
-## Tools
+## Further Information
 
-The feature model language component provides three tools: The [FeatureModelAnalysisTool][tool], the [FeatureModelAnalysisCLITool][clitool], and the [FeatureDiagramTool][FDtool].
+* [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
+* [MontiCore documentation](http://www.monticore.de/)
 
-### [The FeatureModelAnalysisCLITool][clitool] 
-The [FeatureModelAnalysisCLITool][clitool] coordinates the execution of one or more several analyses against a feature model
-and, optionally, additional information (depends on the analysis kinds) in form of a CLI tool. It can be used as follows:
-```java -jar FACT.jar <Car.fd> [-<analysis>]+```, where
-* `<Car.fd>` is the (optionally, qualified) fileName of a feature model "Car"
-* `<analysis>` is the name of an analysis followed by arguments for the analysis that depend on the type of analysis.
+* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](BestPractices.md)
+* [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 
-Currently, the FeatureModelAnalysisCLITool supports the following analyses:
-* `isValid <Basic.fc>`, the check whether a passed configuration "Basic" is valid w.r.t the feature model.
-
-For example, `java -jar FACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the feature model "Car". 
-The result, in this case `true` or `false`, is printed to the console.
-
-
-### [The FeatureModelAnalysisTool][tool] 
-The [FeatureModelAnalysisTool][tool] coordinates the execution of one or more analyses against a feature model
-and, optionally, additional information (depends on the analysis kinds) such as a feature configuration, in form of a Java API.
-It contains the following constructors and methods:
-* `FeatureModelAnalysisTool(ASTFeatureDiagram featureModel, ISolver solver)` instantiates the tool with the AST of the passed 
-  featureModel and uses the passed solver for conducting the analses.
-* `FeatureModelAnalysisTool(ASTFeatureDiagram featureModel)` instantiates the tool with the AST of the passed featureModel. By default, a Solver based on [Choco][choco] is employed.
-* `void addAnalysis(Analysis analysis)` adds an analysis to the set of analyses conducted in this tool. Arguments for the analysis have to be added to each analysis object individually. 
-* `void performAnalyses()` performs the analyses. The analysis results are then available in each Analysis object
-
-### [The FeatureDiagramTool][FDtool] 
-The [FeatureDiagramTool][FDtool] offers a Java API for processing FeatureDiagram models. 
-It contains the following (static) methods:
-* `ASTFDCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
-* `FeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at the passed path and 
-  instantiates the symbol table using passed modelpath entries for finding imported feature diagram models
-* `FeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp)` instantiates the symbol table 
-  using the passed AST as basis and the passed modelpath entries for finding imported feature diagram models
-* `void checkCoCos(ASTFDCompilationUnit ast)` checks all context conditions of the feature diagram language against the passed AST
-* `File storeSymbols(ASTFDCompilationUnit ast, String fileName)` stores the symbol table for the passed ast in a file with the path fileName. 
-  If the file exists, it is overridden. Otherwise, a new file is created.
-* `ASTFeatureDiagram run(String modelFile, ModelPath mp)` parses the passed modelFile, creates the symbol table, 
-  checks the context conditions, and then stores the symbol table.
-* `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, checks the context conditions, and stores symbol table - all
-  without an explicit modelpath. Care: this can only take into account imported feature diagrams if these are located next to the passed feature diagram modelFile.
-
-## Related Language Components
-* This language component uses the language component **[de.monticore.Cardinality][Cardinality MLC]**
-* This language component uses the language component **[de.monticore.types.MCBasicTypes][MCBasicTypes MLC]**
-* This language component uses the language component **[de.monticore.espressions.CommonExpressions][CommonExpressions MLC]**
-* This language component can be used in combination with the language component **[FeatureConfiguration][FeatureConfiguration MLC]**
-* There are language components for partial configurations of feature models and for feature models with attributes
+* [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 
   
+

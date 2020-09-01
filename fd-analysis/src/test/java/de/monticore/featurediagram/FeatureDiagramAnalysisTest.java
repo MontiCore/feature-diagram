@@ -3,20 +3,18 @@ package de.monticore.featurediagram;
 
 import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
-import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.io.paths.ModelPath;
+import mcfdtool.analyses.*;
 import org.junit.Test;
-import tool.FeatureModelAnalysisTool;
-import tool.analyses.*;
 
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -25,11 +23,11 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
   public static final String TEST_RES = "src/test/resources/";
 
   protected ASTFeatureDiagram getFD(String modelFile) {
-    FeatureDiagramArtifactScope as = FeatureDiagramTool
+    IFeatureDiagramArtifactScope as = FeatureDiagramTool
         .createSymbolTable(TEST_RES + modelFile, new ModelPath());
     String modelName = modelFile.replace(".fd", "");
     if (modelName.contains("/")) {
-      modelName = modelName.substring(modelFile.lastIndexOf("/")+1);
+      modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
     }
 
     Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = as
@@ -41,12 +39,12 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
   }
 
   protected ASTFeatureConfiguration getFC(String modelFile) {
-    FeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool
+    IFeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool
         .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)));
 
     String modelName = modelFile.replace(".fc", "");
     if (modelName.contains("/")) {
-      modelName = modelName.substring(modelFile.lastIndexOf("/")+1);
+      modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
     }
 
     Optional<FeatureConfigurationSymbol> featureConfOpt = symbolTable
@@ -56,116 +54,109 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
     return featureConfOpt.get().getAstNode();
   }
 
-  protected <T> T performAnalysis(String fdModelFile, Analysis<T> analysis) {
-    ASTFeatureDiagram featureDiagram = getFD(fdModelFile);
-    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagram);
-    modelAnalysisTool.addAnalysis(analysis);
-    modelAnalysisTool.performAnalyses();
-    assertTrue(analysis.getResult().isPresent());
-    return analysis.getResult().get();
-  }
-
   @Test
   public void testPhoneExample() {
-    Integer result = performAnalysis("fdvalid/Phone.fd", new NumberOfProducts());
+    Integer result = new NumberOfProducts().perform(getFD("fdvalid/Phone.fd"));
     assertEquals(new Integer(84), result);
   }
 
   @Test
   public void testPhoneComplexExample() {
-    Integer result = performAnalysis("fdvalid/PhoneComplex.fd", new NumberOfProducts());
+    Integer result = new NumberOfProducts().perform(getFD("fdvalid/PhoneComplex.fd"));
     assertEquals(new Integer(48), result);
   }
 
   @Test
   public void testDeadFeatures() {
-    List<String> result = performAnalysis("DeadFeatures.fd", new DeadFeature());
+    List<String> result = new DeadFeature().perform(getFD("DeadFeatures.fd"));
     assertTrue(result.contains("B"));
     assertEquals(1, result.size());
   }
 
   @Test
   public void testFalseOptional() {
-    List<String> result = performAnalysis("FalseOptional.fd", new FalseOptional());
+    List<String> result = new FalseOptional().perform(getFD("FalseOptional.fd"));
     assertTrue(result.contains("B"));
     assertEquals(1, result.size());
   }
 
   @Test
   public void testVoid1() {
-    Boolean result = performAnalysis("Void.fd", new IsVoidFeatureModel());
+    Boolean result = new IsVoidFeatureModel().perform(getFD("Void.fd"));
     assertTrue(result);
   }
 
   @Test
   public void testVoid2() {
-    Boolean result = performAnalysis("DeadFeatures.fd", new IsVoidFeatureModel());
+    Boolean result = new IsVoidFeatureModel().perform(getFD("DeadFeatures.fd"));
     assertFalse(result);
   }
 
   @Test
-  public void testFilter1() {
-    Set<ASTFeatureConfiguration> result = performAnalysis("FalseOptional.fd",
-        new Filter(getFC("CompleteToValid.fc")));
-    assertFalse(result.isEmpty());
-    assertEquals(1, result.size());
+  public void testCompleteToValid1() {
+    ASTFeatureDiagram fd = getFD("FalseOptional.fd");
+    ASTFeatureConfiguration fc = getFC("CompleteToValid.fc");
+    ASTFeatureConfiguration result = new CompleteToValid().perform(fd, fc);
+    assertFalse(null == result);
   }
 
   @Test
-  public void testFilter2() {
-    Set<ASTFeatureConfiguration> result = performAnalysis(
-        "FalseOptional.fd", new Filter(getFC("ValidConfig.fc")));
-    assertFalse(result.isEmpty());
-    assertEquals(2, result.size());
+  public void testCompleteToValid2() {
+    ASTFeatureDiagram fd = getFD("FalseOptional.fd");
+    ASTFeatureConfiguration fc = getFC("ValidConfig.fc");
+    ASTFeatureConfiguration result = new CompleteToValid().perform(fd, fc);
+    assertFalse(null == result);
   }
 
   @Test
-  public void testFilter3() {
-    Set<ASTFeatureConfiguration> result = performAnalysis(
-        "FalseOptional.fd", new Filter(getFC("InvalidConfig.fc")));
-    assertFalse(result.isEmpty());
+  public void testCompleteToValid3() {
+    ASTFeatureDiagram fd = getFD("FalseOptional.fd");
+    ASTFeatureConfiguration fc = getFC("InvalidConfig.fc");
+    ASTFeatureConfiguration result = new CompleteToValid().perform(fd, fc);
+    assertFalse(null == result);
   }
 
   @Test
   public void testisValid1() {
-    Boolean result = performAnalysis("FalseOptional.fd",
-        new IsValid(getFC("CompleteToValid.fc")));
+    ASTFeatureDiagram fd = getFD("FalseOptional.fd");
+    ASTFeatureConfiguration fc = getFC("CompleteToValid.fc");
+    Boolean result = new IsValid().perform(fd, fc);
     assertFalse(result);
   }
 
   @Test
   public void testisValid2() {
-    Boolean result = performAnalysis("FalseOptional.fd",
-        new IsValid(getFC("ValidConfig.fc")));
+    ASTFeatureDiagram fd = getFD("FalseOptional.fd");
+    ASTFeatureConfiguration fc = getFC("ValidConfig.fc");
+    Boolean result = new IsValid().perform(fd, fc);
     assertTrue(result);
   }
 
   @Test
   public void testisValid3() {
-    Boolean result = performAnalysis("DeadFeatures.fd",
-        new IsValid(getFC("InvalidConfig.fc")));
+    ASTFeatureDiagram fd = getFD("DeadFeatures.fd");
+    ASTFeatureConfiguration fc = getFC("InvalidConfig.fc");
+    Boolean result = new IsValid().perform(fd, fc);
     assertFalse(result);
   }
 
   @Test
   public void testAllProducts() {
-    Set<ASTFeatureConfiguration> result = performAnalysis("fdvalid/Phone.fd", new AllProducts());
+    ASTFeatureDiagram fd = getFD("fdvalid/Phone.fd");
+    List<ASTFeatureConfiguration> result = new AllProducts().perform(fd);
     assertEquals(84, result.size());
   }
 
   @Test
   public void testFindValid1() {
-    performAnalysis("fdvalid/Phone.fd", new FindValidConfig());
+    ASTFeatureConfiguration result = new FindValid().perform(getFD("fdvalid/Phone.fd"));
+    assertFalse(null == result);
   }
 
   @Test
   public void testFindValid2() {
-    ASTFeatureDiagram featureDiagram = getFD("Void.fd");
-    FeatureModelAnalysisTool modelAnalysisTool = new FeatureModelAnalysisTool(featureDiagram);
-    FindValidConfig analysis = new FindValidConfig();
-    modelAnalysisTool.addAnalysis(analysis);
-    modelAnalysisTool.performAnalyses();
-    assertFalse(analysis.getResult().isPresent());
+    ASTFeatureConfiguration result = new FindValid().perform(getFD("Void.fd"));
+    assertTrue(null == result);
   }
 
 }

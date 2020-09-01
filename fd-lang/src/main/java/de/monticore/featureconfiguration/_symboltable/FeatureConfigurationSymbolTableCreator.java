@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class FeatureConfigurationSymbolTableCreator
     extends FeatureConfigurationSymbolTableCreatorTOP {
@@ -32,12 +31,12 @@ public class FeatureConfigurationSymbolTableCreator
     super(scopeStack);
   }
 
-  @Override public FeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
+  @Override public IFeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
 
-    FeatureConfigurationArtifactScope artifactScope = de.monticore.featureconfiguration.FeatureConfigurationMill
+    IFeatureConfigurationArtifactScope artifactScope = de.monticore.featureconfiguration.FeatureConfigurationMill
         .featureConfigurationArtifactScopeBuilder()
-        .setImportList(new ArrayList<>())
+        .setImportsList(new ArrayList<>())
         .setPackageName(packageName)
         .build();
 
@@ -94,7 +93,7 @@ public class FeatureConfigurationSymbolTableCreator
   @Override
   public void endVisit(ASTFeatureConfiguration node) {
     super.endVisit(node);
-    node.getSymbol().setSelectedFeatureList(selectedSymbols);
+    node.getSymbol().setSelectedFeaturesList(selectedSymbols);
     node.getSymbol().setFeatureDiagram(fd);
   }
 

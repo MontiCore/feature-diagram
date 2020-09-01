@@ -4,10 +4,7 @@ package de.monticore.featureconfiguration;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScope;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbolTableCreatorDelegator;
-import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
+import de.monticore.featureconfiguration._symboltable.*;
 import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
@@ -63,7 +60,7 @@ public class FeatureConfigurationTool {
    * @param mp
    * @return
    */
-  public static FeatureConfigurationArtifactScope createSymbolTable(String model, ModelPath mp) {
+  public static IFeatureConfigurationArtifactScope createSymbolTable(String model, ModelPath mp) {
     return createSymbolTable(mp, parse(model));
   }
 
@@ -74,7 +71,7 @@ public class FeatureConfigurationTool {
    * @param ast
    * @return
    */
-  public static FeatureConfigurationArtifactScope createSymbolTable(ModelPath mp,
+  public static IFeatureConfigurationArtifactScope createSymbolTable(ModelPath mp,
       ASTFCCompilationUnit ast) {
     FeatureConfigurationSymbolTableCreatorDelegator symbolTable = FeatureConfigurationMill
         .featureConfigurationSymbolTableCreatorDelegatorBuilder()
@@ -83,7 +80,7 @@ public class FeatureConfigurationTool {
     return symbolTable.createFromAST(ast);
   }
 
-  public static FeatureConfigurationGlobalScope createGlobalScope(ModelPath mp) {
+  public static IFeatureConfigurationGlobalScope createGlobalScope(ModelPath mp) {
     return FeatureConfigurationMill
         .featureConfigurationGlobalScopeBuilder()
         .setModelPath(mp)
@@ -100,9 +97,9 @@ public class FeatureConfigurationTool {
     // setup the symbol table
     createSymbolTable(mp, ast);
 
-    // currently no context conditions exist for feature configurations
+    // currently no context conditions exist for feature configurations.
+    // Also, do not store artifact scope
 
-    // do not store artifact scope
     return ast.getFeatureConfiguration();
   }
 
@@ -121,9 +118,9 @@ public class FeatureConfigurationTool {
     // setup the symbol table
     createSymbolTable(new ModelPath(path, FeatureDiagramTool.SYMBOL_LOCATION), ast);
 
-    // currently no context conditions exist for feature configurations
+    // currently no context conditions exist for feature configurations.
+    // Also, do not store artifact scope
 
-    // do not store artifact scope
     return ast.getFeatureConfiguration();
   }
 

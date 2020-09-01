@@ -4,7 +4,6 @@ package de.monticore.featurediagram;
 
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,8 +16,9 @@ public class AbstractTest {
 
   @BeforeClass
   public static void setUpLog() {
-                Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-//    LogStub.init();
+    Log.initWARN();
+    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+    //    LogStub.init();
   }
 
   @Before

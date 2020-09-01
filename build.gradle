@@ -1,0 +1,189 @@
+/* (c) https://github.com/MontiCore/monticore */
+import de.monticore.MCTask
+
+plugins {
+    id "java"
+    id "monticore"  version "6.3.0-SNAPSHOT" // MontiCore Plugin
+    id "maven-publish"
+    id "com.github.johnrengelman.shadow" version "4.0.4"
+}
+
+def monticore_version = '6.3.0-SNAPSHOT'
+def plexus_archiver_version = '2.8.2'
+def junit_version = '4.12'
+def logback_version = '1.1.2'
+def choco_solver_version = '4.0.5'
+def choco_parser_version = '4.0.4'
+def commons_cli_version = '1.2'
+
+def grammarDir = 'src/main/grammars'
+
+allprojects {
+    group = 'de.monticore.lang'
+    version = '0.0.3-SNAPSHOT'
+
+    repositories {
+        mavenLocal()
+        maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            url repo
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+    dependencies {
+//        implementation group: 'de.monticore', name: 'monticore-runtime', version: monticore_version
+        implementation group: 'de.monticore', name: 'monticore-grammar', version: monticore_version
+        implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
+        testImplementation group: 'junit', name: 'junit', version: junit_version
+        testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
+    }
+
+    // configure non-standard source sets
+    sourceSets {
+        main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+    }
+
+
+    // Fixes issue with java plugin in projects without resources
+    compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
+
+    buildDir = file("$projectDir/target")
+
+
+    sourceCompatibility = '1.8'
+}
+
+project(':fd-lang') {
+    apply plugin : 'java'
+    apply plugin : 'monticore'
+
+    dependencies {
+        grammar (group:'de.monticore', name:'monticore-grammar', version:monticore_version, classifier: "grammars",
+                changing: true) { force = true }
+    }
+
+    description = 'Feature Diagram Language'
+
+    task  generateFeatureDiagram (type: MCTask) {
+        grammar = file "$grammarDir/de/monticore/FeatureDiagram.mc4"
+        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+        def uptoDate = incCheck("de/monticore/FeatureDiagram.mc4")
+        outputs.upToDateWhen { uptoDate }
+    }
+
+    task  generateFeatureConfiguration (type: MCTask) {
+        grammar = file "$grammarDir/de/monticore/FeatureConfiguration.mc4"
+        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+        def uptoDate = incCheck("de/monticore/FeatureConfiguration.mc4")
+        outputs.upToDateWhen { uptoDate }
+    }
+
+    task  generateFeatureConfigurationPartial (type: MCTask) {
+        grammar = file "$grammarDir/de/monticore/FeatureConfigurationPartial.mc4"
+        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+        def uptoDate = incCheck("de/monticore/FeatureConfigurationPartial.mc4")
+        outputs.upToDateWhen { uptoDate }
+    }
+
+    compileJava {
+        dependsOn project.collect { it.tasks.withType(MCTask) }
+    }
+
+    // build sources jar with handwritten + generated sources
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from(sourceSets.main.allJava)
+    }
+
+    // build grammar jar as well
+    task grammarJar(type: Jar) {
+        from ("$projectDir/$grammarDir"){ include "**/*.mc4" }
+        archiveClassifier = "grammars"
+    }
+
+    // configure deployment
+    publishing {
+        // configure what artifacts to publish
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = "$project.name"
+                from components.java
+                artifact sourcesJar
+                artifact grammarJar
+            }
+        }
+        repositories.maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}
+
+
+project(':fd-analysis') {
+    apply plugin: 'java'
+
+    dependencies {
+        implementation project(':fd-lang')
+        implementation group: 'org.choco-solver', name: 'choco-solver', version: choco_solver_version
+        implementation (group: 'org.choco-solver', name: 'choco-parsers', version: choco_parser_version){
+            exclude group: "xcsp3", module:"xcsp3"
+        }
+        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+    }
+
+    description = 'Feature Diagram Analyses'
+
+    // build sources jar with handwritten + generated sources
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from(sourceSets.main.allJava)
+    }
+
+    shadowJar { // all in one jar
+        manifest {
+            attributes "Main-Class": "mcfdtool.FACT"
+        }
+        minimize() // sort out unused files automatically (does not find everything we don't need)
+        // we do not need artifacts conforming to these regexes either:
+//        exclude "freemarker/**"
+//        exclude "com/**"
+//        exclude "dk/**"
+//        exclude "**/*.aut"
+
+        archiveFileName  =  "FACT.jar"
+    }
+
+
+    // configure deployment
+    publishing {
+        // configure what artifacts to publish
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = "$project.name"
+                from components.java
+                artifact sourcesJar
+            }
+        }
+        repositories.maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+        }
+    }
+}

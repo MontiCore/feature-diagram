@@ -32,13 +32,13 @@ public class HasTreeShape
     node.accept(collector);
     List<String> rootfeatures = collector.getOccurrences(Occurrence.LEFT);
     if (rootfeatures.size() == 0) {
-      Log.error("0xFD003 Featurediagram" + node.getName() +
-          "has no root node.");
+      Log.error("0xFD003 Featurediagram '" + node.getName() +
+          "' has no root node.");
       return "";
     }
     if (rootfeatures.size() > 1) {
-      Log.error("0xFD001 Featurediagram" + node.getName() +
-          "has multiple root nodes.");
+      Log.error("0xFD001 Featurediagram '" + node.getName() +
+          "' has multiple root nodes.");
       return "";
     }
     return rootfeatures.get(0);
@@ -95,7 +95,8 @@ public class HasTreeShape
    */
   protected Map<String, String> getAllParents(ASTFeatureDiagram node) {
     Map<String, String> parents = new HashMap<>();
-    List<ASTFeatureTreeRule> featureTreeRules = node.getFDElementList().stream()
+    List<ASTFeatureTreeRule> featureTreeRules =
+      node.getFDElementList().stream()
         .filter(e -> e instanceof ASTFeatureTreeRule)
         .map(e -> (ASTFeatureTreeRule) e)
         .collect(Collectors.toList());
