@@ -4,6 +4,7 @@ package test.fd;
 import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.serialization.JsonPrinter;
 import org.junit.Test;
 import test.AbstractTest;
 
@@ -15,14 +16,15 @@ import static org.junit.Assert.assertTrue;
 
 public class FeatureDiagramDeSerTest extends AbstractTest {
 
-  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
+  protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
     return FeatureDiagramTool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath());
   }
 
   @Test
   public void testSerializeDeserialize() {
+    JsonPrinter.enableIndentation();
     FeatureDiagramScopeDeSer deSer = new FeatureDiagramScopeDeSer();
-    FeatureDiagramArtifactScope scope = setupSymbolTable("fdvalid/BasicElements.fd");
+    IFeatureDiagramArtifactScope scope = setupSymbolTable("fdvalid/BasicElements.fd");
     assertTrue(null != scope);
     String serialized = deSer.serialize(scope);
     assertTrue(null != serialized);
@@ -61,7 +63,7 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
 
   @Test
   public void testDeSer() {
-    FeatureDiagramArtifactScope fdScope = setupSymbolTable(
+    IFeatureDiagramArtifactScope fdScope = setupSymbolTable(
         "fdvalid/CarNavigation.fd");
     new FeatureDiagramScopeDeSer().store(fdScope, Paths.get("target/test-symbols"));
     assertTrue(new File("target/test-symbols/CarNavigation.fdsym").exists());

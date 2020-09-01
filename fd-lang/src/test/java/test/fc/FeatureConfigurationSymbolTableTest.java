@@ -4,6 +4,7 @@ package test.fc;
 import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.io.paths.ModelPath;
 import org.junit.Test;
 import test.AbstractTest;
@@ -16,7 +17,7 @@ import static org.junit.Assert.*;
 
 public class FeatureConfigurationSymbolTableTest extends AbstractTest {
 
-  protected FeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
+  protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
     ModelPath mp = new ModelPath(Paths.get("src", "test", "resources"));
     return FeatureConfigurationTool.createSymbolTable(modelFile, mp);
   }
@@ -35,7 +36,7 @@ public class FeatureConfigurationSymbolTableTest extends AbstractTest {
   @Test
   public void testDetail() {
     String model = "src/test/resources/fcvalid/BasicCarNavigation.fc";
-    FeatureConfigurationArtifactScope scope = setupSymbolTable(model);
+    IFeatureConfigurationArtifactScope scope = setupSymbolTable(model);
 
     assertTrue(null != scope);
     FeatureConfigurationSymbol fd = scope.resolveFeatureConfiguration("BasicCarNavigation")
@@ -61,7 +62,7 @@ public class FeatureConfigurationSymbolTableTest extends AbstractTest {
   @Test
   public void testImport() {
     String model = "src/test/resources/fcvalid/SelectImported.fc";
-    FeatureConfigurationArtifactScope scope = setupSymbolTable(model);
+    IFeatureConfigurationArtifactScope scope = setupSymbolTable(model);
 
     assertTrue(null != scope);
     FeatureConfigurationSymbol fd = scope.resolveFeatureConfiguration("SelectImported")

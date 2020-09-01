@@ -9,10 +9,12 @@ import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
+import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
+import org.apache.commons.cli.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,11 +36,66 @@ public class FeatureDiagramTool {
    * @param args
    */
   public static void main(String[] args) {
-    if (args.length != 1) {
-      Log.error("0xFD102 Please specify only one single path to the input model.");
-      return;
+    Log.initWARN();
+    try {
+      CommandLineParser parser = new BasicParser();
+      CommandLine cmd = parser.parse(getOptions(), args);
+      if (null == cmd || 0 == cmd.getArgList().size() || cmd.hasOption("help")) {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("java -jar FeatureDiagramTool.jar", getOptions(), true);
+        return;
+      }
+
+      //Set path for imported symbols
+      ModelPath mp = new ModelPath();
+      if (cmd.hasOption("path")) {
+        mp.addEntry(Paths.get(cmd.getOptionValue("path")));
+      }
+
+      //Set output path for stored symbols (or use default)
+      String output = "target";
+      if (cmd.hasOption("output")) {
+        output = cmd.getOptionValue("output");
+      }
+
+      //Set input file and parse it
+      if (!cmd.hasOption("input")) {
+        Log.error("0xFD102 The input file is a mandatory argument of the FeatureDiagramTool!");
+      }
+      String input = cmd.getOptionValue("input");
+      ASTFDCompilationUnit ast = FeatureDiagramTool.parse(input);
+
+      // create symbol table, check all cocos, and store symbol table
+      if (cmd.hasOption("symboltable")) {
+        IFeatureDiagramArtifactScope symbolTable = FeatureDiagramTool.createSymbolTable(ast, mp);
+        FeatureDiagramTool.checkCoCos(ast);
+        String symbolFile = cmd.getOptionValue("symboltable");
+        String serialized = FeatureDiagramTool.storeSymbols(symbolTable, symbolFile);
+        System.out.println(serialized);
+      }
+
+      if (cmd.hasOption("prettyprint")) {
+        String prettyPrinted = FeatureDiagramPrettyPrinter.print(ast);
+        System.out.println(prettyPrinted);
+      }
     }
-    run(args[0]);
+    catch (Exception e) {
+      HelpFormatter formatter = new HelpFormatter();
+      formatter.printHelp("java -jar FeatureDiagramTool.jar", getOptions(), true);
+      Log.error("0xFD112 An exception occured while processing the CLI input!", e);
+    }
+  }
+
+  protected static Options getOptions() {
+    Options options = new Options();
+    options.addOption("h", "help", false, "Prints this help dialog");
+    options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
+    options.addOption("path", true, "Sets the artifact path for imported symbols");
+    options.addOption("pp", "prettyprint", true,"Prints the AST to stdout or the specified output file");
+    options.addOption("s", "symboltable", true,"Serializes and prints the symbol table to stdout and the specified output file");
+    //    options.addOption("r", "report", true, "Prints reports of the parsed artifact to the specified directory");
+    options.addOption("o", "output", true, "Path of generated files");
+    return options;
   }
 
   /**
@@ -120,10 +177,20 @@ public class FeatureDiagramTool {
    * @param fileName
    * @return
    */
-  public static File storeSymbols(ASTFDCompilationUnit ast, String fileName) {
+  public static String storeSymbols(ASTFDCompilationUnit ast, String fileName) {
+    return storeSymbols((IFeatureDiagramArtifactScope) ast.getEnclosingScope(), fileName);
+  }
+
+  /**
+   * stores the symbol table of a passed ast in a file at the passed fileName
+   *
+   * @return
+   */
+  public static String storeSymbols(IFeatureDiagramArtifactScope scope, String fileName) {
     File f = new File(fileName);
-    FileReaderWriter.storeInFile(f.toPath(), deser.serialize(ast.getEnclosingScope()));
-    return f;
+    String serialized = deser.serialize(scope);
+    FileReaderWriter.storeInFile(f.toPath(), serialized);
+    return serialized;
   }
 
   /**
@@ -184,7 +251,8 @@ public class FeatureDiagramTool {
     }
 
     // setup the symbol table
-    IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, new ModelPath(path, SYMBOL_LOCATION));
+    IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast,
+        new ModelPath(path, SYMBOL_LOCATION));
 
     // execute default context conditions
     FeatureDiagramCoCos.checkAll(ast);

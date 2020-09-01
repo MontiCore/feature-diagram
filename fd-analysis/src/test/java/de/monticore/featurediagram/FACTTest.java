@@ -8,6 +8,7 @@ import de.se_rwth.commons.logging.Log;
 import mcfdtool.FACT;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -130,6 +131,7 @@ public class FACTTest extends AbstractTest {
     assertTrue(conf.isPresent());
   }
 
+  @Ignore
   @Test
   public void testAnalysisFindValid2() throws IOException {
     new FACT(new String[] {

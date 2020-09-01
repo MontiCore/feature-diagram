@@ -41,9 +41,10 @@ subprojects {
     apply plugin: 'maven-publish'
 
     dependencies {
-//        implementation group: 'de.monticore', name: 'monticore-runtime', version: monticore_version
         implementation group: 'de.monticore', name: 'monticore-grammar', version: monticore_version
         implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
+        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+
         testImplementation group: 'junit', name: 'junit', version: junit_version
         testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
     }
@@ -95,6 +96,9 @@ project(':fd-lang') {
         outputs.upToDateWhen { uptoDate }
     }
 
+    generateFeatureConfiguration.dependsOn(generateFeatureDiagram)
+    generateFeatureConfigurationPartial.dependsOn(generateFeatureConfiguration)
+
     compileJava {
         dependsOn project.collect { it.tasks.withType(MCTask) }
     }
@@ -110,6 +114,15 @@ project(':fd-lang') {
         from ("$projectDir/$grammarDir"){ include "**/*.mc4" }
         archiveClassifier = "grammars"
     }
+
+//    shadowJar { // all in one jar
+//        manifest {
+//            attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
+//        }
+//        minimize() // sort out unused files automatically (does not find everything we don't need)
+//
+//        archiveFileName  =  "FeatureDiagramTool.jar"
+//    }
 
     // configure deployment
     publishing {
@@ -142,7 +155,6 @@ project(':fd-analysis') {
         implementation (group: 'org.choco-solver', name: 'choco-parsers', version: choco_parser_version){
             exclude group: "xcsp3", module:"xcsp3"
         }
-        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
     }
 
     description = 'Feature Diagram Analyses'
@@ -167,7 +179,6 @@ project(':fd-analysis') {
         archiveFileName  =  "FACT.jar"
     }
 
-
     // configure deployment
     publishing {
         // configure what artifacts to publish
@@ -176,6 +187,7 @@ project(':fd-analysis') {
                 artifactId = "$project.name"
                 from components.java
                 artifact sourcesJar
+                artifact shadowJar
             }
         }
         repositories.maven {
