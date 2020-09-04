@@ -16,8 +16,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Optional;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class FACTTest extends AbstractTest {
 
@@ -48,6 +47,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("true"));
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
@@ -59,6 +59,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("false"));
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
@@ -75,6 +76,7 @@ public class FACTTest extends AbstractTest {
     Optional<ASTFCCompilationUnit> conf = parsers
         .parse_String("featureconfig " + products[products.length - 1]);
     assertTrue(conf.isPresent());
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
@@ -86,6 +88,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("B"));
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
@@ -97,6 +100,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("B"));
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
@@ -113,6 +117,7 @@ public class FACTTest extends AbstractTest {
     Optional<ASTFCCompilationUnit> conf = parsers
         .parse_String("featureconfig" + products[products.length - 1]);
     assertTrue(conf.isPresent());
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
@@ -129,6 +134,7 @@ public class FACTTest extends AbstractTest {
     Optional<ASTFCCompilationUnit> conf = parsers
         .parse_String("featureconfig" + products[products.length - 1]);
     assertTrue(conf.isPresent());
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Ignore
@@ -146,6 +152,7 @@ public class FACTTest extends AbstractTest {
     Optional<ASTFCCompilationUnit> conf = parsers
         .parse_String("featureconfig" + products[products.length - 1]);
     assertTrue(conf.isPresent());
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
@@ -157,6 +164,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("false"));
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
@@ -168,6 +176,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("true"));
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
@@ -179,6 +188,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("2"));
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
@@ -194,6 +204,7 @@ public class FACTTest extends AbstractTest {
     assertNotNull(printed);
     assertTrue(printed.contains("0xFC002"));
     System.setErr(originalErr);
+    assertEquals(1, Log.getErrorCount());
   }
 
   @Test
@@ -209,6 +220,7 @@ public class FACTTest extends AbstractTest {
     assertNotNull(printed);
     assertTrue(printed.contains("0xFC901"));
     System.setErr(originalErr);
+    assertEquals(1, Log.getErrorCount());
   }
 
   @Test
@@ -218,5 +230,6 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.startsWith("usage: java -jar FACT.jar <test.fd> [analysis options]"));
+    assertEquals(0, Log.getErrorCount());
   }
 }

@@ -12,6 +12,8 @@ import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurati
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -111,6 +113,26 @@ public class FeatureConfigurationPartialTool {
         .setModelFileExtension("fc")
         .addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(mp))
         .build();
+  }
+
+  protected static Options getOptions() {
+    Options options = new Options();
+    options.addOption("h", "help", false, "Prints this help dialog");
+    options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
+    options.addOption("o", "output", true, "Path of generated files");
+    options.addOption("path", true, "Sets the artifact path for imported symbols");
+
+    Option symboltable = new Option("s", "Serializes and prints the symbol table to stdout, if present, the specified output file");
+    symboltable.setOptionalArg(true);
+    symboltable.setLongOpt("symboltable");
+    options.addOption(symboltable);
+
+    Option prettyprint = new Option("pp", "Prints the AST to stdout and, if present, the specified output file");
+    prettyprint.setOptionalArg(true);
+    prettyprint.setLongOpt("prettyprint");
+    options.addOption(prettyprint);
+
+    return options;
   }
 
 }

@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fcvalid;
+
+import fdvalid.CarNavigation;
+
+featureconfig Basic for CarNavigation {
+  CarNavigation, VoiceControl, Display, SmallScreen, GPS, Memory, Small;
+}
