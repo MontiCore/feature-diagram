@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FeatureConfigurationPartialPrettyPrinter {
 
-  public static String print(List<ASTFeatureConfigurationNode> nodes) {
+  public static String print(List<ASTFeatureConfiguration> nodes) {
     IndentPrinter printer = new IndentPrinter();
     FeatureConfigurationPartialVisitor visitor =
         FeatureConfigurationPartialMill.featureConfigurationPartialDelegatorVisitorBuilder()
