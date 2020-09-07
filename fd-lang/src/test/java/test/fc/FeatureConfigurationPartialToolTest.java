@@ -2,7 +2,7 @@
 
 package test.fc;
 
-import de.monticore.featureconfiguration.FeatureConfigurationTool;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool;
 import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-public class FeatureConfigurationToolTest {
+public class FeatureConfigurationPartialToolTest {
 
   protected PrintStream originalOut;
 
@@ -39,40 +39,39 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testHelp() {
-    FeatureConfigurationTool.main(new String[] { "-h" });
+    FeatureConfigurationPartialTool.main(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.startsWith("usage: java -jar FeatureConfigurationTool.jar"));
+    assertTrue(printed.startsWith("usage: java -jar FeatureConfigurationPartialTool.jar"));
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testHelpLong() {
-    FeatureConfigurationTool.main(new String[] { "-help" });
+    FeatureConfigurationPartialTool.main(new String[] { "-help" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.startsWith("usage: java -jar FeatureConfigurationTool.jar"));
+    assertTrue(printed.startsWith("usage: java -jar FeatureConfigurationPartialTool.jar"));
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testParseValidModel() {
-    FeatureConfigurationTool.main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationTool.main(new String[] { "-i", validFC("PremiumCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationTool.main(new String[] { "-input", validFC("SelectImported"), "-path", "src/test/resources"});
-    FeatureConfigurationTool.main(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
-    FeatureConfigurationTool.main(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
-    FeatureConfigurationTool.main(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
+    FeatureConfigurationPartialTool.main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
+    FeatureConfigurationPartialTool.main(new String[] { "-i", validFC("SelectImported"), "-path", "src/test/resources"});
+    FeatureConfigurationPartialTool.main(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
+    FeatureConfigurationPartialTool.main(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
+    FeatureConfigurationPartialTool.main(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testWithoutSetPath() {
-    FeatureConfigurationTool.main(
+    FeatureConfigurationPartialTool.main(
         new String[] {
-            "-i", "src/test/resources/phone/BasicPhone.fc"
+            "-i", "src/test/resources/phone/PremiumPhone.fc"
         });
     assertEquals(0, Log.getErrorCount());
   }
@@ -84,7 +83,7 @@ public class FeatureConfigurationToolTest {
         Paths.get("target/symbols"),
         new ModelPath());
 
-    FeatureConfigurationTool.main(new String[] {
+    FeatureConfigurationPartialTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-pp"
@@ -98,14 +97,15 @@ public class FeatureConfigurationToolTest {
         + "import fdvalid.CarNavigation;\n"
         + "\n"
         + "featureconfig BasicCarNavigation for fdvalid.CarNavigation {\n"
-        + "  CarNavigation,VoiceControl,Display,SmallScreen,GPS,Memory,Small\n"
+        + "  select { CarNavigation,VoiceControl,Display,SmallScreen,GPS,Memory,Small }\n"
+        + "  exclude { Large }\n"
         + "}");
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testPrettyPrintToFile() {
-    FeatureConfigurationTool.main(new String[] {
+    FeatureConfigurationPartialTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "src/test/resources",
         "-pp", "BasicCarNavigationOut.fc"
@@ -119,7 +119,7 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testSetOutput() {
-    FeatureConfigurationTool.main(
+    FeatureConfigurationPartialTool.main(
         new String[] {
             "-i", validFC("BasicCarNavigation"),
             "-path", "src/test/resources",
@@ -134,11 +134,11 @@ public class FeatureConfigurationToolTest {
 
 
   private String validFC(String name) {
-    return "src/test/resources/fcvalid/" + name + ".fc";
+    return "src/test/resources/pfcvalid/" + name + ".fc";
   }
 
   private String invalidFC(String name) {
-    return "src/test/resources/fcinvalid/" + name + ".fc";
+    return "src/test/resources/pfcinvalid/" + name + ".fc";
   }
 
 }

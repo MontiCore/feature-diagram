@@ -8,7 +8,7 @@ import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol
 import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
-import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrettyPrinter;
+import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
 import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
@@ -109,7 +109,7 @@ public class FeatureConfigurationTool {
     }
 
     // setup the symbol table
-    createSymbolTable(new ModelPath(path, FeatureDiagramTool.SYMBOL_LOCATION), ast);
+    createSymbolTable(new ModelPath(path, FeatureDiagramTool.SYMBOL_OUT), ast);
 
     // currently no context conditions exist for feature configurations.
     // Also, do not store artifact scope
@@ -134,10 +134,21 @@ public class FeatureConfigurationTool {
         return;
       }
 
+      //Set input file and parse it
+      if (!cmd.hasOption("input")) {
+        Log.error("0xFC102 The input file is a mandatory argument of the FeatureConfigurationTool!");
+      }
+      String input = cmd.getOptionValue("input");
+
       //Set path for imported symbols
       ModelPath mp = new ModelPath();
       if (cmd.hasOption("path")) {
         mp.addEntry(Paths.get(cmd.getOptionValue("path")));
+      }
+      else{
+        //else use location in which input model is located as model path
+        Path modelFolder = Paths.get(input).toAbsolutePath().getParent();
+        mp.addEntry(modelFolder);
       }
 
       //Set output path for stored symbols (or use default)
@@ -145,12 +156,6 @@ public class FeatureConfigurationTool {
       if (cmd.hasOption("output")) {
         output = Paths.get(cmd.getOptionValue("output"));
       }
-
-      //Set input file and parse it
-      if (!cmd.hasOption("input")) {
-        Log.error("0xFC102 The input file is a mandatory argument of the FeatureConfigurationTool!");
-      }
-      String input = cmd.getOptionValue("input");
 
       // parse and create symtab
       ASTFCCompilationUnit ast = FeatureConfigurationTool.parse(input);
@@ -161,7 +166,7 @@ public class FeatureConfigurationTool {
       // FeatureConfiguration does not store symbol tables
 
       if (cmd.hasOption("prettyprint")) {
-        String prettyPrinted = FeatureConfigurationPrettyPrinter.print(ast);
+        String prettyPrinted = FeatureConfigurationPrinter.print(ast);
         System.out.println(prettyPrinted);
         String outFile = cmd.getOptionValue("prettyprint");
         if(null!=outFile){
@@ -176,14 +181,18 @@ public class FeatureConfigurationTool {
     }
   }
 
-  protected static Options getOptions() {
+  public static Options getOptions() {
     Options options = new Options();
     options.addOption("h", "help", false, "Prints this help dialog");
     options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
     options.addOption("o", "output", true, "Path of generated files");
-    options.addOption("path", true, "Sets the artifact path for imported symbols");
 
-    Option prettyprint = new Option("pp", "Prints the AST to stdout and, if present, the specified output file");
+    Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
+    modelPath.setArgs(Option.UNLIMITED_VALUES);
+    modelPath.setValueSeparator(',');
+    options.addOption(modelPath);
+
+    Option prettyprint = new Option("pp", true, "Prints the AST to stdout and, if present, the specified output file");
     prettyprint.setOptionalArg(true);
     prettyprint.setLongOpt("prettyprint");
     options.addOption(prettyprint);

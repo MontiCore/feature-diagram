@@ -4,5 +4,7 @@ package fcvalid;
 import fdvalid.*;
 
 featureconfig StarImport for BasicElements {
-  A;
+  select {
+    A
+  }
 }

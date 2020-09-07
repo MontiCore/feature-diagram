@@ -24,7 +24,7 @@ import java.util.Optional;
 
 public class FeatureDiagramTool {
 
-  public static final Path SYMBOL_LOCATION = Paths.get("target/symbols");
+  public static final Path SYMBOL_OUT = Paths.get("target/symbols");
 
   protected static final FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
 
@@ -107,9 +107,13 @@ public class FeatureDiagramTool {
    *
    * @return
    */
-  public static String storeSymbols(IFeatureDiagramArtifactScope scope, Path symbolPath) {
-    deser.store(scope, symbolPath);
-    return deser.serialize(scope);
+  public static String storeSymbols(IFeatureDiagramArtifactScope scope, Path out) {
+    Path f = out
+        .resolve(Paths.get(scope.getPackageName()))
+        .resolve(scope.getName() + ".fdsym");
+    String serialized = deser.serialize(scope);
+    FileReaderWriter.storeInFile(f, serialized);
+    return serialized;
   }
 
   /**
@@ -117,8 +121,8 @@ public class FeatureDiagramTool {
    *
    * @return
    */
-  public static String storeSymbols(IFeatureDiagramArtifactScope scope, String fileName) {
-    File f = new File(fileName);
+  public static String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName) {
+    File f = new File(symbolFileName);
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(f.toPath(), serialized);
     return serialized;
@@ -129,22 +133,22 @@ public class FeatureDiagramTool {
    * and storing of symbol table)
    *
    * @param modelFile
-   * @param mp
+   * @param path
    * @return
    */
-  public static ASTFeatureDiagram run(String modelFile, Path symbolStoreLocation, ModelPath mp) {
+  public static ASTFeatureDiagram run(String modelFile, Path out, ModelPath path) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
 
     // setup the symbol table
-    IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, mp);
+    IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, path);
 
     // execute default context conditions
     checkCoCos(ast);
 
     // store artifact scope after context conditions have been checked
-    deser.store(modelTopScope, symbolStoreLocation);
+    storeSymbols(modelTopScope, out);
 
     return ast.getFeatureDiagram();
   }
@@ -154,11 +158,11 @@ public class FeatureDiagramTool {
    * and storing of symbol table) and stores symbols at default location
    *
    * @param modelFile
-   * @param mp
+   * @param path
    * @return
    */
-  public static ASTFeatureDiagram run(String modelFile, ModelPath mp) {
-    return run(modelFile, SYMBOL_LOCATION, mp);
+  public static ASTFeatureDiagram run(String modelFile, ModelPath path) {
+    return run(modelFile, SYMBOL_OUT, path);
   }
 
   /**
@@ -183,13 +187,13 @@ public class FeatureDiagramTool {
 
     // setup the symbol table
     IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast,
-        new ModelPath(path, SYMBOL_LOCATION));
+        new ModelPath(path, SYMBOL_OUT));
 
     // execute default context conditions
     FeatureDiagramCoCos.checkAll(ast);
 
     // store artifact scope after context conditions have been checked
-    deser.store(modelTopScope, SYMBOL_LOCATION);
+    storeSymbols(modelTopScope, SYMBOL_OUT);
 
     return ast.getFeatureDiagram();
   }
@@ -236,11 +240,11 @@ public class FeatureDiagramTool {
         FeatureDiagramTool.checkCoCos(ast);
 
         String s = cmd.getOptionValue("symboltable");
-        if(null != s){
+        if (null != s) {
           String symbolFile = output.resolve(s).toString();
           System.out.println(FeatureDiagramTool.storeSymbols(symbolTable, symbolFile));
         }
-        else{
+        else {
           System.out.println(FeatureDiagramTool.storeSymbols(symbolTable, output));
         }
       }
@@ -249,7 +253,7 @@ public class FeatureDiagramTool {
         String prettyPrinted = FeatureDiagramPrettyPrinter.print(ast);
         System.out.println(prettyPrinted);
         String outFile = cmd.getOptionValue("prettyprint");
-        if(null!=outFile){
+        if (null != outFile) {
           FileReaderWriter.storeInFile(output.resolve(outFile), prettyPrinted);
         }
       }
@@ -266,20 +270,23 @@ public class FeatureDiagramTool {
     options.addOption("h", "help", false, "Prints this help dialog");
     options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
     options.addOption("o", "output", true, "Path of generated files");
-    options.addOption("path", true, "Sets the artifact path for imported symbols");
 
-    Option symboltable = new Option("s", "Serializes and prints the symbol table to stdout, if present, the specified output file");
+    Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
+    modelPath.setArgs(Option.UNLIMITED_VALUES);
+    modelPath.setValueSeparator(',');
+    options.addOption(modelPath);
+
+    Option symboltable = new Option("s", true,"Serializes and prints the symbol table to stdout, if present, the specified output file");
     symboltable.setOptionalArg(true);
     symboltable.setLongOpt("symboltable");
     options.addOption(symboltable);
 
-    Option prettyprint = new Option("pp", "Prints the AST to stdout and, if present, the specified output file");
+    Option prettyprint = new Option("pp", true, "Prints the AST to stdout and, if present, the specified output file");
     prettyprint.setOptionalArg(true);
     prettyprint.setLongOpt("prettyprint");
     options.addOption(prettyprint);
 
     return options;
   }
-
 
 }

@@ -1,10 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
-package phone;
-
-featureconfig PremiumPhone for PhoneComplex {
-  Phone,
-  Camera,
-  Memory, Internal, Medium, Large, External,
-  OS, Android,
-  Screen, FullHD, Flexible;
+featureconfig PremiumPhone for Phone {
+  select {
+      Phone,
+      Camera,
+      Memory, Internal, Medium, Large, External,
+      OS, FruitOS,
+      Screen, FullHD, Flexible
+  }
+  exclude {
+    Small
+  }
 }

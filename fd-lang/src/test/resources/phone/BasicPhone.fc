@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
-package phone;
-
-featureconfig BasicPhone for PhoneComplex {
+featureconfig BasicPhone for Phone {
   Phone,
   Memory, Internal, Small,
-  OS, Android,
+  OS, RobotOS,
   Screen, FullHD;
 }

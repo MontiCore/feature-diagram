@@ -137,7 +137,6 @@ public class FACTTest extends AbstractTest {
     assertEquals(0, Log.getErrorCount());
   }
 
-  @Ignore
   @Test
   public void testAnalysisFindValid2() throws IOException {
     new FACT(new String[] {

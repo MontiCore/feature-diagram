@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featureconfigurationpartial;
 
+import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
 import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCos;
@@ -60,9 +61,8 @@ public class FeatureConfigurationPartialTool {
    * @param mp
    * @return
    */
-  public static IFeatureConfigurationPartialArtifactScope createSymbolTable(String model,
-      ModelPath mp) {
-    return createSymbolTable(mp, parse(model));
+  public static IFeatureConfigurationPartialArtifactScope createSymbolTable(String model, ModelPath mp) {
+    return createSymbolTable(parse(model), mp);
   }
 
   /**
@@ -72,8 +72,7 @@ public class FeatureConfigurationPartialTool {
    * @param ast
    * @return
    */
-  public static IFeatureConfigurationPartialArtifactScope createSymbolTable(ModelPath mp,
-      ASTFCCompilationUnit ast) {
+  public static IFeatureConfigurationPartialArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp) {
     FeatureConfigurationPartialSymbolTableCreatorDelegator symbolTable = FeatureConfigurationPartialMill
         .featureConfigurationPartialSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(createGlobalScope(mp))
@@ -97,26 +96,17 @@ public class FeatureConfigurationPartialTool {
    * @param args
    */
   public static void main(String[] args) {
+    //reuse the CLI options from FeatureConfigurationTool
+    Options options = FeatureConfigurationTool.getOptions();
     Log.initWARN();
+
     try {
       CommandLineParser parser = new BasicParser();
-      CommandLine cmd = parser.parse(getOptions(), args);
+      CommandLine cmd = parser.parse(options, args);
       if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar FeatureConfigurationPartialTool.jar", getOptions(), true);
+        formatter.printHelp("java -jar FeatureConfigurationPartialTool.jar", options, true);
         return;
-      }
-
-      //Set path for imported symbols
-      ModelPath mp = new ModelPath();
-      if (cmd.hasOption("path")) {
-        mp.addEntry(Paths.get(cmd.getOptionValue("path")));
-      }
-
-      //Set output path for stored symbols (or use default)
-      Path output = Paths.get("target");
-      if (cmd.hasOption("output")) {
-        output = Paths.get(cmd.getOptionValue("output"));
       }
 
       //Set input file and parse it
@@ -127,8 +117,25 @@ public class FeatureConfigurationPartialTool {
       String input = cmd.getOptionValue("input");
       ASTFCCompilationUnit ast = FeatureConfigurationPartialTool.parse(input);
 
+      //Set path for imported symbols
+      ModelPath mp = new ModelPath();
+      if (cmd.hasOption("path")) {
+        mp.addEntry(Paths.get(cmd.getOptionValue("path")));
+      }
+      else{
+        //else use location in which input model is located as model path
+        Path modelFolder = Paths.get(input).toAbsolutePath().getParent();
+        mp.addEntry(modelFolder);
+      }
+
+      //Set output path for pretty printer(or use default)
+      Path output = Paths.get("target");
+      if (cmd.hasOption("output")) {
+        output = Paths.get(cmd.getOptionValue("output"));
+      }
+
       // create symbol table and check all cocos
-      FeatureConfigurationPartialTool.createSymbolTable(mp, ast);
+      FeatureConfigurationPartialTool.createSymbolTable(ast, mp);
       FeatureConfigurationPartialTool.checkCoCos(ast);
 
       //No symbol table is stored for partial feature configuration models
@@ -144,26 +151,9 @@ public class FeatureConfigurationPartialTool {
     }
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("java -jar FeatureConfigurationPartialTool.jar", getOptions(), true);
+      formatter.printHelp("java -jar FeatureConfigurationPartialTool.jar", options, true);
       Log.error("0xFD112 An exception occured while processing the CLI input!", e);
     }
-  }
-
-  protected static Options getOptions() {
-    Options options = new Options();
-    options.addOption("h", "help", false, "Prints this help dialog");
-    options.addOption("i", "input", true,
-        "Reads the (mandatory) source file resp. the contents of the model");
-    options.addOption("o", "output", true, "Path of generated files");
-    options.addOption("path", true, "Sets the artifact path for imported symbols");
-
-    Option prettyprint = new Option("pp",
-        "Prints the AST to stdout and, if present, the specified output file");
-    prettyprint.setOptionalArg(true);
-    prettyprint.setLongOpt("prettyprint");
-    options.addOption(prettyprint);
-
-    return options;
   }
 
 }

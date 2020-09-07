@@ -110,13 +110,24 @@ public class FeatureDiagramToolTest {
   @Test
   public void testPrettyPrint() {
     FeatureDiagramTool.main(new String[] {
-        "-i", "BasicElements.fd",
+        "-i", validFD("BasicElements"),
         "-pp"
     });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.startsWith("usage: java -jar FeatureDiagramTool.jar"));
+    assertEquals(printed,"/* (c) https://github.com/MontiCore/monticore */\n"
+        + "package fdvalid;\n"
+        + "\n"
+        + "featurediagram BasicElements {\n"
+        + "  A -> B & C? & D;\n"
+        + "  A -> E ^ F ^ G;\n"
+        + "  C -> H | I | J;\n"
+        + "  D -> [0..*] of {K, L, M};\n"
+        + "  M requires E;\n"
+        + "  C excludes I;\n"
+        + "  E excludes J;\n"
+        + "}");
     assertEquals(0, Log.getErrorCount());
   }
 
