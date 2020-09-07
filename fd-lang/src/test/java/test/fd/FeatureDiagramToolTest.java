@@ -120,14 +120,6 @@ public class FeatureDiagramToolTest {
     assertEquals(0, Log.getErrorCount());
   }
 
-  //      options.addOption("h", "help", false, "Prints this help dialog");
-  //    options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
-  //    options.addOption("path", true, "Sets the artifact path for imported symbols");
-  //    options.addOption("pp", "prettyprint", true,"Prints the AST to stdout or the specified output file");
-  //    options.addOption("s", "symboltable", true,"Serializes and prints the symbol table to stdout and the specified output file");
-  //  //    options.addOption("r", "report", true, "Prints reports of the parsed artifact to the specified directory");
-  //    options.addOption("o", "output", true, "Path of generated files");
-
   private String validFD(String name) {
     return "src/test/resources/fdvalid/" + name + ".fd";
   }
