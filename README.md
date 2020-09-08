@@ -17,6 +17,8 @@ or extending the feature configuration language is located
 
 # Feature Diagram Languages in MontiCore
 
+[[_TOC_]]
+
 The models of the feature diagram language (FDL) are called *feature diagrams (FDs)*. Sometimes
 the term feature model is used interchangeably. 
 An FD describes a software or system family in terms of 
@@ -141,7 +143,11 @@ FD below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`,
 and `Asia` requires to select either a `Large` or a `Medium` memory.
 
 ## Tools
-The FDL component provides the following three tools:
+The FDL component provides the four tools that are explained in more detail below:
+* The [Feature Model Analysis CLI Tool (FACT)][clitool] enables executing analyses against feature diagrams and feature configuration both via CLI and Java API
+* The [FeatureDiagramTool][FDtool] enables fine-grained options for processing feature diagram models both via CLI and Java API
+* The [FeatureConfigurationTool][FCtool] enables fine-grained options to process feature configuration models both via CLI and Java API
+* The [FeatureConfigurationPartialTool][PFCtool] enables fine-grained options to process partial feature configuration models both via CLI and Java API
 
 ### [The FeatureModelAnalysisCLITool][clitool] 
 The [Feature Model Analysis CLI Tool (FACT)][clitool] coordinates the execution of one or more several analyses against a FD
