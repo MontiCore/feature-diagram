@@ -2,6 +2,7 @@
 [clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
 [FDtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
 [FCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationTool.java
+[PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialTool.java
 
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
@@ -148,7 +149,7 @@ and, optionally, additional information (depends on the analysis kinds) in form 
 An overview of the different analyses is given by [[BSRC10]](https://doi.org/10.1016/j.is.2010.01.001).
 
 FACT can be used as follows:
-```java -jar FACT.jar <Car.fd> [-<analysis>]+```, where
+`java -jar FACT.jar <Car.fd> [-<analysis>]+`, where
 * `<Car.fd>` is the (optionally, qualified) fileName of an FD "Car"
 * `<analysis>` is the name of an analysis followed by arguments for the analysis that depend on the type of analysis.
 
@@ -178,7 +179,7 @@ The result, in this case `true` or `false`, is printed to the console.
 * `ASTFeatureConfiguration readFeatureConfiguration(String modelFile, ModelPath symbolInputPath)`, to read in a feature configuration model
 
 Example:
-```
+```groovy
 ModelPath mp = new ModelPath();
 mp.addEntry(Paths.get("target"));
 
@@ -196,36 +197,94 @@ else{
 
 ### [The FeatureDiagramTool][FDtool] 
 The [FeatureDiagramTool][FDtool] offers both CLI and a Java API for processing FeatureDiagram models. 
-It contains the following (static) methods:
+It provides through the CLI as follows:
+
+`java -jar FeatureDiagramTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+        
+where the arguments are:
+* `-h`,`--help`                  Prints this help dialog
+* `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
+* `-o`,`--output <outPath>`      Path of generated files
+* `-path <p>`                    Sets the artifact path for imported symbols. The value can be a 
+                                 single path or a comma-separated list of multiple paths.
+* `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
+* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
+                                 to the specified output file
+
+For using the tool as Java API, it contains the following (static) methods:
 * `ASTFDCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
-* `FeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at the passed path and 
-  instantiates the symbol table using passed modelpath entries for finding imported FDs
-* `FeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp)` instantiates the symbol table 
-  using the passed AST as basis and the passed modelpath entries for finding imported FDs
+* `IFeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
+  the passed path and instantiates the symbol table using passed modelpath entries for finding imported FDs
+* `IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp)` instantiates the 
+  symbol table using the passed AST as basis and the passed modelpath entries for finding imported FDs
 * `void checkCoCos(ASTFDCompilationUnit ast)` checks all context conditions of the FDL against the passed AST
-* `File storeSymbols(ASTFDCompilationUnit ast, String fileName)` stores the symbol table for the passed ast in a file with the path fileName. 
-  If the file exists, it is overridden. Otherwise, a new file is created.
-* `ASTFeatureDiagram run(String modelFile, ModelPath mp)` parses the passed modelFile, creates the symbol table, 
-  checks the context conditions, and then stores the symbol table.
-* `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, checks the context conditions, and stores symbol table - all
-  without an explicit modelpath. Care: this can only take into account imported FDs if these are located next to the passed FD modelFile.
+* `String storeSymbols(IFeatureDiagramArtifactScope scope, String fileName)` stores the symbol table 
+  for the passed artifact scope in a file with the passed fileName. If the file exists, it is overridden. 
+  Otherwise, a new file is created.
+* `String storeSymbols(IFeatureDiagramArtifactScope scope, Path out)` stores the symbol table for 
+  the passed artifact scope in a file with the usual name, package, and fileEnding at the passed 
+  'out' location. If the file exists, it is overridden. Otherwise, a new file is created.
+* `ASTFeatureDiagram run(String modelFile, Path out, ModelPath mp)` parses the passed modelFile, creates the 
+  symbol table, checks the context conditions, and then stores the symbol table at the passed location.
+* `ASTFeatureDiagram run(String modelFile, ModelPath mp)` parses the passed modelFile, creates the 
+  symbol table, checks the context conditions, and then stores the symbol table.
+* `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, 
+  checks the context conditions, and stores symbol table - all without an explicit modelpath. Care: 
+  this can only take into account imported FDs if these are located next to the passed FD modelFile.
 
 ### [The FeatureConfigurationTool][FCtool] 
-The [FeatureConfigurationTool][FCtool] offers a Java API for processing FeatureDiagram models. 
-It contains the following (static) methods:
-* `ASTFDCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
-* `FeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at the passed path and 
-  instantiates the symbol table using passed modelpath entries for finding imported FDs
-* `FeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp)` instantiates the symbol table 
-  using the passed AST as basis and the passed modelpath entries for finding imported FDs
-* `void checkCoCos(ASTFDCompilationUnit ast)` checks all context conditions of the FDL against the passed AST
-* `File storeSymbols(ASTFDCompilationUnit ast, String fileName)` stores the symbol table for the passed ast in a file with the path fileName. 
-  If the file exists, it is overridden. Otherwise, a new file is created.
-* `ASTFeatureDiagram run(String modelFile, ModelPath mp)` parses the passed modelFile, creates the symbol table, 
-  checks the context conditions, and then stores the symbol table.
-* `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, checks the context conditions, and stores symbol table - all
-  without an explicit modelpath. Care: this can only take into account imported FDs if these are located next to the passed FD modelFile.
+The [FeatureConfigurationTool][FCtool] offers both CLI and a Java API for processing FeatureConfiguration models. 
+It provides through the CLI as follows:
 
+`java -jar FeatureConfigurationTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]]`
+        
+where the arguments are:
+* `-h`,`--help`                  Prints this help dialog
+* `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
+* `-o`,`--output <outPath>`      Path of generated files
+* `-path <p>`                    Sets the artifact path for imported symbols. The value can be a 
+                                 single path or a comma-separated list of multiple paths.
+* `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
+
+For using the tool as Java API, it contains the following (static) methods:
+* `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
+* `IFeatureConfigurationArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
+  the passed path and instantiates the symbol table using passed modelpath entries for finding FDs
+* `IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp)` instantiates the 
+  symbol table using the passed AST as basis and the passed modelpath entries for finding FDs
+* `ASTFeatureConfiguration run(String modelFile, ModelPath mp)` parses the passed modelFile and creates 
+  the symbol table. Through this, conformance to the feature model is checked as well.
+* `ASTFeatureConfiguration run(String modelFile)` parses the passed modelFile and creates 
+   the symbol table. Through this, conformance to the feature model is checked as well - all without 
+   an explicit modelpath. Care: this can only take into account FDs if these are located next to the 
+   passed FC modelFile.
+   
+### [The FeatureConfigurationPartialTool][PFCtool] 
+The [FeatureConfigurationPartialTool][PFCtool] offers both CLI and a Java API for processing PartialFeatureConfiguration models. 
+It provides through the CLI as follows:
+
+`java -jar FeatureConfigurationPartialTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]]`
+        
+where the arguments are:
+* `-h`,`--help`                  Prints this help dialog
+* `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
+* `-o`,`--output <outPath>`      Path of generated files
+* `-path <p>`                    Sets the artifact path for imported symbols. The value can be a 
+                                 single path or a comma-separated list of multiple paths.
+* `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
+
+For using the tool as Java API, it contains the following (static) methods:
+* `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
+* `IFeatureConfigurationPartialArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
+  the passed path and instantiates the symbol table using passed modelpath entries for finding FDs
+* `IFeatureConfigurationPartialArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp)` instantiates the 
+  symbol table using the passed AST as basis and the passed modelpath entries for finding FDs
+* `ASTFeatureConfiguration run(String modelFile, ModelPath mp)` parses the passed modelFile and creates 
+  the symbol table. Through this, conformance to the feature model is checked as well.
+* `ASTFeatureConfiguration run(String modelFile)` parses the passed modelFile and creates 
+   the symbol table. Through this, conformance to the feature model is checked as well - all without 
+   an explicit modelpath. Care: this can only take into account FDs if these are located next to the 
+   passed modelFile.
 
 ## Further Information
 

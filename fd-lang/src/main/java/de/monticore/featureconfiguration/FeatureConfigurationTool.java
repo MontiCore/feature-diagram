@@ -54,7 +54,7 @@ public class FeatureConfigurationTool {
    * @return
    */
   public static IFeatureConfigurationArtifactScope createSymbolTable(String model, ModelPath mp) {
-    return createSymbolTable(mp, parse(model));
+    return createSymbolTable(parse(model), mp);
   }
 
   /**
@@ -64,8 +64,7 @@ public class FeatureConfigurationTool {
    * @param ast
    * @return
    */
-  public static IFeatureConfigurationArtifactScope createSymbolTable(ModelPath mp,
-      ASTFCCompilationUnit ast) {
+  public static IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp) {
     FeatureConfigurationSymbolTableCreatorDelegator symbolTable = FeatureConfigurationMill
         .featureConfigurationSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(createGlobalScope(mp))
@@ -88,7 +87,7 @@ public class FeatureConfigurationTool {
     final ASTFCCompilationUnit ast = parse(modelFile);
 
     // setup the symbol table
-    createSymbolTable(mp, ast);
+    createSymbolTable(ast, mp);
 
     // currently no context conditions exist for feature configurations.
     // Also, do not store artifact scope
@@ -109,7 +108,7 @@ public class FeatureConfigurationTool {
     }
 
     // setup the symbol table
-    createSymbolTable(new ModelPath(path, FeatureDiagramTool.SYMBOL_OUT), ast);
+    createSymbolTable(ast, new ModelPath(path, FeatureDiagramTool.SYMBOL_OUT));
 
     // currently no context conditions exist for feature configurations.
     // Also, do not store artifact scope
@@ -159,7 +158,7 @@ public class FeatureConfigurationTool {
 
       // parse and create symtab
       ASTFCCompilationUnit ast = FeatureConfigurationTool.parse(input);
-      FeatureConfigurationTool.createSymbolTable(mp, ast);
+      FeatureConfigurationTool.createSymbolTable(ast, mp);
 
       // FeatureConfiguration langage has no CoCos
 

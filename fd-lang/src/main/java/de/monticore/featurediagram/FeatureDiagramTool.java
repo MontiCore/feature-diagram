@@ -12,6 +12,7 @@ import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 import org.apache.commons.cli.*;
@@ -70,8 +71,7 @@ public class FeatureDiagramTool {
    * @param mp
    * @return
    */
-  public static IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast,
-      ModelPath mp) {
+  public static IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp) {
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
         .featureDiagramSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(createGlobalScope(mp))
@@ -109,8 +109,8 @@ public class FeatureDiagramTool {
    */
   public static String storeSymbols(IFeatureDiagramArtifactScope scope, Path out) {
     Path f = out
-        .resolve(Paths.get(scope.getPackageName()))
-        .resolve(scope.getName() + ".fdsym");
+        .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
+        .resolve(scope.getName()+".fdsym");
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
     return serialized;
