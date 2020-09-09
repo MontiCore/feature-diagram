@@ -1,0 +1,154 @@
+import de.monticore.MCTask
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation;
+
+plugins {
+    id "java"
+    id "monticore" // MontiCore Plugin
+    id "maven-publish"
+    id "com.github.johnrengelman.shadow"
+}
+
+group = 'de.monticore.lang'
+version = '0.0.3-SNAPSHOT'
+
+def monticore_version = '6.3.0-SNAPSHOT'
+def plexus_archiver_version = '2.8.2'
+def junit_version = '4.12'
+def logback_version = '1.1.2'
+def commons_cli_version = '1.2'
+
+def grammarDir = 'src/main/grammars'
+
+repositories {
+    mavenLocal()
+    maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        url repo
+    }
+}
+
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+dependencies {
+    implementation group: 'de.monticore', name: 'monticore-grammar', version: monticore_version
+    implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
+    implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+
+    testImplementation group: 'junit', name: 'junit', version: junit_version
+    testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
+}
+
+// configure non-standard source sets
+sourceSets {
+    main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+
+// Fixes issue with java plugin in projects without resources
+compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
+
+buildDir = file("$projectDir/target")
+
+
+sourceCompatibility = '1.8'
+
+dependencies {
+    grammar (group:'de.monticore', name:'monticore-grammar', version:monticore_version, classifier: "grammars",
+            changing: true) { force = true }
+}
+
+description = 'Feature Diagram Language'
+
+task  generateFeatureDiagram (type: MCTask) {
+    grammar = file "$grammarDir/de/monticore/FeatureDiagram.mc4"
+    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+    def uptoDate = incCheck("de/monticore/FeatureDiagram.mc4")
+    outputs.upToDateWhen { uptoDate }
+}
+
+task  generateFeatureConfiguration (type: MCTask) {
+    grammar = file "$grammarDir/de/monticore/FeatureConfiguration.mc4"
+    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+    def uptoDate = incCheck("de/monticore/FeatureConfiguration.mc4")
+    outputs.upToDateWhen { uptoDate }
+}
+
+task  generateFeatureConfigurationPartial (type: MCTask) {
+    grammar = file "$grammarDir/de/monticore/FeatureConfigurationPartial.mc4"
+    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+    def uptoDate = incCheck("de/monticore/FeatureConfigurationPartial.mc4")
+    outputs.upToDateWhen { uptoDate }
+}
+
+generateFeatureConfiguration.dependsOn(generateFeatureDiagram)
+generateFeatureConfigurationPartial.dependsOn(generateFeatureConfiguration)
+
+compileJava {
+    dependsOn project.collect { it.tasks.withType(MCTask) }
+}
+
+// build sources jar with handwritten + generated sources
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from(sourceSets.main.allJava)
+}
+
+// build grammar jar as well
+task grammarJar(type: Jar) {
+    from ("$projectDir/$grammarDir"){ include "**/*.mc4" }
+    archiveClassifier = "grammars"
+}
+
+shadowJar { // all in one jar
+    manifest {
+        attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
+    }
+    minimize() // sort out unused files automatically (does not find everything we don't need)
+
+    archiveFileName  =  "FeatureDiagramTool.jar"
+}
+
+task shadowJar2(type: Jar, dependsOn: shadowJar) {
+    archiveFileName = 'FeatureConfigurationTool.jar'
+    manifest {
+        attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationTool')
+    }
+    from zipTree(shadowJar.archiveFile)
+}
+
+task shadowJar3(type: Jar, dependsOn: shadowJar) {
+    archiveFileName = 'FeatureConfigurationPartialTool.jar'
+    manifest {
+        attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool')
+    }
+    from zipTree(shadowJar.archiveFile)
+}
+
+jar.enabled(false)
+
+// configure deployment
+publishing {
+    // configure what artifacts to publish
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "$project.name"
+            from components.java
+            artifact sourcesJar
+            artifact grammarJar
+        }
+    }
+    repositories.maven {
+        credentials.username mavenUser
+        credentials.password mavenPassword
+        def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+        def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+        url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    }
+}

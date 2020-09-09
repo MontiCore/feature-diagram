@@ -45,7 +45,7 @@ public class FeatureConfigurationCoCoTest extends AbstractTest {
     ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
     ASTFCCompilationUnit ast = FeatureConfigurationTool
         .parse("src/test/resources/fcinvalid/" + modelFile);
-    FeatureConfigurationTool.createSymbolTable(mp, ast);
+    FeatureConfigurationTool.createSymbolTable(ast, mp);
     return ast;
   }
 

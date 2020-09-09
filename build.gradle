@@ -1,11 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 import de.monticore.MCTask
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation;
 
 plugins {
     id "java"
     id "monticore"  version "6.3.0-SNAPSHOT" // MontiCore Plugin
     id "maven-publish"
-    id "com.github.johnrengelman.shadow" version "4.0.4"
+    id "com.github.johnrengelman.shadow" version "6.0.0"
 }
 
 def monticore_version = '6.3.0-SNAPSHOT'
@@ -64,87 +65,6 @@ subprojects {
     sourceCompatibility = '1.8'
 }
 
-project(':fd-lang') {
-    apply plugin : 'java'
-    apply plugin : 'monticore'
-
-    dependencies {
-        grammar (group:'de.monticore', name:'monticore-grammar', version:monticore_version, classifier: "grammars",
-                changing: true) { force = true }
-    }
-
-    description = 'Feature Diagram Language'
-
-    task  generateFeatureDiagram (type: MCTask) {
-        grammar = file "$grammarDir/de/monticore/FeatureDiagram.mc4"
-        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("de/monticore/FeatureDiagram.mc4")
-        outputs.upToDateWhen { uptoDate }
-    }
-
-    task  generateFeatureConfiguration (type: MCTask) {
-        grammar = file "$grammarDir/de/monticore/FeatureConfiguration.mc4"
-        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("de/monticore/FeatureConfiguration.mc4")
-        outputs.upToDateWhen { uptoDate }
-    }
-
-    task  generateFeatureConfigurationPartial (type: MCTask) {
-        grammar = file "$grammarDir/de/monticore/FeatureConfigurationPartial.mc4"
-        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("de/monticore/FeatureConfigurationPartial.mc4")
-        outputs.upToDateWhen { uptoDate }
-    }
-
-    generateFeatureConfiguration.dependsOn(generateFeatureDiagram)
-    generateFeatureConfigurationPartial.dependsOn(generateFeatureConfiguration)
-
-    compileJava {
-        dependsOn project.collect { it.tasks.withType(MCTask) }
-    }
-
-    // build sources jar with handwritten + generated sources
-    task sourcesJar(type: Jar) {
-        archiveClassifier = 'sources'
-        from(sourceSets.main.allJava)
-    }
-
-    // build grammar jar as well
-    task grammarJar(type: Jar) {
-        from ("$projectDir/$grammarDir"){ include "**/*.mc4" }
-        archiveClassifier = "grammars"
-    }
-
-//    shadowJar { // all in one jar
-//        manifest {
-//            attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
-//        }
-//        minimize() // sort out unused files automatically (does not find everything we don't need)
-//
-//        archiveFileName  =  "FeatureDiagramTool.jar"
-//    }
-
-    // configure deployment
-    publishing {
-        // configure what artifacts to publish
-        publications {
-            mavenJava(MavenPublication) {
-                artifactId = "$project.name"
-                from components.java
-                artifact sourcesJar
-                artifact grammarJar
-            }
-        }
-        repositories.maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-        }
-    }
-}
-
 
 project(':fd-analysis') {
     apply plugin: 'java'
@@ -166,10 +86,10 @@ project(':fd-analysis') {
     }
 
     shadowJar { // all in one jar
+        classifier = ''
         manifest {
             attributes "Main-Class": "mcfdtool.FACT"
         }
-        minimize() // sort out unused files automatically (does not find everything we don't need)
         // we do not need artifacts conforming to these regexes either:
 //        exclude "freemarker/**"
 //        exclude "com/**"
@@ -178,6 +98,8 @@ project(':fd-analysis') {
 
         archiveFileName  =  "FACT.jar"
     }
+
+    jar.enabled(false)
 
     // configure deployment
     publishing {
