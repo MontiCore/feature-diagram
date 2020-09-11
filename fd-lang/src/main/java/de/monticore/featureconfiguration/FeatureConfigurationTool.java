@@ -188,7 +188,7 @@ public class FeatureConfigurationTool {
 
     Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
     modelPath.setArgs(Option.UNLIMITED_VALUES);
-    modelPath.setValueSeparator(',');
+    modelPath.setValueSeparator(':');
     options.addOption(modelPath);
 
     Option prettyprint = new Option("pp", true, "Prints the AST to stdout and, if present, the specified output file");

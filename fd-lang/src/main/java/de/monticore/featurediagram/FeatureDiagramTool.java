@@ -12,6 +12,7 @@ import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
+import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
@@ -239,6 +240,7 @@ public class FeatureDiagramTool {
         IFeatureDiagramArtifactScope symbolTable = FeatureDiagramTool.createSymbolTable(ast, mp);
         FeatureDiagramTool.checkCoCos(ast);
 
+        JsonPrinter.enableIndentation();
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
           String symbolFile = output.resolve(s).toString();
@@ -273,7 +275,7 @@ public class FeatureDiagramTool {
 
     Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
     modelPath.setArgs(Option.UNLIMITED_VALUES);
-    modelPath.setValueSeparator(',');
+    modelPath.setValueSeparator(':');
     options.addOption(modelPath);
 
     Option symboltable = new Option("s", true,"Serializes and prints the symbol table to stdout, if present, the specified output file");
