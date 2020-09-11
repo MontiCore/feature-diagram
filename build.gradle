@@ -20,7 +20,7 @@ def grammarDir = 'src/main/grammars'
 
 allprojects {
     group = 'de.monticore.lang'
-    version = '0.0.3-SNAPSHOT'
+    version = monticore_version
 
     repositories {
         mavenLocal()
