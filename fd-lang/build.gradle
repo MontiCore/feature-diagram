@@ -1,5 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
 import de.monticore.MCTask
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation;
 
 plugins {
     id "java"
@@ -115,7 +115,7 @@ shadowJar { // all in one jar
     archiveFileName  =  "FeatureDiagramTool.jar"
 }
 
-task shadowJar2(type: Jar, dependsOn: shadowJar) {
+task buildFeatureConfigurationToolCLI(type: Jar, dependsOn: shadowJar) {
     archiveFileName = 'FeatureConfigurationTool.jar'
     manifest {
         attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationTool')
@@ -123,7 +123,7 @@ task shadowJar2(type: Jar, dependsOn: shadowJar) {
     from zipTree(shadowJar.archiveFile)
 }
 
-task shadowJar3(type: Jar, dependsOn: shadowJar) {
+task buildFeatureConfigurationToolPartialCLI(type: Jar, dependsOn: shadowJar) {
     archiveFileName = 'FeatureConfigurationPartialTool.jar'
     manifest {
         attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool')
