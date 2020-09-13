@@ -117,6 +117,8 @@ For a description of the generator and feature analyses, please have a look
 at **[the FeatureDiagram description][FeatureDiagram MLC]**. 
 
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+___
+___
 
 ### The Language for Partial Feature Configurations
 
