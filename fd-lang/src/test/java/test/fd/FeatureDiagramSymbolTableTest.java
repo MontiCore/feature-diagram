@@ -17,11 +17,11 @@ import static org.junit.Assert.*;
 
 public class FeatureDiagramSymbolTableTest extends AbstractTest {
 
-  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
+  protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
           throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
-    FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
+    IFeatureDiagramGlobalScope globalScope = FeatureDiagramMill
         .featureDiagramGlobalScopeBuilder()
         .setModelPath(mp)
         .setModelFileExtension("fd")
@@ -33,7 +33,7 @@ public class FeatureDiagramSymbolTableTest extends AbstractTest {
         .createFromAST(ast);
   }
 
-  protected FeatureDiagramArtifactScope setupSymbolTable(String modelFile)
+  protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile)
           throws IOException {
     return setupSymbolTable(modelFile, new ModelPath(Paths.get("src", "test", "resources")));
   }
@@ -41,7 +41,7 @@ public class FeatureDiagramSymbolTableTest extends AbstractTest {
   @Test
   public void test() throws IOException {
     String model = "src/test/resources/fdvalid/BasicElements.fd";
-    FeatureDiagramArtifactScope scope = setupSymbolTable(model);
+    IFeatureDiagramArtifactScope scope = setupSymbolTable(model);
 
     assertTrue(null != scope);
     FeatureDiagramSymbol fd = scope.resolveFeatureDiagram("BasicElements").orElse(null);
@@ -65,7 +65,7 @@ public class FeatureDiagramSymbolTableTest extends AbstractTest {
 
   @Test
   public void testImport() throws IOException {
-    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/LeafImport.fd");
+    IFeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/LeafImport.fd");
     Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("fdvalid.LeafImport.C");
     assertTrue(featureSymbolOpt.isPresent());
     FeatureSymbol featureSymbol = featureSymbolOpt.get();
@@ -79,7 +79,7 @@ public class FeatureDiagramSymbolTableTest extends AbstractTest {
 
   @Test
   public void testTransitiveImport() throws IOException {
-    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/TransitiveImport.fd");
+    IFeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/TransitiveImport.fd");
     Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("fdvalid.TransitiveImport.AA");
     assertTrue(featureSymbolOpt.isPresent());
     FeatureSymbol featureSymbol = featureSymbolOpt.get();
@@ -103,7 +103,7 @@ public class FeatureDiagramSymbolTableTest extends AbstractTest {
 
   @Test
   public void testRootImport() throws IOException {
-    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/RootImport.fd");
+    IFeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/RootImport.fd");
     Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("fdvalid.RootImport.Y");
     assertTrue(featureSymbolOpt.isPresent());
     FeatureSymbol featureSymbol = featureSymbolOpt.get();
@@ -122,7 +122,7 @@ public class FeatureDiagramSymbolTableTest extends AbstractTest {
 
   @Test
   public void testSurroundedImport() throws IOException {
-    FeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/SurroundedImport.fd");
+    IFeatureDiagramArtifactScope fdScope = setupSymbolTable("src/test/resources/fdvalid/SurroundedImport.fd");
     Optional<FeatureSymbol> featureSymbolOpt = fdScope.resolveFeature("fdvalid.SurroundedImport.C");
     assertTrue(featureSymbolOpt.isPresent());
     FeatureSymbol featureSymbol = featureSymbolOpt.get();

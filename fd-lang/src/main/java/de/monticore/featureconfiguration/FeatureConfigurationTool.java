@@ -4,11 +4,17 @@ package de.monticore.featureconfiguration;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.*;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbolTableCreatorDelegator;
+import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
+import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
 import de.monticore.featurediagram.FeatureDiagramTool;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
+import org.apache.commons.cli.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -16,19 +22,6 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 public class FeatureConfigurationTool {
-
-  /**
-   * Use the single argument for specifying the single input feature configuration file.
-   *
-   * @param args
-   */
-  public static void main(String[] args) {
-    if (args.length != 1) {
-      Log.error("0xFC102 Please specify only one single path to the input model.");
-      return;
-    }
-    run(args[0]);
-  }
 
   /**
    * Parse the model contained in the specified file.
@@ -61,7 +54,7 @@ public class FeatureConfigurationTool {
    * @return
    */
   public static IFeatureConfigurationArtifactScope createSymbolTable(String model, ModelPath mp) {
-    return createSymbolTable(mp, parse(model));
+    return createSymbolTable(parse(model), mp);
   }
 
   /**
@@ -71,8 +64,7 @@ public class FeatureConfigurationTool {
    * @param ast
    * @return
    */
-  public static IFeatureConfigurationArtifactScope createSymbolTable(ModelPath mp,
-      ASTFCCompilationUnit ast) {
+  public static IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp) {
     FeatureConfigurationSymbolTableCreatorDelegator symbolTable = FeatureConfigurationMill
         .featureConfigurationSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(createGlobalScope(mp))
@@ -95,7 +87,7 @@ public class FeatureConfigurationTool {
     final ASTFCCompilationUnit ast = parse(modelFile);
 
     // setup the symbol table
-    createSymbolTable(mp, ast);
+    createSymbolTable(ast, mp);
 
     // currently no context conditions exist for feature configurations.
     // Also, do not store artifact scope
@@ -116,12 +108,95 @@ public class FeatureConfigurationTool {
     }
 
     // setup the symbol table
-    createSymbolTable(new ModelPath(path, FeatureDiagramTool.SYMBOL_LOCATION), ast);
+    createSymbolTable(ast, new ModelPath(path, FeatureDiagramTool.SYMBOL_OUT));
 
     // currently no context conditions exist for feature configurations.
     // Also, do not store artifact scope
 
     return ast.getFeatureConfiguration();
+  }
+
+  /**
+   * This main method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
+  public static void main(String[] args) {
+    Log.initWARN();
+    try {
+      CommandLineParser parser = new BasicParser();
+      CommandLine cmd = parser.parse(getOptions(), args);
+      if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("java -jar FeatureConfigurationTool.jar", getOptions(), true);
+        return;
+      }
+
+      //Set input file and parse it
+      if (!cmd.hasOption("input")) {
+        Log.error("0xFC102 The input file is a mandatory argument of the FeatureConfigurationTool!");
+      }
+      String input = cmd.getOptionValue("input");
+
+      //Set path for imported symbols
+      ModelPath mp = new ModelPath();
+      if (cmd.hasOption("path")) {
+        mp.addEntry(Paths.get(cmd.getOptionValue("path")));
+      }
+      else{
+        //else use location in which input model is located as model path
+        Path modelFolder = Paths.get(input).toAbsolutePath().getParent();
+        mp.addEntry(modelFolder);
+      }
+
+      //Set output path for stored symbols (or use default)
+      Path output = Paths.get("target");
+      if (cmd.hasOption("output")) {
+        output = Paths.get(cmd.getOptionValue("output"));
+      }
+
+      // parse and create symtab
+      ASTFCCompilationUnit ast = FeatureConfigurationTool.parse(input);
+      FeatureConfigurationTool.createSymbolTable(ast, mp);
+
+      // FeatureConfiguration langage has no CoCos
+
+      // FeatureConfiguration does not store symbol tables
+
+      if (cmd.hasOption("prettyprint")) {
+        String prettyPrinted = FeatureConfigurationPrinter.print(ast);
+        System.out.println(prettyPrinted);
+        String outFile = cmd.getOptionValue("prettyprint");
+        if(null!=outFile){
+          FileReaderWriter.storeInFile(output.resolve(outFile), prettyPrinted);
+        }
+      }
+    }
+    catch (Exception e) {
+      HelpFormatter formatter = new HelpFormatter();
+      formatter.printHelp("java -jar FeatureConfigurationTool.jar", getOptions(), true);
+      Log.error("0xFC103 An exception occured while processing the CLI input!", e);
+    }
+  }
+
+  public static Options getOptions() {
+    Options options = new Options();
+    options.addOption("h", "help", false, "Prints this help dialog");
+    options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
+    options.addOption("o", "output", true, "Path of generated files");
+
+    Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
+    modelPath.setArgs(Option.UNLIMITED_VALUES);
+    modelPath.setValueSeparator(':');
+    options.addOption(modelPath);
+
+    Option prettyprint = new Option("pp", true, "Prints the AST to stdout and, if present, the specified output file");
+    prettyprint.setOptionalArg(true);
+    prettyprint.setLongOpt("prettyprint");
+    options.addOption(prettyprint);
+
+    return options;
   }
 
 }

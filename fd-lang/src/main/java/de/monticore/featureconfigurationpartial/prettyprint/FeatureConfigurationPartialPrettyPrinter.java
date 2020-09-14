@@ -2,6 +2,7 @@
 package de.monticore.featureconfigurationpartial.prettyprint;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfigurationNode;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
@@ -19,14 +20,14 @@ public class FeatureConfigurationPartialPrettyPrinter {
             .setFeatureConfigurationVisitor(new FeatureConfigurationPrinter(printer))
             .build();
 
-    for (ASTFeatureConfiguration node : nodes) {
+    for (ASTFeatureConfigurationNode node : nodes) {
       node.accept(visitor);
       printer.println();
     }
     return printer.getContent();
   }
 
-  public static String print(ASTFeatureConfiguration node) {
+  public static String print(ASTFeatureConfigurationNode node) {
     IndentPrinter printer = new IndentPrinter();
     FeatureConfigurationPartialVisitor visitor =
         FeatureConfigurationPartialMill.featureConfigurationPartialDelegatorVisitorBuilder()

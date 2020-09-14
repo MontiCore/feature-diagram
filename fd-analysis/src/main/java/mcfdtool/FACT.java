@@ -4,29 +4,16 @@ package mcfdtool;
 import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
-import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.FeatureDiagramTool;
-import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
-import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
-import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.IGlobalScope;
 import de.se_rwth.commons.logging.Log;
 import mcfdtool.analyses.*;
 import mcfdtool.transform.flatzinc.Constraint;
-import org.antlr.v4.runtime.RecognitionException;
 import org.apache.commons.cli.*;
-import org.chocosolver.solver.Model;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -300,7 +287,7 @@ public class FACT {
       String fdModelFile = cmd.getArgList().get(0).toString();
 
       //by default, use this for the symbol output
-      String symbolOutPath = FeatureDiagramTool.SYMBOL_LOCATION.toString();
+      String symbolOutPath = FeatureDiagramTool.SYMBOL_OUT.toString();
 
       //except if the option "symbolPath" is set, then use the passed location to store (and load) symbols
       if(cmd.hasOption("symbolPath")){

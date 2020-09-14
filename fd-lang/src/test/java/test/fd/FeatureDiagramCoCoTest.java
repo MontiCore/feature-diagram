@@ -7,6 +7,7 @@ import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramGlobalScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
@@ -68,7 +69,7 @@ public class FeatureDiagramCoCoTest extends AbstractTest {
       throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
-    FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
+    IFeatureDiagramGlobalScope globalScope = FeatureDiagramMill
         .featureDiagramGlobalScopeBuilder()
         .setModelPath(mp)
         .setModelFileExtension("fd")

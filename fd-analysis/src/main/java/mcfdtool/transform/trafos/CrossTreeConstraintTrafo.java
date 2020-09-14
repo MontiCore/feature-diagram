@@ -3,6 +3,7 @@ package mcfdtool.transform.trafos;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.featurediagram._ast.ASTExcludes;
 import de.monticore.featurediagram._ast.ASTFeatureConstraint;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
@@ -157,18 +158,36 @@ public class CrossTreeConstraintTrafo implements FeatureDiagramVisitor {
 
   @Override
   public void endVisit(ASTRequires node) {
-    String leftName = variables.get(node.getLeft()).getName() + "IsUnselected";
-    String rightName = variables.get(node.getRight()).getName() + "IsSelected";
+    String leftName = getExpressionVarName(node.getLeft(), true);
+    String rightName = getExpressionVarName(node.getRight(), false);
     String name = variables.get(node).getName();
     flatZincModel.add(new Constraint("bool_or", leftName, rightName, name));
   }
 
   @Override
   public void endVisit(ASTExcludes node) {
-    String leftName = variables.get(node.getLeft()).getName() + "IsUnselected";
-    String rightName = variables.get(node.getRight()).getName() + "IsUnselected";
+    String leftName = getExpressionVarName(node.getLeft(), true);
+    String rightName = getExpressionVarName(node.getRight(), true);
     String name = variables.get(node).getName();
     flatZincModel.add(new Constraint("bool_or", leftName, rightName, name));
+  }
+
+  protected String getExpressionVarName(ASTExpression ast, boolean negate) {
+    Variable variable = variables.get(ast);
+    if (Variable.Type.BOOL != variable.getType()) {
+      if (!negate) {
+        return variable.getName() + "IsSelected";
+      }
+      else {
+        return variable.getName() + "IsUnselected";
+      }
+    }
+    if (!negate) {
+      return variable.getName();
+    }
+    else {
+      return variable.getName() + "Negated";
+    }
   }
 
   private String getTypeFromName(ASTNode node) {
