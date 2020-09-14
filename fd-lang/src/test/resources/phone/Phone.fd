@@ -1,16 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-
-package fdvalid;
-
 featurediagram Phone {
-
   Phone -> Memory & OS & Camera? & Screen;
   Memory -> Internal & External?;
   Internal -> [1..2] of {Small, Medium, Large};
   OS -> FruitOS ^ RobotOS;
   Screen -> Flexible | FullHD;
-
-  FruitOS excludes External;
-  Flexible requires RobotOS;
-
 }

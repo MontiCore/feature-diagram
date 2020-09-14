@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featureconfiguration._symboltable;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatures;
@@ -34,7 +35,7 @@ public class FeatureConfigurationSymbolTableCreator
   @Override public IFeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
 
-    IFeatureConfigurationArtifactScope artifactScope = de.monticore.featureconfiguration.FeatureConfigurationMill
+    IFeatureConfigurationArtifactScope artifactScope = FeatureConfigurationMill
         .featureConfigurationArtifactScopeBuilder()
         .setImportsList(new ArrayList<>())
         .setPackageName(packageName)
@@ -46,7 +47,7 @@ public class FeatureConfigurationSymbolTableCreator
     return artifactScope;
   }
 
-  public void handleImportStatements(ASTFCCompilationUnit rootNode) {
+  public static void handleImportStatements(ASTFCCompilationUnit rootNode) {
     List<ASTMCImportStatement> imports = rootNode.getMCImportStatementList();
     if (1 < imports.size()) {
       Log.error("0xFC010 The feature configuration '" + rootNode.getFeatureConfiguration().getName()

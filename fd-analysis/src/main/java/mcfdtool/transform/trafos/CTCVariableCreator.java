@@ -8,6 +8,7 @@ import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.featurediagram._ast.ASTExcludes;
 import de.monticore.featurediagram._ast.ASTRequires;
 import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
+import mcfdtool.transform.flatzinc.Constraint;
 import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.flatzinc.Variable;
 
@@ -35,6 +36,13 @@ public class CTCVariableCreator implements FeatureDiagramVisitor {
     Variable variable = new Variable(name, type, "var_is_introduced");
     flatZincModel.add(variable);
     names.put(node, variable);
+  }
+
+  protected void addNewBoolVariable(ASTNode node, String name) {
+    Variable variable = new Variable(name + "Negated", Variable.Type.BOOL, "var_is_introduced");
+    flatZincModel.add(variable);
+    flatZincModel.add(new Constraint("bool_not", name, name + "Negated"));
+    addNewVariable(node, Variable.Type.BOOL, name);
   }
 
   @Override
@@ -88,58 +96,58 @@ public class CTCVariableCreator implements FeatureDiagramVisitor {
 
   @Override
   public void visit(ASTLessEqualExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "leqExpr" + i++);
+    addNewBoolVariable(node, "leqExpr" + i++);
   }
 
   @Override
   public void visit(ASTGreaterEqualExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "geqExpr" + i++);
+    addNewBoolVariable(node, "geqExpr" + i++);
   }
 
   @Override
   public void visit(ASTLessThanExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "lessExpr" + i++);
+    addNewBoolVariable(node, "lessExpr" + i++);
   }
 
   @Override
   public void visit(ASTGreaterThanExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "greaterExpr" + i++);
+    addNewBoolVariable(node, "greaterExpr" + i++);
   }
 
   @Override
   public void visit(ASTEqualsExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "eqExpr" + i++);
+    addNewBoolVariable(node, "eqExpr" + i++);
   }
 
   @Override
   public void visit(ASTNotEqualsExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "neqExpr" + i++);
+    addNewBoolVariable(node, "neqExpr" + i++);
   }
 
   @Override
   public void visit(ASTBooleanAndOpExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "boolAndExpr" + i++);
+    addNewBoolVariable(node, "boolAndExpr" + i++);
   }
 
   @Override
   public void visit(ASTBooleanOrOpExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "boolOrExpr" + i++);
+    addNewBoolVariable(node, "boolOrExpr" + i++);
   }
 
   @Override
   public void visit(ASTBooleanNotExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "boolNotExpr" + i++);
+    addNewBoolVariable(node, "boolNotExpr" + i++);
   }
 
   @Override
   public void visit(ASTLogicalNotExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "logicalNotExpr" + i++);
+    addNewBoolVariable(node, "logicalNotExpr" + i++);
   }
 
   @Override
   public void visit(ASTConditionalExpression node) {
     //attention: bool is only a placeholder, actual type is set in endVisit method
-    addNewVariable(node, Variable.Type.BOOL, "condExpr" + i++);
+    addNewBoolVariable(node, "condExpr" + i++);
   }
 
   public void endVisit(ASTConditionalExpression node) {
@@ -149,18 +157,23 @@ public class CTCVariableCreator implements FeatureDiagramVisitor {
 
   @Override
   public void visit(ASTExcludes node) {
-    addNewVariable(node, Variable.Type.BOOL, "excludes" + i++);
+    addNewBoolVariable(node, "excludes" + i++);
   }
 
   @Override
   public void visit(ASTRequires node) {
-    addNewVariable(node, Variable.Type.BOOL, "requires" + i++);
+    addNewBoolVariable(node, "requires" + i++);
   }
 
   @Override
   public void visit(ASTNameExpression node) {
     Variable variable = Variable.newIntVariable(node.getName());
     names.put(node, variable);
+  }
+
+  @Override
+  public void endVisit(ASTBracketExpression node) {
+    names.put(node, names.get(node.getExpression()));
   }
 
   public Map<ASTNode, Variable> getVariables() {

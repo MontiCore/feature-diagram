@@ -4,10 +4,6 @@ package de.monticore.featurediagram._symboltable;
 
 import de.monticore.symboltable.serialization.JsonPrinter;
 
-import java.util.Collection;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 /**
  * This handwritten symbol table printer extends the generated one, because the serialization
  * strategy for FeatureSymbols deviates from the generated strategy. All FeatureSymbols are stored
@@ -23,20 +19,19 @@ public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTableP
     super(printer);
   }
 
-  @Override protected void serializeAdditionalFeatureDiagramSymbolAttributes(FeatureDiagramSymbol node) {
-    printer.array("features", node.getAllFeatures(), f->("\""+f.getName()+"\""));
+  @Override protected void serializeAdditionalFeatureDiagramSymbolAttributes(
+      FeatureDiagramSymbol node) {
+    printer.array("features", node.getAllFeatures(), f -> ("\"" + f.getName() + "\""));
   }
 
-  @Override public void traverse(IFeatureDiagramScope node) {
+  @Override public void traverse(IFeatureDiagramArtifactScope node) {
     // only store feature diagram symbols in the usual way. other symbols are omitted
-    if (!node.getLocalFeatureDiagramSymbols().isEmpty()) {
-      printer.beginArray("featureDiagramSymbols");
-      node.getLocalFeatureDiagramSymbols().stream().forEach(s -> s.accept(getRealThis()));
-      printer.endArray();
+    for (FeatureDiagramSymbol s : node.getLocalFeatureDiagramSymbols()) {
+      s.accept(getRealThis());
     }
   }
 
-  public  void traverse (FeatureDiagramSymbol node)  {
+  public void traverse(FeatureDiagramSymbol node) {
     //do not traverse spanned scope
   }
 

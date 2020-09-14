@@ -3,5 +3,11 @@ package fcvalid;
 
 import fdvalid.BasicElements;
 
-featureconfig SelectNone for BasicElements {
+featureconfig SelectOne for BasicElements {
+    select {
+      A
+    }
+    exclude {
+      C
+    }
 }

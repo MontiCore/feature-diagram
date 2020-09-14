@@ -22,6 +22,13 @@ public class FeatureConfigurationPrinter implements FeatureConfigurationVisitor 
 
   protected FeatureConfigurationVisitor realThis;
 
+  public static String print(ASTFCCompilationUnit node) {
+    IndentPrinter printer = new IndentPrinter();
+    FeatureConfigurationPrinter visitor = new FeatureConfigurationPrinter(printer);
+    visitor.handle(node);
+    return printer.getContent();
+  }
+
   public FeatureConfigurationPrinter(IndentPrinter printer){
     this.printer = printer;
     this.realThis = this;
