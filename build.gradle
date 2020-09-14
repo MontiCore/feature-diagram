@@ -9,7 +9,7 @@ plugins {
 
 allprojects {
     group = 'de.monticore.lang'
-    version = '0.0.3-SNAPSHOT'
+    version = monticore_version
 
     repositories {
         mavenLocal()
