@@ -91,7 +91,7 @@ public class FeatureConfigurationPartialToolTest {
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertEquals(printed, "/* (c) https://github.com/MontiCore/monticore */\n"
+    assertEquals("/* (c) https://github.com/MontiCore/monticore */\n"
         + "package fcvalid;\n"
         + "\n"
         + "import fdvalid.CarNavigation;\n"
@@ -99,7 +99,7 @@ public class FeatureConfigurationPartialToolTest {
         + "featureconfig BasicCarNavigation for fdvalid.CarNavigation {\n"
         + "  select { CarNavigation,VoiceControl,Display,SmallScreen,GPS,Memory,Small }\n"
         + "  exclude { Large }\n"
-        + "}");
+        + "}", printed);
     assertEquals(0, Log.getErrorCount());
   }
 

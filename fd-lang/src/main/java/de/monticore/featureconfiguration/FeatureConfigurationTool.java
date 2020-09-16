@@ -7,9 +7,6 @@ import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfiguration._symboltable.*;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
 import de.monticore.featurediagram.FeatureDiagramTool;
-import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -73,7 +70,8 @@ public class FeatureConfigurationTool {
    * @param ast
    * @return
    */
-  public static IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp) {
+  public static IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
+      ModelPath mp) {
     FeatureConfigurationSymbolTableCreatorDelegator symbolTable = FeatureConfigurationMill
         .featureConfigurationSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(createGlobalScope(mp))
@@ -106,7 +104,7 @@ public class FeatureConfigurationTool {
   public static String storeSymbols(IFeatureConfigurationArtifactScope scope, Path out) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
-        .resolve(scope.getName()+".fcsym");
+        .resolve(scope.getName() + ".fcsym");
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
     return serialized;
@@ -117,7 +115,8 @@ public class FeatureConfigurationTool {
    *
    * @return
    */
-  public static String storeSymbols(IFeatureConfigurationArtifactScope scope, String symbolFileName) {
+  public static String storeSymbols(IFeatureConfigurationArtifactScope scope,
+      String symbolFileName) {
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
@@ -126,6 +125,7 @@ public class FeatureConfigurationTool {
   /**
    * Processes a feature configuration (parsing, symbol table creation, and type check,
    * symbol table is not stored here) with the passed modelpath
+   *
    * @param modelFile
    * @param mp
    * @return
@@ -148,6 +148,7 @@ public class FeatureConfigurationTool {
    * Processes a feature configuration (parsing, symbol table creation, and type check,
    * symbol table is not stored here). Searches for feature models that are located in files
    * in the same directory as the passed FC.
+   *
    * @param modelFile
    * @return
    */
@@ -157,7 +158,7 @@ public class FeatureConfigurationTool {
 
     //reconstruct modelpath from input file
     Path path = Paths.get(modelFile).toAbsolutePath().getParent();
-    if(ast.isPresentPackage()){
+    if (ast.isPresentPackage()) {
       for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
         path = path.getParent();
       }
@@ -180,19 +181,23 @@ public class FeatureConfigurationTool {
    * @param args
    */
   public static void main(String[] args) {
+    //reuse the CLI options from FeatureConfigurationTool
+    Options options = FeatureDiagramTool.getOptions();
     Log.initWARN();
+
     try {
       CommandLineParser parser = new BasicParser();
-      CommandLine cmd = parser.parse(FeatureDiagramTool.getOptions(), args);
+      CommandLine cmd = parser.parse(options, args);
       if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar FeatureConfigurationTool.jar", FeatureDiagramTool.getOptions(), true);
+        formatter.printHelp("java -jar FeatureConfigurationTool.jar", options, true);
         return;
       }
 
       //Set input file and parse it
       if (!cmd.hasOption("input")) {
-        Log.error("0xFC102 The input file is a mandatory argument of the FeatureConfigurationTool!");
+        Log.error(
+            "0xFC102 The input file is a mandatory argument of the FeatureConfigurationTool!");
       }
       String input = cmd.getOptionValue("input");
 
@@ -201,27 +206,25 @@ public class FeatureConfigurationTool {
       if (cmd.hasOption("path")) {
         mp.addEntry(Paths.get(cmd.getOptionValue("path")));
       }
-      else{
+      else {
         //else use location in which input model is located as model path
         Path modelFolder = Paths.get(input).toAbsolutePath().getParent();
         mp.addEntry(modelFolder);
       }
 
-      //Set output path for stored symbols (or use default)
+      //Set output path for stored symbols and pretty printed models (or use default)
       Path output = Paths.get("target");
       if (cmd.hasOption("output")) {
         output = Paths.get(cmd.getOptionValue("output"));
       }
 
-      // parse
+      // parse and create symbol table, FeatureConfiguration langage has no CoCos
       ASTFCCompilationUnit ast = FeatureConfigurationTool.parse(input);
+      IFeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool
+          .createSymbolTable(ast, mp);
 
-      // create symbol table, check all cocos, and store symbol table
+      // print (and optionally store) symbol table
       if (cmd.hasOption("symboltable")) {
-        IFeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool.createSymbolTable(ast, mp);
-        // FeatureConfiguration langage has no CoCos
-
-        // store symbol table
         JsonPrinter.disableIndentation();
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
@@ -237,18 +240,19 @@ public class FeatureConfigurationTool {
         System.out.println(deser.serialize(symbolTable));
       }
 
+      // print (and optionally store) model
       if (cmd.hasOption("prettyprint")) {
         String prettyPrinted = FeatureConfigurationPrinter.print(ast);
         System.out.println(prettyPrinted);
         String outFile = cmd.getOptionValue("prettyprint");
-        if(null!=outFile){
+        if (null != outFile) {
           FileReaderWriter.storeInFile(output.resolve(outFile), prettyPrinted);
         }
       }
     }
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("java -jar FeatureConfigurationTool.jar", FeatureDiagramTool.getOptions(), true);
+      formatter.printHelp("java -jar FeatureConfigurationTool.jar", options, true);
       Log.error("0xFC103 An exception occured while processing the CLI input!", e);
     }
   }

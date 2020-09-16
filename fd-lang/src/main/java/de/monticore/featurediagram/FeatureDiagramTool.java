@@ -214,26 +214,17 @@ public class FeatureDiagramTool {
    * @param args
    */
   public static void main(String[] args) {
+    //init CLI options
+    Options options = FeatureDiagramTool.getOptions();
     Log.initWARN();
+
     try {
       CommandLineParser parser = new BasicParser();
-      CommandLine cmd = parser.parse(getOptions(), args);
+      CommandLine cmd = parser.parse(options, args);
       if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar FeatureDiagramTool.jar", getOptions(), true);
+        formatter.printHelp("java -jar FeatureDiagramTool.jar", options, true);
         return;
-      }
-
-      //Set path for imported symbols
-      ModelPath mp = new ModelPath();
-      if (cmd.hasOption("path")) {
-        mp.addEntry(Paths.get(cmd.getOptionValue("path")));
-      }
-
-      //Set output path for stored symbols (or use default)
-      Path output = Paths.get("target");
-      if (cmd.hasOption("output")) {
-        output = Paths.get(cmd.getOptionValue("output"));
       }
 
       //Set input file and parse it
@@ -241,14 +232,26 @@ public class FeatureDiagramTool {
         Log.error("0xFD102 The input file is a mandatory argument of the FeatureDiagramTool!");
       }
       String input = cmd.getOptionValue("input");
+
+      //Set path for imported symbols
+      ModelPath mp = new ModelPath();
+      if (cmd.hasOption("path")) {
+        mp.addEntry(Paths.get(cmd.getOptionValue("path")));
+      }
+
+      //Set output path for stored symbols and pretty printed models (or use default)
+      Path output = Paths.get("target");
+      if (cmd.hasOption("output")) {
+        output = Paths.get(cmd.getOptionValue("output"));
+      }
+
+      // parse, create symbol table, check all cocos
       ASTFDCompilationUnit ast = FeatureDiagramTool.parse(input);
+      IFeatureDiagramArtifactScope symbolTable = FeatureDiagramTool.createSymbolTable(ast, mp);
+      FeatureDiagramTool.checkCoCos(ast);
 
-      // create symbol table, check all cocos, and store symbol table
+      // print (and optionally store) symbol table
       if (cmd.hasOption("symboltable")) {
-        IFeatureDiagramArtifactScope symbolTable = FeatureDiagramTool.createSymbolTable(ast, mp);
-        FeatureDiagramTool.checkCoCos(ast);
-
-        // store symbol table
         JsonPrinter.disableIndentation();
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
@@ -262,9 +265,9 @@ public class FeatureDiagramTool {
         //print (formatted!) symboltable to console
         JsonPrinter.enableIndentation();
         System.out.println(deser.serialize(symbolTable));
-
       }
 
+      // print (and optionally store) model
       if (cmd.hasOption("prettyprint")) {
         String prettyPrinted = FeatureDiagramPrettyPrinter.print(ast);
         System.out.println(prettyPrinted);
@@ -276,7 +279,7 @@ public class FeatureDiagramTool {
     }
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("java -jar FeatureDiagramTool.jar", getOptions(), true);
+      formatter.printHelp("java -jar FeatureDiagramTool.jar", options, true);
       Log.error("0xFD112 An exception occured while processing the CLI input!", e);
     }
   }

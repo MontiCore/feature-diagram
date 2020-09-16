@@ -31,11 +31,9 @@ import java.util.Optional;
  */
 public class FeatureConfigurationPartialTool {
 
-
   protected static final FeatureConfigurationPartialScopeDeSer deser = new FeatureConfigurationPartialScopeDeSer();
 
   protected static final FeatureConfigurationPartialParser parser = new FeatureConfigurationPartialParser();
-
 
   /**
    * Parse the model contained in the specified file.
@@ -65,7 +63,8 @@ public class FeatureConfigurationPartialTool {
    * @param mp
    * @return
    */
-  public static IFeatureConfigurationPartialArtifactScope createSymbolTable(String model, ModelPath mp) {
+  public static IFeatureConfigurationPartialArtifactScope createSymbolTable(String model,
+      ModelPath mp) {
     return createSymbolTable(parse(model), mp);
   }
 
@@ -76,7 +75,8 @@ public class FeatureConfigurationPartialTool {
    * @param ast
    * @return
    */
-  public static IFeatureConfigurationPartialArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp) {
+  public static IFeatureConfigurationPartialArtifactScope createSymbolTable(
+      ASTFCCompilationUnit ast, ModelPath mp) {
     FeatureConfigurationPartialSymbolTableCreatorDelegator symbolTable = FeatureConfigurationPartialMill
         .featureConfigurationPartialSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(createGlobalScope(mp))
@@ -118,19 +118,19 @@ public class FeatureConfigurationPartialTool {
   public static String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, Path out) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
-        .resolve(scope.getName()+".fcsym");
+        .resolve(scope.getName() + ".fcsym");
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
     return serialized;
   }
-
 
   /**
    * stores the symbol table of a passed ast in a file at the passed symbolFileName
    *
    * @return
    */
-  public static String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, String symbolFileName) {
+  public static String storeSymbols(IFeatureConfigurationPartialArtifactScope scope,
+      String symbolFileName) {
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
@@ -139,6 +139,7 @@ public class FeatureConfigurationPartialTool {
   /**
    * Processes a feature configuration (parsing, symbol table creation, and type check,
    * symbol table is not stored here) with the passed modelpath
+   *
    * @param modelFile
    * @param mp
    * @return
@@ -163,6 +164,7 @@ public class FeatureConfigurationPartialTool {
    * Processes a feature configuration (parsing, symbol table creation, and type check,
    * symbol table is not stored here). Searches for feature models that are located in files
    * in the same directory as the passed partial FC.
+   *
    * @param modelFile
    * @return
    */
@@ -172,7 +174,7 @@ public class FeatureConfigurationPartialTool {
 
     //reconstruct modelpath from input file
     Path path = Paths.get(modelFile).toAbsolutePath().getParent();
-    if(ast.isPresentPackage()){
+    if (ast.isPresentPackage()) {
       for (int i = 0; i < ast.getPackage().sizeParts(); i++) {
         path = path.getParent();
       }
@@ -213,34 +215,35 @@ public class FeatureConfigurationPartialTool {
       //Set input file and parse it
       if (!cmd.hasOption("input")) {
         Log.error(
-            "0xFD102 The input file is a mandatory argument of the FeatureConfigurationPartialTool!");
+            "0xFE102 The input file is a mandatory argument of the FeatureConfigurationPartialTool!");
       }
       String input = cmd.getOptionValue("input");
-      ASTFCCompilationUnit ast = FeatureConfigurationPartialTool.parse(input);
 
       //Set path for imported symbols
       ModelPath mp = new ModelPath();
       if (cmd.hasOption("path")) {
         mp.addEntry(Paths.get(cmd.getOptionValue("path")));
       }
-      else{
+      else {
         //else use location in which input model is located as model path
         Path modelFolder = Paths.get(input).toAbsolutePath().getParent();
         mp.addEntry(modelFolder);
       }
 
-      //Set output path for pretty printer(or use default)
+      //Set output path for stored symbols and pretty printed models (or use default)
       Path output = Paths.get("target");
       if (cmd.hasOption("output")) {
         output = Paths.get(cmd.getOptionValue("output"));
       }
 
-      // create symbol table and check all cocos
-      if (cmd.hasOption("symboltable")) {
-        IFeatureConfigurationPartialArtifactScope symbolTable = FeatureConfigurationPartialTool.createSymbolTable(ast, mp);
-        FeatureConfigurationPartialTool.checkCoCos(ast);
+      // parse, create symbol table, check all cocos
+      ASTFCCompilationUnit ast = FeatureConfigurationPartialTool.parse(input);
+      IFeatureConfigurationPartialArtifactScope symbolTable = FeatureConfigurationPartialTool
+          .createSymbolTable(ast, mp);
+      FeatureConfigurationPartialTool.checkCoCos(ast);
 
-        // store symbol table
+      // print (and optionally store) symbol table
+      if (cmd.hasOption("symboltable")) {
         JsonPrinter.disableIndentation();
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
@@ -256,9 +259,7 @@ public class FeatureConfigurationPartialTool {
         System.out.println(deser.serialize(symbolTable));
       }
 
-
-      //No symbol table is stored for partial feature configuration models
-
+      // print (and optionally store) model
       if (cmd.hasOption("prettyprint")) {
         String prettyPrinted = FeatureConfigurationPartialPrettyPrinter.print(ast);
         System.out.println(prettyPrinted);
