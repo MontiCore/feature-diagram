@@ -24,8 +24,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+/**
+ * This tool can process feature diagram models both in form of a Java API with static methods
+ * as well as via Command Line Interface (CLI)
+ */
 public class FeatureDiagramTool {
 
+  /**
+   * constant for the default folder into which symbols are stored
+   */
   public static final Path SYMBOL_OUT = Paths.get("target/symbols");
 
   protected static final FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
@@ -33,7 +40,7 @@ public class FeatureDiagramTool {
   protected static final FeatureDiagramParser parser = new FeatureDiagramParser();
 
   /**
-   * Parse the model contained in the specified file.
+   * Parse the model contained in the specified file and return the created AST.
    *
    * @param model - file to parse
    * @return
@@ -55,7 +62,7 @@ public class FeatureDiagramTool {
   }
 
   /**
-   * Create the symbol table from a model file location
+   * Create the symbol table from a model file location and returns the produced artifact scope
    *
    * @param model
    * @param mp
@@ -95,7 +102,7 @@ public class FeatureDiagramTool {
   }
 
   /**
-   * Check all feature diagram context conditions against passed ast
+   * Check all feature diagram context conditions against the ast passed as argument
    *
    * @param ast
    */
@@ -104,7 +111,9 @@ public class FeatureDiagramTool {
   }
 
   /**
-   * stores the symbol table of a passed ast in a file at the passed fileName
+   * stores the symbol table of a passed ast in a file created in the passed output directory.
+   * The file path for the stored symbol table of an FD "abc.Phone.fd" and the output
+   * path "target" will be: "target/abc/Phone.fdsym"
    *
    * @return
    */
@@ -118,14 +127,13 @@ public class FeatureDiagramTool {
   }
 
   /**
-   * stores the symbol table of a passed ast in a file at the passed fileName
+   * stores the symbol table of a passed ast in a file at the passed symbolFileName
    *
    * @return
    */
   public static String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName) {
-    File f = new File(symbolFileName);
     String serialized = deser.serialize(scope);
-    FileReaderWriter.storeInFile(f.toPath(), serialized);
+    FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
   }
 
@@ -240,15 +248,21 @@ public class FeatureDiagramTool {
         IFeatureDiagramArtifactScope symbolTable = FeatureDiagramTool.createSymbolTable(ast, mp);
         FeatureDiagramTool.checkCoCos(ast);
 
-        JsonPrinter.enableIndentation();
+        // store symbol table
+        JsonPrinter.disableIndentation();
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
           String symbolFile = output.resolve(s).toString();
-          System.out.println(FeatureDiagramTool.storeSymbols(symbolTable, symbolFile));
+          FeatureDiagramTool.storeSymbols(symbolTable, symbolFile);
         }
         else {
-          System.out.println(FeatureDiagramTool.storeSymbols(symbolTable, output));
+          FeatureDiagramTool.storeSymbols(symbolTable, output);
         }
+
+        //print (formatted!) symboltable to console
+        JsonPrinter.enableIndentation();
+        System.out.println(deser.serialize(symbolTable));
+
       }
 
       if (cmd.hasOption("prettyprint")) {
@@ -267,7 +281,11 @@ public class FeatureDiagramTool {
     }
   }
 
-  protected static Options getOptions() {
+  /**
+   * Initialize options of the CLI
+   * @return
+   */
+  public static Options getOptions() {
     Options options = new Options();
     options.addOption("h", "help", false, "Prints this help dialog");
     options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");

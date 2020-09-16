@@ -15,6 +15,7 @@
 [Readme]:                    ../../../../../../../../README.md
 [clitool]:                   ../../../../../../../../fd-analysis/src/main/java/tool/FACT.java
 [FeatureDiagram MLC]: FeatureDiagram.md
+[BasicSymbols MLC]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/symbols/BasicSymbols.mc4
 
 > NOTE: <br>
 This document is intended for  **language engineers** who extend, adapt or embed the FC language.
@@ -90,7 +91,7 @@ extensions of AST classes, symbol classes, or the scope class.
   is not sufficient. For these, the FD model has to be parsed.  
 
 #### Symbol kinds defined by FC (exported):
- - For each FC there is a FeatureConfigurationSymbol defined as:
+ - For each FC there is a `FeatureConfigurationSymbol` defined as:
   ```
   class FeatureConfigurationSymbol {
       String name;
@@ -98,6 +99,10 @@ extensions of AST classes, symbol classes, or the scope class.
       /List<FeatureSymbol> selectedFeatures;
   }
   ```
+  The FC language does not reuse the `DiagramSymbol` of the 
+  [BasicSymbols][BasicSymbols MLC] language component. This is due to the fact 
+  that `FeatureConfigurationSymbols` have attributes of the feature diagram and the selected 
+  features that the `DiagramSymbol` does not provide.
 
 #### Symbols exported by FC in the stored symboltable:
 No symbols are exported from an FC model. 
