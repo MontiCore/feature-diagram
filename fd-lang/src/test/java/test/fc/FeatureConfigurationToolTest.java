@@ -8,6 +8,7 @@ import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -22,6 +23,14 @@ public class FeatureConfigurationToolTest {
   protected PrintStream originalOut;
 
   protected ByteArrayOutputStream out;
+
+  @BeforeClass
+  public static void produceFDSymbol(){
+    //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
+    FeatureDiagramTool.run("src/test/resources/fdvalid/CarNavigation.fd",
+        Paths.get("target/symbols"),
+        new ModelPath());
+  }
 
   @Before
   public void redirectSysOut() {
@@ -79,11 +88,6 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testPrettyPrintToConsole() {
-    //Process FD first to obtain stored FD symbol
-    FeatureDiagramTool.run("src/test/resources/fdvalid/CarNavigation.fd",
-        Paths.get("target/symbols"),
-        new ModelPath());
-
     FeatureConfigurationTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
@@ -104,10 +108,53 @@ public class FeatureConfigurationToolTest {
   }
 
   @Test
+  public void testSymbolTable() {
+    FeatureConfigurationTool.main( new String[] {
+        "-i", validFC("BasicCarNavigation"),
+        "-path", "target/symbols",
+        "-s", "testSymbolTable.fcsymbols"
+    });
+    assertTrue(new File("target/testSymbolTable.fcsymbols").exists());
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
+  public void testSymbolTableWithoutArgs() {
+    FeatureConfigurationTool.main( new String[] {
+        "-i", validFC("BasicCarNavigation"),
+        "-path", "target/symbols",
+        "-s"
+    });
+
+    String printed = out.toString().trim();
+    assertEquals("{\n"
+        + "  \"name\": \"BasicCarNavigation\",\n"
+        + "      \"package\": \"fcvalid\",\n"
+        + "      \"symbols\": [\n"
+        + "      {\n"
+        + "        \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
+        + "        \"name\": \"BasicCarNavigation\",\n"
+        + "          \"featureDiagram\": \"fdvalid.CarNavigation\",\n"
+        + "          \"selectedFeatures\": [\n"
+        + "          \"CarNavigation\",\n"
+        + "          \"Display\",\n"
+        + "          \"GPS\",\n"
+        + "          \"Memory\",\n"
+        + "          \"VoiceControl\",\n"
+        + "          \"Small\",\n"
+        + "          \"SmallScreen\"\n"
+        + "        ]\n"
+        + "      }\n"
+        + "    ]\n"
+        + "  }", printed);
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
   public void testPrettyPrintToFile() {
     FeatureConfigurationTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
-        "-path", "src/test/resources",
+        "-path", "src/test/resources:target/symbols",
         "-pp", "BasicCarNavigationOut.fc"
     });
 
@@ -135,10 +182,6 @@ public class FeatureConfigurationToolTest {
 
   private String validFC(String name) {
     return "src/test/resources/fcvalid/" + name + ".fc";
-  }
-
-  private String invalidFC(String name) {
-    return "src/test/resources/fcinvalid/" + name + ".fc";
   }
 
 }

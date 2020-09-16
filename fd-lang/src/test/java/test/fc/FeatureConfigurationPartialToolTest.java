@@ -8,6 +8,7 @@ import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -22,6 +23,18 @@ public class FeatureConfigurationPartialToolTest {
   protected PrintStream originalOut;
 
   protected ByteArrayOutputStream out;
+
+  @BeforeClass
+  public static void produceFDSymbol(){
+    //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
+    FeatureDiagramTool.run("src/test/resources/fdvalid/CarNavigation.fd",
+        Paths.get("target/symbols"),
+        new ModelPath());
+
+    FeatureDiagramTool.run("src/test/resources/phone/Phone.fd",
+        Paths.get("target/symbols"),
+        new ModelPath());
+  }
 
   @Before
   public void redirectSysOut() {
@@ -77,12 +90,40 @@ public class FeatureConfigurationPartialToolTest {
   }
 
   @Test
-  public void testPrettyPrintToConsole() {
-    //Process FD first to obtain stored FD symbol
-    FeatureDiagramTool.run("src/test/resources/fdvalid/CarNavigation.fd",
-        Paths.get("target/symbols"),
-        new ModelPath());
+  public void testSymbolTable() {
+    FeatureConfigurationPartialTool.main( new String[] {
+        "-i", "src/test/resources/phone/PremiumPhone.fc",
+        "-path", "target/symbols",
+        "-s", "testSymbolTable.pfcsymbols"
+    });
+    assertTrue(new File("target/testSymbolTable.pfcsymbols").exists());
+    assertEquals(0, Log.getErrorCount());
+  }
 
+  @Test
+  public void testSymbolTableWithoutArgs() {
+    FeatureConfigurationPartialTool.main( new String[] {
+        "-i", "src/test/resources/phone/PremiumPhone.fc",
+        "-path", "target/symbols",
+        "-s"
+    });
+
+    String printed = out.toString().trim();
+    assertEquals("{\n"
+        + "      \"name\": \"PremiumPhone\",\n"
+        + "      \"symbols\": [\n"
+        + "      {\n"
+        + "        \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
+        + "        \"name\": \"PremiumPhone\",\n"
+        + "        \"featureDiagram\": \"Phone\"\n"
+        + "      }\n"
+        + "    ]\n"
+        + "  }", printed);
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
+  public void testPrettyPrintToConsole() {
     FeatureConfigurationPartialTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
@@ -107,7 +148,7 @@ public class FeatureConfigurationPartialToolTest {
   public void testPrettyPrintToFile() {
     FeatureConfigurationPartialTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
-        "-path", "src/test/resources",
+        "-path", "target/symbols",
         "-pp", "BasicCarNavigationOut.fc"
     });
 
@@ -130,15 +171,8 @@ public class FeatureConfigurationPartialToolTest {
     assertEquals(0, Log.getErrorCount());
   }
 
-
-
-
   private String validFC(String name) {
     return "src/test/resources/pfcvalid/" + name + ".fc";
-  }
-
-  private String invalidFC(String name) {
-    return "src/test/resources/pfcinvalid/" + name + ".fc";
   }
 
 }

@@ -103,7 +103,33 @@ public class FeatureDiagramToolTest {
         "-i", validFD("BasicElements"),
         "-s"
     });
-    assertTrue(new File("target/testSymbolTable.symbols").exists());
+
+    String printed = out.toString().trim();
+    assertEquals("{\n"
+        + "  \"name\": \"BasicElements\",\n"
+        + "      \"package\": \"fdvalid\",\n"
+        + "      \"symbols\": [\n"
+        + "      {\n"
+        + "        \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\",\n"
+        + "          \"name\": \"BasicElements\",\n"
+        + "          \"features\": [\n"
+        + "          \"A\",\n"
+        + "          \"B\",\n"
+        + "          \"C\",\n"
+        + "          \"D\",\n"
+        + "          \"E\",\n"
+        + "          \"F\",\n"
+        + "          \"G\",\n"
+        + "          \"H\",\n"
+        + "          \"I\",\n"
+        + "          \"J\",\n"
+        + "          \"K\",\n"
+        + "          \"L\",\n"
+        + "          \"M\"\n"
+        + "        ]\n"
+        + "      }\n"
+        + "    ]\n"
+        + "  }", printed);
     assertEquals(0, Log.getErrorCount());
   }
 
@@ -116,7 +142,7 @@ public class FeatureDiagramToolTest {
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertEquals(printed,"/* (c) https://github.com/MontiCore/monticore */\n"
+    assertEquals("/* (c) https://github.com/MontiCore/monticore */\n"
         + "package fdvalid;\n"
         + "\n"
         + "featurediagram BasicElements {\n"
@@ -127,7 +153,7 @@ public class FeatureDiagramToolTest {
         + "  M requires E;\n"
         + "  C excludes I;\n"
         + "  E excludes J;\n"
-        + "}");
+        + "}", printed);
     assertEquals(0, Log.getErrorCount());
   }
 
