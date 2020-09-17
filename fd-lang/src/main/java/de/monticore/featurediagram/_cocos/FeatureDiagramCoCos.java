@@ -3,6 +3,10 @@ package de.monticore.featurediagram._cocos;
 
 import de.monticore.featurediagram._ast.ASTFeatureDiagramNode;
 
+/**
+ * This class aggregates all Context Conditions of the FD language
+ * and provides a method for checking all of these.
+ */
 public class FeatureDiagramCoCos {
 
   public static FeatureDiagramCoCoChecker getCheckerForAllCoCos() {

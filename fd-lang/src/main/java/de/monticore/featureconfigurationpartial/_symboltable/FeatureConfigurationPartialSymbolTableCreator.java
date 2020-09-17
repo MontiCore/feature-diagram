@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
+/**
+ * This class builds up the symbols and scopes from an AST of an FD model.
+ */
 public class FeatureConfigurationPartialSymbolTableCreator
     extends FeatureConfigurationPartialSymbolTableCreatorTOP {
 
@@ -30,6 +33,12 @@ public class FeatureConfigurationPartialSymbolTableCreator
     super(scopeStack);
   }
 
+  /**
+   * Create the symbl table for a passed AST of a PartialFC model.
+   *
+   * @param rootNode
+   * @return
+   */
   @Override public IFeatureConfigurationPartialArtifactScope createFromAST(
       ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
@@ -46,12 +55,23 @@ public class FeatureConfigurationPartialSymbolTableCreator
     return artifactScope;
   }
 
+  /**
+   * collect names of selected features
+   *
+   * @param node
+   */
   @Override
   public void visit(ASTSelect node) {
     super.visit(node);
     featureNameList.addAll(node.getNameList());
   }
 
+  /**
+   * Resolve FeatureSymbols and add these to the FeatureConfigurationSymbol.
+   * The FeatureDiagramSymbols is set in the FeatureConfigurationSymbolTableCreator.
+   *
+   * @param node
+   */
   @Override
   public void endVisit(ASTFeatureConfiguration node) {
     super.endVisit(node);

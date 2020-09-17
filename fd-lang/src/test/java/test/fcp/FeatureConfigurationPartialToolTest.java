@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 
-package test.fc;
+package test.fcp;
 
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool;
 import de.monticore.featurediagram.FeatureDiagramTool;

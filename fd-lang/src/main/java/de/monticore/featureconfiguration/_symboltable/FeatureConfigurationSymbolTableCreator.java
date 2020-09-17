@@ -16,6 +16,9 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This class builds up the symbols and scopes from an AST of an FD model.
+ */
 public class FeatureConfigurationSymbolTableCreator
     extends FeatureConfigurationSymbolTableCreatorTOP {
 
@@ -32,6 +35,12 @@ public class FeatureConfigurationSymbolTableCreator
     super(scopeStack);
   }
 
+  /**
+   * Create the symbl table for a passed AST of an FC model.
+   *
+   * @param rootNode
+   * @return
+   */
   @Override public IFeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
 
@@ -47,6 +56,13 @@ public class FeatureConfigurationSymbolTableCreator
     return artifactScope;
   }
 
+  /**
+   * FC models can have a single import statement to import the FD model that they refer to.
+   * If such an import statement exists, this method processes it by transforming the
+   * fdName in the AST from an unqualified name to a qualified name.
+   *
+   * @param rootNode
+   */
   public static void handleImportStatements(ASTFCCompilationUnit rootNode) {
     List<ASTMCImportStatement> imports = rootNode.getMCImportStatementList();
     if (1 < imports.size()) {
@@ -71,6 +87,11 @@ public class FeatureConfigurationSymbolTableCreator
     }
   }
 
+  /**
+   * for each name of a selected feature, resolve the FeatureSymbol
+   *
+   * @param node
+   */
   @Override
   public void visit(ASTFeatures node) {
     super.visit(node);
@@ -91,6 +112,12 @@ public class FeatureConfigurationSymbolTableCreator
     }
   }
 
+  /**
+   * set symbolrule attributes of the FeatureConfigurationSymbol that have been calculated
+   * before in this class.
+   *
+   * @param node
+   */
   @Override
   public void endVisit(ASTFeatureConfiguration node) {
     super.endVisit(node);
@@ -98,6 +125,12 @@ public class FeatureConfigurationSymbolTableCreator
     node.getSymbol().setFeatureDiagram(fd);
   }
 
+  /**
+   * For the qualified name of the feature diagram that this FC model refers to, resolve the
+   * FeatureDiagramSymbol.
+   *
+   * @param node
+   */
   @Override
   public void visit(ASTFeatureConfiguration node) {
     super.visit(node);

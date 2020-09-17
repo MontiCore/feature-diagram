@@ -72,6 +72,8 @@ public class FeatureConfigurationTool {
    */
   public static IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
       ModelPath mp) {
+    IFeatureConfigurationGlobalScope gs = createGlobalScope(mp);
+    deser.setGlobalScope(gs);
     FeatureConfigurationSymbolTableCreatorDelegator symbolTable = FeatureConfigurationMill
         .featureConfigurationSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(createGlobalScope(mp))

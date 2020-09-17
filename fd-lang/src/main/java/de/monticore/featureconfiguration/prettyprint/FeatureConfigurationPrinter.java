@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 /**
  * This Printer prints all AST nodes that are introduced by the
  * FeatueConfiguration grammar. It realizes basic formatting through
- * indentation and line breaks.
+ * indentation and line breaks. No inherited language elements have to
+ * be printed, thus not delegatorvisitor is required to realize this printer.
  */
 public class FeatureConfigurationPrinter implements FeatureConfigurationVisitor {
 
@@ -22,6 +23,11 @@ public class FeatureConfigurationPrinter implements FeatureConfigurationVisitor 
 
   protected FeatureConfigurationVisitor realThis;
 
+  /**
+   * prettyprints a formatted Strong from the passed AST
+   * @param node
+   * @return
+   */
   public static String print(ASTFCCompilationUnit node) {
     IndentPrinter printer = new IndentPrinter();
     FeatureConfigurationPrinter visitor = new FeatureConfigurationPrinter(printer);

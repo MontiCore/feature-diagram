@@ -8,9 +8,14 @@ import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.stream.Collectors;
 
+/**
+ * This printer prints language elements introduced in the FeatureConfigurationPartial, namely
+ * select and exclude blocks. It realizes basic formatting through indentation and line breaks.
+ */
 public class FeatureConfigurationPartialPrinter implements FeatureConfigurationPartialVisitor {
 
   protected IndentPrinter printer;
+
   protected FeatureConfigurationPartialVisitor realThis;
 
 
