@@ -17,8 +17,8 @@ public class AbstractTest {
 
   @BeforeClass
   public static void setUpLog() {
-    //            Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    LogStub.init();
+                Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+//    LogStub.init();
   }
 
   @Before

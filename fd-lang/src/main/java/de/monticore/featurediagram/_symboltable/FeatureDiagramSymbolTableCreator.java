@@ -10,6 +10,9 @@ import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
 
+/**
+ * This class builds up the symbols and scopes from an AST of an FD model.
+ */
 public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableCreatorTOP {
 
   public FeatureDiagramSymbolTableCreator(IFeatureDiagramScope enclosingScope) {
@@ -21,6 +24,12 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
     firstCreatedScope = !scopeStack.isEmpty() ? scopeStack.peekLast() : null;
   }
 
+  /**
+   * Create the symbl table for a passed AST of an FD model.
+   *
+   * @param rootNode
+   * @return
+   */
   @Override
   public IFeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
@@ -87,6 +96,11 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
     }
   }
 
+  /**
+   * creates a FeatureSymbol on the first occurrence of a feature name in the current model
+   * and adds this symbol to the Feature Diagram's scope
+   * @param name
+   */
   protected void createFeatureSymbolOnFirstOccurrence(String name) {
     // if this feature name has already occured in the current feature model, stop
     if (!getCurrentScope().get().resolveFeatureLocally(name).isPresent()) {

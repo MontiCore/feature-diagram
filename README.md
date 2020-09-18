@@ -242,7 +242,7 @@ For using the tool as Java API, it contains the following (static) methods:
 The [FeatureConfigurationTool][FCtool] offers both CLI and a Java API for processing FeatureConfiguration models. 
 It provides through the CLI as follows:
 
-`java -jar FeatureConfigurationTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]]`
+`java -jar FeatureConfigurationTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -251,6 +251,8 @@ where the arguments are:
 * `-path <p>`                    Sets the artifact path for imported symbols. The value can be a 
                                  single path or a comma-separated list of multiple paths.
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
+* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
+                                 to the specified output file
 
 For using the tool as Java API, it contains the following (static) methods:
 * `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
@@ -258,6 +260,12 @@ For using the tool as Java API, it contains the following (static) methods:
   the passed path and instantiates the symbol table using passed modelpath entries for finding FDs
 * `IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp)` instantiates the 
   symbol table using the passed AST as basis and the passed modelpath entries for finding FDs
+* `String storeSymbols(IFeatureConfigurationArtifactScope scope, String fileName)` stores the symbol table 
+  for the passed artifact scope in a file with the passed fileName. If the file exists, it is overridden. 
+  Otherwise, a new file is created.
+* `String storeSymbols(IFeatureConfigurationArtifactScope scope, Path out)` stores the symbol table for 
+  the passed artifact scope in a file with the usual name, package, and fileEnding at the passed 
+  'out' location. If the file exists, it is overridden. Otherwise, a new file is created.
 * `ASTFeatureConfiguration run(String modelFile, ModelPath mp)` parses the passed modelFile and creates 
   the symbol table. Through this, conformance to the feature model is checked as well.
 * `ASTFeatureConfiguration run(String modelFile)` parses the passed modelFile and creates 
@@ -269,7 +277,7 @@ For using the tool as Java API, it contains the following (static) methods:
 The [FeatureConfigurationPartialTool][PFCtool] offers both CLI and a Java API for processing PartialFeatureConfiguration models. 
 It provides through the CLI as follows:
 
-`java -jar FeatureConfigurationPartialTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]]`
+`java -jar FeatureConfigurationPartialTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -278,6 +286,8 @@ where the arguments are:
 * `-path <p>`                    Sets the artifact path for imported symbols. The value can be a 
                                  single path or a comma-separated list of multiple paths.
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
+* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
+                                 to the specified output file
 
 For using the tool as Java API, it contains the following (static) methods:
 * `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
@@ -285,6 +295,14 @@ For using the tool as Java API, it contains the following (static) methods:
   the passed path and instantiates the symbol table using passed modelpath entries for finding FDs
 * `IFeatureConfigurationPartialArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp)` instantiates the 
   symbol table using the passed AST as basis and the passed modelpath entries for finding FDs
+* `void checkCoCos(ASTFCCompilationUnit ast)` checks all context conditions of the partial FC language
+   against the passed AST
+* `String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, String fileName)` stores the symbol table 
+  for the passed artifact scope in a file with the passed fileName. If the file exists, it is overridden. 
+  Otherwise, a new file is created.
+* `String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, Path out)` stores the symbol table for 
+  the passed artifact scope in a file with the usual name, package, and fileEnding at the passed 
+  'out' location. If the file exists, it is overridden. Otherwise, a new file is created.
 * `ASTFeatureConfiguration run(String modelFile, ModelPath mp)` parses the passed modelFile and creates 
   the symbol table. Through this, conformance to the feature model is checked as well.
 * `ASTFeatureConfiguration run(String modelFile)` parses the passed modelFile and creates 
@@ -297,9 +315,9 @@ For using the tool as Java API, it contains the following (static) methods:
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
 
-* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](BestPractices.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
 
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)

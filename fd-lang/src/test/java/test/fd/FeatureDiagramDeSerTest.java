@@ -3,12 +3,13 @@ package test.fd;
 
 import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.featurediagram._symboltable.*;
+import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import org.junit.Test;
 import test.AbstractTest;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
@@ -16,14 +17,14 @@ import static org.junit.Assert.assertTrue;
 
 public class FeatureDiagramDeSerTest extends AbstractTest {
 
+  protected FeatureDiagramScopeDeSer deSer = new FeatureDiagramScopeDeSer();
+
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
     return FeatureDiagramTool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath());
   }
 
   @Test
-  public void testSerializeDeserialize() {
-    JsonPrinter.enableIndentation();
-    FeatureDiagramScopeDeSer deSer = new FeatureDiagramScopeDeSer();
+  public void testRoundtripSerialization() {
     IFeatureDiagramArtifactScope scope = setupSymbolTable("fdvalid/BasicElements.fd");
     assertTrue(null != scope);
     String serialized = deSer.serialize(scope);
@@ -35,8 +36,7 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
 
     assertEquals(scope.getName(), deserialized.getName());
     assertEquals(scope.getPackageName(), deserialized.getPackageName());
-    assertEquals(scope.getImportsList().size(),
-      deserialized.getImportsList().size());
+    assertEquals(scope.getImportsList().size(), deserialized.getImportsList().size());
     assertEquals(scope.getTopLevelSymbol().isPresent(),
         deserialized.getTopLevelSymbol().isPresent());
     assertEquals(scope.getTopLevelSymbol().get().getName(),
@@ -62,11 +62,68 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
   }
 
   @Test
-  public void testDeSer() {
+  public void testLoad() {
+    IFeatureDiagramArtifactScope scope = deSer
+        .load("src/test/resources/symbols/CarNavigation.fdsym");
+    assertTrue(null != scope);
+    assertEquals("CarNavigation", scope.getName());
+    assertEquals("fdvalid", scope.getPackageName());
+    assertEquals(0, scope.getImportsList().size());
+    assertEquals(true, scope.getTopLevelSymbol().isPresent());
+    assertEquals("CarNavigation", scope.getTopLevelSymbol().get().getName());
+    assertEquals(1, scope.getLocalFeatureDiagramSymbols().size());
+    assertEquals(0, scope.getLocalFeatureSymbols().size());
+
+    FeatureDiagramSymbol actualSymbol = scope.getLocalFeatureDiagramSymbols().get(0);
+    assertEquals("CarNavigation", actualSymbol.getName());
+    assertEquals("CarNavigation", actualSymbol.getSpannedScope().getName());
+    assertEquals(17, actualSymbol.getSpannedScope().getLocalFeatureSymbols().size());
+    assertEquals(0, actualSymbol.getSpannedScope().getSubScopes().size());
+    assertEquals(0, actualSymbol.getSpannedScope().getLocalFeatureDiagramSymbols().size());
+    assertEquals("CarNavigation", actualSymbol.getSpannedScope().getSpanningSymbol().getName());
+  }
+
+  @Test
+  public void testStore() {
+    JsonPrinter.enableIndentation();
     IFeatureDiagramArtifactScope fdScope = setupSymbolTable(
         "fdvalid/CarNavigation.fd");
-    new FeatureDiagramScopeDeSer().store(fdScope, Paths.get("target/test-symbols"));
-    assertTrue(new File("target/test-symbols/CarNavigation.fdsym").exists());
+    deSer.store(fdScope, Paths.get("target/test-symbols"));
+
+    Path expectedPath = Paths.get("target/test-symbols/CarNavigation.fdsym");
+    assertTrue(expectedPath.toFile().exists());
+
+    String expected = "{\n"
+        + "  \"name\": \"CarNavigation\",\n"
+        + "      \"package\": \"fdvalid\",\n"
+        + "      \"symbols\": [\n"
+        + "      {\n"
+        + "        \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\",\n"
+        + "          \"name\": \"CarNavigation\",\n"
+        + "          \"features\": [\n"
+        + "          \"CarNavigation\",\n"
+        + "          \"Display\",\n"
+        + "          \"GPS\",\n"
+        + "          \"PreinstalledMaps\",\n"
+        + "          \"Memory\",\n"
+        + "          \"VoiceControl\",\n"
+        + "          \"TouchControl\",\n"
+        + "          \"Small\",\n"
+        + "          \"Medium\",\n"
+        + "          \"Large\",\n"
+        + "          \"SmallScreen\",\n"
+        + "          \"LargeScreen\",\n"
+        + "          \"Europe\",\n"
+        + "          \"NorthAmerica\",\n"
+        + "          \"SouthAmerica\",\n"
+        + "          \"Asia\",\n"
+        + "          \"Africa\"\n"
+        + "        ]\n"
+        + "      }\n"
+        + "    ]\n"
+        + "  }";
+    String actual = FileReaderWriter.readFromFile(expectedPath);
+    assertEquals(expected, actual);
   }
 
 }

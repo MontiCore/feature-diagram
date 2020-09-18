@@ -10,6 +10,10 @@ import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.List;
 
+/**
+ * The pretty printer for feature partial feature configurations reuses pretty printers of the
+ * languages it inherits from.
+ */
 public class FeatureConfigurationPartialPrettyPrinter {
 
   public static String print(List<ASTFeatureConfiguration> nodes) {

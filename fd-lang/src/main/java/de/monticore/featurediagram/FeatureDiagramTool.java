@@ -18,14 +18,20 @@ import de.se_rwth.commons.logging.Log;
 import org.antlr.v4.runtime.RecognitionException;
 import org.apache.commons.cli.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+/**
+ * This tool can process feature diagram models both in form of a Java API with static methods
+ * as well as via Command Line Interface (CLI)
+ */
 public class FeatureDiagramTool {
 
+  /**
+   * constant for the default folder into which symbols are stored
+   */
   public static final Path SYMBOL_OUT = Paths.get("target/symbols");
 
   protected static final FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
@@ -33,7 +39,7 @@ public class FeatureDiagramTool {
   protected static final FeatureDiagramParser parser = new FeatureDiagramParser();
 
   /**
-   * Parse the model contained in the specified file.
+   * Parse the model contained in the specified file and return the created AST.
    *
    * @param model - file to parse
    * @return
@@ -55,7 +61,7 @@ public class FeatureDiagramTool {
   }
 
   /**
-   * Create the symbol table from a model file location
+   * Create the symbol table from a model file location and returns the produced artifact scope
    *
    * @param model
    * @param mp
@@ -95,7 +101,7 @@ public class FeatureDiagramTool {
   }
 
   /**
-   * Check all feature diagram context conditions against passed ast
+   * Check all feature diagram context conditions against the ast passed as argument
    *
    * @param ast
    */
@@ -104,7 +110,9 @@ public class FeatureDiagramTool {
   }
 
   /**
-   * stores the symbol table of a passed ast in a file at the passed fileName
+   * stores the symbol table of a passed ast in a file created in the passed output directory.
+   * The file path for the stored symbol table of an FD "abc.Phone.fd" and the output
+   * path "target" will be: "target/abc/Phone.fdsym"
    *
    * @return
    */
@@ -118,14 +126,13 @@ public class FeatureDiagramTool {
   }
 
   /**
-   * stores the symbol table of a passed ast in a file at the passed fileName
+   * stores the symbol table of a passed ast in a file at the passed symbolFileName
    *
    * @return
    */
   public static String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName) {
-    File f = new File(symbolFileName);
     String serialized = deser.serialize(scope);
-    FileReaderWriter.storeInFile(f.toPath(), serialized);
+    FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
   }
 
@@ -206,26 +213,17 @@ public class FeatureDiagramTool {
    * @param args
    */
   public static void main(String[] args) {
+    //init CLI options
+    Options options = FeatureDiagramTool.getOptions();
     Log.initWARN();
+
     try {
       CommandLineParser parser = new BasicParser();
-      CommandLine cmd = parser.parse(getOptions(), args);
+      CommandLine cmd = parser.parse(options, args);
       if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar FeatureDiagramTool.jar", getOptions(), true);
+        formatter.printHelp("java -jar FeatureDiagramTool.jar", options, true);
         return;
-      }
-
-      //Set path for imported symbols
-      ModelPath mp = new ModelPath();
-      if (cmd.hasOption("path")) {
-        mp.addEntry(Paths.get(cmd.getOptionValue("path")));
-      }
-
-      //Set output path for stored symbols (or use default)
-      Path output = Paths.get("target");
-      if (cmd.hasOption("output")) {
-        output = Paths.get(cmd.getOptionValue("output"));
       }
 
       //Set input file and parse it
@@ -233,24 +231,42 @@ public class FeatureDiagramTool {
         Log.error("0xFD102 The input file is a mandatory argument of the FeatureDiagramTool!");
       }
       String input = cmd.getOptionValue("input");
+
+      //Set path for imported symbols
+      ModelPath mp = new ModelPath();
+      if (cmd.hasOption("path")) {
+        mp.addEntry(Paths.get(cmd.getOptionValue("path")));
+      }
+
+      //Set output path for stored symbols and pretty printed models (or use default)
+      Path output = Paths.get("target");
+      if (cmd.hasOption("output")) {
+        output = Paths.get(cmd.getOptionValue("output"));
+      }
+
+      // parse, create symbol table, check all cocos
       ASTFDCompilationUnit ast = FeatureDiagramTool.parse(input);
+      IFeatureDiagramArtifactScope symbolTable = FeatureDiagramTool.createSymbolTable(ast, mp);
+      FeatureDiagramTool.checkCoCos(ast);
 
-      // create symbol table, check all cocos, and store symbol table
+      // print (and optionally store) symbol table
       if (cmd.hasOption("symboltable")) {
-        IFeatureDiagramArtifactScope symbolTable = FeatureDiagramTool.createSymbolTable(ast, mp);
-        FeatureDiagramTool.checkCoCos(ast);
-
-        JsonPrinter.enableIndentation();
+        JsonPrinter.disableIndentation();
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
           String symbolFile = output.resolve(s).toString();
-          System.out.println(FeatureDiagramTool.storeSymbols(symbolTable, symbolFile));
+          FeatureDiagramTool.storeSymbols(symbolTable, symbolFile);
         }
         else {
-          System.out.println(FeatureDiagramTool.storeSymbols(symbolTable, output));
+          FeatureDiagramTool.storeSymbols(symbolTable, output);
         }
+
+        //print (formatted!) symboltable to console
+        JsonPrinter.enableIndentation();
+        System.out.println(deser.serialize(symbolTable));
       }
 
+      // print (and optionally store) model
       if (cmd.hasOption("prettyprint")) {
         String prettyPrinted = FeatureDiagramPrettyPrinter.print(ast);
         System.out.println(prettyPrinted);
@@ -262,12 +278,16 @@ public class FeatureDiagramTool {
     }
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("java -jar FeatureDiagramTool.jar", getOptions(), true);
+      formatter.printHelp("java -jar FeatureDiagramTool.jar", options, true);
       Log.error("0xFD112 An exception occured while processing the CLI input!", e);
     }
   }
 
-  protected static Options getOptions() {
+  /**
+   * Initialize options of the CLI
+   * @return
+   */
+  public static Options getOptions() {
     Options options = new Options();
     options.addOption("h", "help", false, "Prints this help dialog");
     options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
