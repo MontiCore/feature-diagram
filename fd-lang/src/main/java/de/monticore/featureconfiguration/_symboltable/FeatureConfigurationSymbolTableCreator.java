@@ -22,8 +22,7 @@ import java.util.Optional;
 public class FeatureConfigurationSymbolTableCreator
     extends FeatureConfigurationSymbolTableCreatorTOP {
 
-  private List<FeatureSymbol> selectedSymbols = new ArrayList<>();
-
+  private FeatureConfigurationSymbol fc;
   private FeatureDiagramSymbol fd;
 
   public FeatureConfigurationSymbolTableCreator(IFeatureConfigurationScope enclosingScope) {
@@ -46,7 +45,6 @@ public class FeatureConfigurationSymbolTableCreator
 
     IFeatureConfigurationArtifactScope artifactScope = FeatureConfigurationMill
         .featureConfigurationArtifactScopeBuilder()
-        .setImportsList(new ArrayList<>())
         .setPackageName(packageName)
         .build();
 
@@ -102,7 +100,7 @@ public class FeatureConfigurationSymbolTableCreator
       for (FeatureSymbol symbol : fd.getAllFeatures()) {
         if (featureNameList.contains(symbol.getName())) {
           featureNameList.remove(symbol.getName());
-          selectedSymbols.add(symbol);
+          fc.addSelectedFeatures(symbol);
         }
       }
       for (String name : featureNameList) {
@@ -110,19 +108,6 @@ public class FeatureConfigurationSymbolTableCreator
             .getFullName());
       }
     }
-  }
-
-  /**
-   * set symbolrule attributes of the FeatureConfigurationSymbol that have been calculated
-   * before in this class.
-   *
-   * @param node
-   */
-  @Override
-  public void endVisit(ASTFeatureConfiguration node) {
-    super.endVisit(node);
-    node.getSymbol().setSelectedFeaturesList(selectedSymbols);
-    node.getSymbol().setFeatureDiagram(fd);
   }
 
   /**
@@ -134,10 +119,12 @@ public class FeatureConfigurationSymbolTableCreator
   @Override
   public void visit(ASTFeatureConfiguration node) {
     super.visit(node);
+    fc = node.getSymbol();
     Optional<FeatureDiagramSymbol> featureDiagramSymbol = this.getCurrentScope().get()
         .resolveFeatureDiagram(node.getFdName());
     if (featureDiagramSymbol.isPresent()) {
       fd = node.getFdNameSymbol();
+      fc.setFeatureDiagram(fd);
     }
     else {
       Log.error(

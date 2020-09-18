@@ -3,7 +3,7 @@
 package de.monticore.featureconfigurationpartial._symboltable;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
-import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbolTableCreator;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
@@ -20,8 +20,6 @@ import java.util.List;
  */
 public class FeatureConfigurationPartialSymbolTableCreator
     extends FeatureConfigurationPartialSymbolTableCreatorTOP {
-
-  protected List<String> featureNameList = new ArrayList<>();
 
   public FeatureConfigurationPartialSymbolTableCreator(
       IFeatureConfigurationPartialScope enclosingScope) {
@@ -45,7 +43,6 @@ public class FeatureConfigurationPartialSymbolTableCreator
 
     IFeatureConfigurationPartialArtifactScope artifactScope = FeatureConfigurationPartialMill
         .featureConfigurationPartialArtifactScopeBuilder()
-        .setImportsList(new ArrayList<>())
         .setPackageName(packageName)
         .build();
 
@@ -56,42 +53,34 @@ public class FeatureConfigurationPartialSymbolTableCreator
   }
 
   /**
-   * collect names of selected features
+   * collect names of selected features. Resolve FeatureSymbols and add these to the
+   * FeatureConfigurationSymbol.The FeatureDiagramSymbols is set in the
+   * FeatureConfigurationSymbolTableCreator.
    *
    * @param node
    */
   @Override
   public void visit(ASTSelect node) {
     super.visit(node);
-    featureNameList.addAll(node.getNameList());
-  }
-
-  /**
-   * Resolve FeatureSymbols and add these to the FeatureConfigurationSymbol.
-   * The FeatureDiagramSymbols is set in the FeatureConfigurationSymbolTableCreator.
-   *
-   * @param node
-   */
-  @Override
-  public void endVisit(ASTFeatureConfiguration node) {
-    super.endVisit(node);
-    FeatureDiagramSymbol fd = node.getSymbol().getFeatureDiagram();
-
+    List<String> selectedFeatureNames =  new ArrayList<>(node.getNameList());
     List<FeatureSymbol> selectedSymbols = new ArrayList<>();
+    FeatureConfigurationSymbol fc = (FeatureConfigurationSymbol) node
+        .getEnclosingScope()
+        .getSpanningSymbol();
+    FeatureDiagramSymbol fd = fc.getFeatureDiagram();
     if (null != fd) {
       for (FeatureSymbol symbol : fd.getAllFeatures()) {
-        if (featureNameList.contains(symbol.getName())) {
-          featureNameList.remove(symbol.getName());
+        if (selectedFeatureNames.contains(symbol.getName())) {
+          selectedFeatureNames.remove(symbol.getName());
           selectedSymbols.add(symbol);
         }
       }
-      for (String name : featureNameList) {
-        Log.error("0xFC001 The selected Feature " + name + " does not exist in Feature Model " + fd
+      for (String name : selectedFeatureNames) {
+        Log.error("0xFCA01 The selected Feature " + name + " does not exist in Feature Model " + fd
             .getFullName());
       }
+      fc.setSelectedFeaturesList(selectedSymbols);
     }
-
-    node.getSymbol().setSelectedFeaturesList(selectedSymbols);
   }
 
 }
