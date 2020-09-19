@@ -1,5 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-
 package de.monticore.featureconfigurationpartial._cocos;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
