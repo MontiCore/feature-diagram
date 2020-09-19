@@ -211,8 +211,8 @@ where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
 * `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
 * `-o`,`--output <outPath>`      Path of generated files
-* `-path <p>`                    Sets the artifact path for imported symbols. The value can be a 
-                                 single path or a list of multiple paths, separated by a colon (':').
+* `-path <p>`                    Sets the artifact pathlist for imported symbols. 
+                                 The pathlist is separated by colons (':').
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
                                  to the specified output file
@@ -248,8 +248,8 @@ where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
 * `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
 * `-o`,`--output <outPath>`      Path of generated files
-* `-path <p>`                    Sets the artifact path for imported symbols. The value can be a 
-                                 single path or a list of multiple paths, separated by a colon (':').
+* `-path <p>`                    Sets the artifact pathlist for imported symbols.
+                                 The pathlist is separated by colons (':').
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
                                  to the specified output file
@@ -283,8 +283,8 @@ where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
 * `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
 * `-o`,`--output <outPath>`      Path of generated files
-* `-path <p>`                    Sets the artifact path for imported symbols. The value can be a 
-                                 single path or a list of multiple paths, separated by a colon (':').
+* `-path <p>`                    Sets the artifact pathlist for imported symbols.
+                                 The pathlist is separated by colons (':').
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
                                  to the specified output file
