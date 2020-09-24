@@ -235,7 +235,9 @@ public class FeatureDiagramTool {
       //Set path for imported symbols
       ModelPath mp = new ModelPath();
       if (cmd.hasOption("path")) {
-        mp.addEntry(Paths.get(cmd.getOptionValue("path")));
+        for(String p : cmd.getOptionValue("path").split(":")){
+          mp.addEntry(Paths.get(p));
+        }
       }
 
       //Set output path for stored symbols and pretty printed models (or use default)
