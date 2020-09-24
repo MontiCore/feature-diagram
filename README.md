@@ -1,5 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 [clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
+[fddifftool]:                ../../../../../../../../fd-analysis/src/main/java/de/monticore/fddiff/FDSemDiff.java
 [FDtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
 [FCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationTool.java
 [PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialTool.java
@@ -143,11 +144,12 @@ FD below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`,
 and `Asia` requires to select either a `Large` or a `Medium` memory.
 
 ## Tools
-The FDL component provides the four tools that are explained in more detail below:
+The FDL component provides the five tools that are explained in more detail below:
 * The [Feature Model Analysis CLI Tool (FACT)][clitool] enables executing analyses against feature diagrams and feature configuration both via CLI and Java API
 * The [FeatureDiagramTool][FDtool] enables fine-grained options for processing feature diagram models both via CLI and Java API
 * The [FeatureConfigurationTool][FCtool] enables fine-grained options to process feature configuration models both via CLI and Java API
 * The [FeatureConfigurationPartialTool][PFCtool] enables fine-grained options to process partial feature configuration models both via CLI and Java API
+* The [Semantic Differencing for Feature Diagrams][fddifftool] enables performing the semantic difference operator for feature diagrams via Java API. 
 
 ### [The FeatureModelAnalysisCLITool][clitool] 
 The [Feature Model Analysis CLI Tool (FACT)][clitool] coordinates the execution of one or more several analyses against a FD
@@ -309,6 +311,14 @@ For using the tool as Java API, it contains the following (static) methods:
    the symbol table. Through this, conformance to the feature model is checked as well - all without 
    an explicit modelpath. Care: this can only take into account FDs if these are located next to the 
    passed modelFile.
+
+### [Semantic Differencing for Feature Diagrams][fddifftool]
+The [Semantic Differencing for Feature Diagrams Tool][fddifftool] offers a Java API to perform semantic differencing between two 
+feature diagrams. The semantics of a feature diagram are the set of all of its valid feature configurations.
+The semantic difference between two feature diagram is therefore the set of feature configurations, that are valid in 
+the first but invalid in the second feature diagram.
+The Java API offers a class to calculate the semantic difference witness, given two parsed feature diagrams.
+Simply invoke the `semDiff` method of the `FDSemDiff` class provided [here][[fddifftool]. 
 
 ## Further Information
 

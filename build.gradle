@@ -16,7 +16,6 @@ def choco_solver_version = '4.0.5'
 def choco_parser_version = '4.0.4'
 def sat4j_version = '2.3.1'
 def logicng_version = '1.6.2'
-def lombok_version = '1.18.12'
 def commons_cli_version = '1.2'
 
 def grammarDir = 'src/main/grammars'
@@ -186,8 +185,6 @@ project(':fd-analysis') {
 
         implementation group:'org.sat4j', name: 'org.sat4j.core', version: sat4j_version
         implementation group: 'org.logicng', name: 'logicng', version: logicng_version
-        compileOnly group: 'org.projectlombok', name: 'lombok', version: lombok_version
-        annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombok_version
     }
 
     description = 'Feature Diagram Analyses'

@@ -1,7 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.featurediagram;
 
 import com.google.common.collect.Sets;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.se_rwth.commons.logging.Log;
 import fddiff.*;
@@ -12,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -22,14 +24,11 @@ public class FDSemDiffTest {
 
   private FeatureDiagramParser parser;
 
-  private AST2FD ast2FD;
-
   private FDSemDiff semDiff;
 
   @Before
   public void setup() {
     parser = new FeatureDiagramParser();
-    ast2FD = new AST2FD();
     semDiff = new FDSemDiff();
     Log.enableFailQuick(false);
   }
@@ -44,7 +43,7 @@ public class FDSemDiffTest {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car"), getFD("car1"));
     assertTrue(witness.isPresent());
     assertEquals(Sets.newHashSet("phone", "engine", "car", "locking", "electric", "fingerprint"),
-      witness.get().getWitness().stream().map(Feature::getName).collect(Collectors.toSet()));
+            witness.get().getWitness());
   }
 
   @Test
@@ -57,7 +56,7 @@ public class FDSemDiffTest {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car1"), getFD("car"));
     assertTrue(witness.isPresent());
     assertEquals(Sets.newHashSet("engine", "car", "electric", "gas"),
-      witness.get().getWitness().stream().map(Feature::getName).collect(Collectors.toSet()));
+            witness.get().getWitness());
   }
 
   @Test
@@ -70,7 +69,7 @@ public class FDSemDiffTest {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car1"), getFD("car2"));
     assertTrue(witness.isPresent());
     assertEquals(Sets.newHashSet("engine", "car", "locking", "electric", "fingerprint"),
-      witness.get().getWitness().stream().map(Feature::getName).collect(Collectors.toSet()));
+            witness.get().getWitness());
   }
 
   @Test
@@ -83,7 +82,7 @@ public class FDSemDiffTest {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car2"), getFD("car1"));
     assertTrue(witness.isPresent());
     assertEquals(Sets.newHashSet("phone", "engine", "car", "locking", "electric", "fingerprint"),
-      witness.get().getWitness().stream().map(Feature::getName).collect(Collectors.toSet()));
+            witness.get().getWitness());
   }
 
   @Test
@@ -101,7 +100,7 @@ public class FDSemDiffTest {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet1"), getFD("tablet2"));
     assertTrue(witness.isPresent());
     assertEquals(Sets.newHashSet("tablet", "memory", "display", "P200", "dis10", "processor", "m64GB", "dis12"),
-      witness.get().getWitness().stream().map(Feature::getName).collect(Collectors.toSet()));
+            witness.get().getWitness());
   }
 
   @Test
@@ -109,7 +108,7 @@ public class FDSemDiffTest {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet1"), getFD("tablet3"));
     assertTrue(witness.isPresent());
     assertEquals(Sets.newHashSet("tablet", "memory", "P200", "m64GB", "display", "dis10", "processor"),
-      witness.get().getWitness().stream().map(Feature::getName).collect(Collectors.toSet()));
+            witness.get().getWitness());
   }
 
   @Test
@@ -117,7 +116,7 @@ public class FDSemDiffTest {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet2"), getFD("tablet1"));
     assertTrue(witness.isPresent());
     assertEquals(Sets.newHashSet("tablet", "memory", "m256GB", "display", "P100", "processor", "dis12"),
-      witness.get().getWitness().stream().map(Feature::getName).collect(Collectors.toSet()));
+            witness.get().getWitness());
   }
 
   @Test
@@ -130,7 +129,7 @@ public class FDSemDiffTest {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet2"), getFD("tablet3"));
     assertTrue(witness.isPresent());
     assertEquals(Sets.newHashSet("tablet", "memory", "m64GB", "display", "P100", "processor", "dis12"),
-      witness.get().getWitness().stream().map(Feature::getName).collect(Collectors.toSet()));
+            witness.get().getWitness());
   }
 
   @Test
@@ -138,7 +137,7 @@ public class FDSemDiffTest {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet3"), getFD("tablet1"));
     assertTrue(witness.isPresent());
     assertEquals(Sets.newHashSet("tablet", "memory", "m256GB", "display", "P100", "processor", "dis11"),
-      witness.get().getWitness().stream().map(Feature::getName).collect(Collectors.toSet()));
+            witness.get().getWitness());
   }
 
   @Test
@@ -146,7 +145,7 @@ public class FDSemDiffTest {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet3"), getFD("tablet2"));
     assertTrue(witness.isPresent());
     assertEquals(Sets.newHashSet("tablet", "memory", "m256GB", "display", "P100", "processor", "dis10"),
-      witness.get().getWitness().stream().map(Feature::getName).collect(Collectors.toSet()));
+            witness.get().getWitness());
   }
 
   @Test
@@ -155,8 +154,8 @@ public class FDSemDiffTest {
   }
 
 
-  private FeatureDiagram getFD(String model) {
-    return ast2FD.transform(parse(model).getFeatureDiagram());
+  private ASTFeatureDiagram getFD(String model) {
+    return parse(model).getFeatureDiagram();
   }
 
   private ASTFDCompilationUnit parse(String model) {

@@ -1,11 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package fddiff;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import org.logicng.datastructures.Assignment;
 import org.logicng.formulas.Formula;
 import org.logicng.formulas.FormulaFactory;
-import org.logicng.formulas.Literal;
 import org.logicng.formulas.Variable;
 import org.logicng.solvers.MiniSat;
 import org.logicng.solvers.SATSolver;
@@ -14,19 +15,37 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * This class performs a semantic differencing between two feature diagrams.
+ * The semantics of a feature diagrams are the set of all valid feature configurations.
+ * The semantic difference between two feature diagrams, fd1 and fd2, are the feature configurations that are
+ * valid in fd1, but are not valid in fd2.
+ */
 public class FDSemDiff {
 
-  private final FormulaFactory ff = new FormulaFactory();
-
-  public Optional<FDSemDiffWitness> semDiff(FeatureDiagram fd1, FeatureDiagram fd2) {
-
-    final Set<Feature> features = Sets.union(fd1.getFeatures(), fd2.getFeatures());
-    final Map<Variable, Feature> vars = features.stream().collect(Collectors.toMap(
-      f -> ff.variable(f.getName()), Function.identity()
+  /**
+   * Calculates the semantic difference witness between two feature diagrams.
+   * This is done by transforming both feature diagrams into propositional formulas, phi_1 and phi_2,
+   * and then checking if the formula phi_1 AND NOT phi_2 is satisfiable.
+   * If so, a feature configuration, valid in fd1, but invalid in fd2, is returned.
+   * Otherwise an empty optional is returned: fd1 is a refinement of fd2,
+   * which means that every feature configuration valid in fd1 is also valid in fd2
+   *
+   * @param fd1 The first feature diagram
+   * @param fd2 The second feature diagram
+   * @return The (optional) semantic diff witness
+   */
+  public Optional<FDSemDiffWitness> semDiff(ASTFeatureDiagram fd1, ASTFeatureDiagram fd2) {
+    final FormulaFactory ff = new FormulaFactory();
+    final Set<String> features = Sets.union(Sets.newHashSet(fd1.getAllFeatures()), Sets.newHashSet(fd1.getAllFeatures()));
+    final Map<Variable, String> vars = features.stream().collect(Collectors.toMap(
+            ff::variable, Function.identity()
     ));
 
-    Formula phi_1 = getPhi(fd1);
-    Formula phi_2 = getPhi(fd2);
+    FD2Formula trafo = new FD2Formula(ff);
+
+    Formula phi_1 = trafo.getFormula(fd1);
+    Formula phi_2 = trafo.getFormula(fd2);
     Formula phi = ff.and(phi_1, ff.not(phi_2));
 
     final SATSolver miniSat = MiniSat.miniSat(ff);
@@ -36,91 +55,11 @@ public class FDSemDiff {
 
     Optional<FDSemDiffWitness> result = Optional.empty();
     if (assignment != null) {
-      Set<Feature> selectedFeatures = assignment.positiveLiterals().stream().map(vars::get).filter(Objects::nonNull).collect(Collectors.toSet());
+      Set<String> selectedFeatures = assignment.positiveLiterals().stream().map(vars::get).filter(Objects::nonNull).collect(Collectors.toSet());
       result = Optional.of(new FDSemDiffWitness(selectedFeatures));
     }
 
     return result;
-  }
-
-  private Literal Var(Feature feature) {
-    return ff.literal(feature.getName(), true);
-  }
-
-  private Formula getPhi(FeatureDiagram fd) {
-    return ff.and(
-      Lists.newArrayList(rootClause(fd), parentClauses(fd), mandatoryClauses(fd),
-        orClauses(fd), xorClauses(fd), impliesClauses(fd), excludesClauses(fd))
-           .stream().flatMap(List::stream).collect(Collectors.toList()));
-  }
-
-  private List<Formula> rootClause(FeatureDiagram fd) {
-    return Collections.singletonList(ff.literal(fd.getRoot().getName(), true));
-  }
-
-  private List<Formula> parentClauses(FeatureDiagram fd) {
-    List<Formula> clauses = new ArrayList<>();
-    for (Feature f : fd.getFeatures()) {
-      if (f.getParent() != null) {
-        clauses.add(ff.implication(Var(f), Var(f.getParent())));
-      }
-    }
-    return clauses;
-  }
-
-  private List<Formula> mandatoryClauses(FeatureDiagram fd) {
-    List<Formula> clauses = new ArrayList<>();
-    for (Map.Entry<Feature, Set<Feature>> entry : fd.getMandatory().entrySet()) {
-      Feature f = entry.getKey();
-      for (Feature g : entry.getValue()) {
-        clauses.add(ff.implication(Var(f), Var(g)));
-      }
-    }
-    return clauses;
-  }
-
-  private List<Formula> orClauses(FeatureDiagram fd) {
-    List<Formula> clauses = new ArrayList<>();
-    for (Map.Entry<Feature, Set<Feature>> entry : fd.getOr().entrySet()) {
-      Feature p = entry.getKey();
-      Formula r = ff.or(entry.getValue().stream().map(this::Var).collect(Collectors.toList()));
-      clauses.add(ff.implication(Var(p), r));
-    }
-    return clauses;
-  }
-
-  private List<Formula> xorClauses(FeatureDiagram fd) {
-    List<Formula> clauses = new ArrayList<>();
-    for (Map.Entry<Feature, Set<Feature>> entry : fd.getXor().entrySet()) {
-      Feature p = entry.getKey();
-      Set<Literal> G = entry.getValue().stream().map(this::Var).collect(Collectors.toSet());
-      Formula min1 = ff.or(G);
-      Formula max1 = ff.and(Sets.combinations(G, 2).stream().map(ff::and).map(ff::not).collect(Collectors.toList()));
-      clauses.add(ff.implication(Var(p), ff.and(min1, max1)));
-    }
-    return clauses;
-  }
-
-  private List<Formula> impliesClauses(FeatureDiagram fd) {
-    List<Formula> clauses = new ArrayList<>();
-    for (Map.Entry<Feature, Set<Feature>> entry : fd.getImplies().entrySet()) {
-      Feature f = entry.getKey();
-      for (Feature g : entry.getValue()) {
-        clauses.add(ff.implication(Var(f), Var(g)));
-      }
-    }
-    return clauses;
-  }
-
-  private List<Formula> excludesClauses(FeatureDiagram fd) {
-    List<Formula> clauses = new ArrayList<>();
-    for (Map.Entry<Feature, Set<Feature>> entry : fd.getExcludes().entrySet()) {
-      Feature f = entry.getKey();
-      for (Feature g : entry.getValue()) {
-        clauses.add(ff.not(ff.and(Var(f), Var(g))));
-      }
-    }
-    return clauses;
   }
 
 }
