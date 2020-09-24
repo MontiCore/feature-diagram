@@ -42,7 +42,7 @@ public class FDSemDiffTest {
   public void testSemDiff_car_car1() {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car"), getFD("car1"));
     assertTrue(witness.isPresent());
-    assertEquals(Sets.newHashSet("phone", "engine", "car", "locking", "electric", "fingerprint"),
+    assertEquals(Sets.newHashSet("engine", "car", "hybrid"),
             witness.get().getWitness());
   }
 
@@ -68,7 +68,7 @@ public class FDSemDiffTest {
   public void testSemDiff_car1_car2() {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car1"), getFD("car2"));
     assertTrue(witness.isPresent());
-    assertEquals(Sets.newHashSet("engine", "car", "locking", "electric", "fingerprint"),
+    assertEquals(Sets.newHashSet("engine", "car", "gas", "electric"),
             witness.get().getWitness());
   }
 
@@ -81,7 +81,7 @@ public class FDSemDiffTest {
   public void testSemDiff_car2_car1() {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car2"), getFD("car1"));
     assertTrue(witness.isPresent());
-    assertEquals(Sets.newHashSet("phone", "engine", "car", "locking", "electric", "fingerprint"),
+    assertEquals(Sets.newHashSet("hybrid", "engine", "car"),
             witness.get().getWitness());
   }
 
@@ -99,7 +99,7 @@ public class FDSemDiffTest {
   public void testSemDiff_tablet1_tablet2() {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet1"), getFD("tablet2"));
     assertTrue(witness.isPresent());
-    assertEquals(Sets.newHashSet("tablet", "memory", "display", "P200", "dis10", "processor", "m64GB", "dis12"),
+    assertEquals(Sets.newHashSet("tablet", "memory", "display", "P100", "dis11", "processor", "m64GB", "dis12"),
             witness.get().getWitness());
   }
 
@@ -107,7 +107,7 @@ public class FDSemDiffTest {
   public void testSemDiff_tablet1_tablet3() {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet1"), getFD("tablet3"));
     assertTrue(witness.isPresent());
-    assertEquals(Sets.newHashSet("tablet", "memory", "P200", "m64GB", "display", "dis10", "processor"),
+    assertEquals(Sets.newHashSet("tablet", "memory", "P100", "m64GB", "display", "dis11", "dis12", "processor"),
             witness.get().getWitness());
   }
 
@@ -115,7 +115,7 @@ public class FDSemDiffTest {
   public void testSemDiff_tablet2_tablet1() {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet2"), getFD("tablet1"));
     assertTrue(witness.isPresent());
-    assertEquals(Sets.newHashSet("tablet", "memory", "m256GB", "display", "P100", "processor", "dis12"),
+    assertEquals(Sets.newHashSet("tablet", "memory", "m64GB", "display", "P100", "processor", "dis12"),
             witness.get().getWitness());
   }
 
@@ -128,7 +128,7 @@ public class FDSemDiffTest {
   public void testSemDiff_tablet2_tablet3() {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet2"), getFD("tablet3"));
     assertTrue(witness.isPresent());
-    assertEquals(Sets.newHashSet("tablet", "memory", "m64GB", "display", "P100", "processor", "dis12"),
+    assertEquals(Sets.newHashSet("tablet", "memory", "m64GB", "display", "P200", "processor", "dis11"),
             witness.get().getWitness());
   }
 
@@ -136,7 +136,7 @@ public class FDSemDiffTest {
   public void testSemDiff_tablet3_tablet1() {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet3"), getFD("tablet1"));
     assertTrue(witness.isPresent());
-    assertEquals(Sets.newHashSet("tablet", "memory", "m256GB", "display", "P100", "processor", "dis11"),
+    assertEquals(Sets.newHashSet("tablet", "memory", "m128GB", "display", "P100", "processor", "dis12"),
             witness.get().getWitness());
   }
 
@@ -144,7 +144,7 @@ public class FDSemDiffTest {
   public void testSemDiff_tablet3_tablet2() {
     Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet3"), getFD("tablet2"));
     assertTrue(witness.isPresent());
-    assertEquals(Sets.newHashSet("tablet", "memory", "m256GB", "display", "P100", "processor", "dis10"),
+    assertEquals(Sets.newHashSet("tablet", "memory", "m256GB", "display", "P100", "processor", "dis11"),
             witness.get().getWitness());
   }
 

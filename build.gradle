@@ -3,12 +3,12 @@ import de.monticore.MCTask
 
 plugins {
     id "java"
-    id "monticore"  version "6.3.0-SNAPSHOT" // MontiCore Plugin
+    id "monticore"  version "6.3.0" // MontiCore Plugin
     id "maven-publish"
     id "com.github.johnrengelman.shadow" version "4.0.4"
 }
 
-def monticore_version = '6.3.0-SNAPSHOT'
+def monticore_version = '6.3.0'
 def plexus_archiver_version = '2.8.2'
 def junit_version = '4.12'
 def logback_version = '1.1.2'
@@ -22,7 +22,7 @@ def grammarDir = 'src/main/grammars'
 
 allprojects {
     group = 'de.monticore.lang'
-    version = monticore_version
+    version = '6.3.0-SNAPSHOT'
 
     repositories {
         mavenLocal()

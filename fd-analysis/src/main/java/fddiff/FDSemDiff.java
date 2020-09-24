@@ -37,7 +37,7 @@ public class FDSemDiff {
    */
   public Optional<FDSemDiffWitness> semDiff(ASTFeatureDiagram fd1, ASTFeatureDiagram fd2) {
     final FormulaFactory ff = new FormulaFactory();
-    final Set<String> features = Sets.union(Sets.newHashSet(fd1.getAllFeatures()), Sets.newHashSet(fd1.getAllFeatures()));
+    final Set<String> features = Sets.union(Sets.newHashSet(fd1.getAllFeatures()), Sets.newHashSet(fd2.getAllFeatures()));
     final Map<Variable, String> vars = features.stream().collect(Collectors.toMap(
             ff::variable, Function.identity()
     ));
