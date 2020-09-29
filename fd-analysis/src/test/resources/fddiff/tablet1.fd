@@ -1,0 +1,9 @@
+package fddiff;
+
+featurediagram tablet1 {
+  tablet -> display & memory & processor & WiFi?;
+  display -> dis10 ^ dis11;
+  memory -> m64GB ^ m128GB;
+  processor -> P100 ^ P200;
+  WiFi -> Cellular?;
+}

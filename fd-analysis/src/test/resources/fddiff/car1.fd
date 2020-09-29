@@ -1,0 +1,7 @@
+package fddiff;
+
+featurediagram car1 {
+  car -> engine & locking?;
+  engine -> electric | gas;
+  locking -> keyless ^ phone ^ fingerprint;
+}
