@@ -83,12 +83,12 @@ extensions of AST classes, symbol classes, or the scope class.
 
 
 #### Symbol kinds used by FC (importable):
-- An FC (as defined here) imports `FeatureDiagramSymbols` and `FeatureSymbols` 
+- An FC (as defined here) imports the symbol kinds `FeatureDiagramSymbol` and `FeatureSymbol` 
   from the [FeatureDiagram][FeatureDiagram MLC] language. These symbols are used
   to check whether the feature diagram name and feature names used in an FC model
-  are defined in an FD model. For performing more sophisticacted analyses on an FC
+  are defined in an FD model. Please note: For performing more sophisticacted analyses on an FC
   (as described in the [Readme][Readme]) loading stored symbols of the FD language 
-  is not sufficient. For these, the FD model has to be parsed.  
+  is not sufficient. For these, the imported FD models are loaded as well.  
 
 #### Symbol kinds defined by FC (exported):
  - For each FC there is a `FeatureConfigurationSymbol` defined as:

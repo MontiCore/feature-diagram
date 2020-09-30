@@ -177,8 +177,8 @@ contained in the FD.
       within an FD are unique.
 
 ### Symbol kinds used by FD (importable):
-- An FD (as defined here) does not import any symbols from other 
-  languages; it defines all symbols in its own language.
+- An FD (as defined here) does not use any symbol kinds from other 
+  languages; it defines all symbol kinds in its own language.
 
 ### Symbol kinds defined by FD (exported):
 - An FD defines its own type of FeatureSymbols.
