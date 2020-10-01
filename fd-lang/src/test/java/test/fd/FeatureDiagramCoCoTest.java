@@ -14,6 +14,7 @@ import org.junit.Test;
 import test.AbstractTest;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -29,7 +30,14 @@ public class FeatureDiagramCoCoTest extends AbstractTest {
     FeatureDiagramCoCos.checkAll(readFile(dir + "Phone.fd"));
     assertEquals(0, Log.getErrorCount());
   }
-
+  
+  @Test
+  public void testForbiddenCTCExpressions() throws IOException {
+    String[] errors = new String[14];
+    Arrays.fill(errors, "0xFD011");
+    testCoCo("IllegalCTCs.fd", errors);
+  }
+  
   @Test
   public void testCTCFeatureDoesNotExist() throws IOException {
     testCoCo("CTCFeatureDoesNotExist.fd", "0xFD006", "0xFD006");

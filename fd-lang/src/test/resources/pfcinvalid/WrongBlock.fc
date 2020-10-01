@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pfcinvalid;
+
+import fdvalid.CarNavigation;
+
+featureconfig WrongBlock for CarNavigation {
+  CarNavigation, VoiceControl, Display, SmallScreen, GPS, Memory, Small;
+
+  exclude {
+    Large
+  }
+}
