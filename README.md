@@ -1,9 +1,9 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 [clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
 [fddifftool]:                ../../../../../../../../fd-analysis/src/main/java/de/monticore/fddiff/FDSemDiff.java
-[FDtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
-[FCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationTool.java
-[PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialTool.java
+[FDtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramCLI.java
+[FCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
+[PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
 
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
@@ -146,9 +146,9 @@ and `Asia` requires to select either a `Large` or a `Medium` memory.
 ## Tools
 The FDL component provides the five tools that are explained in more detail below:
 * The [Feature Model Analysis CLI Tool (FACT)][clitool] enables executing analyses against feature diagrams and feature configuration both via CLI and Java API
-* The [FeatureDiagramTool][FDtool] enables fine-grained options for processing feature diagram models both via CLI and Java API
-* The [FeatureConfigurationTool][FCtool] enables fine-grained options to process feature configuration models both via CLI and Java API
-* The [FeatureConfigurationPartialTool][PFCtool] enables fine-grained options to process partial feature configuration models both via CLI and Java API
+* The [FeatureDiagramCLI][FDtool] enables fine-grained options for processing feature diagram models both via CLI and Java API
+* The [FeatureConfigurationCLI][FCtool] enables fine-grained options to process feature configuration models both via CLI and Java API
+* The [FeatureConfigurationPartialCLI][PFCtool] enables fine-grained options to process partial feature configuration models both via CLI and Java API
 * The [Semantic Differencing for Feature Diagrams][fddifftool] enables performing the semantic difference operator for feature diagrams via Java API. 
 
 ### [The FeatureModelAnalysisCLITool][clitool] 
@@ -174,7 +174,7 @@ Currently, the FeatureModelAnalysisCLITool supports the following analyses:
 For example, `java -jar FACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the FD "Car". 
 The result, in this case `true` or `false`, is printed to the console.
 
-[FACT][clitool] can further be used for direct access from Java through the following static methods:
+[FACT][clitool] can further be used for direct access from Java through the following methods:
 * `boolean execIsValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc)`, to execute the [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java) analysis
 * `List<ASTFeatureConfiguration> execAllProducts(ASTFeatureDiagram fd)`, to execute the [all products](fd-analysis/src/main/java/tool/analyses/AllProducts.java) analysis
 * `List<String> execDeadFeature(ASTFeatureDiagram fd)`, to execute the [dead features](fd-analysis/src/main/java/tool/analyses/DeadFeatures.java) analysis
@@ -204,11 +204,11 @@ else{
 }
 ```
 
-### [The FeatureDiagramTool][FDtool] 
-The [FeatureDiagramTool][FDtool] offers both CLI and a Java API for processing FeatureDiagram models. 
+### [The FeatureDiagramCLI Tool][FDtool] 
+The [FeatureDiagramCLI][FDtool] offers both CLI and a Java API for processing FeatureDiagram models. 
 It provides through the CLI as follows:
 
-`java -jar FeatureDiagramTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+`java -jar FeatureDiagramCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -220,7 +220,7 @@ where the arguments are:
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
                                  to the specified output file
 
-For using the tool as Java API, it contains the following (static) methods:
+For using the tool as Java API, it contains the following methods:
 * `ASTFDCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
 * `IFeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
   the passed path and instantiates the symbol table using passed modelpath entries for finding imported FDs
@@ -241,11 +241,11 @@ For using the tool as Java API, it contains the following (static) methods:
   checks the context conditions, and stores symbol table - all without an explicit modelpath. Care: 
   this can only take into account imported FDs if these are located next to the passed FD modelFile.
 
-### [The FeatureConfigurationTool][FCtool] 
-The [FeatureConfigurationTool][FCtool] offers both CLI and a Java API for processing FeatureConfiguration models. 
+### [The FeatureConfigurationCLI Tool][FCtool] 
+The [FeatureConfigurationCLI][FCtool] offers both CLI and a Java API for processing FeatureConfiguration models. 
 It provides through the CLI as follows:
 
-`java -jar FeatureConfigurationTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+`java -jar FeatureConfigurationCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -257,7 +257,7 @@ where the arguments are:
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
                                  to the specified output file
 
-For using the tool as Java API, it contains the following (static) methods:
+For using the tool as Java API, it contains the following methods:
 * `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
 * `IFeatureConfigurationArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
   the passed path and instantiates the symbol table using passed modelpath entries for finding FDs
@@ -276,11 +276,11 @@ For using the tool as Java API, it contains the following (static) methods:
    an explicit modelpath. Care: this can only take into account FDs if these are located next to the 
    passed FC modelFile.
    
-### [The FeatureConfigurationPartialTool][PFCtool] 
-The [FeatureConfigurationPartialTool][PFCtool] offers both CLI and a Java API for processing PartialFeatureConfiguration models. 
-It provides through the CLI as follows:
+### [The FeatureConfigurationPartialCLI Tool][PFCtool] 
+The [FeatureConfigurationPartialCLI][PFCtool] offers both CLI and a Java API for processing 
+PartialFeatureConfiguration models. It provides through the CLI as follows:
 
-`java -jar FeatureConfigurationPartialTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+`java -jar FeatureConfigurationPartialCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -292,7 +292,7 @@ where the arguments are:
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
                                  to the specified output file
 
-For using the tool as Java API, it contains the following (static) methods:
+For using the tool as Java API, it contains the following methods:
 * `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
 * `IFeatureConfigurationPartialArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
   the passed path and instantiates the symbol table using passed modelpath entries for finding FDs
