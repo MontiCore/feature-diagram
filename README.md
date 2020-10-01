@@ -188,18 +188,19 @@ The result, in this case `true` or `false`, is printed to the console.
 
 Example:
 ```groovy
+FACT tool = new FACT();
 ModelPath mp = new ModelPath();
 mp.addEntry(Paths.get("target"));
 
-ASTFeatureDiagram       fd = FACT.readFeatureDiagram("CarNavigation.fd", "target", mp);
-ASTFeatureConfiguration fc = FACT.readFeatureConfiguration("Basic.fc", mp);
-boolean result = FACT.execIsValid(fd, fc);
+ASTFeatureDiagram fd = tool.readFeatureDiagram("src/test/resources/fdvalid/CarNavigation.fd", "target", mp);
+ASTFeatureConfiguration fc = tool.readFeatureConfiguration("src/test/resources/Basic.fc", mp);
+boolean result = tool.execIsValid(fd, fc);
 
 if(result){
   System.out.println("Is valid!");
 }
 else{
-   System.out.println("Is invalid!");
+  System.out.println("Is invalid!");
 }
 ```
 

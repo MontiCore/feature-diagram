@@ -1,12 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fcp;
 
-import de.monticore.featureconfiguration.FeatureConfigurationTool;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
-import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
-import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialArtifactScope;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialScopeDeSer;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
@@ -27,14 +23,17 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractTest {
 
   protected static final FeatureConfigurationPartialScopeDeSer deSer = new FeatureConfigurationPartialScopeDeSer();
 
+  protected static final FeatureConfigurationPartialCLI tool = new FeatureConfigurationPartialCLI();
+
   protected static final ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
 
   @BeforeClass
   public static void initDeSer() {
-    deSer.setGlobalScope(FeatureConfigurationPartialTool.createGlobalScope(mp));
+    deSer.setGlobalScope(tool.createGlobalScope(mp));
   }
+
   protected IFeatureConfigurationPartialArtifactScope setupSymbolTable(String modelFile) {
-    return FeatureConfigurationPartialTool.createSymbolTable("src/test/resources/" + modelFile, mp);
+    return tool.createSymbolTable("src/test/resources/" + modelFile, mp);
   }
 
   @Test
@@ -95,7 +94,8 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractTest {
   public void testStore() {
     JsonPrinter.enableIndentation();
     deSer.setSymbolFileExtension("pfcsym");
-    IFeatureConfigurationPartialArtifactScope fcScope = setupSymbolTable("pfcvalid/BasicCarNavigation.fc");
+    IFeatureConfigurationPartialArtifactScope fcScope = setupSymbolTable(
+        "pfcvalid/BasicCarNavigation.fc");
     deSer.store(fcScope, Paths.get("target/test-symbols"));
 
     Path expectedPath = Paths.get("target/test-symbols/BasicCarNavigation.pfcsym");

@@ -20,6 +20,8 @@ import static org.junit.Assert.*;
 
 public class FACTTest extends AbstractTest {
 
+  protected FACT tool = new FACT();
+
   protected PrintStream originalOut;
 
   protected ByteArrayOutputStream out;
@@ -40,7 +42,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisIsValidTrue() {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/FalseOptional.fd",
         "-isValid", "src/test/resources/ValidConfig.fc"
     });
@@ -52,7 +54,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisIsValidFalse() {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-isValid", "src/test/resources/InvalidConfig.fc"
     });
@@ -64,7 +66,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisAllProducts() throws IOException {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-allProducts"
     });
@@ -81,7 +83,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisDeadFeatures() {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-deadFeatures"
     });
@@ -93,7 +95,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisFalseOpt() {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/FalseOptional.fd",
         "-falseOptional"
     });
@@ -105,7 +107,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisFilter() throws IOException {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/FalseOptional.fd",
         "-completeToValid", "src/test/resources/CompleteToValid.fc"
     });
@@ -122,7 +124,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisFindValid() throws IOException {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/FalseOptional.fd",
         "-findValid"
     });
@@ -139,7 +141,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisFindValid2() throws IOException {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/fdvalid/CarNavigation.fd",
         "-findValid"
     });
@@ -156,7 +158,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testIsVoidFalse() {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-isVoidFeatureModel"
     });
@@ -168,7 +170,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testIsVoidTrue() {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/Void.fd",
         "-isVoidFeatureModel"
     });
@@ -180,7 +182,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testAnalysisNumProducts() {
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-numberOfProducts"
     });
@@ -195,7 +197,7 @@ public class FACTTest extends AbstractTest {
     PrintStream originalErr = System.err;
     ByteArrayOutputStream err = new ByteArrayOutputStream();
     System.setErr(new PrintStream(err));
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-isValid", "src/test/resources/InvalidConfig2.fc"
     });
@@ -211,7 +213,7 @@ public class FACTTest extends AbstractTest {
     PrintStream originalErr = System.err;
     ByteArrayOutputStream err = new ByteArrayOutputStream();
     System.setErr(new PrintStream(err));
-    new FACT(new String[] {
+    tool.run(new String[] {
         "src/test/resources/DeadFeatures.fd",
         "-SomethingIsNotRightHere", "src/test/resources/InvalidConfig.fc"
     });
@@ -224,7 +226,7 @@ public class FACTTest extends AbstractTest {
 
   @Test
   public void testHelp() {
-    new FACT(new String[] { "-h" });
+    tool.run(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);

@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fd;
 
-import de.monticore.featurediagram.FeatureDiagramTool;
+import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
@@ -19,8 +19,10 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
 
   protected FeatureDiagramScopeDeSer deSer = new FeatureDiagramScopeDeSer();
 
+  protected FeatureDiagramCLI tool = new FeatureDiagramCLI();
+
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
-    return FeatureDiagramTool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath());
+    return tool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath());
   }
 
   @Test

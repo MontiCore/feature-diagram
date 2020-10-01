@@ -6,7 +6,7 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfiguration._symboltable.*;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
-import de.monticore.featurediagram.FeatureDiagramTool;
+import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -21,14 +21,26 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
- * This tool can process feature configuration models both in form of a Java API with static methods
+ * This tool can process feature configuration models both in form of a Java API with individual methods
  * as well as via Command Line Interface (CLI)
  */
-public class FeatureConfigurationTool {
+public class FeatureConfigurationCLI {
 
   protected static final FeatureConfigurationScopeDeSer deser = new FeatureConfigurationScopeDeSer();
 
   protected static final FeatureConfigurationParser parser = new FeatureConfigurationParser();
+
+  /**
+   * This main method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
+  public static void main(String[] args) {
+    FeatureConfigurationCLI cli = new FeatureConfigurationCLI();
+    Log.initWARN();
+    cli.run(args);
+  }
 
   /**
    * Parse the model contained in the specified file.
@@ -36,7 +48,7 @@ public class FeatureConfigurationTool {
    * @param model - file to parse
    * @return
    */
-  public static ASTFCCompilationUnit parse(String model) {
+  public ASTFCCompilationUnit parse(String model) {
     try {
       Optional<ASTFCCompilationUnit> optFC = parser.parse(model);
 
@@ -59,7 +71,7 @@ public class FeatureConfigurationTool {
    * @param mp
    * @return
    */
-  public static IFeatureConfigurationArtifactScope createSymbolTable(String model, ModelPath mp) {
+  public IFeatureConfigurationArtifactScope createSymbolTable(String model, ModelPath mp) {
     return createSymbolTable(parse(model), mp);
   }
 
@@ -70,7 +82,7 @@ public class FeatureConfigurationTool {
    * @param ast
    * @return
    */
-  public static IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
+  public IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
       ModelPath mp) {
     IFeatureConfigurationGlobalScope gs = createGlobalScope(mp);
     deser.setGlobalScope(gs);
@@ -87,7 +99,7 @@ public class FeatureConfigurationTool {
    * @param mp
    * @return
    */
-  public static IFeatureConfigurationGlobalScope createGlobalScope(ModelPath mp) {
+  public IFeatureConfigurationGlobalScope createGlobalScope(ModelPath mp) {
     return FeatureConfigurationMill
         .featureConfigurationGlobalScopeBuilder()
         .setModelPath(mp)
@@ -103,7 +115,7 @@ public class FeatureConfigurationTool {
    *
    * @return
    */
-  public static String storeSymbols(IFeatureConfigurationArtifactScope scope, Path out) {
+  public String storeSymbols(IFeatureConfigurationArtifactScope scope, Path out) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName() + ".fcsym");
@@ -117,7 +129,7 @@ public class FeatureConfigurationTool {
    *
    * @return
    */
-  public static String storeSymbols(IFeatureConfigurationArtifactScope scope,
+  public String storeSymbols(IFeatureConfigurationArtifactScope scope,
       String symbolFileName) {
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
@@ -132,13 +144,13 @@ public class FeatureConfigurationTool {
    * @param mp
    * @return
    */
-  public static ASTFeatureConfiguration run(String modelFile, ModelPath mp) {
+  public ASTFeatureConfiguration run(String modelFile, ModelPath mp) {
 
     // parse the model and create the AST representation
-    final ASTFCCompilationUnit ast = FeatureConfigurationTool.parse(modelFile);
+    final ASTFCCompilationUnit ast = parse(modelFile);
 
     // setup the symbol table
-    FeatureConfigurationTool.createSymbolTable(ast, mp);
+    createSymbolTable(ast, mp);
 
     // currently no context conditions exist for feature configurations.
     // Also, do not store artifact scope
@@ -154,9 +166,9 @@ public class FeatureConfigurationTool {
    * @param modelFile
    * @return
    */
-  public static ASTFeatureConfiguration run(String modelFile) {
+  public ASTFeatureConfiguration run(String modelFile) {
     // parse the model and create the AST representation
-    final ASTFCCompilationUnit ast = FeatureConfigurationTool.parse(modelFile);
+    final ASTFCCompilationUnit ast = parse(modelFile);
 
     //reconstruct modelpath from input file
     Path path = Paths.get(modelFile).toAbsolutePath().getParent();
@@ -167,8 +179,8 @@ public class FeatureConfigurationTool {
     }
 
     // setup the symbol table
-    ModelPath mp = new ModelPath(path, FeatureDiagramTool.SYMBOL_OUT);
-    FeatureConfigurationTool.createSymbolTable(ast, mp);
+    ModelPath mp = new ModelPath(path, FeatureDiagramCLI.SYMBOL_OUT);
+    createSymbolTable(ast, mp);
 
     // currently no context conditions exist for feature configurations.
     // Also, do not store artifact scope
@@ -177,15 +189,13 @@ public class FeatureConfigurationTool {
   }
 
   /**
-   * This main method realizes a CLI for processing FC models.
+   * This method realizes a CLI for processing FC models.
    * See the project's Readme for a documentation of the CLI
    *
    * @param args
    */
-  public static void main(String[] args) {
-    //reuse the CLI options from FeatureConfigurationTool
-    Options options = FeatureDiagramTool.getOptions();
-    Log.initWARN();
+  public void run(String[] args) {
+    Options options = initOptions();
 
     try {
       CommandLineParser parser = new BasicParser();
@@ -223,9 +233,8 @@ public class FeatureConfigurationTool {
       }
 
       // parse and create symbol table, FeatureConfiguration langage has no CoCos
-      ASTFCCompilationUnit ast = FeatureConfigurationTool.parse(input);
-      IFeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool
-          .createSymbolTable(ast, mp);
+      ASTFCCompilationUnit ast = parse(input);
+      IFeatureConfigurationArtifactScope symbolTable = createSymbolTable(ast, mp);
 
       // print (and optionally store) symbol table
       if (cmd.hasOption("symboltable")) {
@@ -233,10 +242,10 @@ public class FeatureConfigurationTool {
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
           String symbolFile = output.resolve(s).toString();
-          FeatureConfigurationTool.storeSymbols(symbolTable, symbolFile);
+          storeSymbols(symbolTable, symbolFile);
         }
         else {
-          FeatureConfigurationTool.storeSymbols(symbolTable, output);
+          storeSymbols(symbolTable, output);
         }
 
         //print (formatted!) symboltable to console
@@ -259,6 +268,35 @@ public class FeatureConfigurationTool {
       formatter.printHelp("java -jar FeatureConfigurationTool.jar", options, true);
       Log.error("0xFC103 An exception occured while processing the CLI input!", e);
     }
+  }
+
+
+  /**
+   * Initialize options of the CLI
+   * @return
+   */
+  protected Options initOptions() {
+    Options options = new Options();
+    options.addOption("h", "help", false, "Prints this help dialog");
+    options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
+    options.addOption("o", "output", true, "Path of generated files");
+
+    Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
+    modelPath.setArgs(Option.UNLIMITED_VALUES);
+    modelPath.setValueSeparator(':');
+    options.addOption(modelPath);
+
+    Option symboltable = new Option("s", true,"Serializes and prints the symbol table to stdout, if present, the specified output file");
+    symboltable.setOptionalArg(true);
+    symboltable.setLongOpt("symboltable");
+    options.addOption(symboltable);
+
+    Option prettyprint = new Option("pp", true, "Prints the AST to stdout and, if present, the specified output file");
+    prettyprint.setOptionalArg(true);
+    prettyprint.setLongOpt("prettyprint");
+    options.addOption(prettyprint);
+
+    return options;
   }
 
 }

@@ -24,10 +24,22 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
- * This tool can process feature diagram models both in form of a Java API with static methods
+ * This tool can process feature diagram models both in form of a Java API with individual methods
  * as well as via Command Line Interface (CLI)
  */
-public class FeatureDiagramTool {
+public class FeatureDiagramCLI {
+
+  /**
+   * This main method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
+  public static void main(String[] args) {
+    FeatureDiagramCLI cli = new FeatureDiagramCLI();
+    Log.initWARN();
+    cli.run(args);
+  }
 
   /**
    * constant for the default folder into which symbols are stored
@@ -44,7 +56,7 @@ public class FeatureDiagramTool {
    * @param model - file to parse
    * @return
    */
-  public static ASTFDCompilationUnit parse(String model) {
+  public ASTFDCompilationUnit parse(String model) {
     try {
       Optional<ASTFDCompilationUnit> optFD = parser.parse(model);
 
@@ -67,7 +79,7 @@ public class FeatureDiagramTool {
    * @param mp
    * @return
    */
-  public static IFeatureDiagramArtifactScope createSymbolTable(String model, ModelPath mp) {
+  public IFeatureDiagramArtifactScope createSymbolTable(String model, ModelPath mp) {
     return createSymbolTable(parse(model), mp);
   }
 
@@ -78,7 +90,7 @@ public class FeatureDiagramTool {
    * @param mp
    * @return
    */
-  public static IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp) {
+  public IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp) {
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
         .featureDiagramSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(createGlobalScope(mp))
@@ -92,7 +104,7 @@ public class FeatureDiagramTool {
    * @param mp
    * @return
    */
-  public static IFeatureDiagramGlobalScope createGlobalScope(ModelPath mp) {
+  public IFeatureDiagramGlobalScope createGlobalScope(ModelPath mp) {
     return FeatureDiagramMill
         .featureDiagramGlobalScopeBuilder()
         .setModelPath(mp)
@@ -105,7 +117,7 @@ public class FeatureDiagramTool {
    *
    * @param ast
    */
-  public static void checkCoCos(ASTFDCompilationUnit ast) {
+  public void checkCoCos(ASTFDCompilationUnit ast) {
     FeatureDiagramCoCos.checkAll(ast);
   }
 
@@ -116,7 +128,7 @@ public class FeatureDiagramTool {
    *
    * @return
    */
-  public static String storeSymbols(IFeatureDiagramArtifactScope scope, Path out) {
+  public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName()+".fdsym");
@@ -130,7 +142,7 @@ public class FeatureDiagramTool {
    *
    * @return
    */
-  public static String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName) {
+  public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName) {
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
@@ -144,7 +156,7 @@ public class FeatureDiagramTool {
    * @param path
    * @return
    */
-  public static ASTFeatureDiagram run(String modelFile, Path out, ModelPath path) {
+  public ASTFeatureDiagram run(String modelFile, Path out, ModelPath path) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
@@ -169,7 +181,7 @@ public class FeatureDiagramTool {
    * @param path
    * @return
    */
-  public static ASTFeatureDiagram run(String modelFile, ModelPath path) {
+  public ASTFeatureDiagram run(String modelFile, ModelPath path) {
     return run(modelFile, SYMBOL_OUT, path);
   }
 
@@ -180,7 +192,7 @@ public class FeatureDiagramTool {
    * @param modelFile
    * @return
    */
-  public static ASTFeatureDiagram run(String modelFile) {
+  public ASTFeatureDiagram run(String modelFile) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
@@ -207,15 +219,13 @@ public class FeatureDiagramTool {
   }
 
   /**
-   * This main method realizes a CLI for processing FC models.
+   * This method realizes a CLI for processing FC models.
    * See the project's Readme for a documentation of the CLI
    *
    * @param args
    */
-  public static void main(String[] args) {
-    //init CLI options
-    Options options = FeatureDiagramTool.getOptions();
-    Log.initWARN();
+  public void run(String[] args) {
+    Options options = initOptions();
 
     try {
       CommandLineParser parser = new BasicParser();
@@ -247,9 +257,9 @@ public class FeatureDiagramTool {
       }
 
       // parse, create symbol table, check all cocos
-      ASTFDCompilationUnit ast = FeatureDiagramTool.parse(input);
-      IFeatureDiagramArtifactScope symbolTable = FeatureDiagramTool.createSymbolTable(ast, mp);
-      FeatureDiagramTool.checkCoCos(ast);
+      ASTFDCompilationUnit ast = parse(input);
+      IFeatureDiagramArtifactScope symbolTable = createSymbolTable(ast, mp);
+      checkCoCos(ast);
 
       // print (and optionally store) symbol table
       if (cmd.hasOption("symboltable")) {
@@ -257,10 +267,10 @@ public class FeatureDiagramTool {
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
           String symbolFile = output.resolve(s).toString();
-          FeatureDiagramTool.storeSymbols(symbolTable, symbolFile);
+          storeSymbols(symbolTable, symbolFile);
         }
         else {
-          FeatureDiagramTool.storeSymbols(symbolTable, output);
+          storeSymbols(symbolTable, output);
         }
 
         //print (formatted!) symboltable to console
@@ -289,7 +299,7 @@ public class FeatureDiagramTool {
    * Initialize options of the CLI
    * @return
    */
-  public static Options getOptions() {
+  protected Options initOptions() {
     Options options = new Options();
     options.addOption("h", "help", false, "Prints this help dialog");
     options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
