@@ -26,9 +26,9 @@ import java.util.Optional;
  */
 public class FeatureConfigurationCLI {
 
-  protected static final FeatureConfigurationScopeDeSer deser = new FeatureConfigurationScopeDeSer();
+  protected FeatureConfigurationScopeDeSer deser = new FeatureConfigurationScopeDeSer();
 
-  protected static final FeatureConfigurationParser parser = new FeatureConfigurationParser();
+  protected FeatureConfigurationParser parser = new FeatureConfigurationParser();
 
   /**
    * This main method realizes a CLI for processing FC models.
@@ -145,9 +145,13 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public ASTFeatureConfiguration run(String modelFile, ModelPath mp) {
+    
+    // initialize needed objects.
+    deser = new FeatureConfigurationScopeDeSer();
+    parser = new FeatureConfigurationParser();
 
     // parse the model and create the AST representation
-    final ASTFCCompilationUnit ast = parse(modelFile);
+    ASTFCCompilationUnit ast = parse(modelFile);
 
     // setup the symbol table
     createSymbolTable(ast, mp);
