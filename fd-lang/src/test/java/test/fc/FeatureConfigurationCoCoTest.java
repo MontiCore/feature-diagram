@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fc;
 
-import de.monticore.featureconfiguration.FeatureConfigurationTool;
+import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.io.paths.ModelPath;
 import org.junit.Test;
@@ -42,10 +42,10 @@ public class FeatureConfigurationCoCoTest extends AbstractTest {
   }
 
   protected ASTFCCompilationUnit setupSymbolTable(String modelFile) {
+    FeatureConfigurationCLI tool = new FeatureConfigurationCLI();
+    ASTFCCompilationUnit ast = tool.parse("src/test/resources/fcinvalid/" + modelFile);
     ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
-    ASTFCCompilationUnit ast = FeatureConfigurationTool
-        .parse("src/test/resources/fcinvalid/" + modelFile);
-    FeatureConfigurationTool.createSymbolTable(ast, mp);
+    tool.createSymbolTable(ast, mp);
     return ast;
   }
 

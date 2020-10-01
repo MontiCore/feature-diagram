@@ -2,8 +2,8 @@
 
 package test.fcp;
 
-import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool;
-import de.monticore.featurediagram.FeatureDiagramTool;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
+import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
@@ -26,12 +26,13 @@ public class FeatureConfigurationPartialToolTest {
 
   @BeforeClass
   public static void produceFDSymbol(){
+    FeatureDiagramCLI tool = new FeatureDiagramCLI();
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
-    FeatureDiagramTool.run("src/test/resources/fdvalid/CarNavigation.fd",
+    tool.run("src/test/resources/fdvalid/CarNavigation.fd",
         Paths.get("target/symbols"),
         new ModelPath());
 
-    FeatureDiagramTool.run("src/test/resources/phone/Phone.fd",
+    tool.run("src/test/resources/phone/Phone.fd",
         Paths.get("target/symbols"),
         new ModelPath());
   }
@@ -52,7 +53,7 @@ public class FeatureConfigurationPartialToolTest {
 
   @Test
   public void testHelp() {
-    FeatureConfigurationPartialTool.main(new String[] { "-h" });
+    FeatureConfigurationPartialCLI.main(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -62,7 +63,7 @@ public class FeatureConfigurationPartialToolTest {
 
   @Test
   public void testHelpLong() {
-    FeatureConfigurationPartialTool.main(new String[] { "-help" });
+    FeatureConfigurationPartialCLI.main(new String[] { "-help" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -72,17 +73,22 @@ public class FeatureConfigurationPartialToolTest {
 
   @Test
   public void testParseValidModel() {
-    FeatureConfigurationPartialTool.main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialTool.main(new String[] { "-i", validFC("SelectImported"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialTool.main(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialTool.main(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialTool.main(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
+    FeatureConfigurationPartialCLI
+        .main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
+    FeatureConfigurationPartialCLI
+        .main(new String[] { "-i", validFC("SelectImported"), "-path", "src/test/resources"});
+    FeatureConfigurationPartialCLI
+        .main(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
+    FeatureConfigurationPartialCLI
+        .main(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
+    FeatureConfigurationPartialCLI
+        .main(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testWithoutSetPath() {
-    FeatureConfigurationPartialTool.main(
+    FeatureConfigurationPartialCLI.main(
         new String[] {
             "-i", "src/test/resources/phone/PremiumPhone.fc"
         });
@@ -91,7 +97,7 @@ public class FeatureConfigurationPartialToolTest {
 
   @Test
   public void testSymbolTable() {
-    FeatureConfigurationPartialTool.main( new String[] {
+    FeatureConfigurationPartialCLI.main( new String[] {
         "-i", "src/test/resources/phone/PremiumPhone.fc",
         "-path", "target/symbols",
         "-s", "testSymbolTable.pfcsymbols"
@@ -102,7 +108,7 @@ public class FeatureConfigurationPartialToolTest {
 
   @Test
   public void testSymbolTableWithoutArgs() {
-    FeatureConfigurationPartialTool.main( new String[] {
+    FeatureConfigurationPartialCLI.main( new String[] {
         "-i", "src/test/resources/phone/PremiumPhone.fc",
         "-path", "target/symbols",
         "-s"
@@ -138,7 +144,7 @@ public class FeatureConfigurationPartialToolTest {
 
   @Test
   public void testPrettyPrintToConsole() {
-    FeatureConfigurationPartialTool.main(new String[] {
+    FeatureConfigurationPartialCLI.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-pp"
@@ -160,7 +166,7 @@ public class FeatureConfigurationPartialToolTest {
 
   @Test
   public void testPrettyPrintToFile() {
-    FeatureConfigurationPartialTool.main(new String[] {
+    FeatureConfigurationPartialCLI.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-pp", "BasicCarNavigationOut.fc"
@@ -174,7 +180,7 @@ public class FeatureConfigurationPartialToolTest {
 
   @Test
   public void testSetOutput() {
-    FeatureConfigurationPartialTool.main(
+    FeatureConfigurationPartialCLI.main(
         new String[] {
             "-i", validFC("BasicCarNavigation"),
             "-path", "src/test/resources",

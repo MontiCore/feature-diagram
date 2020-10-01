@@ -1,10 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool;
 
-import de.monticore.featureconfiguration.FeatureConfigurationTool;
+import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
-import de.monticore.featurediagram.FeatureDiagramTool;
+import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
@@ -24,14 +24,24 @@ import java.util.stream.Collectors;
  */
 public class FACT {
 
+  protected FeatureDiagramCLI fdTool;
+
+  protected FeatureConfigurationCLI fcTool;
+
   /**
    * Main function: Delegates to the FACT instance it creates
    *
    * @param args command line arguments (e.g. --help)
    */
   public static void main(String[] args) {
+    FACT tool = new FACT();
     Log.initWARN();
-    new FACT(args);
+    tool.run(args);
+  }
+
+  public FACT(){
+    fdTool = new FeatureDiagramCLI();
+    fcTool = new FeatureConfigurationCLI();
   }
 
   /**
@@ -39,17 +49,19 @@ public class FACT {
    *
    * @param args command line arguments (e.g. --help)
    */
-  public FACT(String[] args) {
+  public void run(String[] args) {
+    //init CLI options and log
+    Options options = initOptions();
     try {
       // Basic processing
       CommandLineParser parser = new BasicParser();
-      CommandLine cmd = parser.parse(getOptions(), args);
+      CommandLine cmd = parser.parse(options, args);
 
       // Language tool specific handling of commands
       // help:
       if (null == cmd || 0 == cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar FACT.jar <test.fd> [analysis options] ", getOptions());
+        formatter.printHelp("java -jar FACT.jar <test.fd> [analysis options] ", options);
         return;
       }
 
@@ -94,7 +106,7 @@ public class FACT {
   /**
    * handle -allProducts
    */
-  public static List<ASTFeatureConfiguration> execAllProducts(ASTFeatureDiagram fd) {
+  public List<ASTFeatureConfiguration> execAllProducts(ASTFeatureDiagram fd) {
     AllProducts analysis = new AllProducts();
     List<ASTFeatureConfiguration> result = analysis.perform(fd);
 
@@ -110,7 +122,7 @@ public class FACT {
   /**
    * handle -completeToValid
    */
-  public static ASTFeatureConfiguration execCompleteToValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
+  public ASTFeatureConfiguration execCompleteToValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
     CompleteToValid analysis = new CompleteToValid();
     ASTFeatureConfiguration result = analysis.perform(fd, fc);
 
@@ -126,7 +138,7 @@ public class FACT {
   /**
    * handle -deadFeature
    */
-  public static List<String> execDeadFeature(ASTFeatureDiagram fd) {
+  public List<String> execDeadFeature(ASTFeatureDiagram fd) {
     DeadFeature analysis = new DeadFeature();
     List<String> result = analysis.perform(fd);
 
@@ -142,7 +154,7 @@ public class FACT {
   /**
    * handle -falseOptional
    */
-  public static List<String> execFalseOptional(ASTFeatureDiagram fd) {
+  public List<String> execFalseOptional(ASTFeatureDiagram fd) {
     FalseOptional analysis = new FalseOptional();
     List<String> result = analysis.perform(fd);
 
@@ -158,7 +170,7 @@ public class FACT {
   /**
    * handle -findValid
    */
-  public static ASTFeatureConfiguration execFindValid(ASTFeatureDiagram fd) {
+  public ASTFeatureConfiguration execFindValid(ASTFeatureDiagram fd) {
     FindValid analysis = new FindValid();
     ASTFeatureConfiguration result = analysis.perform(fd);
 
@@ -174,7 +186,7 @@ public class FACT {
   /**
    * handle -generalFilter
    */
-  public static List<ASTFeatureConfiguration> execGeneralFilter(ASTFeatureDiagram fd, List<Constraint> constraints) {
+  public List<ASTFeatureConfiguration> execGeneralFilter(ASTFeatureDiagram fd, List<Constraint> constraints) {
     GeneralFilter analysis = new GeneralFilter();
     List<ASTFeatureConfiguration> result = analysis.perform(fd, constraints);
 
@@ -190,7 +202,7 @@ public class FACT {
   /**
    * handle -isValid
    */
-  public static boolean execIsValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
+  public boolean execIsValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
     IsValid analysis = new IsValid();
     Boolean result = analysis.perform(fd, fc);
 
@@ -206,7 +218,7 @@ public class FACT {
   /**
    * handle -isVoidFeatureModel
    */
-  public static boolean execIsVoidFeatureModel(ASTFeatureDiagram fd) {
+  public boolean execIsVoidFeatureModel(ASTFeatureDiagram fd) {
     IsVoidFeatureModel analysis = new IsVoidFeatureModel();
     Boolean result = analysis.perform(fd);
 
@@ -222,7 +234,7 @@ public class FACT {
   /**
    * handle -numberOfProducts
    */
-  public static int execNumberOfProducts(ASTFeatureDiagram fd) {
+  public int execNumberOfProducts(ASTFeatureDiagram fd) {
     NumberOfProducts analysis = new NumberOfProducts();
     Integer result = analysis.perform(fd);
 
@@ -243,8 +255,8 @@ public class FACT {
    * @param symbolInputPath
    * @return
    */
-  public static ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, ModelPath symbolInputPath){
-    return FeatureDiagramTool.run(modelFile, Paths.get(symbolOutPath), symbolInputPath);
+  public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, ModelPath symbolInputPath){
+    return fdTool.run(modelFile, Paths.get(symbolOutPath), symbolInputPath);
   }
 
   /**
@@ -254,8 +266,8 @@ public class FACT {
    * @param symbolInputPath
    * @return
    */
-  public static ASTFeatureConfiguration readFeatureConfiguration(String modelFile, ModelPath symbolInputPath){
-    return FeatureConfigurationTool.run(modelFile, symbolInputPath);
+  public ASTFeatureConfiguration readFeatureConfiguration(String modelFile, ModelPath symbolInputPath){
+    return fcTool.run(modelFile, symbolInputPath);
   }
 
   /**
@@ -265,8 +277,8 @@ public class FACT {
    * @param modelFile
    * @return
    */
-  public static ASTFeatureConfiguration readFeatureConfiguration(String modelFile){
-    return FeatureConfigurationTool.run(modelFile);
+  public ASTFeatureConfiguration readFeatureConfiguration(String modelFile){
+    return fcTool.run(modelFile);
   }
 
   /**
@@ -287,7 +299,7 @@ public class FACT {
       String fdModelFile = cmd.getArgList().get(0).toString();
 
       //by default, use this for the symbol output
-      String symbolOutPath = FeatureDiagramTool.SYMBOL_OUT.toString();
+      String symbolOutPath = FeatureDiagramCLI.SYMBOL_OUT.toString();
 
       //except if the option "symbolPath" is set, then use the passed location to store (and load) symbols
       if(cmd.hasOption("symbolPath")){
@@ -336,7 +348,7 @@ public class FACT {
    * and printing the "help" option.
    * @return
    */
-  protected static Options getOptions() {
+  protected Options initOptions() {
     Options options = new Options();
 
     createAnalysisOption(options, "isValid", "test.fc",

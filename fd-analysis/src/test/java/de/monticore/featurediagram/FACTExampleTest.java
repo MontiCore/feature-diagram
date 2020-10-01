@@ -20,6 +20,8 @@ import static org.junit.Assert.assertEquals;
  */
 public class FACTExampleTest {
 
+
+
   @Test
   public void test(){
     LogStub.init();
@@ -28,12 +30,13 @@ public class FACTExampleTest {
   }
 
   public void factExampleInReadme(){
+    FACT tool = new FACT();
     ModelPath mp = new ModelPath();
     mp.addEntry(Paths.get("target"));
 
-    ASTFeatureDiagram fd = FACT.readFeatureDiagram("src/test/resources/fdvalid/CarNavigation.fd", "target", mp);
-    ASTFeatureConfiguration fc = FACT.readFeatureConfiguration("src/test/resources/Basic.fc", mp);
-    boolean result = FACT.execIsValid(fd, fc);
+    ASTFeatureDiagram fd = tool.readFeatureDiagram("src/test/resources/fdvalid/CarNavigation.fd", "target", mp);
+    ASTFeatureConfiguration fc = tool.readFeatureConfiguration("src/test/resources/Basic.fc", mp);
+    boolean result = tool.execIsValid(fd, fc);
 
     if(result){
       System.out.println("Is valid!");

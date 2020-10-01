@@ -2,8 +2,8 @@
 
 package test.fc;
 
-import de.monticore.featureconfiguration.FeatureConfigurationTool;
-import de.monticore.featurediagram.FeatureDiagramTool;
+import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
@@ -27,7 +27,7 @@ public class FeatureConfigurationToolTest {
   @BeforeClass
   public static void produceFDSymbol(){
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
-    FeatureDiagramTool.run("src/test/resources/fdvalid/CarNavigation.fd",
+    new FeatureDiagramCLI().run("src/test/resources/fdvalid/CarNavigation.fd",
         Paths.get("target/symbols"),
         new ModelPath());
   }
@@ -48,7 +48,7 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testHelp() {
-    FeatureConfigurationTool.main(new String[] { "-h" });
+    FeatureConfigurationCLI.main(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -58,7 +58,7 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testHelpLong() {
-    FeatureConfigurationTool.main(new String[] { "-help" });
+    FeatureConfigurationCLI.main(new String[] { "-help" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -68,18 +68,24 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testParseValidModel() {
-    FeatureConfigurationTool.main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationTool.main(new String[] { "-i", validFC("PremiumCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationTool.main(new String[] { "-input", validFC("SelectImported"), "-path", "src/test/resources"});
-    FeatureConfigurationTool.main(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
-    FeatureConfigurationTool.main(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
-    FeatureConfigurationTool.main(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
+    FeatureConfigurationCLI
+        .main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
+    FeatureConfigurationCLI
+        .main(new String[] { "-i", validFC("PremiumCarNavigation"), "-path", "src/test/resources"});
+    FeatureConfigurationCLI
+        .main(new String[] { "-input", validFC("SelectImported"), "-path", "src/test/resources"});
+    FeatureConfigurationCLI
+        .main(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
+    FeatureConfigurationCLI
+        .main(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
+    FeatureConfigurationCLI
+        .main(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testWithoutSetPath() {
-    FeatureConfigurationTool.main(
+    FeatureConfigurationCLI.main(
         new String[] {
             "-i", "src/test/resources/phone/BasicPhone.fc"
         });
@@ -88,7 +94,7 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testPrettyPrintToConsole() {
-    FeatureConfigurationTool.main(new String[] {
+    FeatureConfigurationCLI.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-pp"
@@ -109,7 +115,7 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testSymbolTable() {
-    FeatureConfigurationTool.main( new String[] {
+    FeatureConfigurationCLI.main( new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-s", "testSymbolTable.fcsymbols"
@@ -120,7 +126,7 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testSymbolTableWithoutArgs() {
-    FeatureConfigurationTool.main( new String[] {
+    FeatureConfigurationCLI.main( new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-s"
@@ -152,7 +158,7 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testPrettyPrintToFile() {
-    FeatureConfigurationTool.main(new String[] {
+    FeatureConfigurationCLI.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "src/test/resources:target/symbols",
         "-pp", "BasicCarNavigationOut.fc"
@@ -166,7 +172,7 @@ public class FeatureConfigurationToolTest {
 
   @Test
   public void testSetOutput() {
-    FeatureConfigurationTool.main(
+    FeatureConfigurationCLI.main(
         new String[] {
             "-i", validFC("BasicCarNavigation"),
             "-path", "src/test/resources",

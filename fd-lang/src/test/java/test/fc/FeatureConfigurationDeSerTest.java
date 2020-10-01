@@ -1,7 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fc;
 
-import de.monticore.featureconfiguration.FeatureConfigurationTool;
+import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
@@ -22,16 +22,17 @@ import static org.junit.Assert.assertTrue;
 public class FeatureConfigurationDeSerTest extends AbstractTest {
 
   protected static final FeatureConfigurationScopeDeSer deSer = new FeatureConfigurationScopeDeSer();
+  protected static final FeatureConfigurationCLI tool = new FeatureConfigurationCLI();
 
   protected static final ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
 
   @BeforeClass
   public static void initDeSer() {
-    deSer.setGlobalScope(FeatureConfigurationTool.createGlobalScope(mp));
+    deSer.setGlobalScope(tool.createGlobalScope(mp));
   }
 
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
-    return FeatureConfigurationTool.createSymbolTable("src/test/resources/" + modelFile, mp);
+    return tool.createSymbolTable("src/test/resources/" + modelFile, mp);
   }
 
   @Test

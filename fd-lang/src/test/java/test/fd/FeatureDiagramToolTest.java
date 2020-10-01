@@ -2,7 +2,7 @@
 
 package test.fd;
 
-import de.monticore.featurediagram.FeatureDiagramTool;
+import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
@@ -36,7 +36,7 @@ public class FeatureDiagramToolTest {
 
   @Test
   public void testHelp() {
-    FeatureDiagramTool.main(new String[] { "-h" });
+    FeatureDiagramCLI.main(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -46,7 +46,7 @@ public class FeatureDiagramToolTest {
 
   @Test
   public void testHelpLong() {
-    FeatureDiagramTool.main(new String[] { "-help" });
+    FeatureDiagramCLI.main(new String[] { "-help" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -56,16 +56,16 @@ public class FeatureDiagramToolTest {
 
   @Test
   public void testParseValidModel() {
-    FeatureDiagramTool.main(new String[] { "-i", validFD("BasicElements") });
-    FeatureDiagramTool.main(new String[] { "-i", validFD("GraphLibrary") });
-    FeatureDiagramTool.main(new String[] { "-input", validFD("CarNavigation") });
-    FeatureDiagramTool.main(new String[] { "-input", validFD("PhoneComplex") });
+    FeatureDiagramCLI.main(new String[] { "-i", validFD("BasicElements") });
+    FeatureDiagramCLI.main(new String[] { "-i", validFD("GraphLibrary") });
+    FeatureDiagramCLI.main(new String[] { "-input", validFD("CarNavigation") });
+    FeatureDiagramCLI.main(new String[] { "-input", validFD("PhoneComplex") });
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testSetPath() {
-    FeatureDiagramTool.main(
+    FeatureDiagramCLI.main(
         new String[] {
             "-i", validFD("TransitiveImport"),
             "-path", "src/test/resources/",
@@ -76,7 +76,7 @@ public class FeatureDiagramToolTest {
 
   @Test
   public void testSetOutput() {
-    FeatureDiagramTool.main(
+    FeatureDiagramCLI.main(
         new String[] {
             "-i", validFD("BasicElements"),
             "-o", "target/mytarget",
@@ -89,7 +89,7 @@ public class FeatureDiagramToolTest {
 
   @Test
   public void testSymbolTable() {
-    FeatureDiagramTool.main( new String[] {
+    FeatureDiagramCLI.main( new String[] {
         "-i", validFD("BasicElements"),
         "-s", "testSymbolTable.symbols"
     });
@@ -99,7 +99,7 @@ public class FeatureDiagramToolTest {
 
   @Test
   public void testSymbolTableWithoutArgs() {
-    FeatureDiagramTool.main( new String[] {
+    FeatureDiagramCLI.main( new String[] {
         "-i", validFD("BasicElements"),
         "-s"
     });
@@ -135,7 +135,7 @@ public class FeatureDiagramToolTest {
 
   @Test
   public void testPrettyPrint() {
-    FeatureDiagramTool.main(new String[] {
+    FeatureDiagramCLI.main(new String[] {
         "-i", validFD("BasicElements"),
         "-pp"
     });

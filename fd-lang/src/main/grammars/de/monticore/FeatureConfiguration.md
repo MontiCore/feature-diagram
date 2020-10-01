@@ -5,15 +5,12 @@
 <!-- List with all references used within this markdown file: -->
 [Grammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.mc4
 [fcstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/_symboltable/FeatureConfigurationSymbolTableCreator.java
-[tool]:                      ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationTool.java
 
 [PartialGrammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfigurationPartial.mc4
 [pfcstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/_symboltable/FeatureConfigurationPartialSymbolTableCreator.java
-[tool]:                      ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialTool.java
 [UseSelectBlockCoCo]:                      ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/_cocos/UseSelectBlock.java
 
 [Readme]:                    ../../../../../../../../README.md
-[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/tool/FACT.java
 [FeatureDiagram MLC]: FeatureDiagram.md
 [BasicSymbols MLC]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/symbols/BasicSymbols.mc4
 
@@ -51,7 +48,7 @@ applications.
 The configuration `BasicCarNavigation` refers to the feature diagram `CarNavigation`
 and from this, selects seven features. It does not make any assertions about other
 features of `CarNavigation`. 
-For a detailed explanation of the meaning, please have a look at 
+For a detailed explanation of the meaning and the tools to process FCs, please have a look at 
 **[the readme][Readme]**.
 
 ### Syntax

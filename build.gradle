@@ -3,24 +3,26 @@ import de.monticore.MCTask
 
 plugins {
     id "java"
-    id "monticore"  version "6.3.0-SNAPSHOT" // MontiCore Plugin
+    id "monticore"  version "6.3.0" // MontiCore Plugin
     id "maven-publish"
     id "com.github.johnrengelman.shadow" version "4.0.4"
 }
 
-def monticore_version = '6.3.0-SNAPSHOT'
+def monticore_version = '6.3.0'
 def plexus_archiver_version = '2.8.2'
 def junit_version = '4.12'
 def logback_version = '1.1.2'
 def choco_solver_version = '4.0.5'
 def choco_parser_version = '4.0.4'
+def sat4j_version = '2.3.1'
+def logicng_version = '1.6.2'
 def commons_cli_version = '1.2'
 
 def grammarDir = 'src/main/grammars'
 
 allprojects {
     group = 'de.monticore.lang'
-    version = monticore_version
+    version = '6.3.0-SNAPSHOT'
 
     repositories {
         mavenLocal()
@@ -145,8 +147,6 @@ project(':fd-lang') {
     jar.dependsOn(buildFeatureConfigurationToolCLI)
     jar.dependsOn(buildFeatureConfigurationToolPartialCLI)
 
-//    jar.enabled(false)
-
     // configure deployment
     publishing {
         // configure what artifacts to publish
@@ -180,6 +180,9 @@ project(':fd-analysis') {
         implementation (group: 'org.choco-solver', name: 'choco-parsers', version: choco_parser_version){
             exclude group: "xcsp3", module:"xcsp3"
         }
+
+        implementation group:'org.sat4j', name: 'org.sat4j.core', version: sat4j_version
+        implementation group: 'org.logicng', name: 'logicng', version: logicng_version
     }
 
     description = 'Feature Diagram Analyses'

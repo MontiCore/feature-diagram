@@ -19,10 +19,6 @@
 [IsVoid]:                    ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsVoidFeatureModel.java
 [NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/NumberOfProducts.java
 [generator]:                 ../../../../../../../../fd-analysis/src/main/java/mcfdtool/transform
-[tool]:                      ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FeatureModelAnalysisTool.java
-[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
-[FDtool]:                    ../../../../../../../../fd-analysis/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
-
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [choco]: https://choco-solver.org
@@ -92,7 +88,7 @@ featurediagram CarNavigation {
 }
 ```
 
-For a detailed explanation of the meaning, please have a look at 
+For a detailed explanation of the meaning and the tools to process FDs, please have a look at 
 **[the readme][Readme]**.
 
 ## Syntax
