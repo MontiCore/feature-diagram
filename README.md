@@ -1,6 +1,6 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
 [clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
-[fddifftool]:                ../../../../../../../../fd-analysis/src/main/java/de/monticore/fddiff/FDSemDiff.java
+[fddifftool]:                ../../../../../../../../fd-analysis/src/main/java/fddiff/FDSemDiff.java
 [FDtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramCLI.java
 [FCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
 [PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
@@ -319,7 +319,7 @@ feature diagrams. The semantics of a feature diagram are the set of all of its v
 The semantic difference between two feature diagram is therefore the set of feature configurations, that are valid in 
 the first but invalid in the second feature diagram.
 The Java API offers a class to calculate the semantic difference witness, given two parsed feature diagrams.
-Simply invoke the `semDiff` method of the `FDSemDiff` class provided [here][[fddifftool]. 
+Simply invoke the `semDiff` method of the `FDSemDiff` class provided [here][fddifftool]. 
 
 ## Further Information
 
