@@ -5,7 +5,6 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatures;
 import de.monticore.featureconfiguration._visitor.FeatureConfigurationVisitor;
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
-import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCoChecker;
 import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
 
 import java.util.ArrayList;

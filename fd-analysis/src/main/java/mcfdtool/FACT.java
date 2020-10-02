@@ -28,6 +28,18 @@ import java.util.stream.Collectors;
  */
 public class FACT {
 
+  protected FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
+
+  protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
+
+  protected FeatureDiagramScopeDeSer fdDeSer = new FeatureDiagramScopeDeSer();
+
+  protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
+
+  protected FeatureConfigurationParser fcParser = new FeatureConfigurationParser();
+
+  protected FeatureConfigurationScopeDeSer fcDeSer = new FeatureConfigurationScopeDeSer();
+
   /**
    * Main function: Delegates to the FACT instance it creates
    *
@@ -36,32 +48,15 @@ public class FACT {
   public static void main(String[] args) {
     FACT tool = new FACT();
     Log.initWARN();
-    FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
-    FeatureDiagramParser fdParser = new FeatureDiagramParser();
-    FeatureDiagramScopeDeSer fdDeSer = new FeatureDiagramScopeDeSer();
-
-    FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
-    FeatureConfigurationParser fcParser = new FeatureConfigurationParser();
-    FeatureConfigurationScopeDeSer fcDeSer = new FeatureConfigurationScopeDeSer();
-
-    tool.run(args, fdTool, fdParser, fdDeSer, fcTool, fcParser, fcDeSer);
+    tool.run(args);
   }
 
   /**
    * Uses Apache CLI Parser to access args
    *
-   * @param args     command line arguments (e.g. --help)
-   * @param fdParser
-   * @param fdDeSer
-   * @param fcParser
-   * @param fcDeSer
+   * @param args command line arguments (e.g. --help)
    */
-  public void run(String[] args, FeatureDiagramCLI fdTool,
-      FeatureDiagramParser fdParser,
-      FeatureDiagramScopeDeSer fdDeSer,
-      FeatureConfigurationCLI fcTool,
-      FeatureConfigurationParser fcParser,
-      FeatureConfigurationScopeDeSer fcDeSer) {
+  public void run(String[] args) {
 
     //init CLI options and log
     Options options = initOptions();
@@ -79,13 +74,12 @@ public class FACT {
       }
 
       // First argument: FD that is being processed
-      ASTFeatureDiagram fd = readFeatureDiagram(cmd, fdTool, fdParser, fdDeSer);
+      ASTFeatureDiagram fd = readFeatureDiagram(cmd);
 
       // check all implemented analysis one after another
       if (cmd.hasOption("isValid")) {
         String fcString = cmd.getOptionValue("isValid"); //read FC file path from command line
-        ASTFeatureConfiguration fc = readFeatureConfiguration(fcString, cmd, fcTool, fcParser,
-            fcDeSer);
+        ASTFeatureConfiguration fc = readFeatureConfiguration(fcString, cmd);
         execIsValid(fd, fc);
       }
       if (cmd.hasOption("allProducts")) {
@@ -100,8 +94,7 @@ public class FACT {
       if (cmd.hasOption("completeToValid")) {
         String fcString = cmd
             .getOptionValue("completeToValid"); //read FC file path from command line
-        ASTFeatureConfiguration fc = readFeatureConfiguration(fcString, cmd, fcTool, fcParser,
-            fcDeSer);
+        ASTFeatureConfiguration fc = readFeatureConfiguration(fcString, cmd);
         execCompleteToValid(fd, fc);
       }
       if (cmd.hasOption("findValid")) {
@@ -281,9 +274,8 @@ public class FACT {
    * @return
    */
   public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath,
-      ModelPath symbolInputPath, FeatureDiagramCLI fdTool, FeatureDiagramParser parser,
-      FeatureDiagramScopeDeSer deser) {
-    return fdTool.run(modelFile, Paths.get(symbolOutPath), symbolInputPath, parser, deser);
+      ModelPath symbolInputPath) {
+    return fdTool.run(modelFile, Paths.get(symbolOutPath), symbolInputPath, fdParser, fdDeSer);
   }
 
   /**
@@ -295,9 +287,8 @@ public class FACT {
    * @return
    */
   public ASTFeatureConfiguration readFeatureConfiguration(String modelFile,
-      ModelPath symbolInputPath, FeatureConfigurationCLI fcTool, FeatureConfigurationParser parser,
-      FeatureConfigurationScopeDeSer deser) {
-    return fcTool.run(modelFile, symbolInputPath, parser, deser);
+      ModelPath symbolInputPath) {
+    return fcTool.run(modelFile, symbolInputPath, fcParser, fcDeSer);
   }
 
   /**
@@ -308,10 +299,8 @@ public class FACT {
    * @param modelFile
    * @return
    */
-  public ASTFeatureConfiguration readFeatureConfiguration(String modelFile,
-      FeatureConfigurationCLI fcTool, FeatureConfigurationParser parser,
-      FeatureConfigurationScopeDeSer deser) {
-    return fcTool.run(modelFile, parser, deser);
+  public ASTFeatureConfiguration readFeatureConfiguration(String modelFile) {
+    return fcTool.run(modelFile, fcParser, fcDeSer);
   }
 
   /**
@@ -321,12 +310,9 @@ public class FACT {
    * at a specified location if the option "symbolPath" is set
    *
    * @param cmd
-   * @param fdParser
-   * @param fdDeSer
    * @return
    */
-  protected ASTFeatureDiagram readFeatureDiagram(CommandLine cmd, FeatureDiagramCLI fdTool,
-      FeatureDiagramParser fdParser, FeatureDiagramScopeDeSer fdDeSer) {
+  protected ASTFeatureDiagram readFeatureDiagram(CommandLine cmd) {
     if (0 == cmd.getArgList().size()) {
       Log.error("0xFC900 No feature diagram given as first argument!");
       return null;
@@ -342,7 +328,7 @@ public class FACT {
         symbolOutPath = cmd.getOptionValue("symbolPath");
       }
       ModelPath mp = new ModelPath(Paths.get(symbolOutPath));
-      return readFeatureDiagram(fdModelFile, symbolOutPath, mp, fdTool, fdParser, fdDeSer);
+      return readFeatureDiagram(fdModelFile, symbolOutPath, mp);
     }
     else {
       for (int i = 1; i < cmd.getArgList().size(); i++) {
@@ -359,26 +345,24 @@ public class FACT {
    * @param cmd
    * @return
    */
-  protected ASTFeatureConfiguration readFeatureConfiguration(String fcString, CommandLine cmd,
-      FeatureConfigurationCLI fcTool, FeatureConfigurationParser parser,
-      FeatureConfigurationScopeDeSer deser) {
+  protected ASTFeatureConfiguration readFeatureConfiguration(String fcString, CommandLine cmd) {
     //Without setting a modelpath, the FC tool would never be able to search
     // for the FD model referenced in the FC. Therefore, identifying this is mandatory here.
 
     //if the option "modelPath" is set, use the passed location to load symbols
     if (cmd.hasOption("modelPath")) {
       ModelPath mp = new ModelPath(Paths.get(cmd.getOptionValue("modelPath")));
-      return readFeatureConfiguration(fcString, mp, fcTool, parser, deser);
+      return readFeatureConfiguration(fcString, mp);
     }
     //if "modelPath" is not set, but "symbolPath" is set to store FD symbols, use this as modelPath
     else if (cmd.hasOption("symbolPath")) {
       ModelPath mp = new ModelPath(Paths.get(cmd.getOptionValue("symbolPath")));
-      return readFeatureConfiguration(fcString, mp, fcTool, parser, deser);
+      return readFeatureConfiguration(fcString, mp);
     }
     // else use the folder, in which the FC model is located, as modelpath. This is done by the
     // invoked method below
     else {
-      return readFeatureConfiguration(fcString, fcTool, parser, deser);
+      return readFeatureConfiguration(fcString);
     }
   }
 

@@ -1,12 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool.solver;
 
-import de.se_rwth.commons.logging.Log;
 import mcfdtool.transform.flatzinc.FlatZincModel;
-import org.apache.commons.io.IOUtils;
-import org.chocosolver.parser.flatzinc.Flatzinc;
-import org.chocosolver.parser.flatzinc.FznSettings;
-import org.chocosolver.parser.flatzinc.ast.Datas;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.Variable;

@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram;
 
-import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
@@ -21,12 +20,10 @@ import static org.junit.Assert.*;
 public class FeatureDiagramAnalysisTest extends AbstractTest {
 
   public static final String TEST_RES = "src/test/resources/";
-  public static final FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
-  public static final FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
 
   protected ASTFeatureDiagram getFD(String modelFile) {
     IFeatureDiagramArtifactScope as = fdTool
-        .createSymbolTable(TEST_RES + modelFile, new ModelPath());
+        .createSymbolTable(TEST_RES + modelFile, new ModelPath(), fdParser);
     String modelName = modelFile.replace(".fd", "");
     if (modelName.contains("/")) {
       modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
@@ -42,7 +39,7 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
 
   protected ASTFeatureConfiguration getFC(String modelFile) {
     IFeatureConfigurationArtifactScope symbolTable = fcTool
-        .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)));
+        .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)), fcParser, fcDeSer);
 
     String modelName = modelFile.replace(".fc", "");
     if (modelName.contains("/")) {

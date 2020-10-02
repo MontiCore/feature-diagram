@@ -2,6 +2,15 @@
 
 package test;
 
+import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
+import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
+import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialScopeDeSer;
+import de.monticore.featurediagram.FeatureDiagramCLI;
+import de.monticore.featurediagram._parser.FeatureDiagramParser;
+import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -15,9 +24,27 @@ import static org.junit.Assert.fail;
 
 public class AbstractTest {
 
+  protected FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
+
+  protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
+
+  protected FeatureDiagramScopeDeSer fdDeSer = new FeatureDiagramScopeDeSer();
+
+  protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
+
+  protected FeatureConfigurationParser fcParser = new FeatureConfigurationParser();
+
+  protected FeatureConfigurationScopeDeSer fcDeSer = new FeatureConfigurationScopeDeSer();
+
+  protected FeatureConfigurationPartialScopeDeSer fcpDeSer = new FeatureConfigurationPartialScopeDeSer();
+
+  protected FeatureConfigurationPartialParser fcpParser = new FeatureConfigurationPartialParser();
+
+  protected FeatureConfigurationPartialCLI fcpTool = new FeatureConfigurationPartialCLI();
+
   @BeforeClass
   public static void setUpLog() {
-//                Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+    //                Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
     LogStub.init();
   }
 

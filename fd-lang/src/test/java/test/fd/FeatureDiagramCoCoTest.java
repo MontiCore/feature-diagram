@@ -5,7 +5,6 @@ import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramGlobalScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.io.paths.ModelPath;
@@ -16,7 +15,8 @@ import test.AbstractTest;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class FeatureDiagramCoCoTest extends AbstractTest {
 

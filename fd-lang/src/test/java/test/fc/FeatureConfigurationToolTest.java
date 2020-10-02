@@ -3,13 +3,12 @@
 package test.fc;
 
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
-import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import test.AbstractTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -18,18 +17,18 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-public class FeatureConfigurationToolTest {
+public class FeatureConfigurationToolTest extends AbstractTest {
 
   protected PrintStream originalOut;
 
   protected ByteArrayOutputStream out;
 
-  @BeforeClass
-  public static void produceFDSymbol(){
+  @Before
+  public void produceFDSymbol(){
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
-    new FeatureDiagramCLI().run("src/test/resources/fdvalid/CarNavigation.fd",
+    fdTool.run("src/test/resources/fdvalid/CarNavigation.fd",
         Paths.get("target/symbols"),
-        new ModelPath());
+        new ModelPath(), fdParser, fdDeSer);
   }
 
   @Before

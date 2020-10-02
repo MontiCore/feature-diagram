@@ -71,6 +71,17 @@ public class FeatureDiagramCLI {
   }
 
   /**
+   * Create the symbol table from a model file location and returns the produced artifact scope
+   *
+   * @param model
+   * @param mp
+   * @return
+   */
+  public IFeatureDiagramArtifactScope createSymbolTable(String model, ModelPath mp, FeatureDiagramParser parser) {
+    return createSymbolTable(parse(model, parser), mp);
+  }
+
+  /**
    * Create the symbol table from the parsed AST.
    *
    * @param ast

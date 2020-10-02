@@ -20,8 +20,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class FACTExampleTest {
 
-
-
   @Test
   public void test(){
     LogStub.init();
