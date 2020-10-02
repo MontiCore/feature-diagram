@@ -71,8 +71,11 @@ For realizing the FC language, it was not necessary to implement handwritten
 extensions of AST classes, symbol classes, or the scope class.
 
 #### Symboltable
-- De-/Serialization functionality for the symbol table of the FC language does not exist,
-  because (to the best of our knowledge) there is no use case for which this is beneficial.
+- De-/Serialization functionality for the symbol table of the FC language exists, but is not 
+  integrated into the model processing because to the best of our knowledge, there is no use case 
+  for which this is beneficial. For language engineers who intend to store symbol tables 
+  of feature configurations, methods of the Java API and an optional argument of the CLI are realized
+  in the feature configuration tool (see **[the readme][Readme]** for more details).
    
 - The [`FeatureConfigurationSymbolTableCreator`][fcstc] handles the creation and linking of the
   symbols after the FC is parsed. It creates a `FeatureConfigurationSymbol` and loads the 
@@ -102,7 +105,9 @@ extensions of AST classes, symbol classes, or the scope class.
   features that the `DiagramSymbol` does not provide.
 
 #### Symbols exported by FC in the stored symboltable:
-No symbols are exported from an FC model. 
+No symbols are exported from an FC model by default. If language engineers intend to export
+`FeatureConfigurationSymbols` in the future, the Feature Configuration tool, described in the 
+[Readme][Readme], provides access to the serialization and deserialization.
 
 #### Context Conditions
 The feature configuration language does not define any CoCo classes.
@@ -160,9 +165,12 @@ It adds two nonterminals for realizing blocks of selected features and for reali
 excluded features.
 
 #### Symboltable
-- De-/Serialization functionality for the symbol table of the language does not exist,
-  because (to the best of our knowledge) there is no use case for which this is beneficial.
-   
+- De-/Serialization functionality for the symbol table of the language exists, but is not 
+  integrated into the model processing because to the best of our knowledge, there is no use case 
+  for which this is beneficial. For language engineers who intend to store symbol tables 
+  of partial feature configurations, methods of the Java API and an optional argument of the CLI 
+  are realized in the feature configuration tool (see **[the readme][Readme]** for more details).
+      
 - The [`FeatureConfigurationPartialSymbolTableCreator`][pfcstc] handles the creation and linking of the
   symbols after the FC is parsed. It creates a `FeatureConfigurationSymbol` and loads the 
   referenced `FeatureDiagramSymbol` and te `FeatureSymbols` of selected features. 
@@ -188,7 +196,9 @@ excluded features.
   ```
 
 #### Symbols exported by partial FC in the stored symboltable:
-No symbols are exported from an FC model. 
+No symbols are exported from a partial FC model by default. If language engineers intend to export
+`FeatureConfigurationSymbols` in the future, the Partial Feature Configuration tool, described in 
+the [Readme][Readme], provides access to the serialization and deserialization.
 
 #### Context Conditions
 The existance of the feature diagram referred from a partial FC model is 
