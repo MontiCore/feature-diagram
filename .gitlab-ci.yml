@@ -14,7 +14,7 @@ build_gradle:
   script:
     - chmod +x gradlew
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - "./gradlew assemble"
+    - "./gradlew build"
 
 # trigger_langexp:                        
 #  stage: it-test                           
