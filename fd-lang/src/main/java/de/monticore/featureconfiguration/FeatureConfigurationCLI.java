@@ -34,8 +34,8 @@ public class FeatureConfigurationCLI {
    */
   public static void main(String[] args) {
     FeatureConfigurationCLI cli = new FeatureConfigurationCLI();
-    FeatureConfigurationScopeDeSer deser = new FeatureConfigurationScopeDeSer();
     FeatureConfigurationParser parser = new FeatureConfigurationParser();
+    FeatureConfigurationScopeDeSer deser = new FeatureConfigurationScopeDeSer();
     Log.initWARN();
     cli.run(args, parser, deser);
   }
