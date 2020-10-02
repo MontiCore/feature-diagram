@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool.analyses;
 
-import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import mcfdtool.solver.Solvers;
 import mcfdtool.transform.flatzinc.FlatZincModel;

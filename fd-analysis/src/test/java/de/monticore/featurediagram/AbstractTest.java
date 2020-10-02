@@ -2,6 +2,11 @@
 
 package de.monticore.featurediagram;
 
+import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
+import de.monticore.featurediagram._parser.FeatureDiagramParser;
+import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -14,6 +19,18 @@ import java.util.Optional;
 import static org.junit.Assert.fail;
 
 public class AbstractTest {
+
+  protected FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
+
+  protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
+
+  protected FeatureDiagramScopeDeSer fdDeSer = new FeatureDiagramScopeDeSer();
+
+  protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
+
+  protected FeatureConfigurationParser fcParser = new FeatureConfigurationParser();
+
+  protected FeatureConfigurationScopeDeSer fcDeSer = new FeatureConfigurationScopeDeSer();
 
   @BeforeClass
   public static void setUpLog() {

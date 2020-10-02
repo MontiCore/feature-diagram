@@ -2,14 +2,12 @@
 package test.fcp;
 
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
-import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialArtifactScope;
-import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialScopeDeSer;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import test.AbstractTest;
 
@@ -21,29 +19,25 @@ import static org.junit.Assert.assertTrue;
 
 public class FeatureConfigurationPartialDeSerTest extends AbstractTest {
 
-  protected static final FeatureConfigurationPartialScopeDeSer deSer = new FeatureConfigurationPartialScopeDeSer();
-
-  protected static final FeatureConfigurationPartialCLI tool = new FeatureConfigurationPartialCLI();
-
   protected static final ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
 
-  @BeforeClass
-  public static void initDeSer() {
-    deSer.setGlobalScope(tool.createGlobalScope(mp));
+  @Before
+  public void initDeSer() {
+    fcpDeSer.setGlobalScope(fcpTool.createGlobalScope(mp));
   }
 
   protected IFeatureConfigurationPartialArtifactScope setupSymbolTable(String modelFile) {
-    return tool.createSymbolTable("src/test/resources/" + modelFile, mp);
+    return fcpTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcpParser);
   }
 
   @Test
   public void testRoundtripSerialization() {
     IFeatureConfigurationPartialArtifactScope scope = setupSymbolTable("pfcvalid/SelectSome.fc");
     assertTrue(null != scope);
-    String serialized = deSer.serialize(scope);
+    String serialized = fcpDeSer.serialize(scope);
     assertTrue(null != serialized);
 
-    IFeatureConfigurationPartialArtifactScope deserializedScope = deSer.deserialize(serialized);
+    IFeatureConfigurationPartialArtifactScope deserializedScope = fcpDeSer.deserialize(serialized);
     assertTrue(deserializedScope instanceof FeatureConfigurationPartialArtifactScope);
     FeatureConfigurationPartialArtifactScope deserialized = (FeatureConfigurationPartialArtifactScope) deserializedScope;
 
@@ -73,7 +67,7 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractTest {
 
   @Test
   public void testLoad() {
-    IFeatureConfigurationPartialArtifactScope scope = deSer
+    IFeatureConfigurationPartialArtifactScope scope = fcpDeSer
         .load("src/test/resources/symbols/BasicCarNavigation.fcsym");
     assertTrue(null != scope);
     assertEquals("BasicCarNavigation", scope.getName());
@@ -93,10 +87,10 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractTest {
   @Test
   public void testStore() {
     JsonPrinter.enableIndentation();
-    deSer.setSymbolFileExtension("pfcsym");
+    fcpDeSer.setSymbolFileExtension("pfcsym");
     IFeatureConfigurationPartialArtifactScope fcScope = setupSymbolTable(
         "pfcvalid/BasicCarNavigation.fc");
-    deSer.store(fcScope, Paths.get("target/test-symbols"));
+    fcpDeSer.store(fcScope, Paths.get("target/test-symbols"));
 
     Path expectedPath = Paths.get("target/test-symbols/BasicCarNavigation.pfcsym");
     assertTrue(expectedPath.toFile().exists());

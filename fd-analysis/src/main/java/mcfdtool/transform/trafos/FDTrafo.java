@@ -9,7 +9,6 @@ import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.flatzinc.Variable;
 
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 /**

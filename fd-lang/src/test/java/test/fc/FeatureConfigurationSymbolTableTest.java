@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fc;
 
-import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.io.paths.ModelPath;
@@ -18,7 +17,7 @@ public class FeatureConfigurationSymbolTableTest extends AbstractTest {
 
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
     ModelPath mp = new ModelPath(Paths.get("src", "test", "resources"));
-    return new FeatureConfigurationCLI().createSymbolTable(modelFile, mp);
+    return fcTool.createSymbolTable(modelFile, mp, fcParser, fcDeSer);
   }
 
   @Test

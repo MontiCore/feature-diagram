@@ -3,9 +3,13 @@ package mcfdtool;
 
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
+import de.monticore.featurediagram._parser.FeatureDiagramParser;
+import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import mcfdtool.analyses.*;
@@ -24,9 +28,17 @@ import java.util.stream.Collectors;
  */
 public class FACT {
 
-  protected FeatureDiagramCLI fdTool;
+  protected FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
 
-  protected FeatureConfigurationCLI fcTool;
+  protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
+
+  protected FeatureDiagramScopeDeSer fdDeSer = new FeatureDiagramScopeDeSer();
+
+  protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
+
+  protected FeatureConfigurationParser fcParser = new FeatureConfigurationParser();
+
+  protected FeatureConfigurationScopeDeSer fcDeSer = new FeatureConfigurationScopeDeSer();
 
   /**
    * Main function: Delegates to the FACT instance it creates
@@ -39,17 +51,13 @@ public class FACT {
     tool.run(args);
   }
 
-  public FACT(){
-    fdTool = new FeatureDiagramCLI();
-    fcTool = new FeatureConfigurationCLI();
-  }
-
   /**
    * Uses Apache CLI Parser to access args
    *
    * @param args command line arguments (e.g. --help)
    */
   public void run(String[] args) {
+
     //init CLI options and log
     Options options = initOptions();
     try {
@@ -84,7 +92,8 @@ public class FACT {
         execFalseOptional(fd);
       }
       if (cmd.hasOption("completeToValid")) {
-        String fcString = cmd.getOptionValue("completeToValid"); //read FC file path from command line
+        String fcString = cmd
+            .getOptionValue("completeToValid"); //read FC file path from command line
         ASTFeatureConfiguration fc = readFeatureConfiguration(fcString, cmd);
         execCompleteToValid(fd, fc);
       }
@@ -114,7 +123,8 @@ public class FACT {
       Log.error("0xFC774 AllProducts was not successful");
     }
     else {
-      System.out.println("Result of AllProducts: " + FeatureConfigurationPartialPrettyPrinter.print(result));
+      System.out.println(
+          "Result of AllProducts: " + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -122,7 +132,8 @@ public class FACT {
   /**
    * handle -completeToValid
    */
-  public ASTFeatureConfiguration execCompleteToValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
+  public ASTFeatureConfiguration execCompleteToValid(ASTFeatureDiagram fd,
+      ASTFeatureConfiguration fc) {
     CompleteToValid analysis = new CompleteToValid();
     ASTFeatureConfiguration result = analysis.perform(fd, fc);
 
@@ -130,7 +141,8 @@ public class FACT {
       Log.error("0xFC775 CompleteToValid was not successful");
     }
     else {
-      System.out.println("Result of CompleteToValid: " + FeatureConfigurationPartialPrettyPrinter.print(result));
+      System.out.println(
+          "Result of CompleteToValid: " + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -146,7 +158,8 @@ public class FACT {
       Log.error("0xFC776 DeadFeature was not successful");
     }
     else {
-      System.out.println("Result of DeadFeature: " + result.stream().collect(Collectors.joining(", ")));
+      System.out
+          .println("Result of DeadFeature: " + result.stream().collect(Collectors.joining(", ")));
     }
     return result;
   }
@@ -162,7 +175,8 @@ public class FACT {
       Log.error("0xFC777 FalseOptional was not successful");
     }
     else {
-      System.out.println("Result of FalseOptional: " + result.stream().collect(Collectors.joining(", ")));
+      System.out
+          .println("Result of FalseOptional: " + result.stream().collect(Collectors.joining(", ")));
     }
     return result;
   }
@@ -178,7 +192,8 @@ public class FACT {
       Log.error("0xFC774 FindValid was not successful");
     }
     else {
-      System.out.println("Result of FindValid: " + FeatureConfigurationPartialPrettyPrinter.print(result));
+      System.out.println(
+          "Result of FindValid: " + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -186,7 +201,8 @@ public class FACT {
   /**
    * handle -generalFilter
    */
-  public List<ASTFeatureConfiguration> execGeneralFilter(ASTFeatureDiagram fd, List<Constraint> constraints) {
+  public List<ASTFeatureConfiguration> execGeneralFilter(ASTFeatureDiagram fd,
+      List<Constraint> constraints) {
     GeneralFilter analysis = new GeneralFilter();
     List<ASTFeatureConfiguration> result = analysis.perform(fd, constraints);
 
@@ -194,7 +210,8 @@ public class FACT {
       Log.error("0xFC778 GeneralFilter was not successful");
     }
     else {
-      System.out.println("Result of GeneralFilter: " + FeatureConfigurationPartialPrettyPrinter.print(result));
+      System.out.println(
+          "Result of GeneralFilter: " + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -250,35 +267,40 @@ public class FACT {
   /**
    * Read in a Feature Diagram at the passed location, with the passed location for storing FD symbol
    * tables and the passed ModelPath for searching stored symbol tables (e.g., of imported FDs)
+   *
    * @param modelFile
    * @param symbolOutPath
    * @param symbolInputPath
    * @return
    */
-  public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, ModelPath symbolInputPath){
-    return fdTool.run(modelFile, Paths.get(symbolOutPath), symbolInputPath);
+  public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath,
+      ModelPath symbolInputPath) {
+    return fdTool.run(modelFile, Paths.get(symbolOutPath), symbolInputPath, fdParser, fdDeSer);
   }
 
   /**
    * Read in a Feature Configuration at the passed location with the passed  ModelPath for searching
    * stored symbol tables (of FDs). No symbol table is stored for FCs themselves.
+   *
    * @param modelFile
    * @param symbolInputPath
    * @return
    */
-  public ASTFeatureConfiguration readFeatureConfiguration(String modelFile, ModelPath symbolInputPath){
-    return fcTool.run(modelFile, symbolInputPath);
+  public ASTFeatureConfiguration readFeatureConfiguration(String modelFile,
+      ModelPath symbolInputPath) {
+    return fcTool.run(modelFile, symbolInputPath, fcParser, fcDeSer);
   }
 
   /**
    * Read in a Feature Configuration at the passed location. Use the base location of the passed FC
    * (= path without FC file name and FC package) for searching for stored symbol tables (of FDs).
    * No symbol table is stored for FCs themselves.
+   *
    * @param modelFile
    * @return
    */
-  public ASTFeatureConfiguration readFeatureConfiguration(String modelFile){
-    return fcTool.run(modelFile);
+  public ASTFeatureConfiguration readFeatureConfiguration(String modelFile) {
+    return fcTool.run(modelFile, fcParser, fcDeSer);
   }
 
   /**
@@ -302,11 +324,11 @@ public class FACT {
       String symbolOutPath = FeatureDiagramCLI.SYMBOL_OUT.toString();
 
       //except if the option "symbolPath" is set, then use the passed location to store (and load) symbols
-      if(cmd.hasOption("symbolPath")){
+      if (cmd.hasOption("symbolPath")) {
         symbolOutPath = cmd.getOptionValue("symbolPath");
       }
-
-      return readFeatureDiagram(fdModelFile, symbolOutPath, new ModelPath(Paths.get(symbolOutPath)));
+      ModelPath mp = new ModelPath(Paths.get(symbolOutPath));
+      return readFeatureDiagram(fdModelFile, symbolOutPath, mp);
     }
     else {
       for (int i = 1; i < cmd.getArgList().size(); i++) {
@@ -318,6 +340,7 @@ public class FACT {
 
   /**
    * Read a feature configuration from the passed command line.
+   *
    * @param fcString
    * @param cmd
    * @return
@@ -327,18 +350,18 @@ public class FACT {
     // for the FD model referenced in the FC. Therefore, identifying this is mandatory here.
 
     //if the option "modelPath" is set, use the passed location to load symbols
-    if(cmd.hasOption("modelPath")) {
+    if (cmd.hasOption("modelPath")) {
       ModelPath mp = new ModelPath(Paths.get(cmd.getOptionValue("modelPath")));
       return readFeatureConfiguration(fcString, mp);
     }
     //if "modelPath" is not set, but "symbolPath" is set to store FD symbols, use this as modelPath
-    else if(cmd.hasOption("symbolPath")){
+    else if (cmd.hasOption("symbolPath")) {
       ModelPath mp = new ModelPath(Paths.get(cmd.getOptionValue("symbolPath")));
       return readFeatureConfiguration(fcString, mp);
     }
     // else use the folder, in which the FC model is located, as modelpath. This is done by the
     // invoked method below
-    else{
+    else {
       return readFeatureConfiguration(fcString);
     }
   }
@@ -346,6 +369,7 @@ public class FACT {
   /**
    * This creates the options for the FACT tool. These are both used for the CommandLineParser
    * and printing the "help" option.
+   *
    * @return
    */
   protected Options initOptions() {

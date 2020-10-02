@@ -39,9 +39,18 @@ public class ValidConstraintExpression
   @Override public void visit(ASTFieldAccessExpression node) {
     error("'field access'", node.get_SourcePositionStart());
   }
+  
+  @Override
+  public void visit(ASTPlusPrefixExpression node){
+    error("'+'", node.get_SourcePositionStart());
+  }
+  
+  public void visit(ASTMinusPrefixExpression node){
+    error("'-'", node.get_SourcePositionStart());
+  }
 
   @Override public void visit(ASTBooleanNotExpression node) {
-    error("'~", node.get_SourcePositionStart());
+    error("'~'", node.get_SourcePositionStart());
   }
 
   @Override public void visit(ASTMultExpression node) {

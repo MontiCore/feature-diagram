@@ -37,8 +37,10 @@ public class FeatureDiagramCLI {
    */
   public static void main(String[] args) {
     FeatureDiagramCLI cli = new FeatureDiagramCLI();
+    FeatureDiagramParser parser = new FeatureDiagramParser();
+    FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
     Log.initWARN();
-    cli.run(args);
+    cli.run(args, parser, deser);
   }
 
   /**
@@ -46,17 +48,13 @@ public class FeatureDiagramCLI {
    */
   public static final Path SYMBOL_OUT = Paths.get("target/symbols");
 
-  protected static final FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
-
-  protected static final FeatureDiagramParser parser = new FeatureDiagramParser();
-
   /**
    * Parse the model contained in the specified file and return the created AST.
    *
    * @param model - file to parse
    * @return
    */
-  public ASTFDCompilationUnit parse(String model) {
+  public ASTFDCompilationUnit parse(String model, FeatureDiagramParser parser) {
     try {
       Optional<ASTFDCompilationUnit> optFD = parser.parse(model);
 
@@ -79,8 +77,8 @@ public class FeatureDiagramCLI {
    * @param mp
    * @return
    */
-  public IFeatureDiagramArtifactScope createSymbolTable(String model, ModelPath mp) {
-    return createSymbolTable(parse(model), mp);
+  public IFeatureDiagramArtifactScope createSymbolTable(String model, ModelPath mp, FeatureDiagramParser parser) {
+    return createSymbolTable(parse(model, parser), mp);
   }
 
   /**
@@ -128,7 +126,7 @@ public class FeatureDiagramCLI {
    *
    * @return
    */
-  public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out) {
+  public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out, FeatureDiagramScopeDeSer deser) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName()+".fdsym");
@@ -142,7 +140,7 @@ public class FeatureDiagramCLI {
    *
    * @return
    */
-  public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName) {
+  public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName, FeatureDiagramScopeDeSer deser) {
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
@@ -156,10 +154,10 @@ public class FeatureDiagramCLI {
    * @param path
    * @return
    */
-  public ASTFeatureDiagram run(String modelFile, Path out, ModelPath path) {
+  public ASTFeatureDiagram run(String modelFile, Path out, ModelPath path, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
 
     // parse the model and create the AST representation
-    final ASTFDCompilationUnit ast = parse(modelFile);
+    final ASTFDCompilationUnit ast = parse(modelFile, parser);
 
     // setup the symbol table
     IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, path);
@@ -168,7 +166,7 @@ public class FeatureDiagramCLI {
     checkCoCos(ast);
 
     // store artifact scope after context conditions have been checked
-    storeSymbols(modelTopScope, out);
+    storeSymbols(modelTopScope, out, deser);
 
     return ast.getFeatureDiagram();
   }
@@ -181,8 +179,8 @@ public class FeatureDiagramCLI {
    * @param path
    * @return
    */
-  public ASTFeatureDiagram run(String modelFile, ModelPath path) {
-    return run(modelFile, SYMBOL_OUT, path);
+  public ASTFeatureDiagram run(String modelFile, ModelPath path, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
+    return run(modelFile, SYMBOL_OUT, path, parser, deser);
   }
 
   /**
@@ -192,10 +190,10 @@ public class FeatureDiagramCLI {
    * @param modelFile
    * @return
    */
-  public ASTFeatureDiagram run(String modelFile) {
+  public ASTFeatureDiagram run(String modelFile, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
 
     // parse the model and create the AST representation
-    final ASTFDCompilationUnit ast = parse(modelFile);
+    final ASTFDCompilationUnit ast = parse(modelFile, parser);
 
     //reconstruct modelpath from input file
     Path path = Paths.get(modelFile).toAbsolutePath().getParent();
@@ -213,7 +211,7 @@ public class FeatureDiagramCLI {
     FeatureDiagramCoCos.checkAll(ast);
 
     // store artifact scope after context conditions have been checked
-    storeSymbols(modelTopScope, SYMBOL_OUT);
+    storeSymbols(modelTopScope, SYMBOL_OUT, deser);
 
     return ast.getFeatureDiagram();
   }
@@ -224,12 +222,12 @@ public class FeatureDiagramCLI {
    *
    * @param args
    */
-  public void run(String[] args) {
+  public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
     Options options = initOptions();
 
     try {
-      CommandLineParser parser = new BasicParser();
-      CommandLine cmd = parser.parse(options, args);
+      CommandLineParser cliParser = new BasicParser();
+      CommandLine cmd = cliParser.parse(options, args);
       if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("java -jar FeatureDiagramTool.jar", options, true);
@@ -257,7 +255,7 @@ public class FeatureDiagramCLI {
       }
 
       // parse, create symbol table, check all cocos
-      ASTFDCompilationUnit ast = parse(input);
+      ASTFDCompilationUnit ast = parse(input, parser);
       IFeatureDiagramArtifactScope symbolTable = createSymbolTable(ast, mp);
       checkCoCos(ast);
 
@@ -267,10 +265,10 @@ public class FeatureDiagramCLI {
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
           String symbolFile = output.resolve(s).toString();
-          storeSymbols(symbolTable, symbolFile);
+          storeSymbols(symbolTable, symbolFile, deser);
         }
         else {
-          storeSymbols(symbolTable, output);
+          storeSymbols(symbolTable, output, deser);
         }
 
         //print (formatted!) symboltable to console

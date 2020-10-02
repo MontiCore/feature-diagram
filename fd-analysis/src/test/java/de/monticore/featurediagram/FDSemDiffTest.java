@@ -7,7 +7,8 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.se_rwth.commons.logging.Log;
-import fddiff.*;
+import fddiff.FDSemDiff;
+import fddiff.FDSemDiffWitness;
 import org.junit.Before;
 import org.junit.Test;
 

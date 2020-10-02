@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fd;
 
-import de.monticore.featurediagram.FeatureDiagramCLI;
-import de.monticore.featurediagram._symboltable.*;
+import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -17,22 +19,18 @@ import static org.junit.Assert.assertTrue;
 
 public class FeatureDiagramDeSerTest extends AbstractTest {
 
-  protected FeatureDiagramScopeDeSer deSer = new FeatureDiagramScopeDeSer();
-
-  protected FeatureDiagramCLI tool = new FeatureDiagramCLI();
-
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
-    return tool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath());
+    return fdTool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath(), fdParser);
   }
 
   @Test
   public void testRoundtripSerialization() {
     IFeatureDiagramArtifactScope scope = setupSymbolTable("fdvalid/BasicElements.fd");
     assertTrue(null != scope);
-    String serialized = deSer.serialize(scope);
+    String serialized = fdDeSer.serialize(scope);
     assertTrue(null != serialized);
 
-    IFeatureDiagramScope deserializedScope = deSer.deserialize(serialized);
+    IFeatureDiagramScope deserializedScope = fdDeSer.deserialize(serialized);
     assertTrue(deserializedScope instanceof FeatureDiagramArtifactScope);
     FeatureDiagramArtifactScope deserialized = (FeatureDiagramArtifactScope) deserializedScope;
 
@@ -65,7 +63,7 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
 
   @Test
   public void testLoad() {
-    IFeatureDiagramArtifactScope scope = deSer
+    IFeatureDiagramArtifactScope scope = fdDeSer
         .load("src/test/resources/symbols/CarNavigation.fdsym");
     assertTrue(null != scope);
     assertEquals("CarNavigation", scope.getName());
@@ -90,7 +88,7 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
     JsonPrinter.enableIndentation();
     IFeatureDiagramArtifactScope fdScope = setupSymbolTable(
         "fdvalid/CarNavigation.fd");
-    deSer.store(fdScope, Paths.get("target/test-symbols"));
+    fdDeSer.store(fdScope, Paths.get("target/test-symbols"));
 
     Path expectedPath = Paths.get("target/test-symbols/CarNavigation.fdsym");
     assertTrue(expectedPath.toFile().exists());

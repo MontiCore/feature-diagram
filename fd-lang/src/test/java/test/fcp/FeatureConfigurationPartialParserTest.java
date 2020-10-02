@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fcp;
 
-import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import org.junit.Test;
 import test.AbstractTest;
