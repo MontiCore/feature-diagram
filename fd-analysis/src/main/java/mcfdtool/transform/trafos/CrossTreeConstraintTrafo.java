@@ -50,75 +50,14 @@ public class CrossTreeConstraintTrafo implements FeatureDiagramVisitor {
   }
 
   @Override
-  public void endVisit(ASTBooleanNotExpression node) {
-    addConstraint("bool_not", node, node.getExpression());
-  }
-
-  @Override
   public void endVisit(ASTLogicalNotExpression node) {
     addConstraint("bool_not", node, node.getExpression());
-  }
-
-  @Override
-  public void endVisit(ASTMultExpression node) {
-    String constraintName = getTypeFromName(node.getLeft()) + "_times";
-    addConstraint(constraintName, node.getLeft(), node.getRight(), node);
-  }
-
-  @Override
-  public void endVisit(ASTDivideExpression node) {
-    String constraintName = getTypeFromName(node.getLeft()) + "_div";
-    addConstraint(constraintName, node.getLeft(), node.getRight(), node);
-  }
-
-  @Override
-  public void endVisit(ASTModuloExpression node) {
-    addConstraint("int_mod", node.getLeft(), node.getRight(), node);
-  }
-
-  @Override
-  public void endVisit(ASTPlusExpression node) {
-    String constraintName = getTypeFromName(node.getLeft()) + "_plus";
-    addConstraint(constraintName, node.getLeft(), node.getRight(), node);
-  }
-
-  @Override
-  public void endVisit(ASTMinusExpression node) {
-    // l-r=d <=> d+r=l
-    String constraintName = getTypeFromName(node.getLeft()) + "_plus";
-    addConstraint(constraintName, node.getRight(), node.getLeft(), node);
   }
 
   @Override
   public void endVisit(ASTEqualsExpression node) {
     String constraintName = getTypeFromName(node.getLeft()) + "_eq_reif";
     addConstraint(constraintName, node.getLeft(), node.getRight(), node);
-  }
-
-  @Override
-  public void endVisit(ASTLessEqualExpression node) {
-    String constraintName = getTypeFromName(node.getLeft()) + "_le_reif";
-    addConstraint(constraintName, node.getLeft(), node.getRight(), node);
-  }
-
-  @Override
-  public void endVisit(ASTGreaterEqualExpression node) {
-    // l>=r <=> r<=l
-    String constraintName = getTypeFromName(node.getLeft()) + "_le_reif";
-    addConstraint(constraintName, node.getRight(), node.getLeft(), node);
-  }
-
-  @Override
-  public void endVisit(ASTLessThanExpression node) {
-    String constraintName = getTypeFromName(node.getLeft()) + "_lt_reif";
-    addConstraint(constraintName, node.getLeft(), node.getRight(), node);
-  }
-
-  @Override
-  public void endVisit(ASTGreaterThanExpression node) {
-    // l>r <=> r<l
-    String constraintName = getTypeFromName(node.getLeft()) + "_le_reif";
-    addConstraint(constraintName, node.getRight(), node.getLeft(), node);
   }
 
   @Override

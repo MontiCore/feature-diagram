@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package fdvalid.ctv;
+
+featurediagram Conditional2 {
+  A -> B? & C? & D?;
+
+  (B ? B : C) excludes D;
+}

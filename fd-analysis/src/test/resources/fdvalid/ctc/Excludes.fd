@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package fdvalid.ctv;
+
+featurediagram Excludes {
+  A -> B?;
+
+  A excludes B;
+}

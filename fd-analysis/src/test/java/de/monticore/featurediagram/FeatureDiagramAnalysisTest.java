@@ -19,40 +19,6 @@ import static org.junit.Assert.*;
 
 public class FeatureDiagramAnalysisTest extends AbstractTest {
 
-  public static final String TEST_RES = "src/test/resources/";
-
-  protected ASTFeatureDiagram getFD(String modelFile) {
-    IFeatureDiagramArtifactScope as = fdTool
-        .createSymbolTable(TEST_RES + modelFile, new ModelPath(), fdParser);
-    String modelName = modelFile.replace(".fd", "");
-    if (modelName.contains("/")) {
-      modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
-    }
-
-    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = as
-        .resolveFeatureDiagram(modelName);
-    assertTrue(optionalFeatureDiagramSymbol.isPresent());
-    assertNotNull(optionalFeatureDiagramSymbol.get());
-    assertNotNull(optionalFeatureDiagramSymbol.get().getAstNode());
-    return optionalFeatureDiagramSymbol.get().getAstNode();
-  }
-
-  protected ASTFeatureConfiguration getFC(String modelFile) {
-    IFeatureConfigurationArtifactScope symbolTable = fcTool
-        .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)), fcParser, fcDeSer);
-
-    String modelName = modelFile.replace(".fc", "");
-    if (modelName.contains("/")) {
-      modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
-    }
-
-    Optional<FeatureConfigurationSymbol> featureConfOpt = symbolTable
-        .resolveFeatureConfiguration(modelName);
-    assertTrue(featureConfOpt.isPresent());
-    assertNotNull(featureConfOpt.get());
-    return featureConfOpt.get().getAstNode();
-  }
-
   @Test
   public void testPhoneExample() {
     Integer result = new NumberOfProducts().perform(getFD("fdvalid/Phone.fd"));

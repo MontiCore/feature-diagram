@@ -90,31 +90,6 @@ public class CTCVariableCreator implements FeatureDiagramVisitor {
   }
 
   @Override
-  public void visit(ASTModuloExpression node) {
-    addNewVariable(node, Variable.Type.INT, "modExpr" + i++);
-  }
-
-  @Override
-  public void visit(ASTLessEqualExpression node) {
-    addNewBoolVariable(node, "leqExpr" + i++);
-  }
-
-  @Override
-  public void visit(ASTGreaterEqualExpression node) {
-    addNewBoolVariable(node, "geqExpr" + i++);
-  }
-
-  @Override
-  public void visit(ASTLessThanExpression node) {
-    addNewBoolVariable(node, "lessExpr" + i++);
-  }
-
-  @Override
-  public void visit(ASTGreaterThanExpression node) {
-    addNewBoolVariable(node, "greaterExpr" + i++);
-  }
-
-  @Override
   public void visit(ASTEqualsExpression node) {
     addNewBoolVariable(node, "eqExpr" + i++);
   }
@@ -132,11 +107,6 @@ public class CTCVariableCreator implements FeatureDiagramVisitor {
   @Override
   public void visit(ASTBooleanOrOpExpression node) {
     addNewBoolVariable(node, "boolOrExpr" + i++);
-  }
-
-  @Override
-  public void visit(ASTBooleanNotExpression node) {
-    addNewBoolVariable(node, "boolNotExpr" + i++);
   }
 
   @Override
