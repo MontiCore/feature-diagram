@@ -1,0 +1,6 @@
+package fddiff;
+
+featurediagram carPhone {
+  car -> locking;
+  locking -> phone?;
+}

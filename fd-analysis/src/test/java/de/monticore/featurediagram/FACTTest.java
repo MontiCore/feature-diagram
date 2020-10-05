@@ -224,12 +224,105 @@ public class FACTTest extends AbstractTest {
   }
 
   @Test
+  public void testSemDiff1Argument() {
+    tool.run(new String[] {
+      "src/test/resources/fddiff/car2.fd",
+      "-semdiff"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertEquals(1, Log.getErrorCount());
+    assertTrue(Log.getFindings().get(0).getMsg().contains("0xFC998 Received 1 feature diagrams as inputs."));
+  }
+
+  @Test
+  public void testSemDiff3Arguments() {
+    tool.run(new String[] {
+      "src/test/resources/fddiff/car2.fd",
+      "src/test/resources/fddiff/car2.fd",
+      "src/test/resources/fddiff/car2.fd",
+      "-semdiff"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertEquals(3, Log.getErrorCount());
+    assertTrue(Log.getFindings().get(0).getMsg().contains("0xFC999 Unknown arguments '"));
+  }
+
+  @Test
+  public void testSemDiffUnknownValueForSemantics() {
+    tool.run(new String[] {
+      "src/test/resources/fddiff/car2.fd",
+      "src/test/resources/fddiff/car1.fd",
+      "-semdiff",
+      "nonexistingsemantics"
+    });
+    String printed = out.toString().trim();
+    assertEquals(1, Log.getErrorCount());
+    assertTrue(Log.getFindings().get(0).getMsg().contains("0xFC902 Unknown value "));
+  }
+
+  @Test
+  public void testSemDiffOpenNoRefinementNoArg() {
+    tool.run(new String[] {
+      "src/test/resources/fddiff/car2.fd",
+      "src/test/resources/fddiff/car1.fd",
+      "-semdiff"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.contains("Diff witness: "));
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
+  public void testSemDiffOpenRefinementArgOpen() {
+    tool.run(new String[] {
+      "src/test/resources/fddiff/carPhone.fd",
+      "src/test/resources/fddiff/carLocking.fd",
+      "-semdiff",
+      "open"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.contains("The first input FD is a refinement of the second input FD."));
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
+  public void testSemDiffOpenRefinementNoArg() {
+    tool.run(new String[] {
+      "src/test/resources/fddiff/carPhone.fd",
+      "src/test/resources/fddiff/carLocking.fd",
+      "-semdiff",
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.contains("The first input FD is a refinement of the second input FD."));
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
+  public void testSemDiffOpenNoRefinementArgClosed() {
+    tool.run(new String[] {
+      "src/test/resources/fddiff/carPhone.fd",
+      "src/test/resources/fddiff/carLocking.fd",
+      "-semdiff",
+      "closed"
+    });
+    String printed = out.toString().trim();
+    assertNotNull(printed);
+    assertTrue(printed.contains("Diff witness: "));
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
   public void testHelp() {
     tool.run(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.startsWith("usage: java -jar FACT.jar <test.fd> [analysis options]"));
+    assertTrue(printed.startsWith("usage: java -jar FACT.jar <test1.fd> <test2.fd>? [analysis options]"));
     assertEquals(0, Log.getErrorCount());
   }
 }

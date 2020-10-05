@@ -4,7 +4,7 @@
 [FDtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramCLI.java
 [FCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
 [PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
-
+[SemDiffPaper]:              https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [choco]: https://choco-solver.org
@@ -170,9 +170,17 @@ Currently, the FeatureModelAnalysisCLITool supports the following analyses:
 * `findValid`, to find any valid configuration of FD
 * `isVoidFeatureModel`, to check whether there is at least one valid configuration of FD
 * `numberOfProducts`, to count the number of valid configurations of FD
+* `semdiff <semantics>`, to compute a diff witness contained in the semantic difference from an FD to another FD using 
+  the semantics as specified by the argument `<semantics>`. Possible values for the argument are `open` and `closed` where 
+  `open` is chosen by default if no argument is specified. The differences between the open- and closed-world semantics are
+   described [in this paper][SemDiffPaper] in detail. 
 
 For example, `java -jar FACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the FD "Car". 
 The result, in this case `true` or `false`, is printed to the console.
+Currently, `semdiff` is the only option that expects two FDs as inputs. 
+For example, `java -jar FACT.jar Car1.fd Car2.fd -semdiff ow` computes and outputs a diff witness 
+contained in the open-world semantic difference from `Car1.fd` to `Car2.fd` if at least one exists.
+Otherwise, the tool outputs that `Car1.fd` is a refinement of `Car2.fd`.
 
 [FACT][clitool] can further be used for direct access from Java through the following methods:
 * `boolean execIsValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc)`, to execute the [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java) analysis
