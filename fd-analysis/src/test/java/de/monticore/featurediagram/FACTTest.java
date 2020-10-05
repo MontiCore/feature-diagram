@@ -245,8 +245,8 @@ public class FACTTest extends AbstractTest {
     });
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertEquals(3, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().contains("0xFC999 Unknown arguments '"));
+    assertEquals(1, Log.getErrorCount());
+    assertTrue(Log.getFindings().get(0).getMsg().contains("0xFC999 Too many arguments. At most two FDs are expected."));
   }
 
   @Test

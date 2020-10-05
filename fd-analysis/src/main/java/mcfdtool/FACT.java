@@ -77,6 +77,12 @@ public class FACT {
         return;
       }
 
+      if (cmd.getArgList().size() > 2) {
+        // received a greater number of arguments as inputs as expected (max 2 for semdiff)
+        Log.error("0xFC999 Too many arguments. At most two FDs are expected.");
+        return;
+      }
+
       // First argument: First FD that is being processed
       ASTFeatureDiagram firstFD = readFeatureDiagram(cmd, 0);
 
@@ -109,9 +115,9 @@ public class FACT {
       if (cmd.hasOption("numberOfProducts")) {
         execNumberOfProducts(firstFD);
       }
-      if (cmd.hasOption("semdiff") && cmd.getArgList().size() == 2) {
+      if (cmd.hasOption("semdiff")) {
         ASTFeatureDiagram secondFD = readFeatureDiagram(cmd, 1);
-        if(secondFD != null) {
+        if (secondFD != null) {
           String optionVal = cmd.getOptionValue("semdiff");
           execSemDiff(firstFD, secondFD, optionVal);
         }
@@ -126,14 +132,14 @@ public class FACT {
     FDSemDiff fdSemDiff = new FDSemDiff();
     Optional<ASTFeatureConfiguration> witness = Optional.empty();
 
-    if(optionVal.equals("open") || optionVal.equals("closed")) {
+    if (optionVal == null || optionVal.equals("open") || optionVal.equals("closed")) {
       if (optionVal == null || optionVal.equals("open")) {
         witness = fdSemDiff.semDiffOpenWorld(from, to);
       }
       else if (optionVal.equals("closed")) {
         witness = fdSemDiff.semDiffClosedWorld(from, to);
       }
-      if(witness.isPresent()) {
+      if (witness.isPresent()) {
         System.out.println("Diff witness: " + FeatureConfigurationPartialPrettyPrinter.print(witness.get()));
       }
       else {
@@ -157,7 +163,8 @@ public class FACT {
       Log.error("0xFC774 AllProducts was not successful");
     }
     else {
-      System.out.println("Result of AllProducts: " + FeatureConfigurationPartialPrettyPrinter.print(result));
+      System.out.println("Result of AllProducts: "
+        + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -173,7 +180,8 @@ public class FACT {
       Log.error("0xFC775 CompleteToValid was not successful");
     }
     else {
-      System.out.println("Result of CompleteToValid: " + FeatureConfigurationPartialPrettyPrinter.print(result));
+      System.out.println("Result of CompleteToValid: "
+        + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -189,7 +197,8 @@ public class FACT {
       Log.error("0xFC776 DeadFeature was not successful");
     }
     else {
-      System.out.println("Result of DeadFeature: " + result.stream().collect(Collectors.joining(", ")));
+      System.out.println("Result of DeadFeature: "
+        + result.stream().collect(Collectors.joining(", ")));
     }
     return result;
   }
@@ -205,7 +214,8 @@ public class FACT {
       Log.error("0xFC777 FalseOptional was not successful");
     }
     else {
-      System.out.println("Result of FalseOptional: " + result.stream().collect(Collectors.joining(", ")));
+      System.out.println("Result of FalseOptional: "
+        + result.stream().collect(Collectors.joining(", ")));
     }
     return result;
   }
@@ -221,7 +231,8 @@ public class FACT {
       Log.error("0xFC774 FindValid was not successful");
     }
     else {
-      System.out.println("Result of FindValid: " + FeatureConfigurationPartialPrettyPrinter.print(result));
+      System.out.println("Result of FindValid: "
+        + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -237,7 +248,8 @@ public class FACT {
       Log.error("0xFC778 GeneralFilter was not successful");
     }
     else {
-      System.out.println("Result of GeneralFilter: " + FeatureConfigurationPartialPrettyPrinter.print(result));
+      System.out.println("Result of GeneralFilter: "
+        + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -342,34 +354,26 @@ public class FACT {
       Log.error("0xFC900 No feature diagram given as first argument!");
       return null;
     }
-    else if (cmd.getArgList().size() <= 2) {
-      if (cmd.getArgList().size() < num + 1) {
-        // received a smaller number of FDs as inputs as expected
-        Log.error(String.format("0xFC998 Received %s feature diagrams as inputs. "
-          + "Expecting at least %s feature diagrams as inputs!", cmd.getArgList().size(), num + 1));
-        return null;
-      }
-      else {
-        String fdModelFile = cmd.getArgList().get(num).toString();
-
-        //by default, use this for the symbol output
-        String symbolOutPath = FeatureDiagramCLI.SYMBOL_OUT.toString();
-
-        //except if the option "symbolPath" is set, then use the passed location to store (and load) symbols
-        if (cmd.hasOption("symbolPath")) {
-          symbolOutPath = cmd.getOptionValue("symbolPath");
-        }
-        ModelPath mp = new ModelPath(Paths.get(symbolOutPath));
-        return readFeatureDiagram(fdModelFile, symbolOutPath, mp);
-      }
-    }
-    else {
-      // received a greater number of arguments as inputs as expected (max 2 for semdiff)
-      for (int i = 0; i < cmd.getArgList().size(); i++) {
-        Log.error("0xFC999 Unknown arguments '" + cmd.getArgList().get(i) + "'");
-      }
+    if (cmd.getArgList().size() < num + 1) {
+      // received a smaller number of FDs as inputs as expected
+      Log.error(String.format("0xFC998 Received %s feature diagrams as inputs. "
+        + "Expecting at least %s feature diagrams as inputs!", cmd.getArgList().size(), num + 1));
       return null;
     }
+    else {
+      String fdModelFile = cmd.getArgList().get(num).toString();
+
+      //by default, use this for the symbol output
+      String symbolOutPath = FeatureDiagramCLI.SYMBOL_OUT.toString();
+
+      //except if the option "symbolPath" is set, then use the passed location to store (and load) symbols
+      if (cmd.hasOption("symbolPath")) {
+        symbolOutPath = cmd.getOptionValue("symbolPath");
+      }
+      ModelPath mp = new ModelPath(Paths.get(symbolOutPath));
+      return readFeatureDiagram(fdModelFile, symbolOutPath, mp);
+    }
+
   }
 
   /**
@@ -409,21 +413,21 @@ public class FACT {
   protected Options initOptions() {
     Options options = new Options();
 
-    createAnalysisOption(options, "isValid", "test.fc", false,"check if <test.fc> is a valid configuration in <test1.fd>");
-    createAnalysisOption(options, "allProducts", null,false, "find all valid configurations for <test1.fd>");
-    createAnalysisOption(options, "deadFeatures", null, false,"find all dead "
+    createAnalysisOption(options, "isValid", "test.fc", false, "check if <test.fc> is a valid configuration in <test1.fd>");
+    createAnalysisOption(options, "allProducts", null, false, "find all valid configurations for <test1.fd>");
+    createAnalysisOption(options, "deadFeatures", null, false, "find all dead "
       + "features for <test1.fd>");
-    createAnalysisOption(options, "falseOptional", null, false,"find "
+    createAnalysisOption(options, "falseOptional", null, false, "find "
       + "all false optional features for <test1.fd>");
-    createAnalysisOption(options, "completeToValid", "test.fc", false,"find a valid "
+    createAnalysisOption(options, "completeToValid", "test.fc", false, "find a valid "
       + "configurations of <test1.fd> that fulfils the partial configuration <test.fc>");
-    createAnalysisOption(options, "findValid", null, false,"find a valid"
+    createAnalysisOption(options, "findValid", null, false, "find a valid"
       + " configuration for <test1.fd>");
-    createAnalysisOption(options, "isVoidFeatureModel", null, false,"check if <test1.fd> "
+    createAnalysisOption(options, "isVoidFeatureModel", null, false, "check if <test1.fd> "
       + "has any valid configuration");
-    createAnalysisOption(options, "numberOfProducts", null,false, "calculate "
+    createAnalysisOption(options, "numberOfProducts", null, false, "calculate "
       + "the number of valid configurations for <test1.fd>");
-    createAnalysisOption(options, "semdiff", "semantics", true,"calculate "
+    createAnalysisOption(options, "semdiff", "semantics", true, "calculate "
       + "a diff witness contained in the semantic difference from <test1.fd> to <test2.fd> using the semantics "
       + "as specified by the argument <semantics>. Possible values for the argument are 'closed' and 'open' "
       + "for choosing between the closed- and open-world semantics. If no argument is specified, then 'open' "
