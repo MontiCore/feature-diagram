@@ -178,7 +178,7 @@ Currently, the FeatureModelAnalysisCLITool supports the following analyses:
 For example, `java -jar FACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the FD "Car". 
 The result, in this case `true` or `false`, is printed to the console.
 Currently, `semdiff` is the only option that expects two FDs as inputs. 
-For example, `java -jar FACT.jar Car1.fd Car2.fd -semdiff ow` computes and outputs a diff witness 
+For example, `java -jar FACT.jar Car1.fd Car2.fd -semdiff open` computes and outputs a diff witness 
 contained in the open-world semantic difference from `Car1.fd` to `Car2.fd` if at least one exists.
 Otherwise, the tool outputs that `Car1.fd` is a refinement of `Car2.fd`.
 
