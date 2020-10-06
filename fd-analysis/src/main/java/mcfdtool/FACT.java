@@ -140,7 +140,7 @@ public class FACT {
   private boolean checkInputFDNum(List argList, int expectedArgNum, String optionName) {
     if(argList.size() != expectedArgNum) {
       Log.error(
-        String.format("Number of specified input FDs is '%s'. Option '%s' expects exactly '%s' input FDs.",
+        String.format("0xFC910 Number of specified input FDs is '%s'. Option '%s' expects exactly '%s' input FDs.",
         argList.size(), optionName, expectedArgNum));
       return false;
     }

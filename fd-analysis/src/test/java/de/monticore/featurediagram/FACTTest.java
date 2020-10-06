@@ -232,7 +232,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertEquals(1, Log.getErrorCount());
-    assertTrue(Log.getFindings().get(0).getMsg().contains("0xFC998 Received 1 feature diagrams as inputs."));
+    assertTrue(Log.getFindings().get(0).getMsg().contains("0xFC910 Number of specified input FDs is"));
   }
 
   @Test
