@@ -87,35 +87,35 @@ public class FACT {
       ASTFeatureDiagram firstFD = readFeatureDiagram(cmd, 0);
 
       // check all implemented analysis one after another
-      if (cmd.hasOption("isValid")) {
+      if (cmd.hasOption("isValid") && checkInputFDNum(cmd.getArgList(), 1, "isValid")) {
         String fcString = cmd.getOptionValue("isValid"); //read FC file path from command line
         ASTFeatureConfiguration fc = readFeatureConfiguration(fcString, cmd);
         execIsValid(firstFD, fc);
       }
-      if (cmd.hasOption("allProducts")) {
+      if (cmd.hasOption("allProducts") && checkInputFDNum(cmd.getArgList(), 1, "allProducts")) {
         execAllProducts(firstFD);
       }
-      if (cmd.hasOption("deadFeatures")) {
+      if (cmd.hasOption("deadFeatures") && checkInputFDNum(cmd.getArgList(), 1, "deadFeatures")) {
         execDeadFeature(firstFD);
       }
-      if (cmd.hasOption("falseOptional")) {
+      if (cmd.hasOption("falseOptional") && checkInputFDNum(cmd.getArgList(), 1, "falseOptional")) {
         execFalseOptional(firstFD);
       }
-      if (cmd.hasOption("completeToValid")) {
+      if (cmd.hasOption("completeToValid") && checkInputFDNum(cmd.getArgList(), 1, "completeToValid")) {
         String fcString = cmd.getOptionValue("completeToValid"); //read FC file path from command line
         ASTFeatureConfiguration fc = readFeatureConfiguration(fcString, cmd);
         execCompleteToValid(firstFD, fc);
       }
-      if (cmd.hasOption("findValid")) {
+      if (cmd.hasOption("findValid") && checkInputFDNum(cmd.getArgList(), 1, "findValid")) {
         execFindValid(firstFD);
       }
-      if (cmd.hasOption("isVoidFeatureModel")) {
+      if (cmd.hasOption("isVoidFeatureModel") && checkInputFDNum(cmd.getArgList(), 1, "isVoidFeatureModel")) {
         execIsVoidFeatureModel(firstFD);
       }
-      if (cmd.hasOption("numberOfProducts")) {
+      if (cmd.hasOption("numberOfProducts") && checkInputFDNum(cmd.getArgList(), 1, "numberOfProducts")) {
         execNumberOfProducts(firstFD);
       }
-      if (cmd.hasOption("semdiff")) {
+      if (cmd.hasOption("semdiff") && checkInputFDNum(cmd.getArgList(), 2, "semdiff")) {
         ASTFeatureDiagram secondFD = readFeatureDiagram(cmd, 1);
         if (secondFD != null) {
           String optionVal = cmd.getOptionValue("semdiff");
@@ -126,6 +126,25 @@ public class FACT {
     catch (ParseException e) {
       Log.error("0xFC901 Error while parsing the command line options!", e);
     }
+  }
+
+  /**
+   * Logs error and returns false if expected number of arguments is not equal to
+   * actual number of arguments. Otherwise, returns true.
+   *
+   * @param argList
+   * @param expectedArgNum
+   * @param optionName
+   * @return
+   */
+  private boolean checkInputFDNum(List argList, int expectedArgNum, String optionName) {
+    if(argList.size() != expectedArgNum) {
+      Log.error(
+        String.format("Number of specified input FDs is '%s'. Option '%s' expects exactly '%s' input FDs.",
+        argList.size(), optionName, expectedArgNum));
+      return false;
+    }
+    return true;
   }
 
   private void execSemDiff(ASTFeatureDiagram from, ASTFeatureDiagram to, String optionVal) {
