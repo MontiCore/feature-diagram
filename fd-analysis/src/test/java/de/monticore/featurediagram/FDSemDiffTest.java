@@ -3,12 +3,15 @@
 package de.monticore.featurediagram;
 
 import com.google.common.collect.Sets;
+import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
+import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialDelegatorVisitor;
+import de.monticore.featureconfigurationpartial._visitor.UnSelectedFeatureCollector;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.se_rwth.commons.logging.Log;
 import fddiff.FDSemDiff;
-import fddiff.FDSemDiffWitness;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,124 +39,295 @@ public class FDSemDiffTest {
 
   @Test
   public void testSemDiff_car_car() {
-    assertFalse(semDiff.semDiff(getFD("car"), getFD("car")).isPresent());
+    assertFalse(semDiff.semDiffOpenWorld(getFD("car"), getFD("car")).isPresent());
+    assertFalse(semDiff.semDiffClosedWorld(getFD("car"), getFD("car")).isPresent());
   }
 
   @Test
-  public void testSemDiff_car_car1() {
-    Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car"), getFD("car1"));
+  public void testSemDiff_car_car1_open_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffOpenWorld(getFD("car"), getFD("car1"));
     assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
     assertEquals(Sets.newHashSet("engine", "car", "hybrid"),
-            witness.get().getWitness());
+      col.getSelectedFeatures());
   }
 
   @Test
-  public void testSemDiff_car_car2() {
-    assertFalse(semDiff.semDiff(getFD("car"), getFD("car2")).isPresent());
+  public void testSemDiff_car_car2_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("car"), getFD("car2")).isPresent());
   }
 
   @Test
-  public void testSemDiff_car1_car() {
-    Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car1"), getFD("car"));
+  public void testSemDiff_car1_car_open_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffOpenWorld(getFD("car1"), getFD("car"));
     assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
     assertEquals(Sets.newHashSet("engine", "car", "electric", "gas"),
-            witness.get().getWitness());
+      col.getSelectedFeatures());
   }
 
   @Test
-  public void testSemDiff_car1_car1() {
-    assertFalse(semDiff.semDiff(getFD("car1"), getFD("car1")).isPresent());
+  public void testSemDiff_car1_car1_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("car1"), getFD("car1")).isPresent());
   }
 
   @Test
-  public void testSemDiff_car1_car2() {
-    Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car1"), getFD("car2"));
+  public void testSemDiff_car1_car2_open_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffOpenWorld(getFD("car1"), getFD("car2"));
     assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
     assertEquals(Sets.newHashSet("engine", "car", "gas", "electric"),
-            witness.get().getWitness());
+      col.getSelectedFeatures());
   }
 
   @Test
-  public void testSemDiff_car2_car() {
-    assertFalse(semDiff.semDiff(getFD("car2"), getFD("car")).isPresent());
+  public void testSemDiff_car2_car_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("car2"), getFD("car")).isPresent());
   }
 
   @Test
-  public void testSemDiff_car2_car1() {
-    Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("car2"), getFD("car1"));
+  public void testSemDiff_car2_car1_open_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffOpenWorld(getFD("car2"), getFD("car1"));
     assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
     assertEquals(Sets.newHashSet("hybrid", "engine", "car"),
-            witness.get().getWitness());
+      col.getSelectedFeatures());
   }
 
   @Test
-  public void testSemDiff_car2_car2() {
-    assertFalse(semDiff.semDiff(getFD("car2"), getFD("car2")).isPresent());
+  public void testSemDiff_car2_car2_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("car2"), getFD("car2")).isPresent());
   }
 
   @Test
-  public void testSemDiff_tablet1_tablet1() {
-    assertFalse(semDiff.semDiff(getFD("tablet1"), getFD("tablet1")).isPresent());
+  public void testSemDiff_tablet1_tablet1_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("tablet1"), getFD("tablet1")).isPresent());
   }
 
   @Test
-  public void testSemDiff_tablet1_tablet2() {
-    Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet1"), getFD("tablet2"));
+  public void testSemDiff_tablet1_tablet2_open_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffOpenWorld(getFD("tablet1"), getFD("tablet2"));
     assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
     assertEquals(Sets.newHashSet("tablet", "memory", "display", "P100", "dis11", "processor", "m64GB", "dis12"),
-            witness.get().getWitness());
+      col.getSelectedFeatures());
   }
 
   @Test
-  public void testSemDiff_tablet1_tablet3() {
-    Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet1"), getFD("tablet3"));
+  public void testSemDiff_tablet1_tablet3_open_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffOpenWorld(getFD("tablet1"), getFD("tablet3"));
     assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+
+    witness.get().accept(vis);
     assertEquals(Sets.newHashSet("tablet", "memory", "P100", "m64GB", "display", "dis11", "dis12", "processor"),
-            witness.get().getWitness());
+      col.getSelectedFeatures());
   }
 
   @Test
-  public void testSemDiff_tablet2_tablet1() {
-    Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet2"), getFD("tablet1"));
+  public void testSemDiff_tablet2_tablet1_open_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffOpenWorld(getFD("tablet2"), getFD("tablet1"));
     assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
     assertEquals(Sets.newHashSet("tablet", "memory", "m64GB", "display", "P100", "processor", "dis12"),
-            witness.get().getWitness());
+      col.getSelectedFeatures());
   }
 
   @Test
-  public void testSemDiff_tablet2_tablet2() {
-    assertFalse(semDiff.semDiff(getFD("tablet2"), getFD("tablet2")).isPresent());
+  public void testSemDiff_tablet2_tablet2_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("tablet2"), getFD("tablet2")).isPresent());
   }
 
   @Test
-  public void testSemDiff_tablet2_tablet3() {
-    Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet2"), getFD("tablet3"));
+  public void testSemDiff_tablet2_tablet3_open_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffOpenWorld(getFD("tablet2"), getFD("tablet3"));
     assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
     assertEquals(Sets.newHashSet("tablet", "memory", "m64GB", "display", "P200", "processor", "dis11"),
-            witness.get().getWitness());
+      col.getSelectedFeatures());
   }
 
   @Test
-  public void testSemDiff_tablet3_tablet1() {
-    Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet3"), getFD("tablet1"));
+  public void testSemDiff_tablet3_tablet1_open_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffOpenWorld(getFD("tablet3"), getFD("tablet1"));
     assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
     assertEquals(Sets.newHashSet("tablet", "memory", "m128GB", "display", "P100", "processor", "dis12"),
-            witness.get().getWitness());
+      col.getSelectedFeatures());
   }
 
   @Test
-  public void testSemDiff_tablet3_tablet2() {
-    Optional<FDSemDiffWitness> witness = semDiff.semDiff(getFD("tablet3"), getFD("tablet2"));
+  public void testSemDiff_tablet3_tablet2_open_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffOpenWorld(getFD("tablet3"), getFD("tablet2"));
     assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
     assertEquals(Sets.newHashSet("tablet", "memory", "m256GB", "display", "P100", "processor", "dis11"),
-            witness.get().getWitness());
+      col.getSelectedFeatures());
   }
 
   @Test
-  public void testSemDiff_tablet3_tablet3() {
-    assertFalse(semDiff.semDiff(getFD("tablet3"), getFD("tablet3")).isPresent());
+  public void testSemDiff_tablet3_tablet3_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("tablet3"), getFD("tablet3")).isPresent());
   }
 
+  @Test
+  public void testSemDiff_carLocking_carPhone_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("carLocking"), getFD("carPhone")).isPresent());
+  }
+
+  @Test
+  public void testSemDiff_carLocking_carLockingEngine_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("carLocking"), getFD("carLockingEngine")).isPresent());
+  }
+
+  @Test
+  public void testSemDiff_carPhone_carLocking_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("carPhone"), getFD("carLocking")).isPresent());
+  }
+
+  @Test
+  public void testSemDiff_carPhone_carLockingEngine_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("carPhone"), getFD("carLockingEngine")).isPresent());
+  }
+
+  @Test
+  public void testSemDiff_carLockingEngine_carLocking_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("carLockingEngine"), getFD("carLocking")).isPresent());
+  }
+
+  @Test
+  public void testSemDiff_carLockingEngine_carPhone_open_world() {
+    assertFalse(semDiff.semDiffOpenWorld(getFD("carLockingEngine"), getFD("carPhone")).isPresent());
+  }
+
+  @Test
+  public void testSemDiff_carLocking_carPhone_closed_world() {
+    assertFalse(semDiff.semDiffClosedWorld(getFD("carLocking"), getFD("carPhone")).isPresent());
+  }
+
+  @Test
+  public void testSemDiff_carLocking_carLockingEngine_closed_world() {
+    assertFalse(semDiff.semDiffClosedWorld(getFD("carLocking"), getFD("carLockingEngine")).isPresent());
+  }
+
+  @Test
+  public void testSemDiff_carPhone_carLocking_closed_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffClosedWorld(getFD("carPhone"), getFD("carLocking"));
+    assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
+    assertEquals(Sets.newHashSet("car", "locking", "phone"),
+      col.getSelectedFeatures());
+  }
+
+  @Test
+  public void testSemDiff_carPhone_carLockingEngine_closed_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffClosedWorld(getFD("carPhone"), getFD("carLockingEngine"));
+    assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
+    assertEquals(Sets.newHashSet("car", "locking", "phone"),
+      col.getSelectedFeatures());
+  }
+
+  @Test
+  public void testSemDiff_carLockingEngine_carLocking_closed_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffClosedWorld(getFD("carLockingEngine"), getFD("carLocking"));
+    assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
+    assertEquals(Sets.newHashSet("car", "locking", "engine"),
+      col.getSelectedFeatures());
+  }
+
+  @Test
+  public void testSemDiff_carLockingEngine_carPhone_closed_world() {
+    Optional<ASTFeatureConfiguration> witness = semDiff.semDiffClosedWorld(getFD("carLockingEngine"), getFD("carPhone"));
+    assertTrue(witness.isPresent());
+    UnSelectedFeatureCollector col = new UnSelectedFeatureCollector();
+    FeatureConfigurationPartialDelegatorVisitor vis = FeatureConfigurationPartialMill
+      .featureConfigurationPartialDelegatorVisitorBuilder()
+      .setFeatureConfigurationPartialVisitor(col)
+      .setFeatureConfigurationVisitor(col)
+      .build();
+    witness.get().accept(vis);
+    assertEquals(Sets.newHashSet("car", "locking", "engine"),
+      col.getSelectedFeatures());
+  }
 
   private ASTFeatureDiagram getFD(String model) {
     return parse(model).getFeatureDiagram();
