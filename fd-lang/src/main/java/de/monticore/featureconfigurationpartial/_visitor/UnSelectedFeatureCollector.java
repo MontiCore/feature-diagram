@@ -1,3 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featureconfigurationpartial._visitor;
 
 import de.monticore.featureconfiguration._visitor.FeatureConfigurationVisitor;
@@ -7,6 +8,9 @@ import de.monticore.featureconfigurationpartial._ast.ASTUnselect;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Computes selected and unselected features of an ASTFeatureConfigurationPartial.
+ */
 public class UnSelectedFeatureCollector implements FeatureConfigurationPartialVisitor {
   private Set<String> selectedFeatures;
   private Set<String> unselectedFeatures;
