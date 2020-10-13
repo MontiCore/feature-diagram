@@ -6,4 +6,5 @@ featurediagram Conditional2 {
   A -> B? & C? & D?;
 
   (B ? B : C) excludes D;
+  //A, AB, ABC, AC, AD
 }

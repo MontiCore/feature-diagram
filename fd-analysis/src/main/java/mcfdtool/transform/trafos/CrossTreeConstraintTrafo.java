@@ -62,7 +62,7 @@ public class CrossTreeConstraintTrafo implements FeatureDiagramVisitor {
 
   @Override
   public void endVisit(ASTNotEqualsExpression node) {
-    String constraintName = getTypeFromName(node.getLeft()) + "_ne_reif";
+    String constraintName = getTypeFromName(node.getLeft()) + "_xor";
     addConstraint(constraintName, node.getLeft(), node.getRight(), node);
   }
 
@@ -79,20 +79,21 @@ public class CrossTreeConstraintTrafo implements FeatureDiagramVisitor {
   @Override
   public void endVisit(ASTConditionalExpression node) {
     String varName = variables.get(node).getName();
-    String helperVarName = "helper" + varName;
+    String conditionNegated = getExpressionVarName(node.getCondition(), true);
     String conditionVarName = variables.get(node.getCondition()).getName();
     String trueVarName = variables.get(node.getTrueExpression()).getName();
     String falseVarName = variables.get(node.getFalseExpression()).getName();
+    String posName = varName+"pos";
+    String negName = varName+"neg";
+    Variable pos = new Variable(posName, Variable.Type.BOOL);
+    Variable neg = new Variable(negName, Variable.Type.BOOL);
+    flatZincModel.add(pos);
+    flatZincModel.add(neg);
 
-    Variable helpervariable = new Variable("helper" + varName, Variable.Type.BOOL,
-        "var_is_introduced");
-    flatZincModel.add(helpervariable);
-
-    String type = getTypeFromName(node.getTrueExpression());
-    flatZincModel.add(new Constraint("bool_not", conditionVarName, helperVarName));
-    flatZincModel.add(new Constraint(type + "_eq_reif", trueVarName, varName, conditionVarName));
-    flatZincModel.add(new Constraint(type + "_eq_reif", falseVarName, varName, helperVarName));
-
+    flatZincModel.add(new Constraint("bool_eq_reif", trueVarName, varName, posName));
+    flatZincModel.add(new Constraint("bool_eq_reif", falseVarName, varName, negName));
+    flatZincModel.add(new Constraint("bool_or", conditionNegated, posName, "true"));
+    flatZincModel.add(new Constraint("bool_or", conditionVarName, negName, "true"));
   }
 
   @Override

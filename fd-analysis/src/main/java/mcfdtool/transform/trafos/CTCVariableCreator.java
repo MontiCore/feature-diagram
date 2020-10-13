@@ -46,50 +46,6 @@ public class CTCVariableCreator implements FeatureDiagramVisitor {
   }
 
   @Override
-  public void visit(ASTMultExpression node) {
-    //attention: int is only a placeholder, actual type is set in endVisit method
-    addNewVariable(node, Variable.Type.INT, "multExpr" + i++);
-  }
-
-  public void endVisit(ASTMultExpression node) {
-    Variable.Type actualType = names.get(node.getLeft()).getType();
-    names.get(node).setType(actualType);
-  }
-
-  @Override
-  public void visit(ASTDivideExpression node) {
-    //attention: int is only a placeholder, actual type is set in endVisit method
-    addNewVariable(node, Variable.Type.INT, "divExpr" + i++);
-  }
-
-  public void endVisit(ASTDivideExpression node) {
-    Variable.Type actualType = names.get(node.getLeft()).getType();
-    names.get(node).setType(actualType);
-  }
-
-  @Override
-  public void visit(ASTPlusExpression node) {
-    //attention: int is only a placeholder, actual type is set in endVisit method
-    addNewVariable(node, Variable.Type.INT, "plusExpr" + i++);
-  }
-
-  public void endVisit(ASTPlusExpression node) {
-    Variable.Type actualType = names.get(node.getLeft()).getType();
-    names.get(node).setType(actualType);
-  }
-
-  @Override
-  public void visit(ASTMinusExpression node) {
-    //attention: int is only a placeholder, actual type is set in endVisit method
-    addNewVariable(node, Variable.Type.INT, "minusExpr" + i++);
-  }
-
-  public void endVisit(ASTMinusExpression node) {
-    Variable.Type actualType = names.get(node.getLeft()).getType();
-    names.get(node).setType(actualType);
-  }
-
-  @Override
   public void visit(ASTEqualsExpression node) {
     addNewBoolVariable(node, "eqExpr" + i++);
   }
@@ -116,13 +72,7 @@ public class CTCVariableCreator implements FeatureDiagramVisitor {
 
   @Override
   public void visit(ASTConditionalExpression node) {
-    //attention: bool is only a placeholder, actual type is set in endVisit method
     addNewBoolVariable(node, "condExpr" + i++);
-  }
-
-  public void endVisit(ASTConditionalExpression node) {
-    Variable.Type actualType = names.get(node.getTrueExpression()).getType();
-    names.get(node).setType(actualType);
   }
 
   @Override
@@ -137,7 +87,7 @@ public class CTCVariableCreator implements FeatureDiagramVisitor {
 
   @Override
   public void visit(ASTNameExpression node) {
-    Variable variable = Variable.newIntVariable(node.getName());
+    Variable variable = Variable.newBoolVariable(node.getName());
     names.put(node, variable);
   }
 
