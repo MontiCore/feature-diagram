@@ -31,8 +31,6 @@ public class CTCTest extends AbstractTest{
 
   @Test
   public void testConditional2() {
-    List<ASTFeatureConfiguration> i = new AllProducts().perform(getFD("fdvalid/ctc/Conditional2.fd"));
-
     Integer result = new NumberOfProducts().perform(getFD("fdvalid/ctc/Conditional2.fd"));
     assertEquals(Integer.valueOf(5), result);
   }
