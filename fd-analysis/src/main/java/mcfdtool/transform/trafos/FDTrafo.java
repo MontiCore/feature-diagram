@@ -25,7 +25,7 @@ public class FDTrafo implements FeatureDiagramVisitor {
     fd.accept(this);
 
     //add contraint for selecting the root feature
-    Constraint rootFeature = new Constraint("int_eq", "1", fd.getRootFeature());
+    Constraint rootFeature = new Constraint("bool_eq", "true", fd.getRootFeature());
     flatZincModel.add(rootFeature);
 
     //add cross tree constraints
@@ -33,23 +33,19 @@ public class FDTrafo implements FeatureDiagramVisitor {
   }
 
   public void visit(FeatureSymbol feature) {
-    //create and add variable holding how many times a feature is selected (only needed for features with cardinalities)
-    Variable variable = Variable.newIntVariable(feature.getName(), "output_var");
-    variable.setLowerLimit("0");
-    variable.setUpperLimit("1");
+    //create and add variable holding if a feature is selected
+    Variable variable = Variable.newBoolVariable(feature.getName(),
+      "output_var");
     flatZincModel.add(variable);
 
-    //create and add variables holding whether a feature is selected or not
-    Variable isSelected = Variable.newBoolVariable(feature.getName() + "IsSelected");
-    flatZincModel.add(isSelected);
-    Variable isUnselected = Variable.newBoolVariable(feature.getName() + "IsUnselected");
-    flatZincModel.add(isUnselected);
+    //create and add variable holding if a feature is unselected
+    Variable negated = Variable.newBoolVariable(feature.getName() + "Negated");
+    flatZincModel.add(negated);
 
     //create and add constraints on the feature variables
-    Constraint isSelectedConstraint = new Constraint("bool2int", isSelected.getName(), variable.getName());
-    flatZincModel.add(isSelectedConstraint);
-    Constraint isUnselectedConstraint = new Constraint("bool_not",isSelected.getName(), isUnselected.getName());
-    flatZincModel.add(isUnselectedConstraint);
+    Constraint negatedConstraint = new Constraint("bool_not",variable.getName()
+      , negated.getName());
+    flatZincModel.add(negatedConstraint);
   }
 
   @Override
@@ -60,12 +56,7 @@ public class FDTrafo implements FeatureDiagramVisitor {
   public void visit(ASTAndGroup andGroup) {
     for (int i = 0; i < andGroup.sizeGroupParts(); i++) {
       ASTGroupPart childFeature = andGroup.getGroupPart(i);
-      if (childFeature.isOptional()) {
-        addFeature(currentGroupParent, childFeature.getName(), "0", "1");
-      }
-      else {
-        addFeature(currentGroupParent, childFeature.getName(), "1", "1");
-      }
+      addFeature(currentGroupParent, childFeature.getName(),childFeature.isOptional());
     }
   }
 
@@ -84,16 +75,16 @@ public class FDTrafo implements FeatureDiagramVisitor {
         "" + cardinalityGroup.getCardinality().getUpperBound());
   }
 
-  protected void addFeature(String parent, String child, String min, String max) {
+  protected void addFeature(String parent, String child, boolean optional) {
     //@see https://link.springer.com/content/pdf/10.1007%2F11877028_16.pdf
-    //if(parent = 0) then child = 0
-    Constraint constraint = new Constraint("bool_le", child + "IsSelected",
-        parent + "IsSelected");
+    //if(!parent) then !child
+    Constraint constraint = new Constraint("bool_le", child,
+        parent);
     flatZincModel.add(constraint);
 
     //else child in {min, max}
-    Constraint constraint2 = new Constraint("int_le_reif", min, child,
-        parent + "IsSelected");
+    Constraint constraint2 = new Constraint("bool_le_reif", optional?"false":"true", child,
+        parent);
     flatZincModel.add(constraint2);
   }
 
@@ -111,11 +102,11 @@ public class FDTrafo implements FeatureDiagramVisitor {
     Constraint constraint1 = new Constraint("int_lin_eq_reif", factors , subfeatures, "0", hasZeroChildren);
     flatZincModel.add(constraint1);
 
-    Constraint constraint2 = new Constraint("bool_or", hasZeroChildren, parent + "IsSelected", "true");
+    Constraint constraint2 = new Constraint("bool_or", hasZeroChildren, parent, "true");
     flatZincModel.add(constraint2);
 
     //else sum(children) in {min, max}
-    Constraint constraint3 = new Constraint("int_lin_le_reif", negativeFactors, subfeatures , "-" + min, parent + "IsSelected");
+    Constraint constraint3 = new Constraint("int_lin_le_reif", negativeFactors, subfeatures , "-" + min, parent);
     flatZincModel.add(constraint3);
 
     Constraint constraint4 = new Constraint("int_lin_le", factors, subfeatures, max);

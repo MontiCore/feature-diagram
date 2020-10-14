@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package fdvalid.ctv;
+
+featurediagram Not {
+  A -> B?;
+
+  !B;
+}
