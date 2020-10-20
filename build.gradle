@@ -8,7 +8,6 @@ plugins {
     id "com.github.johnrengelman.shadow" version "4.0.4"
 }
 
-def monticore_version = '6.3.0'
 def plexus_archiver_version = '2.8.2'
 def junit_version = '4.13.1'
 def logback_version = '1.1.2'
@@ -43,7 +42,7 @@ subprojects {
     apply plugin: 'maven-publish'
 
     dependencies {
-        implementation group: 'de.monticore', name: 'monticore-grammar', version: monticore_version
+        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
         implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
         implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
 
@@ -72,7 +71,7 @@ project(':fd-lang') {
     apply plugin : 'com.github.johnrengelman.shadow'
 
     dependencies {
-        grammar (group:'de.monticore', name:'monticore-grammar', version:monticore_version, classifier: "grammars",
+        grammar (group:'de.monticore', name:'monticore-grammar', version:mc_version, classifier: "grammars",
                 changing: true) { force = true }
     }
 
