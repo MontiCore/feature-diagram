@@ -3,7 +3,7 @@ import de.monticore.MCTask
 
 plugins {
     id "java"
-    id "monticore"  version "6.3.0" // MontiCore Plugin
+    id "monticore"  version "$mc_version" // MontiCore Plugin
     id "maven-publish"
     id "com.github.johnrengelman.shadow" version "4.0.4"
 }
@@ -21,7 +21,7 @@ def grammarDir = 'src/main/grammars'
 
 allprojects {
     group = 'de.monticore.lang'
-    version = '6.3.0-SNAPSHOT'
+    version = '${project.properties['version']}'
 
     repositories {
         mavenLocal()
