@@ -21,7 +21,7 @@ def grammarDir = 'src/main/grammars'
 
 allprojects {
     group = 'de.monticore.lang'
-    version = '${project.properties['version']}'
+    version = '$version'
 
     repositories {
         mavenLocal()
