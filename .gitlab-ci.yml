@@ -5,16 +5,38 @@ cache:
   paths:
     - .m2/
 
+before_script:
+  - chmod +x gradlew
+  - chmod +x check/mdlinkcheck.sh
+
 stages:
   - build-sources
+  - check
 #  - it-test
 
 build_gradle:
   stage: build-sources
   script:
-    - chmod +x gradlew
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - "./gradlew build"
+
+checkMDLinks:
+  stage: check
+  dependencies:
+    - build-sources
+  script:
+    - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.md"
+    - "echo [MDLinkCheck]: Checking $url"
+    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
+    - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md"
+    - "echo [MDLinkCheck]: Checking $url"
+    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
+    - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/README.md"
+    - "echo [MDLinkCheck]: Checking $url"
+    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
+  only:
+    - develop
+
 
 # trigger_langexp:                        
 #  stage: it-test                           
