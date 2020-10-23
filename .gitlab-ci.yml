@@ -27,13 +27,13 @@ checkMDLinks:
   script:
     - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.md"
     - "echo [MDLinkCheck]: Checking $url"
-    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken"
+    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
     - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md"
     - "echo [MDLinkCheck]: Checking $url"
-    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken"
+    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
     - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/master/README.md"
     - "echo [MDLinkCheck]: Checking $url"
-    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken"
+    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
   only:
     - develop
 
