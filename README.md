@@ -154,7 +154,7 @@ The FDL component provides the five tools that are explained in more detail belo
 ### [The FeatureModelAnalysisCLITool][clitool] 
 The [Feature Model Analysis CLI Tool (FACT)][clitool] coordinates the execution of one or more several analyses against a FD
 and, optionally, additional information (depends on the analysis kinds) in form of a CLI tool. 
-An overview of the different analyses is given by [[BSRC10]](https://doi.org/10.1016/j.is.2010.01.001).
+An overview of the different analyses is given by [[BSRC10]](https://www.sciencedirect.com/science/article/abs/pii/S0306437910000025?via%3Dihub).
 
 FACT can be used as follows:
 `java -jar FACT.jar <Car.fd> [-<analysis>]+`, where
