@@ -7,7 +7,6 @@ import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtif
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import org.junit.Before;
 import org.junit.Test;
 import test.AbstractTest;
 
@@ -20,11 +19,6 @@ import static org.junit.Assert.assertTrue;
 public class FeatureConfigurationDeSerTest extends AbstractTest {
 
   protected static final ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
-
-  @Before
-  public void initDeSer() {
-    fcDeSer.setGlobalScope(fcTool.createGlobalScope(mp));
-  }
 
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
     return fcTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcParser, fcDeSer);
@@ -87,9 +81,8 @@ public class FeatureConfigurationDeSerTest extends AbstractTest {
   @Test
   public void testStore() {
     JsonPrinter.enableIndentation();
-    fcDeSer.setSymbolFileExtension("fcsym");
     IFeatureConfigurationArtifactScope fcScope = setupSymbolTable("fcvalid/BasicCarNavigation.fc");
-    fcDeSer.store(fcScope, Paths.get("target/test-symbols"));
+    fcDeSer.store(fcScope, "target/test-symbols/fcvalid/BasicCarNavigation.fcsym");
 
     Path expectedPath = Paths.get("target/test-symbols/BasicCarNavigation.fcsym");
     assertTrue(expectedPath.toFile().exists());

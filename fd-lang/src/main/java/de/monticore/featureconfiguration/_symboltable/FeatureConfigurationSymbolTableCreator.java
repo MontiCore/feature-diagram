@@ -46,11 +46,12 @@ public class FeatureConfigurationSymbolTableCreator
     String name = rootNode.getFeatureConfiguration().getName();
 
     //prohibit double creation of same symbol table
-    Optional<FeatureConfigurationSymbol> symbol = FeatureConfigurationMill
-        .getFeatureConfigurationGlobalScope()
-        .resolveFeatureConfiguration(packageName + "." + name);
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill
+        .getFeatureConfigurationGlobalScope();
+    Optional<FeatureConfigurationSymbol> symbol = gs
+        .resolveFeatureConfiguration(Names.getQualifiedName(packageName,name));
     if(symbol.isPresent()){
-      return (IFeatureConfigurationArtifactScope) symbol.get().getEnclosingScope();
+      gs.removeSubScope(symbol.get().getEnclosingScope());
     }
 
     IFeatureConfigurationArtifactScope artifactScope = FeatureConfigurationMill

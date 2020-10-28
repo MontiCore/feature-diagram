@@ -6,6 +6,7 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureTreeRule;
 import de.monticore.featurediagram._ast.ASTGroupPart;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
@@ -40,9 +41,10 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
     //prohibit double creation of same symbol table
     Optional<FeatureDiagramSymbol> featureDiagramSymbol = FeatureDiagramMill
         .getFeatureDiagramGlobalScope()
-        .resolveFeatureDiagram(packageName + "." + name);
+        .resolveFeatureDiagram(Names.getQualifiedName(packageName,name));
     if(featureDiagramSymbol.isPresent()){
-      return (IFeatureDiagramArtifactScope) featureDiagramSymbol.get().getEnclosingScope();
+      FeatureDiagramMill.getFeatureDiagramGlobalScope()
+          .removeSubScope(featureDiagramSymbol.get().getEnclosingScope());
     }
 
     IFeatureDiagramArtifactScope artifactScope = FeatureDiagramMill

@@ -375,30 +375,29 @@ Print argument options of the PartialFC tool:
 #### Process A Single Model
 Parse an FD model and store its symbol table to a file:
 
-    java -jar fd-lang/target/libs/FeatureDiagramTool.jar
+    java -jar fd-lang/target/libs/FeatureDiagramTool.jar -i fd-lang/src/test/resources/fdvalid/BasicElements.fd -s target/TestSymbolTable.fdsym
 
 Parse an FC model and print its symbol table:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar
+    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc -s
 
 Parse and then pretty print a Partial FC model:
 
-    java -jar fd-lang/target/libs/FeatureDiagramTool.jar
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialTool.jar  -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc -pp
 
 #### Perform Feature Analyses
 
 Check whether an FC is valid:
 
-    java -jar fd-analysis/target/libs/FACT.jar
+    java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/FalseOptional.fd -isValid fd-analysis/src/test/resources/ValidConfig.fc
 
 Return any valid configuration of an FD:
 
-    java -jar fd-analysis/target/libs/FACT.jar
+    java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/fdvalid/CarNavigation.fd -findValid
 
 Calculate semantic difference between two FDs:
 
-    java -jar fd-analysis/target/libs/FACT.jar
-
+    java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/fddiff/car2.fd fd-analysis/src/test/resources/fddiff/car1.fd -semdiff
    
 ## Further Information
 

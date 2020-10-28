@@ -9,6 +9,7 @@ import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
@@ -44,11 +45,12 @@ public class FeatureConfigurationPartialSymbolTableCreator
     String name = rootNode.getFeatureConfiguration().getName();
 
     //prohibit double creation of same symbol table
-    Optional<FeatureConfigurationSymbol> symbol = FeatureConfigurationPartialMill
-        .getFeatureConfigurationPartialGlobalScope()
-        .resolveFeatureConfiguration(packageName + "." + name);
+    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
+        .getFeatureConfigurationPartialGlobalScope();
+    Optional<FeatureConfigurationSymbol> symbol =
+        gs.resolveFeatureConfiguration(Names.getQualifiedName(packageName,name));
     if(symbol.isPresent()){
-      return (IFeatureConfigurationPartialArtifactScope) symbol.get().getEnclosingScope();
+      gs.removeSubScope(symbol.get().getEnclosingScope());
     }
 
     IFeatureConfigurationPartialArtifactScope artifactScope = FeatureConfigurationPartialMill

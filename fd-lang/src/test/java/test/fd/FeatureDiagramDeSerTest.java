@@ -7,7 +7,6 @@ import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import org.junit.Test;
 import test.AbstractTest;
@@ -22,7 +21,7 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
     ASTFDCompilationUnit ast = fdTool.parse(modelFile, fdParser);
-    return fdTool.createSymbolTable(ast, createEmptyGlobalScope());
+    return fdTool.createSymbolTable(ast);
   }
 
   @Test
@@ -90,7 +89,7 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
     JsonPrinter.enableIndentation();
     IFeatureDiagramArtifactScope fdScope = setupSymbolTable(
         "fdvalid/CarNavigation.fd");
-    fdDeSer.store(fdScope, Paths.get("target/test-symbols"));
+    fdDeSer.store(fdScope, "target/test-symbols/fdvalid/CarNavigation.fdsym");
 
     Path expectedPath = Paths.get("target/test-symbols/CarNavigation.fdsym");
     assertTrue(expectedPath.toFile().exists());
