@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fd;
 
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
@@ -20,7 +21,8 @@ import static org.junit.Assert.assertTrue;
 public class FeatureDiagramDeSerTest extends AbstractTest {
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
-    return fdTool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath(), fdParser);
+    ASTFDCompilationUnit ast = fdTool.parse(modelFile, fdParser);
+    return fdTool.createSymbolTable(ast, createEmptyGlobalScope());
   }
 
   @Test

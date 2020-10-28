@@ -9,6 +9,8 @@ import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This class builds up the symbols and scopes from an AST of an FD model.
@@ -33,6 +35,15 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
   @Override
   public IFeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
+    String name = rootNode.getFeatureDiagram().getName();
+
+    //prohibit double creation of same symbol table
+    Optional<FeatureDiagramSymbol> featureDiagramSymbol = FeatureDiagramMill
+        .getFeatureDiagramGlobalScope()
+        .resolveFeatureDiagram(packageName + "." + name);
+    if(featureDiagramSymbol.isPresent()){
+      return (IFeatureDiagramArtifactScope) featureDiagramSymbol.get().getEnclosingScope();
+    }
 
     IFeatureDiagramArtifactScope artifactScope = FeatureDiagramMill
         .featureDiagramArtifactScopeBuilder()

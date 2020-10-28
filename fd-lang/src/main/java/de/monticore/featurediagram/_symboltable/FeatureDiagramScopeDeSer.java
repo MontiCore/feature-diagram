@@ -13,10 +13,6 @@ import de.monticore.symboltable.serialization.json.JsonObject;
  */
 public class FeatureDiagramScopeDeSer extends FeatureDiagramScopeDeSerTOP {
 
-  public FeatureDiagramScopeDeSer() {
-    this.setSymbolFileExtension("fdsym");
-  }
-
   @Override protected void deserializeFeatureDiagramSymbol(JsonObject symbolJson,
       IFeatureDiagramScope scope) {
     FeatureDiagramSymbol symbol = featureDiagramSymbolDeSer

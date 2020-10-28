@@ -28,11 +28,11 @@ public class FeatureConfigurationPartialToolTest extends AbstractTest {
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
     fdTool.run("src/test/resources/fdvalid/CarNavigation.fd",
         Paths.get("target/symbols"),
-        new ModelPath(), fdParser, fdDeSer);
+        fdParser, fdDeSer, createEmptyGlobalScope());
 
     fdTool.run("src/test/resources/phone/Phone.fd",
         Paths.get("target/symbols"),
-        new ModelPath(), fdParser, fdDeSer);
+        fdParser, fdDeSer, createEmptyGlobalScope());
   }
 
   @Before

@@ -14,6 +14,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class builds up the symbols and scopes from an AST of an FD model.
@@ -40,6 +41,15 @@ public class FeatureConfigurationPartialSymbolTableCreator
   @Override public IFeatureConfigurationPartialArtifactScope createFromAST(
       ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
+    String name = rootNode.getFeatureConfiguration().getName();
+
+    //prohibit double creation of same symbol table
+    Optional<FeatureConfigurationSymbol> symbol = FeatureConfigurationPartialMill
+        .getFeatureConfigurationPartialGlobalScope()
+        .resolveFeatureConfiguration(packageName + "." + name);
+    if(symbol.isPresent()){
+      return (IFeatureConfigurationPartialArtifactScope) symbol.get().getEnclosingScope();
+    }
 
     IFeatureConfigurationPartialArtifactScope artifactScope = FeatureConfigurationPartialMill
         .featureConfigurationPartialArtifactScopeBuilder()

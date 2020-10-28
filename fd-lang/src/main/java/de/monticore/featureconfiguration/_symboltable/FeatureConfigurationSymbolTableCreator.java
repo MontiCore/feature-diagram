@@ -7,6 +7,7 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatures;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
@@ -42,6 +43,15 @@ public class FeatureConfigurationSymbolTableCreator
    */
   @Override public IFeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
+    String name = rootNode.getFeatureConfiguration().getName();
+
+    //prohibit double creation of same symbol table
+    Optional<FeatureConfigurationSymbol> symbol = FeatureConfigurationMill
+        .getFeatureConfigurationGlobalScope()
+        .resolveFeatureConfiguration(packageName + "." + name);
+    if(symbol.isPresent()){
+      return (IFeatureConfigurationArtifactScope) symbol.get().getEnclosingScope();
+    }
 
     IFeatureConfigurationArtifactScope artifactScope = FeatureConfigurationMill
         .featureConfigurationArtifactScopeBuilder()

@@ -9,24 +9,23 @@ import de.monticore.featurediagram._symboltable.IFeatureDiagramSymbolResolvingDe
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.modifiers.AccessModifier;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class FeatureDiagramResolvingDelegate implements IFeatureDiagramSymbolResolvingDelegate {
 
-  IFeatureDiagramGlobalScope globalScope;
-
   public FeatureDiagramResolvingDelegate(ModelPath mp) {
-    globalScope = FeatureDiagramMill
-        .featureDiagramGlobalScopeBuilder()
-        .setModelFileExtension("fd")
-        .setModelPath(mp)
-        .build();
+    for (Path p : mp.getFullPathOfEntries()) {
+      FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath().addEntry(p);
+    }
   }
 
   @Override public List<FeatureDiagramSymbol> resolveAdaptedFeatureDiagramSymbol(
       boolean foundSymbols, String name, AccessModifier modifier,
       Predicate<FeatureDiagramSymbol> predicate) {
-    return globalScope.resolveFeatureDiagramMany(foundSymbols, name, modifier, predicate);
+    return FeatureDiagramMill.getFeatureDiagramGlobalScope()
+        .resolveFeatureDiagramMany(foundSymbols, name, modifier, predicate);
   }
+
 }

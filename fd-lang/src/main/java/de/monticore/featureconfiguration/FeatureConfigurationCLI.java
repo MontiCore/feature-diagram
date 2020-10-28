@@ -7,6 +7,8 @@ import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfiguration._symboltable.*;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -83,28 +85,23 @@ public class FeatureConfigurationCLI {
    */
   public IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
       ModelPath mp, FeatureConfigurationScopeDeSer deser) {
-    IFeatureConfigurationGlobalScope gs = createGlobalScope(mp);
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.getFeatureConfigurationGlobalScope();
+    gs.getModelPath().addEntry(FeatureDiagramCLI.SYMBOL_OUT);
+    gs.setModelFileExtension("fc");
+    if (gs.getAdaptedFeatureDiagramSymbolResolvingDelegateList().isEmpty()) {
+      gs.addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(mp));
+    }
+
+    for(Path p : mp.getFullPathOfEntries()){
+      gs.getModelPath().addEntry(p);
+    }
+
     deser.setGlobalScope(gs);
     FeatureConfigurationSymbolTableCreatorDelegator symbolTable = FeatureConfigurationMill
         .featureConfigurationSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(createGlobalScope(mp))
+        .setGlobalScope(gs)
         .build();
     return symbolTable.createFromAST(ast);
-  }
-
-  /**
-   * short-hand for creating a global scope via mill
-   *
-   * @param mp
-   * @return
-   */
-  public IFeatureConfigurationGlobalScope createGlobalScope(ModelPath mp) {
-    return FeatureConfigurationMill
-        .featureConfigurationGlobalScopeBuilder()
-        .setModelPath(mp)
-        .setModelFileExtension("fc")
-        .addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(mp))
-        .build();
   }
 
   /**

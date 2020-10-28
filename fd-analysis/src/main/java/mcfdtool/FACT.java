@@ -7,6 +7,7 @@ import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
@@ -18,6 +19,7 @@ import mcfdtool.analyses.*;
 import mcfdtool.transform.flatzinc.Constraint;
 import org.apache.commons.cli.*;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
@@ -332,7 +334,10 @@ public class FACT {
    * @return
    */
   public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, ModelPath symbolInputPath) {
-    return fdTool.run(modelFile, Paths.get(symbolOutPath), symbolInputPath, fdParser, fdDeSer);
+    for(Path p  : symbolInputPath.getFullPathOfEntries()){
+      FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath().addEntry(p);
+    }
+    return fdTool.run(modelFile, Paths.get(symbolOutPath), fdParser, fdDeSer);
   }
 
   /**

@@ -87,27 +87,25 @@ public class FeatureConfigurationPartialCLI {
    */
   public IFeatureConfigurationPartialArtifactScope createSymbolTable(
       ASTFCCompilationUnit ast, ModelPath mp) {
+    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
+        .getFeatureConfigurationPartialGlobalScope();
+    gs.getModelPath().addEntry(FeatureDiagramCLI.SYMBOL_OUT);
+    gs.setModelFileExtension("fc");
+    if (gs.getAdaptedFeatureDiagramSymbolResolvingDelegateList().isEmpty()) {
+      gs.addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(mp));
+    }
+
+    for(Path p : mp.getFullPathOfEntries()){
+      gs.getModelPath().addEntry(p);
+    }
+
     FeatureConfigurationPartialSymbolTableCreatorDelegator symbolTable = FeatureConfigurationPartialMill
         .featureConfigurationPartialSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(createGlobalScope(mp))
+        .setGlobalScope(gs)
         .build();
     return symbolTable.createFromAST(ast);
   }
 
-  /**
-   * short-hand for creating a global scope via mill
-   *
-   * @param mp
-   * @return
-   */
-  public IFeatureConfigurationPartialGlobalScope createGlobalScope(ModelPath mp) {
-    return FeatureConfigurationPartialMill
-        .featureConfigurationPartialGlobalScopeBuilder()
-        .setModelPath(mp)
-        .setModelFileExtension("fc")
-        .addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(mp))
-        .build();
-  }
 
   /**
    * Check all feature configuration partial context conditions against passed ast

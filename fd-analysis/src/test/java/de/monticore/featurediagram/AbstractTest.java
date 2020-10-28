@@ -3,8 +3,10 @@
 package de.monticore.featurediagram;
 
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
@@ -85,15 +87,20 @@ public class AbstractTest {
   }
   
   protected ASTFeatureDiagram getFD(String modelFile) {
-    IFeatureDiagramArtifactScope as = fdTool
-            .createSymbolTable(TEST_RES + modelFile, new ModelPath(), fdParser);
     String modelName = modelFile.replace(".fd", "");
     if (modelName.contains("/")) {
       modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
     }
-    
-    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = as
-            .resolveFeatureDiagram(modelName);
+
+    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = FeatureDiagramMill
+        .getFeatureDiagramGlobalScope().resolveFeatureDiagram(modelName);
+
+    if(!optionalFeatureDiagramSymbol.isPresent()){
+      IFeatureDiagramArtifactScope as = fdTool
+          .createSymbolTable(TEST_RES + modelFile, fdParser);
+      optionalFeatureDiagramSymbol = as.resolveFeatureDiagram(modelName);
+    }
+
     assertTrue(optionalFeatureDiagramSymbol.isPresent());
     assertNotNull(optionalFeatureDiagramSymbol.get());
     assertNotNull(optionalFeatureDiagramSymbol.get().getAstNode());
@@ -101,16 +108,19 @@ public class AbstractTest {
   }
   
   protected ASTFeatureConfiguration getFC(String modelFile) {
-    IFeatureConfigurationArtifactScope symbolTable = fcTool
-            .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)), fcParser, fcDeSer);
-    
     String modelName = modelFile.replace(".fc", "");
     if (modelName.contains("/")) {
       modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
     }
-    
-    Optional<FeatureConfigurationSymbol> featureConfOpt = symbolTable
-            .resolveFeatureConfiguration(modelName);
+    Optional<FeatureConfigurationSymbol> featureConfOpt = FeatureConfigurationMill
+        .getFeatureConfigurationGlobalScope().resolveFeatureConfiguration(modelName);
+
+    if(!featureConfOpt.isPresent()){
+      IFeatureConfigurationArtifactScope symbolTable = fcTool
+          .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)), fcParser, fcDeSer);
+      featureConfOpt = symbolTable.resolveFeatureConfiguration(modelName);
+    }
+
     assertTrue(featureConfOpt.isPresent());
     assertNotNull(featureConfOpt.get());
     return featureConfOpt.get().getAstNode();

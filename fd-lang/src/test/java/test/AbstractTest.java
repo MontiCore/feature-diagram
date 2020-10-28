@@ -9,8 +9,11 @@ import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialScopeDeSer;
 import de.monticore.featurediagram.FeatureDiagramCLI;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
+import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -18,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 import static org.junit.Assert.fail;
@@ -81,6 +85,14 @@ public class AbstractTest {
       }
     }
     fail("Expected to find an error with the code '" + errorCode + "', but it did not occur!");
+  }
+
+  protected IFeatureDiagramGlobalScope createEmptyGlobalScope(Path... entries) {
+    return FeatureDiagramMill
+        .featureDiagramGlobalScopeBuilder()
+        .setModelFileExtension("fd")
+        .setModelPath(new ModelPath(entries))
+        .build();
   }
 
 }

@@ -143,6 +143,26 @@ more complex constraints that involve more than two features. In the example
 FD below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`, 
 and `Asia` requires to select either a `Large` or a `Medium` memory.
 
+
+## Tool Set Up
+This section explains how to set up the command line interface tools for the FD languages.
+Each tool is contained in a separate jar file, which is produced as result
+of building the project with gradle. The following explains this.
+
+##### Prerequisites
+To build the project, it is required to install a Java 8 JDK and git. 
+
+##### Step 1: Clone Project with git
+
+    git clone https://git.rwth-aachen.de/monticore/languages/feature-diagram.git
+    cd feature-diagram
+
+##### Step 2: Build Project with gradle
+
+    gradlew build --refresh-dependencies
+Afterwards, the jars of the tools are available in `fd-lang/target/libs` and `fd-analysis/target/libs`.
+
+
 ## Tools
 The FDL component provides the five tools that are explained in more detail below:
 * The [Feature Model Analysis CLI Tool (FACT)][clitool] enables executing analyses against feature diagrams and feature configuration both via CLI and Java API
@@ -329,6 +349,57 @@ the first but invalid in the second feature diagram.
 The Java API offers a class to calculate the semantic difference witness, given two parsed feature diagrams.
 Simply invoke the `semDiff` method of the `FDSemDiff` class provided [here][fddifftool]. 
 
+## Tool Usage Examples
+This section provides some copy and paste templates for executing the resulting tools against 
+some test models that are contained in the language project. This is a good basis 
+for getting familiar with the tools while experimenting with changes to the models. 
+The tools are explained here and the languages are documented there.
+
+#### Print tool argument options
+Print argument options of the FACT tool:
+
+    java -jar fd-analysis/target/libs/FACT.jar -h
+        
+Print argument options of the FD tool:
+
+    java -jar fd-lang/target/libs/FeatureDiagramTool.jar -h
+
+Print argument options of the FC tool:
+
+    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar -h
+
+Print argument options of the PartialFC tool:
+
+    java -jar fd-lang/target/libs/FeatureDiagramTool.jar -h
+
+#### Process A Single Model
+Parse an FD model and store its symbol table to a file:
+
+    java -jar fd-lang/target/libs/FeatureDiagramTool.jar
+
+Parse an FC model and print its symbol table:
+
+    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar
+
+Parse and then pretty print a Partial FC model:
+
+    java -jar fd-lang/target/libs/FeatureDiagramTool.jar
+
+#### Perform Feature Analyses
+
+Check whether an FC is valid:
+
+    java -jar fd-analysis/target/libs/FACT.jar
+
+Return any valid configuration of an FD:
+
+    java -jar fd-analysis/target/libs/FACT.jar
+
+Calculate semantic difference between two FDs:
+
+    java -jar fd-analysis/target/libs/FACT.jar
+
+   
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
