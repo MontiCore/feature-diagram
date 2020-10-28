@@ -154,7 +154,7 @@ To build the project, it is required to install a Java 8 JDK and git.
 
 ##### Step 1: Clone Project with git
 
-    git clone https://git.rwth-aachen.de/monticore/languages/feature-diagram.git
+    git clone <link to this Git repository>
     cd feature-diagram
 
 ##### Step 2: Build Project with gradle
