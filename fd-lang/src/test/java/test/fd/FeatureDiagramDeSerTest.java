@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 public class FeatureDiagramDeSerTest extends AbstractTest {
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
-    ASTFDCompilationUnit ast = fdTool.parse(modelFile, fdParser);
+    ASTFDCompilationUnit ast = fdTool.parse("src/test/resources/" + modelFile, fdParser);
     return fdTool.createSymbolTable(ast);
   }
 
@@ -91,10 +91,11 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
         "fdvalid/CarNavigation.fd");
     fdDeSer.store(fdScope, "target/test-symbols/fdvalid/CarNavigation.fdsym");
 
-    Path expectedPath = Paths.get("target/test-symbols/CarNavigation.fdsym");
+    Path expectedPath = Paths.get("target/test-symbols/fdvalid/CarNavigation.fdsym");
     assertTrue(expectedPath.toFile().exists());
 
     String expected = "{\n"
+        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "  \"name\": \"CarNavigation\",\n"
         + "      \"package\": \"fdvalid\",\n"
         + "      \"symbols\": [\n"

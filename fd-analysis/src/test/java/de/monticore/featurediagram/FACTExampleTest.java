@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
  * !If this test does not compile anymore or produces errors,
  *  the Readme.md has to be adjusted accordingly!
  */
-public class FACTExampleTest {
+public class FACTExampleTest extends AbstractTest {
 
   @Test
   public void test(){

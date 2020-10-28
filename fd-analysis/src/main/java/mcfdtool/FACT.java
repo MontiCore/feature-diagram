@@ -8,6 +8,7 @@ import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeD
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
@@ -43,8 +44,6 @@ public class FACT {
   protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
 
   protected FeatureConfigurationParser fcParser = new FeatureConfigurationParser();
-
-  protected FeatureConfigurationScopeDeSer fcDeSer = new FeatureConfigurationScopeDeSer();
 
   /**
    * Main function: Delegates to the FACT instance it creates
@@ -334,9 +333,7 @@ public class FACT {
    * @return
    */
   public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, ModelPath symbolInputPath) {
-    for(Path p  : symbolInputPath.getFullPathOfEntries()){
-      FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath().addEntry(p);
-    }
+    ModelPaths.merge(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), symbolInputPath);
     return fdTool.run(modelFile, Paths.get(symbolOutPath), fdParser, fdDeSer);
   }
 
@@ -349,7 +346,7 @@ public class FACT {
    * @return
    */
   public ASTFeatureConfiguration readFeatureConfiguration(String modelFile, ModelPath symbolInputPath) {
-    return fcTool.run(modelFile, symbolInputPath, fcParser, fcDeSer);
+    return fcTool.run(modelFile, symbolInputPath, fcParser);
   }
 
   /**
@@ -361,7 +358,7 @@ public class FACT {
    * @return
    */
   public ASTFeatureConfiguration readFeatureConfiguration(String modelFile) {
-    return fcTool.run(modelFile, fcParser, fcDeSer);
+    return fcTool.run(modelFile, fcParser);
   }
 
   /**

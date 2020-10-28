@@ -58,7 +58,6 @@ public class FeatureDiagramAnalysisTest extends AbstractTest {
     assertFalse(result);
   }
 
-  @Ignore //TODO AB: Check why this fails
   @Test
   public void testCompleteToValid1() {
     ASTFeatureDiagram fd = getFD("FalseOptional.fd");

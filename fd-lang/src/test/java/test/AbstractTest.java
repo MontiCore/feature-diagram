@@ -3,16 +3,24 @@
 package test;
 
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationScope;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialScopeDeSer;
+import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
+import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialScope;
 import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -22,6 +30,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.Assert.fail;
@@ -48,13 +57,75 @@ public class AbstractTest {
 
   @BeforeClass
   public static void setUpLog() {
-    //                Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    LogStub.init();
+                    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+//    LogStub.init();
   }
 
   @Before
   public void clearFindings() {
     Log.getFindings().clear();
+  }
+
+  @Before
+  public void cleanPartialFCGlobalScope() {
+    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
+        .getFeatureConfigurationPartialGlobalScope();
+
+    //delete all subscopes
+    for (IFeatureConfigurationPartialScope s : gs.getSubScopes()) {
+      gs.removeSubScope(s);
+    }
+
+    // delete all model path entries
+    for (Path p : gs.getModelPath().getFullPathOfEntries()) {
+      gs.getModelPath().removeEntry(p);
+    }
+
+    // remove all resolving delegates
+    gs.setAdaptedFeatureDiagramSymbolResolvingDelegateList(new ArrayList<>());
+
+    gs.setModelFileExtension(null);
+    gs.clearLoadedFiles();
+  }
+
+  @Before
+  public void cleanFCGlobalScope() {
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill
+        .getFeatureConfigurationGlobalScope();
+
+    //delete all subscopes
+    for (IFeatureConfigurationScope s : gs.getSubScopes()) {
+      gs.removeSubScope(s);
+    }
+
+    // delete all model path entries
+    for (Path p : gs.getModelPath().getFullPathOfEntries()) {
+      gs.getModelPath().removeEntry(p);
+    }
+
+    // remove all resolving delegates
+    gs.setAdaptedFeatureDiagramSymbolResolvingDelegateList(new ArrayList<>());
+
+    gs.setModelFileExtension(null);
+    gs.clearLoadedFiles();
+  }
+
+  @Before
+  public void cleanFDGlobalScope() {
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill
+        .getFeatureDiagramGlobalScope();
+
+    //delete all subscopes
+    for (IFeatureDiagramScope s : gs.getSubScopes()) {
+      gs.removeSubScope(s);
+    }
+
+    // delete all model path entries
+    for (Path p : gs.getModelPath().getFullPathOfEntries()) {
+      gs.getModelPath().removeEntry(p);
+    }
+    gs.setModelFileExtension(null);
+    gs.clearLoadedFiles();
   }
 
   protected static void assertPresent(Optional<?> opt) {
@@ -85,14 +156,6 @@ public class AbstractTest {
       }
     }
     fail("Expected to find an error with the code '" + errorCode + "', but it did not occur!");
-  }
-
-  protected IFeatureDiagramGlobalScope createEmptyGlobalScope(Path... entries) {
-    return FeatureDiagramMill
-        .featureDiagramGlobalScopeBuilder()
-        .setModelFileExtension("fd")
-        .setModelPath(new ModelPath(entries))
-        .build();
   }
 
 }

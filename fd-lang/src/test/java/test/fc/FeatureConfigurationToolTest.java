@@ -131,6 +131,7 @@ public class FeatureConfigurationToolTest extends AbstractTest {
 
     String printed = out.toString().trim();
     assertEquals("{\n"
+        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "  \"name\": \"BasicCarNavigation\",\n"
         + "      \"package\": \"fcvalid\",\n"
         + "      \"symbols\": [\n"

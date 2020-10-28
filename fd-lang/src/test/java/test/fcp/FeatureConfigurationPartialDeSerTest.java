@@ -4,6 +4,8 @@ package test.fcp;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialArtifactScope;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -61,6 +63,10 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractTest {
 
   @Test
   public void testLoad() {
+    fcpTool.initGlobalScope();
+    ModelPaths.addEntry(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(),
+        "src/test/resources");
+
     IFeatureConfigurationPartialArtifactScope scope = fcpDeSer
         .load("src/test/resources/symbols/BasicCarNavigation.fcsym");
     assertTrue(null != scope);
@@ -85,10 +91,11 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractTest {
         "pfcvalid/BasicCarNavigation.fc");
     fcpDeSer.store(fcScope,"target/test-symbols/pfcvalid/BasicCarNavigation.fcsym");
 
-    Path expectedPath = Paths.get("target/test-symbols/BasicCarNavigation.pfcsym");
+    Path expectedPath = Paths.get("target/test-symbols/pfcvalid/BasicCarNavigation.fcsym");
     assertTrue(expectedPath.toFile().exists());
 
     String expected = "{\n"
+        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "  \"name\": \"BasicCarNavigation\",\n"
         + "      \"package\": \"fcvalid\",\n"
         + "      \"symbols\": [\n"

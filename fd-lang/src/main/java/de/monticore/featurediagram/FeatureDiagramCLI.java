@@ -5,10 +5,7 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
+import de.monticore.featurediagram._symboltable.*;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
@@ -89,15 +86,25 @@ public class FeatureDiagramCLI {
    * @return
    */
   public IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast) {
-    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.getFeatureDiagramGlobalScope();
-    gs.getModelPath().addEntry(SYMBOL_OUT);
-    gs.setModelFileExtension("fd");
+    initGlobalScope();
 
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
         .featureDiagramSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(FeatureDiagramMill.getFeatureDiagramGlobalScope())
         .build();
     return symbolTable.createFromAST(ast);
+  }
+
+  public void initGlobalScope(){
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.getFeatureDiagramGlobalScope();
+    if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
+      ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
+      gs.setModelFileExtension("fd");
+
+      // TODO: the following two lines can be removed when switching to MC 6.5.0
+      FeatureDiagramMill.getFeatureDiagramGlobalScope().setSymbolFileExtension("fdsym");
+      ((FeatureDiagramGlobalScope)FeatureDiagramMill.getFeatureDiagramGlobalScope()).enableModelLoader();
+    }
   }
 
   /**
@@ -179,11 +186,7 @@ public class FeatureDiagramCLI {
         path = path.getParent();
       }
     }
-
-    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.getFeatureDiagramGlobalScope();
-    if(!gs.getModelPath().getFullPathOfEntries().contains(path)){
-      gs.getModelPath().addEntry(path);
-    }
+    ModelPaths.addEntry(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), path);
 
     // setup the symbol table
     IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast);
@@ -225,10 +228,7 @@ public class FeatureDiagramCLI {
       ModelPath mp = FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath();
       if (cmd.hasOption("path")) {
         for(String p : cmd.getOptionValue("path").split(":")){
-          Path toAdd = Paths.get(p);
-          if(mp.getFullPathOfEntries().contains(toAdd)){
-            mp.addEntry(toAdd);
-          }
+          ModelPaths.addEntry(mp, p);
         }
       }
 

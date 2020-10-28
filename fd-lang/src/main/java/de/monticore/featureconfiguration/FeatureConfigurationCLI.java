@@ -8,7 +8,7 @@ import de.monticore.featureconfiguration._symboltable.*;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
+import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -72,8 +72,8 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public IFeatureConfigurationArtifactScope createSymbolTable(String model, ModelPath mp,
-      FeatureConfigurationParser parser, FeatureConfigurationScopeDeSer deser) {
-    return createSymbolTable(parse(model, parser), mp, deser);
+      FeatureConfigurationParser parser) {
+    return createSymbolTable(parse(model, parser), mp);
   }
 
   /**
@@ -84,24 +84,26 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
-      ModelPath mp, FeatureConfigurationScopeDeSer deser) {
+      ModelPath mp) {
+    initGlobalScope();
     IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.getFeatureConfigurationGlobalScope();
-    gs.getModelPath().addEntry(FeatureDiagramCLI.SYMBOL_OUT);
-    gs.setModelFileExtension("fc");
-    if (gs.getAdaptedFeatureDiagramSymbolResolvingDelegateList().isEmpty()) {
-      gs.addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(mp));
-    }
+    ModelPaths.merge(gs.getModelPath(), mp);
+    ModelPaths.merge(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), mp);
 
-    for(Path p : mp.getFullPathOfEntries()){
-      gs.getModelPath().addEntry(p);
-    }
-
-    deser.setGlobalScope(gs);
     FeatureConfigurationSymbolTableCreatorDelegator symbolTable = FeatureConfigurationMill
         .featureConfigurationSymbolTableCreatorDelegatorBuilder()
         .setGlobalScope(gs)
         .build();
     return symbolTable.createFromAST(ast);
+  }
+
+  public void initGlobalScope(){
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.getFeatureConfigurationGlobalScope();
+    if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
+      ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
+      gs.setModelFileExtension("fc");
+      gs.addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(gs.getModelPath()));
+    }
   }
 
   /**
@@ -142,13 +144,13 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public ASTFeatureConfiguration run(String modelFile, ModelPath mp,
-      FeatureConfigurationParser parser, FeatureConfigurationScopeDeSer deser) {
+      FeatureConfigurationParser parser) {
 
     // parse the model and create the AST representation
     ASTFCCompilationUnit ast = parse(modelFile, parser);
 
     // setup the symbol table
-    createSymbolTable(ast, mp, deser);
+    createSymbolTable(ast, mp);
 
     // currently no context conditions exist for feature configurations.
     // Also, do not store artifact scope
@@ -164,8 +166,7 @@ public class FeatureConfigurationCLI {
    * @param modelFile
    * @return
    */
-  public ASTFeatureConfiguration run(String modelFile, FeatureConfigurationParser parser,
-      FeatureConfigurationScopeDeSer deser) {
+  public ASTFeatureConfiguration run(String modelFile, FeatureConfigurationParser parser) {
     // parse the model and create the AST representation
     final ASTFCCompilationUnit ast = parse(modelFile, parser);
 
@@ -179,7 +180,7 @@ public class FeatureConfigurationCLI {
 
     // setup the symbol table
     ModelPath mp = new ModelPath(path, FeatureDiagramCLI.SYMBOL_OUT);
-    createSymbolTable(ast, mp, deser);
+    createSymbolTable(ast, mp);
 
     // currently no context conditions exist for feature configurations.
     // Also, do not store artifact scope
@@ -234,7 +235,7 @@ public class FeatureConfigurationCLI {
 
       // parse and create symbol table, FeatureConfiguration langage has no CoCos
       ASTFCCompilationUnit ast = parse(input, parser);
-      IFeatureConfigurationArtifactScope symbolTable = createSymbolTable(ast, mp, deser);
+      IFeatureConfigurationArtifactScope symbolTable = createSymbolTable(ast, mp);
 
       // print (and optionally store) symbol table
       if (cmd.hasOption("symboltable")) {

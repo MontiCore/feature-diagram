@@ -6,28 +6,32 @@ import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScope;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationScope;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
+import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
+import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialScope;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
 
 public class AbstractTest {
 
@@ -35,25 +39,84 @@ public class AbstractTest {
 
   protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
 
-  protected FeatureDiagramScopeDeSer fdDeSer = new FeatureDiagramScopeDeSer();
-
   protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
 
   protected FeatureConfigurationParser fcParser = new FeatureConfigurationParser();
 
-  protected FeatureConfigurationScopeDeSer fcDeSer = new FeatureConfigurationScopeDeSer();
-  
   public static final String TEST_RES = "src/test/resources/";
 
   @BeforeClass
   public static void setUpLog() {
-//    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-//        LogStub.init();
+        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+//    LogStub.init();
   }
 
   @Before
   public void clearFindings() {
     Log.getFindings().clear();
+  }
+
+  @Before
+  public void cleanPartialFCGlobalScope() {
+    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
+        .getFeatureConfigurationPartialGlobalScope();
+
+    //delete all subscopes
+    for (IFeatureConfigurationPartialScope s : gs.getSubScopes()) {
+      gs.removeSubScope(s);
+    }
+
+    // delete all model path entries
+    for (Path p : gs.getModelPath().getFullPathOfEntries()) {
+      gs.getModelPath().removeEntry(p);
+    }
+
+    // remove all resolving delegates
+    gs.setAdaptedFeatureDiagramSymbolResolvingDelegateList(new ArrayList<>());
+
+    gs.setModelFileExtension(null);
+    gs.clearLoadedFiles();
+  }
+
+  @Before
+  public void cleanFCGlobalScope() {
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill
+        .getFeatureConfigurationGlobalScope();
+
+    //delete all subscopes
+    for (IFeatureConfigurationScope s : gs.getSubScopes()) {
+      gs.removeSubScope(s);
+    }
+
+    // delete all model path entries
+    for (Path p : gs.getModelPath().getFullPathOfEntries()) {
+      gs.getModelPath().removeEntry(p);
+    }
+
+    // remove all resolving delegates
+    gs.setAdaptedFeatureDiagramSymbolResolvingDelegateList(new ArrayList<>());
+
+    gs.setModelFileExtension(null);
+    gs.clearLoadedFiles();
+  }
+
+  @Before
+  public void cleanFDGlobalScope() {
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill
+        .getFeatureDiagramGlobalScope();
+
+    //delete all subscopes
+    for (IFeatureDiagramScope s : gs.getSubScopes()) {
+      gs.removeSubScope(s);
+    }
+
+    // delete all model path entries
+    for (Path p : gs.getModelPath().getFullPathOfEntries()) {
+      gs.getModelPath().removeEntry(p);
+    }
+
+    gs.setModelFileExtension(null);
+    gs.clearLoadedFiles();
   }
 
   protected static void assertPresent(Optional<?> opt) {
@@ -85,45 +148,38 @@ public class AbstractTest {
     }
     fail("Expected to find an error with the code '" + errorCode + "', but it did not occur!");
   }
-  
+
   protected ASTFeatureDiagram getFD(String modelFile) {
+    IFeatureDiagramArtifactScope as = fdTool
+        .createSymbolTable(TEST_RES + modelFile, fdParser);
     String modelName = modelFile.replace(".fd", "");
     if (modelName.contains("/")) {
       modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
     }
 
-    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = FeatureDiagramMill
-        .getFeatureDiagramGlobalScope().resolveFeatureDiagram(modelName);
-
-    if(!optionalFeatureDiagramSymbol.isPresent()){
-      IFeatureDiagramArtifactScope as = fdTool
-          .createSymbolTable(TEST_RES + modelFile, fdParser);
-      optionalFeatureDiagramSymbol = as.resolveFeatureDiagram(modelName);
-    }
-
+    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = as
+        .resolveFeatureDiagram(modelName);
     assertTrue(optionalFeatureDiagramSymbol.isPresent());
     assertNotNull(optionalFeatureDiagramSymbol.get());
     assertNotNull(optionalFeatureDiagramSymbol.get().getAstNode());
     return optionalFeatureDiagramSymbol.get().getAstNode();
   }
-  
+
   protected ASTFeatureConfiguration getFC(String modelFile) {
+    IFeatureConfigurationArtifactScope symbolTable = fcTool
+        .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)), fcParser);
+
     String modelName = modelFile.replace(".fc", "");
     if (modelName.contains("/")) {
       modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
     }
-    Optional<FeatureConfigurationSymbol> featureConfOpt = FeatureConfigurationMill
-        .getFeatureConfigurationGlobalScope().resolveFeatureConfiguration(modelName);
 
-    if(!featureConfOpt.isPresent()){
-      IFeatureConfigurationArtifactScope symbolTable = fcTool
-          .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)), fcParser, fcDeSer);
-      featureConfOpt = symbolTable.resolveFeatureConfiguration(modelName);
-    }
-
+    Optional<FeatureConfigurationSymbol> featureConfOpt = symbolTable
+        .resolveFeatureConfiguration(modelName);
     assertTrue(featureConfOpt.isPresent());
     assertNotNull(featureConfOpt.get());
     return featureConfOpt.get().getAstNode();
   }
 
 }
+

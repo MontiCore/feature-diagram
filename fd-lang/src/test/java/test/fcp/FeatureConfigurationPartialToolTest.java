@@ -113,6 +113,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractTest {
 
     String printed = out.toString().trim();
     assertEquals("{\n"
+        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "      \"name\": \"PremiumPhone\",\n"
         + "      \"symbols\": [\n"
         + "      {\n"

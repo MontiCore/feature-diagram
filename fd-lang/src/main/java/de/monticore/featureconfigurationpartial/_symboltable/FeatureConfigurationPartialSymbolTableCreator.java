@@ -42,17 +42,6 @@ public class FeatureConfigurationPartialSymbolTableCreator
   @Override public IFeatureConfigurationPartialArtifactScope createFromAST(
       ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-    String name = rootNode.getFeatureConfiguration().getName();
-
-    //prohibit double creation of same symbol table
-    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
-        .getFeatureConfigurationPartialGlobalScope();
-    Optional<FeatureConfigurationSymbol> symbol =
-        gs.resolveFeatureConfiguration(Names.getQualifiedName(packageName,name));
-    if(symbol.isPresent()){
-      gs.removeSubScope(symbol.get().getEnclosingScope());
-    }
-
     IFeatureConfigurationPartialArtifactScope artifactScope = FeatureConfigurationPartialMill
         .featureConfigurationPartialArtifactScopeBuilder()
         .setPackageName(packageName)

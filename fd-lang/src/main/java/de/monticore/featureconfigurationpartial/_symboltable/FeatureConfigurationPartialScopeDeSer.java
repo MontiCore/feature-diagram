@@ -2,6 +2,7 @@
 
 package de.monticore.featureconfigurationpartial._symboltable;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.symboltable.serialization.json.JsonObject;
 
@@ -15,16 +16,6 @@ import static de.monticore.symboltable.serialization.JsonDeSers.PACKAGE;
 public class FeatureConfigurationPartialScopeDeSer
     extends FeatureConfigurationPartialScopeDeSerTOP {
 
-  protected IFeatureConfigurationPartialGlobalScope globalScope;
-
-  public IFeatureConfigurationPartialGlobalScope getGlobalScope() {
-    return globalScope;
-  }
-
-  public void setGlobalScope(IFeatureConfigurationPartialGlobalScope globalScope) {
-    this.globalScope = globalScope;
-  }
-
   @Override protected IFeatureConfigurationPartialArtifactScope deserializeFeatureConfigurationPartialArtifactScope(
       JsonObject scopeJson) {
     String packageName = scopeJson
@@ -33,7 +24,7 @@ public class FeatureConfigurationPartialScopeDeSer
         .featureConfigurationPartialArtifactScopeBuilder()
         .setPackageName(packageName)
         .build();
-    globalScope.addSubScope(scope);
+    FeatureConfigurationPartialMill.getFeatureConfigurationPartialGlobalScope().addSubScope(scope);
     if (scopeJson.hasStringMember(NAME)) {
       scope.setName(scopeJson.getStringMember(NAME));
     }
