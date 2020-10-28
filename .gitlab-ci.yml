@@ -20,6 +20,14 @@ build_gradle:
   script:
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - "./gradlew build"
+  artifacts:
+    paths:
+      - "fd-analysis/target/libs/FACT.jar"
+      - "fd-lang/target/libs/FeatureDiagramTool.jar"
+      - "fd-lang/target/libs/FeatureConfigurationTool.jar"
+      - "fd-lang/target/libs/FeatureConfigurationPartialTool.jar"
+    expire_in: 1 week
+
 
 checkMDLinks:
   stage: check
