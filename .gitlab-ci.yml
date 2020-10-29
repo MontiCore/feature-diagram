@@ -24,9 +24,9 @@ build_gradle:
     paths:
       # CLI jars
       - "fd-analysis/target/libs/FACT.jar"
-      - "fd-lang/target/libs/FeatureDiagramTool.jar"
-      - "fd-lang/target/libs/FeatureConfigurationTool.jar"
-      - "fd-lang/target/libs/FeatureConfigurationPartialTool.jar"
+      - "fd-lang/target/libs/FeatureDiagramCLI.jar"
+      - "fd-lang/target/libs/FeatureConfigurationCLI.jar"
+      - "fd-lang/target/libs/FeatureConfigurationPartialCLI.jar"
       # Example models
       - "fd-lang/src/test/resources/fdvalid/BasicElements.fd"
       - "fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc"

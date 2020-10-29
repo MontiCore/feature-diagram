@@ -362,28 +362,28 @@ Print argument options of the FACT tool:
         
 Print argument options of the FD tool:
 
-    java -jar fd-lang/target/libs/FeatureDiagramTool.jar -h
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -h
 
 Print argument options of the FC tool:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar -h
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -h
 
 Print argument options of the PartialFC tool:
 
-    java -jar fd-lang/target/libs/FeatureDiagramTool.jar -h
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar -h
 
 #### Process A Single Model
 Parse an FD model and store its symbol table to a file:
 
-    java -jar fd-lang/target/libs/FeatureDiagramTool.jar -i fd-lang/src/test/resources/fdvalid/BasicElements.fd -s target/TestSymbolTable.fdsym
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -i fd-lang/src/test/resources/fdvalid/BasicElements.fd -s target/TestSymbolTable.fdsym
 
 Parse an FC model and print its symbol table:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc -s
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc -s
 
 Parse and then pretty print a Partial FC model:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationPartialTool.jar  -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc -pp
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar  -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc -pp
 
 #### Perform Feature Analyses
 
