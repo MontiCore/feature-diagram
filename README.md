@@ -379,11 +379,11 @@ Parse an FD model and store its symbol table to a file:
 
 Parse an FC model and print its symbol table:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc -s
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc  -path fd-lang/src/test/resources -s
 
 Parse and then pretty print a Partial FC model:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar  -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc -pp
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar  -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc -path fd-lang/src/test/resources -pp
 
 #### Perform Feature Analyses
 
