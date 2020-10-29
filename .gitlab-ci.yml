@@ -30,7 +30,9 @@ build_gradle:
       # Example models
       - "fd-lang/src/test/resources/fdvalid/BasicElements.fd"
       - "fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc"
+      - "fd-lang/src/test/resources/fdvalid/CarNavigation.fd"
       - "fd-lang/src/test/resources/pfcvalid/SelectOne.fc"
+      - "fd-lang/src/test/resources/fdvalid/BasicElements.fd"
       - "fd-analysis/src/test/resources/FalseOptional.fd"
       - "fd-analysis/src/test/resources/ValidConfig.fc"
       - "fd-analysis/src/test/resources/fdvalid/CarNavigation.fd"
