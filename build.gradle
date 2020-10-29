@@ -119,25 +119,25 @@ project(':fd-lang') {
 
     shadowJar { // all in one jar
         manifest {
-            attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
+            attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramCLI"
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
 
-        archiveFileName  =  "FeatureDiagramTool.jar"
+        archiveFileName  =  "FeatureDiagramCLI.jar"
     }
 
     task buildFeatureConfigurationToolCLI(type: Jar, dependsOn: shadowJar) {
-        archiveFileName = 'FeatureConfigurationTool.jar'
+        archiveFileName = 'FeatureConfigurationCLI.jar'
         manifest {
-            attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationTool')
+            attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationCLI')
         }
         from zipTree(shadowJar.archiveFile)
     }
 
     task buildFeatureConfigurationToolPartialCLI(type: Jar, dependsOn: shadowJar) {
-        archiveFileName = 'FeatureConfigurationPartialTool.jar'
+        archiveFileName = 'FeatureConfigurationPartialCLI.jar'
         manifest {
-            attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool')
+            attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI')
         }
         from zipTree(shadowJar.archiveFile)
     }
