@@ -375,7 +375,7 @@ The tools are explained here and the languages are documented there.
 #### Process A Single Model
 (5) Parse an FD model and store its symbol table to a file `BasicElements.fdsym` (in the default output directory `target`):
 
-    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -i fd-lang/src/test/resources/fdvalid/BasicElements.fd -s fdvalid/BasicElements.fdsym
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -i fd-lang/src/test/resources/fdvalid/CarNavigation.fd -s fdvalid/CarNavigation.fdsym
 
 (6) Parse an FC model and print its symbol table, where the used feature diagram is loaded from the model:
 
