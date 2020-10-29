@@ -4,10 +4,11 @@ package test.fc;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import org.junit.Before;
 import org.junit.Test;
 import test.AbstractTest;
 
@@ -21,13 +22,8 @@ public class FeatureConfigurationDeSerTest extends AbstractTest {
 
   protected static final ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
 
-  @Before
-  public void initDeSer() {
-    fcDeSer.setGlobalScope(fcTool.createGlobalScope(mp));
-  }
-
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
-    return fcTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcParser, fcDeSer);
+    return fcTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcParser);
   }
 
   @Test
@@ -67,6 +63,10 @@ public class FeatureConfigurationDeSerTest extends AbstractTest {
 
   @Test
   public void testLoad() {
+    fcTool.initGlobalScope();
+    ModelPaths.addEntry(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(),
+        "src/test/resources");
+
     IFeatureConfigurationArtifactScope scope = fcDeSer
         .load("src/test/resources/symbols/BasicCarNavigation.fcsym");
     assertTrue(null != scope);
@@ -87,14 +87,14 @@ public class FeatureConfigurationDeSerTest extends AbstractTest {
   @Test
   public void testStore() {
     JsonPrinter.enableIndentation();
-    fcDeSer.setSymbolFileExtension("fcsym");
     IFeatureConfigurationArtifactScope fcScope = setupSymbolTable("fcvalid/BasicCarNavigation.fc");
-    fcDeSer.store(fcScope, Paths.get("target/test-symbols"));
+    fcDeSer.store(fcScope, "target/test-symbols/fcvalid/BasicCarNavigation.fcsym");
 
-    Path expectedPath = Paths.get("target/test-symbols/BasicCarNavigation.fcsym");
+    Path expectedPath = Paths.get("target/test-symbols/fcvalid/BasicCarNavigation.fcsym");
     assertTrue(expectedPath.toFile().exists());
 
     String expected = "{\n"
+        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "  \"name\": \"BasicCarNavigation\",\n"
         + "      \"package\": \"fcvalid\",\n"
         + "      \"symbols\": [\n"

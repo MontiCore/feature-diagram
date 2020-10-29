@@ -5,14 +5,19 @@ cache:
   paths:
     - .m2/
 
+before_script:
+  - chmod +x gradlew
+  - chmod +x check/downloadlinkchecker.sh
+  - chmod +x check/mdlinkcheck.sh
+
 stages:
   - build-sources
+  - check
 #  - it-test
 
 build_gradle:
   stage: build-sources
   script:
-    - chmod +x gradlew
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - "./gradlew build"
   artifacts:
@@ -22,6 +27,22 @@ build_gradle:
       - "fd-lang/target/libs/FeatureConfigurationTool.jar"
       - "fd-lang/target/libs/FeatureConfigurationPartialTool.jar"
     expire_in: 1 week
+
+
+checkMDLinks:
+  stage: check
+  dependencies:
+    - build_gradle
+  script:
+    - "./check/downloadlinkchecker.sh $secibuildtoken"
+    - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.md"
+    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
+    - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md"
+    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
+    - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/blob/develop/README.md"
+    - "./check/mdlinkcheck.sh -url $url -t $secibuildtoken -p"
+  only:
+    - develop
 
 
 # trigger_langexp:                        

@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fd;
 
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import org.junit.Test;
 import test.AbstractTest;
@@ -20,7 +20,8 @@ import static org.junit.Assert.assertTrue;
 public class FeatureDiagramDeSerTest extends AbstractTest {
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
-    return fdTool.createSymbolTable("src/test/resources/" + modelFile, new ModelPath(), fdParser);
+    ASTFDCompilationUnit ast = fdTool.parse("src/test/resources/" + modelFile, fdParser);
+    return fdTool.createSymbolTable(ast);
   }
 
   @Test
@@ -88,12 +89,13 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
     JsonPrinter.enableIndentation();
     IFeatureDiagramArtifactScope fdScope = setupSymbolTable(
         "fdvalid/CarNavigation.fd");
-    fdDeSer.store(fdScope, Paths.get("target/test-symbols"));
+    fdDeSer.store(fdScope, "target/test-symbols/fdvalid/CarNavigation.fdsym");
 
-    Path expectedPath = Paths.get("target/test-symbols/CarNavigation.fdsym");
+    Path expectedPath = Paths.get("target/test-symbols/fdvalid/CarNavigation.fdsym");
     assertTrue(expectedPath.toFile().exists());
 
     String expected = "{\n"
+        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "  \"name\": \"CarNavigation\",\n"
         + "      \"package\": \"fdvalid\",\n"
         + "      \"symbols\": [\n"

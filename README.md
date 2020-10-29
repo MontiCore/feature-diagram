@@ -4,7 +4,7 @@
 [FDtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramCLI.java
 [FCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
 [PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
-
+[SemDiffPaper]:              https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [choco]: https://choco-solver.org
@@ -143,6 +143,26 @@ more complex constraints that involve more than two features. In the example
 FD below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`, 
 and `Asia` requires to select either a `Large` or a `Medium` memory.
 
+
+## Tool Set Up
+This section explains how to set up the command line interface tools for the FD languages.
+Each tool is contained in a separate jar file, which is produced as result
+of building the project with gradle. The following explains this.
+
+##### Prerequisites
+To build the project, it is required to install a Java 8 JDK and git. 
+
+##### Step 1: Clone Project with git
+
+    git clone <link to this Git repository>
+    cd feature-diagram
+
+##### Step 2: Build Project with gradle
+
+    gradlew build --refresh-dependencies
+Afterwards, the jars of the tools are available in `fd-lang/target/libs` and `fd-analysis/target/libs`.
+
+
 ## Tools
 The FDL component provides the five tools that are explained in more detail below:
 * The [Feature Model Analysis CLI Tool (FACT)][clitool] enables executing analyses against feature diagrams and feature configuration both via CLI and Java API
@@ -154,7 +174,7 @@ The FDL component provides the five tools that are explained in more detail belo
 ### [The FeatureModelAnalysisCLITool][clitool] 
 The [Feature Model Analysis CLI Tool (FACT)][clitool] coordinates the execution of one or more several analyses against a FD
 and, optionally, additional information (depends on the analysis kinds) in form of a CLI tool. 
-An overview of the different analyses is given by [[BSRC10]](https://doi.org/10.1016/j.is.2010.01.001).
+An overview of the different analyses is given by [[BSRC10]](https://www.sciencedirect.com/science/article/abs/pii/S0306437910000025?via%3Dihub).
 
 FACT can be used as follows:
 `java -jar FACT.jar <Car.fd> [-<analysis>]+`, where
@@ -170,9 +190,17 @@ Currently, the FeatureModelAnalysisCLITool supports the following analyses:
 * `findValid`, to find any valid configuration of FD
 * `isVoidFeatureModel`, to check whether there is at least one valid configuration of FD
 * `numberOfProducts`, to count the number of valid configurations of FD
+* `semdiff <semantics>`, to compute a diff witness contained in the semantic difference from an FD to another FD using 
+  the semantics as specified by the argument `<semantics>`. Possible values for the argument are `open` and `closed` where 
+  `open` is chosen by default if no argument is specified. The differences between the open- and closed-world semantics are
+   described [in this paper][SemDiffPaper] in detail. 
 
 For example, `java -jar FACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the FD "Car". 
 The result, in this case `true` or `false`, is printed to the console.
+Currently, `semdiff` is the only option that expects two FDs as inputs. 
+For example, `java -jar FACT.jar Car1.fd Car2.fd -semdiff open` computes and outputs a diff witness 
+contained in the open-world semantic difference from `Car1.fd` to `Car2.fd` if at least one exists.
+Otherwise, the tool outputs that `Car1.fd` is a refinement of `Car2.fd`.
 
 [FACT][clitool] can further be used for direct access from Java through the following methods:
 * `boolean execIsValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc)`, to execute the [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java) analysis
@@ -321,6 +349,56 @@ the first but invalid in the second feature diagram.
 The Java API offers a class to calculate the semantic difference witness, given two parsed feature diagrams.
 Simply invoke the `semDiff` method of the `FDSemDiff` class provided [here][fddifftool]. 
 
+## Tool Usage Examples
+This section provides some copy and paste templates for executing the resulting tools against 
+some test models that are contained in the language project. This is a good basis 
+for getting familiar with the tools while experimenting with changes to the models. 
+The tools are explained here and the languages are documented there.
+
+#### Print tool argument options
+Print argument options of the FACT tool:
+
+    java -jar fd-analysis/target/libs/FACT.jar -h
+        
+Print argument options of the FD tool:
+
+    java -jar fd-lang/target/libs/FeatureDiagramTool.jar -h
+
+Print argument options of the FC tool:
+
+    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar -h
+
+Print argument options of the PartialFC tool:
+
+    java -jar fd-lang/target/libs/FeatureDiagramTool.jar -h
+
+#### Process A Single Model
+Parse an FD model and store its symbol table to a file:
+
+    java -jar fd-lang/target/libs/FeatureDiagramTool.jar -i fd-lang/src/test/resources/fdvalid/BasicElements.fd -s target/TestSymbolTable.fdsym
+
+Parse an FC model and print its symbol table:
+
+    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc -s
+
+Parse and then pretty print a Partial FC model:
+
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialTool.jar  -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc -pp
+
+#### Perform Feature Analyses
+
+Check whether an FC is valid:
+
+    java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/FalseOptional.fd -isValid fd-analysis/src/test/resources/ValidConfig.fc
+
+Return any valid configuration of an FD:
+
+    java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/fdvalid/CarNavigation.fd -findValid
+
+Calculate semantic difference between two FDs:
+
+    java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/fddiff/car2.fd fd-analysis/src/test/resources/fddiff/car1.fd -semdiff
+   
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)

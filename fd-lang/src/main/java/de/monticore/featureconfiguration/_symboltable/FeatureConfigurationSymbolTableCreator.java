@@ -42,7 +42,6 @@ public class FeatureConfigurationSymbolTableCreator
    */
   @Override public IFeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-
     IFeatureConfigurationArtifactScope artifactScope = FeatureConfigurationMill
         .featureConfigurationArtifactScopeBuilder()
         .setPackageName(packageName)

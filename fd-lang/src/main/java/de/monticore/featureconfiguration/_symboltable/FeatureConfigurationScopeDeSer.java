@@ -14,17 +14,6 @@ import static de.monticore.symboltable.serialization.JsonDeSers.PACKAGE;
  */
 public class FeatureConfigurationScopeDeSer extends FeatureConfigurationScopeDeSerTOP {
 
-  protected IFeatureConfigurationGlobalScope globalScope;
-
-  public IFeatureConfigurationGlobalScope getGlobalScope() {
-    return globalScope;
-  }
-
-  public void setGlobalScope(
-      IFeatureConfigurationGlobalScope globalScope) {
-    this.globalScope = globalScope;
-  }
-
   @Override protected IFeatureConfigurationArtifactScope deserializeFeatureConfigurationArtifactScope(
       JsonObject scopeJson) {
     String packageName = scopeJson
@@ -33,7 +22,7 @@ public class FeatureConfigurationScopeDeSer extends FeatureConfigurationScopeDeS
         .featureConfigurationArtifactScopeBuilder()
         .setPackageName(packageName)
         .build();
-    globalScope.addSubScope(scope);
+    FeatureConfigurationMill.getFeatureConfigurationGlobalScope().addSubScope(scope);
     if (scopeJson.hasStringMember(NAME)) {
       scope.setName(scopeJson.getStringMember(NAME));
     }

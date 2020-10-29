@@ -43,7 +43,7 @@ public class FeatureConfigurationCoCoTest extends AbstractTest {
   protected ASTFCCompilationUnit setupSymbolTable(String modelFile) {
     ASTFCCompilationUnit ast = fcTool.parse("src/test/resources/fcinvalid/" + modelFile, fcParser);
     ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
-    fcTool.createSymbolTable(ast, mp, fcDeSer);
+    fcTool.createSymbolTable(ast, mp);
     return ast;
   }
 

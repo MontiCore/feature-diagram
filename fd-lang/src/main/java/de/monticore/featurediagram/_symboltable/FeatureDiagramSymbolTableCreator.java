@@ -33,7 +33,6 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
   @Override
   public IFeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-
     IFeatureDiagramArtifactScope artifactScope = FeatureDiagramMill
         .featureDiagramArtifactScopeBuilder()
         .setPackageName(packageName)

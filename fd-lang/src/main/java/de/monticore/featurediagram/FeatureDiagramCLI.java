@@ -5,10 +5,7 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
+import de.monticore.featurediagram._symboltable.*;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
@@ -36,9 +33,11 @@ public class FeatureDiagramCLI {
    * @param args
    */
   public static void main(String[] args) {
+
     FeatureDiagramCLI cli = new FeatureDiagramCLI();
     FeatureDiagramParser parser = new FeatureDiagramParser();
     FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
+
     Log.initWARN();
     cli.run(args, parser, deser);
   }
@@ -74,40 +73,38 @@ public class FeatureDiagramCLI {
    * Create the symbol table from a model file location and returns the produced artifact scope
    *
    * @param model
-   * @param mp
    * @return
    */
-  public IFeatureDiagramArtifactScope createSymbolTable(String model, ModelPath mp, FeatureDiagramParser parser) {
-    return createSymbolTable(parse(model, parser), mp);
+  public IFeatureDiagramArtifactScope createSymbolTable(String model, FeatureDiagramParser parser) {
+    return createSymbolTable(parse(model, parser));
   }
 
   /**
    * Create the symbol table from the parsed AST.
    *
    * @param ast
-   * @param mp
    * @return
    */
-  public IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp) {
+  public IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast) {
+    initGlobalScope();
+
     FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
         .featureDiagramSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(createGlobalScope(mp))
+        .setGlobalScope(FeatureDiagramMill.getFeatureDiagramGlobalScope())
         .build();
     return symbolTable.createFromAST(ast);
   }
 
-  /**
-   * short-hand for creating a global scope via mill
-   *
-   * @param mp
-   * @return
-   */
-  public IFeatureDiagramGlobalScope createGlobalScope(ModelPath mp) {
-    return FeatureDiagramMill
-        .featureDiagramGlobalScopeBuilder()
-        .setModelPath(mp)
-        .setModelFileExtension("fd")
-        .build();
+  public void initGlobalScope(){
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.getFeatureDiagramGlobalScope();
+    if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
+      ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
+      gs.setModelFileExtension("fd");
+
+      // TODO: the following two lines can be removed when switching to MC 6.5.0
+      FeatureDiagramMill.getFeatureDiagramGlobalScope().setSymbolFileExtension("fdsym");
+      ((FeatureDiagramGlobalScope)FeatureDiagramMill.getFeatureDiagramGlobalScope()).enableModelLoader();
+    }
   }
 
   /**
@@ -151,16 +148,15 @@ public class FeatureDiagramCLI {
    * and storing of symbol table)
    *
    * @param modelFile
-   * @param path
    * @return
    */
-  public ASTFeatureDiagram run(String modelFile, Path out, ModelPath path, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
+  public ASTFeatureDiagram run(String modelFile, Path out, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
 
     // setup the symbol table
-    IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast, path);
+    IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast);
 
     // execute default context conditions
     checkCoCos(ast);
@@ -169,18 +165,6 @@ public class FeatureDiagramCLI {
     storeSymbols(modelTopScope, out, deser);
 
     return ast.getFeatureDiagram();
-  }
-
-  /**
-   * Processes a feature model (parsing, symbol table creation, context condition checking,
-   * and storing of symbol table) and stores symbols at default location
-   *
-   * @param modelFile
-   * @param path
-   * @return
-   */
-  public ASTFeatureDiagram run(String modelFile, ModelPath path, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
-    return run(modelFile, SYMBOL_OUT, path, parser, deser);
   }
 
   /**
@@ -202,10 +186,10 @@ public class FeatureDiagramCLI {
         path = path.getParent();
       }
     }
+    ModelPaths.addEntry(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), path);
 
     // setup the symbol table
-    IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast,
-        new ModelPath(path, SYMBOL_OUT));
+    IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast);
 
     // execute default context conditions
     FeatureDiagramCoCos.checkAll(ast);
@@ -241,10 +225,10 @@ public class FeatureDiagramCLI {
       String input = cmd.getOptionValue("input");
 
       //Set path for imported symbols
-      ModelPath mp = new ModelPath();
+      ModelPath mp = FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath();
       if (cmd.hasOption("path")) {
         for(String p : cmd.getOptionValue("path").split(":")){
-          mp.addEntry(Paths.get(p));
+          ModelPaths.addEntry(mp, p);
         }
       }
 
@@ -256,7 +240,7 @@ public class FeatureDiagramCLI {
 
       // parse, create symbol table, check all cocos
       ASTFDCompilationUnit ast = parse(input, parser);
-      IFeatureDiagramArtifactScope symbolTable = createSymbolTable(ast, mp);
+      IFeatureDiagramArtifactScope symbolTable = createSymbolTable(ast);
       checkCoCos(ast);
 
       // print (and optionally store) symbol table

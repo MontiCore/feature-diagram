@@ -17,7 +17,7 @@ public class FeatureConfigurationSymbolTableTest extends AbstractTest {
 
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
     ModelPath mp = new ModelPath(Paths.get("src", "test", "resources"));
-    return fcTool.createSymbolTable(modelFile, mp, fcParser, fcDeSer);
+    return fcTool.createSymbolTable(modelFile, mp, fcParser);
   }
 
   @Test

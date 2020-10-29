@@ -3,7 +3,6 @@
 package test.fc;
 
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
@@ -27,8 +26,7 @@ public class FeatureConfigurationToolTest extends AbstractTest {
   public void produceFDSymbol(){
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
     fdTool.run("src/test/resources/fdvalid/CarNavigation.fd",
-        Paths.get("target/symbols"),
-        new ModelPath(), fdParser, fdDeSer);
+        Paths.get("target/symbols"),fdParser, fdDeSer);
   }
 
   @Before
@@ -133,6 +131,7 @@ public class FeatureConfigurationToolTest extends AbstractTest {
 
     String printed = out.toString().trim();
     assertEquals("{\n"
+        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "  \"name\": \"BasicCarNavigation\",\n"
         + "      \"package\": \"fcvalid\",\n"
         + "      \"symbols\": [\n"

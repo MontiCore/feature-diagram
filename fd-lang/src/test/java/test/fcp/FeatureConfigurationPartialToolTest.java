@@ -3,7 +3,6 @@
 package test.fcp;
 
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
@@ -28,11 +27,11 @@ public class FeatureConfigurationPartialToolTest extends AbstractTest {
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
     fdTool.run("src/test/resources/fdvalid/CarNavigation.fd",
         Paths.get("target/symbols"),
-        new ModelPath(), fdParser, fdDeSer);
+        fdParser, fdDeSer);
 
     fdTool.run("src/test/resources/phone/Phone.fd",
         Paths.get("target/symbols"),
-        new ModelPath(), fdParser, fdDeSer);
+        fdParser, fdDeSer);
   }
 
   @Before
@@ -114,6 +113,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractTest {
 
     String printed = out.toString().trim();
     assertEquals("{\n"
+        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "      \"name\": \"PremiumPhone\",\n"
         + "      \"symbols\": [\n"
         + "      {\n"

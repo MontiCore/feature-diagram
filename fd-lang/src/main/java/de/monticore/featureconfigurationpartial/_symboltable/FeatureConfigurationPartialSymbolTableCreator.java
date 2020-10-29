@@ -9,11 +9,13 @@ import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
+import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class builds up the symbols and scopes from an AST of an FD model.
@@ -40,7 +42,6 @@ public class FeatureConfigurationPartialSymbolTableCreator
   @Override public IFeatureConfigurationPartialArtifactScope createFromAST(
       ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-
     IFeatureConfigurationPartialArtifactScope artifactScope = FeatureConfigurationPartialMill
         .featureConfigurationPartialArtifactScopeBuilder()
         .setPackageName(packageName)

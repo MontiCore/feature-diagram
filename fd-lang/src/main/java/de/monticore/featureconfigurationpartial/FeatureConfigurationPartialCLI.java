@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featureconfigurationpartial;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
 import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCos;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialScopeDeSer;
@@ -12,6 +14,8 @@ import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurati
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -87,27 +91,29 @@ public class FeatureConfigurationPartialCLI {
    */
   public IFeatureConfigurationPartialArtifactScope createSymbolTable(
       ASTFCCompilationUnit ast, ModelPath mp) {
+    initGlobalScope();
+    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
+        .getFeatureConfigurationPartialGlobalScope();
+    ModelPaths.merge(gs.getModelPath(), mp);
+    ModelPaths.merge(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), mp);
+
     FeatureConfigurationPartialSymbolTableCreatorDelegator symbolTable = FeatureConfigurationPartialMill
         .featureConfigurationPartialSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(createGlobalScope(mp))
+        .setGlobalScope(gs)
         .build();
     return symbolTable.createFromAST(ast);
   }
 
-  /**
-   * short-hand for creating a global scope via mill
-   *
-   * @param mp
-   * @return
-   */
-  public IFeatureConfigurationPartialGlobalScope createGlobalScope(ModelPath mp) {
-    return FeatureConfigurationPartialMill
-        .featureConfigurationPartialGlobalScopeBuilder()
-        .setModelPath(mp)
-        .setModelFileExtension("fc")
-        .addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(mp))
-        .build();
+  public void initGlobalScope(){
+    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
+        .getFeatureConfigurationPartialGlobalScope();
+    if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
+      ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
+      gs.setModelFileExtension("fc");
+      gs.addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(gs.getModelPath()));
+    }
   }
+
 
   /**
    * Check all feature configuration partial context conditions against passed ast
