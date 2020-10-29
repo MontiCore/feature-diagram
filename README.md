@@ -373,7 +373,7 @@ The tools are explained here and the languages are documented there.
     java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar -h
 
 #### Process A Single Model
-(5) Parse an FD model and store its symbol table to a file `BasicElements.fdsym` (in the default output directory `target`):
+(5) Parse an FD model and store its symbol table to a file `CarNavigation.fdsym` (in the default output directory `target`):
 
     java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -i fd-lang/src/test/resources/fdvalid/CarNavigation.fd -s fdvalid/CarNavigation.fdsym
 
