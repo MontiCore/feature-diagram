@@ -3,14 +3,12 @@
 <!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
 
 <!-- List with all references used within this markdown file: -->
-[Grammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.mc4
-[fcstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/_symboltable/FeatureConfigurationSymbolTableCreator.java
-
-[PartialGrammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfigurationPartial.mc4
-[pfcstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/_symboltable/FeatureConfigurationPartialSymbolTableCreator.java
-[UseSelectBlockCoCo]:                      ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/_cocos/UseSelectBlock.java
-
-[Readme]:                    ../../../../../../../../README.md
+[Grammar]:             ../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.mc4
+[fcstc]:               ../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/_symboltable/FeatureConfigurationSymbolTableCreator.java
+[PartialGrammar]:      ../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfigurationPartial.mc4
+[pfcstc]:              ../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/_symboltable/FeatureConfigurationPartialSymbolTableCreator.java
+[UseSelectBlockCoCo]:  ../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/_cocos/UseSelectBlock.java
+[Readme]:              ../../../../../../README.md
 [FeatureDiagram MLC]: FeatureDiagram.md
 [BasicSymbols MLC]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/symbols/BasicSymbols.mc4
 

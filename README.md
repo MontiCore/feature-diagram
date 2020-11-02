@@ -1,8 +1,8 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
-[fddifftool]:                ../../../../../../../../fd-analysis/src/main/java/fddiff/FDSemDiff.java
-[FDtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramCLI.java
-[FCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
+[clitool]:                   fd-analysis/src/main/java/mcfdtool/FACT.java
+[fddifftool]:                fd-analysis/src/main/java/fddiff/FDSemDiff.java
+[FDtool]:                    fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramCLI.java
+[FCtool]:                    fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
 [PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
 [SemDiffPaper]:              https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf
 
