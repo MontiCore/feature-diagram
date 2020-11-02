@@ -356,46 +356,50 @@ for getting familiar with the tools while experimenting with changes to the mode
 The tools are explained here and the languages are documented there.
 
 #### Print tool argument options
-Print argument options of the FACT tool:
+(1) Print argument options of the FACT tool:
 
     java -jar fd-analysis/target/libs/FACT.jar -h
         
-Print argument options of the FD tool:
+(2) Print argument options of the FD tool:
 
     java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -h
 
-Print argument options of the FC tool:
+(3) Print argument options of the FC tool:
 
     java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -h
 
-Print argument options of the PartialFC tool:
+(4) Print argument options of the PartialFC tool:
 
     java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar -h
 
 #### Process A Single Model
-Parse an FD model and store its symbol table to a file:
+(5) Parse an FD model and store its symbol table to a file `CarNavigation.fdsym` (in the default output directory `target`):
 
-    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -i fd-lang/src/test/resources/fdvalid/BasicElements.fd -s target/TestSymbolTable.fdsym
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -i fd-lang/src/test/resources/fdvalid/CarNavigation.fd -s fdvalid/CarNavigation.fdsym
 
-Parse an FC model and print its symbol table:
+(6) Parse an FC model and print its symbol table, where the used feature diagram is loaded from the model:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc -s
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc  -path fd-lang/src/test/resources -s
 
-Parse and then pretty print a Partial FC model:
+(7) Parse an FC model and print its symbol table, where the used feature diagram is loaded from the stored symbol table (!! requires executing (5) first to store the symbol table !!):
 
-    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar  -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc -pp
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc  -path target -s
+
+(8) Parse and then pretty print a Partial FC model:
+
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar  -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc -path fd-lang/src/test/resources -pp
 
 #### Perform Feature Analyses
 
-Check whether an FC is valid:
+(9) Check whether an FC is valid:
 
     java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/FalseOptional.fd -isValid fd-analysis/src/test/resources/ValidConfig.fc
 
-Return any valid configuration of an FD:
+(10) Return any valid configuration of an FD:
 
     java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/fdvalid/CarNavigation.fd -findValid
 
-Calculate semantic difference between two FDs:
+(11) Calculate semantic difference between two FDs:
 
     java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/fddiff/car2.fd fd-analysis/src/test/resources/fddiff/car1.fd -semdiff
    
