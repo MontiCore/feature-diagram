@@ -63,8 +63,11 @@ public class FeatureDiagramCLI {
       }
       Log.error("0xFD100 Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
-      Log.error("0xFD101 Failed to parse " + model, e);
+    catch (RecognitionException  e) {
+      Log.error("0xFD101 Failed to parse the FD model '" + model +"'. ");
+    }
+    catch (IOException e) {
+      Log.error("0xFD104 Failed to find the file of the FD model '" + model +"'.");
     }
     return null;
   }
@@ -243,21 +246,20 @@ public class FeatureDiagramCLI {
       IFeatureDiagramArtifactScope symbolTable = createSymbolTable(ast);
       checkCoCos(ast);
 
-      // print (and optionally store) symbol table
+      // print or store symbol table
       if (cmd.hasOption("symboltable")) {
-        JsonPrinter.disableIndentation();
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
+          // store symbol table to passed file
+          JsonPrinter.disableIndentation();
           String symbolFile = output.resolve(s).toString();
           storeSymbols(symbolTable, symbolFile, deser);
         }
         else {
-          storeSymbols(symbolTable, output, deser);
+          //print (formatted!) symboltable to console
+          JsonPrinter.enableIndentation();
+          System.out.println(deser.serialize(symbolTable));
         }
-
-        //print (formatted!) symboltable to console
-        JsonPrinter.enableIndentation();
-        System.out.println(deser.serialize(symbolTable));
       }
 
       // print (and optionally store) model

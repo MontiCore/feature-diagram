@@ -64,8 +64,11 @@ public class FeatureConfigurationPartialCLI {
       }
       Log.error("0xFC200 Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
-      Log.error("0xFC201 Failed to parse " + model, e);
+    catch (RecognitionException  e) {
+      Log.error("0xFC201 Failed to parse the partial FC model '" + model +"'. ");
+    }
+    catch (IOException e) {
+      Log.error("0xFC204 Failed to find the file of the partial FC model '" + model +"'.");
     }
     return null;
   }
@@ -261,22 +264,20 @@ public class FeatureConfigurationPartialCLI {
       IFeatureConfigurationPartialArtifactScope symbolTable = createSymbolTable(ast, mp);
       checkCoCos(ast);
 
-      // print (and optionally store) symbol table
+      // print or store symbol table
       if (cmd.hasOption("symboltable")) {
-        JsonPrinter.disableIndentation();
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
+          // store symbol table to passed file
+          JsonPrinter.disableIndentation();
           String symbolFile = output.resolve(s).toString();
           storeSymbols(symbolTable, symbolFile, deser);
         }
         else {
-          storeSymbols(symbolTable, output, deser);
+          //print (formatted!) symboltable to console
+          JsonPrinter.enableIndentation();
+          System.out.println(deser.serialize(symbolTable));
         }
-
-        //print (formatted!) symboltable to console
-        JsonPrinter.enableIndentation();
-        System.out.println(deser.serialize(symbolTable));
-      }
 
       // print (and optionally store) model
       if (cmd.hasOption("prettyprint")) {

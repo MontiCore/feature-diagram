@@ -245,8 +245,8 @@ where the arguments are:
 * `-path <p>`                    Sets the artifact pathlist for imported symbols. 
                                  The pathlist is separated by colons (':').
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
-* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
-                                 to the specified output file
+* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
+                                 the specified output file
 
 For using the tool as Java API, it contains the following methods:
 * `ASTFDCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
@@ -282,8 +282,8 @@ where the arguments are:
 * `-path <p>`                    Sets the artifact pathlist for imported symbols.
                                  The pathlist is separated by colons (':').
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
-* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
-                                 to the specified output file
+* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
+                                 the specified output file
 
 For using the tool as Java API, it contains the following methods:
 * `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
@@ -317,8 +317,8 @@ where the arguments are:
 * `-path <p>`                    Sets the artifact pathlist for imported symbols.
                                  The pathlist is separated by colons (':').
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout and, optionally, to the specified output file
-* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table to stdout and, optionally, 
-                                 to the specified output file
+* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
+                                 the specified output file
 
 For using the tool as Java API, it contains the following methods:
 * `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
@@ -375,33 +375,51 @@ The tools are explained here and the languages are documented there.
 #### Process A Single Model
 (5) Parse an FD model and store its symbol table to a file `CarNavigation.fdsym` (in the default output directory `target`):
 
-    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -i fd-lang/src/test/resources/fdvalid/CarNavigation.fd -s fdvalid/CarNavigation.fdsym
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar \
+        -i fd-lang/src/test/resources/fdvalid/CarNavigation.fd \
+        -s fdvalid/CarNavigation.fdsym
 
 (6) Parse an FC model and print its symbol table, where the used feature diagram is loaded from the model:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc  -path fd-lang/src/test/resources -s
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar \
+        -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc \
+        -path fd-lang/src/test/resources \
+        -s
 
 (7) Parse an FC model and print its symbol table, where the used feature diagram is loaded from the stored symbol table (!! requires executing (5) first to store the symbol table !!):
 
-    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc  -path target -s
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar \
+        -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc \
+        -path target \
+        -s
 
 (8) Parse and then pretty print a Partial FC model:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar  -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc -path fd-lang/src/test/resources -pp
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar \
+        -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc \
+        -path fd-lang/src/test/resources \
+        -pp
 
 #### Perform Feature Analyses
 
 (9) Check whether an FC is valid:
 
-    java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/FalseOptional.fd -isValid fd-analysis/src/test/resources/ValidConfig.fc
+    java -jar fd-analysis/target/libs/FACT.jar \
+        fd-analysis/src/test/resources/FalseOptional.fd \
+        -isValid fd-analysis/src/test/resources/ValidConfig.fc
 
 (10) Return any valid configuration of an FD:
 
-    java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/fdvalid/CarNavigation.fd -findValid
+    java -jar fd-analysis/target/libs/FACT.jar \
+        fd-analysis/src/test/resources/fdvalid/CarNavigation.fd \
+        -findValid
 
 (11) Calculate semantic difference between two FDs:
 
-    java -jar fd-analysis/target/libs/FACT.jar fd-analysis/src/test/resources/fddiff/car2.fd fd-analysis/src/test/resources/fddiff/car1.fd -semdiff
+    java -jar fd-analysis/target/libs/FACT.jar \
+        fd-analysis/src/test/resources/fddiff/car2.fd \
+        fd-analysis/src/test/resources/fddiff/car1.fd \
+        -semdiff
    
 ## Further Information
 
