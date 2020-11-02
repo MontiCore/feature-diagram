@@ -43,8 +43,8 @@ and to perform analyses on the FDs.
 * [**doc**](doc) contains slides and images used for the documentation of the language
 * [**fd-analysis**](fd-analysis) contains several FD analyses and a tool to execute these 
 * [**fd-lang**](fd-lang) contains the technical realization of the languages
-  * The FD language is documented [here](d-lang/src/main/grammars/de/monticore/FeatureDiagram.md)
-  * The FC languages are documented [here](d-lang/src/main/grammars/de/monticore/FeatureConfiguration.md)
+  * The FD language is documented [here](fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md)
+  * The FC languages are documented [here](fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.md)
 
 ## Textual Syntax
 This section presents two examples for FDs: The phone example gives an overview
