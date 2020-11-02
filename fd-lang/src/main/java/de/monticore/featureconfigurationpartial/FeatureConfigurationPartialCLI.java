@@ -1,11 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featureconfigurationpartial;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
-import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
 import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCos;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialScopeDeSer;
@@ -64,8 +62,11 @@ public class FeatureConfigurationPartialCLI {
       }
       Log.error("0xFC200 Model could not be parsed.");
     }
-    catch (RecognitionException | IOException e) {
-      Log.error("0xFC201 Failed to parse " + model, e);
+    catch (RecognitionException  e) {
+      Log.error("0xFC201 Failed to parse the partial FC model '" + model +"'. ");
+    }
+    catch (IOException e) {
+      Log.error("0xFC204 Failed to find the file of the partial FC model '" + model +"'.");
     }
     return null;
   }
@@ -261,30 +262,31 @@ public class FeatureConfigurationPartialCLI {
       IFeatureConfigurationPartialArtifactScope symbolTable = createSymbolTable(ast, mp);
       checkCoCos(ast);
 
-      // print (and optionally store) symbol table
+      // print or store symbol table
       if (cmd.hasOption("symboltable")) {
-        JsonPrinter.disableIndentation();
         String s = cmd.getOptionValue("symboltable");
         if (null != s) {
+          // store symbol table to passed file
+          JsonPrinter.disableIndentation();
           String symbolFile = output.resolve(s).toString();
           storeSymbols(symbolTable, symbolFile, deser);
         }
         else {
-          storeSymbols(symbolTable, output, deser);
+          //print (formatted!) symboltable to console
+          JsonPrinter.enableIndentation();
+          System.out.println(deser.serialize(symbolTable));
         }
-
-        //print (formatted!) symboltable to console
-        JsonPrinter.enableIndentation();
-        System.out.println(deser.serialize(symbolTable));
       }
 
-      // print (and optionally store) model
+      // pretty print  model and either output on stdout or store to file
       if (cmd.hasOption("prettyprint")) {
         String prettyPrinted = FeatureConfigurationPartialPrettyPrinter.print(ast);
-        System.out.println(prettyPrinted);
         String outFile = cmd.getOptionValue("prettyprint");
         if (null != outFile) {
           FileReaderWriter.storeInFile(output.resolve(outFile), prettyPrinted);
+        }
+        else {
+          System.out.println(prettyPrinted);
         }
       }
     }
@@ -313,13 +315,13 @@ public class FeatureConfigurationPartialCLI {
     options.addOption(modelPath);
 
     Option symboltable = new Option("s", true,
-        "Serializes and prints the symbol table to stdout, if present, the specified output file");
+        "Serializes and prints the symbol table to stdout or a specified output file");
     symboltable.setOptionalArg(true);
     symboltable.setLongOpt("symboltable");
     options.addOption(symboltable);
 
     Option prettyprint = new Option("pp", true,
-        "Prints the AST to stdout and, if present, the specified output file");
+        "Prints the AST to stdout or a specified output file");
     prettyprint.setOptionalArg(true);
     prettyprint.setLongOpt("prettyprint");
     options.addOption(prettyprint);

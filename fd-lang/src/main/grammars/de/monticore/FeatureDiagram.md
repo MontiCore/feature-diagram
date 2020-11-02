@@ -3,22 +3,22 @@
 <!-- This is a MontiCore stable explanation. -->
 
 <!-- List with all references used within this markdown file: -->
-[Readme]:                    ../../../../../../../../README.md
-[Grammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4
-[fdstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
-[serialization]:             ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/
-[HasTreeShape]:              ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/HasTreeShape.java
-[CTCFeatureNamesExist]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/CTCFeatureNameExists.java
-[NonUniqueNameInGroup]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/NonUniqueNameInGroup.java
-[ValidConstraintExpression]: ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/ValidConstraintExpression.java
-[AllProducts]:               ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/AllProducts.java
-[CompleteToValid]:           ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/Filter.java
-[DeadFeature]:               ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/DeadFeature.java
-[FalseOptional]:             ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/FalseOptional.java
-[IsValid]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsValid.java
-[IsVoid]:                    ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsVoidFeatureModel.java
-[NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/NumberOfProducts.java
-[generator]:                 ../../../../../../../../fd-analysis/src/main/java/mcfdtool/transform
+[Readme]:                    ../../../../../../README.md
+[Grammar]:                   ../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4
+[fdstc]:                     ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
+[serialization]:             ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/
+[HasTreeShape]:              ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/HasTreeShape.java
+[CTCFeatureNamesExist]:      ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/CTCFeatureNameExists.java
+[NonUniqueNameInGroup]:      ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/NonUniqueNameInGroup.java
+[ValidConstraintExpression]: ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/ValidConstraintExpression.java
+[AllProducts]:               ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/AllProducts.java
+[CompleteToValid]:           ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/Filter.java
+[DeadFeature]:               ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/DeadFeature.java
+[FalseOptional]:             ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/FalseOptional.java
+[IsValid]:                   ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsValid.java
+[IsVoid]:                    ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsVoidFeatureModel.java
+[NumberOfProducts]:          ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/NumberOfProducts.java
+[generator]:                 ../../../../../../fd-analysis/src/main/java/mcfdtool/transform
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [choco]: https://choco-solver.org
