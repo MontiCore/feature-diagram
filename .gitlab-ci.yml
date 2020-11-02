@@ -7,8 +7,6 @@ cache:
 
 before_script:
   - chmod +x gradlew
-  - chmod +x check/downloadlinkchecker.sh
-  - chmod +x check/mdlinkcheck.sh
 
 stages:
   - build-sources
