@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-public class FeatureConfigurationPartialToolTest extends AbstractTest {
+public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   protected PrintStream originalOut;
 

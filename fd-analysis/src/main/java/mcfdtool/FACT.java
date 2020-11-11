@@ -333,7 +333,7 @@ public class FACT {
    * @return
    */
   public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, ModelPath symbolInputPath) {
-    ModelPaths.merge(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), symbolInputPath);
+    ModelPaths.merge(FeatureDiagramMill.featureDiagramGlobalScope().getModelPath(), symbolInputPath);
     return fdTool.run(modelFile, Paths.get(symbolOutPath), fdParser, fdDeSer);
   }
 

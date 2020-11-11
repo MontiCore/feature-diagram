@@ -3,14 +3,14 @@ package test.fc;
 
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.io.IOException;
 
 /**
  * This class tests the parser of feature diagram and feature configuration languages
  */
-public class FeatureConfigurationParserTest extends AbstractTest {
+public class FeatureConfigurationParserTest extends AbstractLangTest {
 
   @Test
   public void testParseStringsForIndividualGrammarRules() throws IOException {

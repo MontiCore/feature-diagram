@@ -5,7 +5,6 @@ package test;
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationScope;
@@ -21,7 +20,6 @@ import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
-import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -35,7 +33,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.fail;
 
-public class AbstractTest {
+public class AbstractLangTest {
 
   protected FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
 
@@ -69,7 +67,7 @@ public class AbstractTest {
   @Before
   public void cleanPartialFCGlobalScope() {
     IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
-        .getFeatureConfigurationPartialGlobalScope();
+        .featureConfigurationPartialGlobalScope();
 
     //delete all subscopes
     for (IFeatureConfigurationPartialScope s : gs.getSubScopes()) {
@@ -82,7 +80,7 @@ public class AbstractTest {
     }
 
     // remove all resolving delegates
-    gs.setAdaptedFeatureDiagramSymbolResolvingDelegateList(new ArrayList<>());
+    gs.setAdaptedFeatureDiagramSymbolResolverList(new ArrayList<>());
 
     gs.setModelFileExtension(null);
     gs.clearLoadedFiles();
@@ -90,8 +88,7 @@ public class AbstractTest {
 
   @Before
   public void cleanFCGlobalScope() {
-    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill
-        .getFeatureConfigurationGlobalScope();
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.featureConfigurationGlobalScope();
 
     //delete all subscopes
     for (IFeatureConfigurationScope s : gs.getSubScopes()) {
@@ -104,7 +101,7 @@ public class AbstractTest {
     }
 
     // remove all resolving delegates
-    gs.setAdaptedFeatureDiagramSymbolResolvingDelegateList(new ArrayList<>());
+    gs.setAdaptedFeatureDiagramSymbolResolverList(new ArrayList<>());
 
     gs.setModelFileExtension(null);
     gs.clearLoadedFiles();
@@ -112,8 +109,7 @@ public class AbstractTest {
 
   @Before
   public void cleanFDGlobalScope() {
-    IFeatureDiagramGlobalScope gs = FeatureDiagramMill
-        .getFeatureDiagramGlobalScope();
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.featureDiagramGlobalScope();
 
     //delete all subscopes
     for (IFeatureDiagramScope s : gs.getSubScopes()) {

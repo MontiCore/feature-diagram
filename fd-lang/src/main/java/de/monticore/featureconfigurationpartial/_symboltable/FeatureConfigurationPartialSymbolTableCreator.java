@@ -23,6 +23,9 @@ import java.util.Optional;
 public class FeatureConfigurationPartialSymbolTableCreator
     extends FeatureConfigurationPartialSymbolTableCreatorTOP {
 
+  public FeatureConfigurationPartialSymbolTableCreator() {
+  }
+
   public FeatureConfigurationPartialSymbolTableCreator(
       IFeatureConfigurationPartialScope enclosingScope) {
     super(enclosingScope);

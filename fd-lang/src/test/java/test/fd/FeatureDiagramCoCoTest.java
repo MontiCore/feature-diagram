@@ -5,12 +5,11 @@ import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -18,7 +17,7 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class FeatureDiagramCoCoTest extends AbstractTest {
+public class FeatureDiagramCoCoTest extends AbstractLangTest {
 
   @Test
   public void testValid() throws IOException {
@@ -83,12 +82,7 @@ public class FeatureDiagramCoCoTest extends AbstractTest {
         .setModelFileExtension("fd")
         .build();
 
-    FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
-        .featureDiagramSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
-
-    symbolTable.createFromAST(ast);
+    FeatureDiagramMill.featureDiagramSymbolTableCreatorDelegator().createFromAST(ast);
     return ast;
   }
 

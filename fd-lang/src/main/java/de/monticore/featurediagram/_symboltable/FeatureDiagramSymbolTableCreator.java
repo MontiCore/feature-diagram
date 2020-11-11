@@ -15,13 +15,15 @@ import java.util.Deque;
  */
 public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableCreatorTOP {
 
+  public FeatureDiagramSymbolTableCreator() {
+  }
+
   public FeatureDiagramSymbolTableCreator(IFeatureDiagramScope enclosingScope) {
     super(enclosingScope);
   }
 
   public FeatureDiagramSymbolTableCreator(Deque<? extends IFeatureDiagramScope> scopeStack) {
     super(scopeStack);
-    firstCreatedScope = !scopeStack.isEmpty() ? scopeStack.peekLast() : null;
   }
 
   /**
@@ -37,7 +39,6 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
         .featureDiagramArtifactScopeBuilder()
         .setPackageName(packageName)
         .build();
-    firstCreatedScope.addSubScope(artifactScope);
     putOnStack(artifactScope);
     handleImportStatements(rootNode);
     rootNode.accept(getRealThis());
@@ -79,7 +80,7 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
         Log.error("0xFD132 Feature diagrams may not use stars '*' in import statements!");
         continue;
       }
-      FeatureDiagramSymbol fd = getFirstCreatedScope()
+      FeatureDiagramSymbol fd = FeatureDiagramMill.featureDiagramGlobalScope()
           .resolveFeatureDiagram(i.getQName()).orElse(null);
       if (null == fd) {
         Log.error("0xFD133 Cannot find imported feature diagram '" + i.getQName() + "' in '"
