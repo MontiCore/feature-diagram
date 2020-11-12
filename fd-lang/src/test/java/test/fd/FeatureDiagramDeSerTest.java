@@ -9,7 +9,7 @@ import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FeatureDiagramDeSerTest extends AbstractTest {
+public class FeatureDiagramDeSerTest extends AbstractLangTest {
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
     ASTFDCompilationUnit ast = fdTool.parse("src/test/resources/" + modelFile, fdParser);

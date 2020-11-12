@@ -4,11 +4,11 @@ package test.fc;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.io.paths.ModelPath;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.nio.file.Paths;
 
-public class FeatureConfigurationCoCoTest extends AbstractTest {
+public class FeatureConfigurationCoCoTest extends AbstractLangTest {
 
   @Test
   public void testInvalidFD() {

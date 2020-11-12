@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-public class FeatureConfigurationToolTest extends AbstractTest {
+public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   protected PrintStream originalOut;
 
@@ -26,7 +26,7 @@ public class FeatureConfigurationToolTest extends AbstractTest {
   public void produceFDSymbol(){
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
     fdTool.run("src/test/resources/fdvalid/CarNavigation.fd",
-        Paths.get("target/symbols"),fdParser, fdDeSer);
+        Paths.get("target/symbols"), fdParser, fdDeSer);
   }
 
   @Before

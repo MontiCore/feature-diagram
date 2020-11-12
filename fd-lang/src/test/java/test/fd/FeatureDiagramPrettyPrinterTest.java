@@ -6,7 +6,7 @@ import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class FeatureDiagramPrettyPrinterTest extends AbstractTest {
+public class FeatureDiagramPrettyPrinterTest extends AbstractLangTest {
 
   @Test
   public void test() {

@@ -4,7 +4,6 @@ package mcfdtool;
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
@@ -15,16 +14,13 @@ import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import fddiff.FDSemDiff;
-import freemarker.core.OptInTemplateClassResolver;
 import mcfdtool.analyses.*;
 import mcfdtool.transform.flatzinc.Constraint;
 import org.apache.commons.cli.*;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -333,7 +329,7 @@ public class FACT {
    * @return
    */
   public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, ModelPath symbolInputPath) {
-    ModelPaths.merge(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), symbolInputPath);
+    ModelPaths.merge(FeatureDiagramMill.featureDiagramGlobalScope().getModelPath(), symbolInputPath);
     return fdTool.run(modelFile, Paths.get(symbolOutPath), fdParser, fdDeSer);
   }
 

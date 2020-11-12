@@ -25,6 +25,9 @@ public class FeatureConfigurationSymbolTableCreator
   private FeatureConfigurationSymbol fc;
   private FeatureDiagramSymbol fd;
 
+  public FeatureConfigurationSymbolTableCreator() {
+  }
+
   public FeatureConfigurationSymbolTableCreator(IFeatureConfigurationScope enclosingScope) {
     super(enclosingScope);
   }

@@ -22,7 +22,7 @@ public class FeatureConfigurationScopeDeSer extends FeatureConfigurationScopeDeS
         .featureConfigurationArtifactScopeBuilder()
         .setPackageName(packageName)
         .build();
-    FeatureConfigurationMill.getFeatureConfigurationGlobalScope().addSubScope(scope);
+    FeatureConfigurationMill.featureConfigurationGlobalScope().addSubScope(scope);
     if (scopeJson.hasStringMember(NAME)) {
       scope.setName(scopeJson.getStringMember(NAME));
     }
