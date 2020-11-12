@@ -10,7 +10,7 @@ import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FeatureConfigurationPartialDeSerTest extends AbstractTest {
+public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
 
   protected static final ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
 
@@ -64,7 +64,7 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractTest {
   @Test
   public void testLoad() {
     fcpTool.initGlobalScope();
-    ModelPaths.addEntry(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(),
+    ModelPaths.addEntry(FeatureDiagramMill.featureDiagramGlobalScope().getModelPath(),
         "src/test/resources");
 
     IFeatureConfigurationPartialArtifactScope scope = fcpDeSer

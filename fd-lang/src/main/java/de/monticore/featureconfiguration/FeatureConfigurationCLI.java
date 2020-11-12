@@ -4,7 +4,10 @@ package de.monticore.featureconfiguration;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.*;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
+import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolver;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
@@ -89,23 +92,19 @@ public class FeatureConfigurationCLI {
   public IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
       ModelPath mp) {
     initGlobalScope();
-    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.getFeatureConfigurationGlobalScope();
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.featureConfigurationGlobalScope();
     ModelPaths.merge(gs.getModelPath(), mp);
-    ModelPaths.merge(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), mp);
+    ModelPaths.merge(FeatureDiagramMill.featureDiagramGlobalScope().getModelPath(), mp);
 
-    FeatureConfigurationSymbolTableCreatorDelegator symbolTable = FeatureConfigurationMill
-        .featureConfigurationSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(gs)
-        .build();
-    return symbolTable.createFromAST(ast);
+    return FeatureConfigurationMill.featureConfigurationSymbolTableCreatorDelegator().createFromAST(ast);
   }
 
   public void initGlobalScope(){
-    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.getFeatureConfigurationGlobalScope();
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.featureConfigurationGlobalScope();
     if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
       ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
       gs.setModelFileExtension("fc");
-      gs.addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(gs.getModelPath()));
+      gs.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver(gs.getModelPath()));
     }
   }
 
@@ -289,7 +288,7 @@ public class FeatureConfigurationCLI {
 
     Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
     modelPath.setArgs(Option.UNLIMITED_VALUES);
-    modelPath.setValueSeparator(':');
+    modelPath.setValueSeparator(' ');
     options.addOption(modelPath);
 
     Option symboltable = new Option("s", true,

@@ -2,7 +2,6 @@
 
 package de.monticore.featureconfigurationpartial._symboltable;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.symboltable.serialization.json.JsonObject;
 
@@ -24,7 +23,7 @@ public class FeatureConfigurationPartialScopeDeSer
         .featureConfigurationPartialArtifactScopeBuilder()
         .setPackageName(packageName)
         .build();
-    FeatureConfigurationPartialMill.getFeatureConfigurationPartialGlobalScope().addSubScope(scope);
+    FeatureConfigurationPartialMill.featureConfigurationPartialGlobalScope().addSubScope(scope);
     if (scopeJson.hasStringMember(NAME)) {
       scope.setName(scopeJson.getStringMember(NAME));
     }

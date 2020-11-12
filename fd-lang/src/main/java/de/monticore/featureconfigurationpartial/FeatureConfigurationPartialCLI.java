@@ -3,11 +3,10 @@ package de.monticore.featureconfigurationpartial;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
+import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolver;
 import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCos;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialScopeDeSer;
-import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialSymbolTableCreatorDelegator;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
@@ -94,24 +93,20 @@ public class FeatureConfigurationPartialCLI {
       ASTFCCompilationUnit ast, ModelPath mp) {
     initGlobalScope();
     IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
-        .getFeatureConfigurationPartialGlobalScope();
+        .featureConfigurationPartialGlobalScope();
     ModelPaths.merge(gs.getModelPath(), mp);
-    ModelPaths.merge(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), mp);
+    ModelPaths.merge(FeatureDiagramMill.featureDiagramGlobalScope().getModelPath(), mp);
 
-    FeatureConfigurationPartialSymbolTableCreatorDelegator symbolTable = FeatureConfigurationPartialMill
-        .featureConfigurationPartialSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(gs)
-        .build();
-    return symbolTable.createFromAST(ast);
+    return FeatureConfigurationPartialMill.featureConfigurationPartialSymbolTableCreatorDelegator().createFromAST(ast);
   }
 
   public void initGlobalScope(){
     IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
-        .getFeatureConfigurationPartialGlobalScope();
+        .featureConfigurationPartialGlobalScope();
     if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
       ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
       gs.setModelFileExtension("fc");
-      gs.addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(gs.getModelPath()));
+      gs.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver(gs.getModelPath()));
     }
   }
 
@@ -311,7 +306,7 @@ public class FeatureConfigurationPartialCLI {
 
     Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
     modelPath.setArgs(Option.UNLIMITED_VALUES);
-    modelPath.setValueSeparator(':');
+    modelPath.setValueSeparator(' ');
     options.addOption(modelPath);
 
     Option symboltable = new Option("s", true,

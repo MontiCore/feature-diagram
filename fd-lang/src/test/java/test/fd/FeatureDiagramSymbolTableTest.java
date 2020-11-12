@@ -2,12 +2,13 @@
 package test.fd;
 
 import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.paths.ModelPath;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -15,22 +16,16 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class FeatureDiagramSymbolTableTest extends AbstractTest {
+public class FeatureDiagramSymbolTableTest extends AbstractLangTest {
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
           throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
-    IFeatureDiagramGlobalScope globalScope = FeatureDiagramMill
-        .featureDiagramGlobalScopeBuilder()
-        .setModelPath(mp)
-        .setModelFileExtension("fd")
-        .build();
-    return FeatureDiagramMill
-        .featureDiagramSymbolTableCreatorBuilder()
-        .addToScopeStack(globalScope)
-        .build()
-        .createFromAST(ast);
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.featureDiagramGlobalScope();
+    gs.setModelFileExtension("fd");
+    ModelPaths.merge(gs.getModelPath(), mp);
+    return FeatureDiagramMill.featureDiagramSymbolTableCreator().createFromAST(ast);
   }
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile)

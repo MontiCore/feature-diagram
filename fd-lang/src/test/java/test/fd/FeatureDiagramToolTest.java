@@ -7,7 +7,7 @@ import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -15,7 +15,7 @@ import java.io.PrintStream;
 
 import static org.junit.Assert.*;
 
-public class FeatureDiagramToolTest extends AbstractTest {
+public class FeatureDiagramToolTest extends AbstractLangTest {
 
   protected PrintStream originalOut;
 
