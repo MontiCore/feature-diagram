@@ -306,7 +306,7 @@ public class FeatureConfigurationPartialCLI {
 
     Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
     modelPath.setArgs(Option.UNLIMITED_VALUES);
-    modelPath.setValueSeparator(':');
+    modelPath.setValueSeparator(' ');
     options.addOption(modelPath);
 
     Option symboltable = new Option("s", true,
