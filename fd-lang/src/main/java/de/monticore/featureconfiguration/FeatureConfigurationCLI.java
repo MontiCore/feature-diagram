@@ -96,7 +96,7 @@ public class FeatureConfigurationCLI {
     ModelPaths.merge(gs.getModelPath(), mp);
     ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
 
-    return FeatureConfigurationMill.featureConfigurationSymbolTableCreatorDelegator().createFromAST(ast);
+    return FeatureConfigurationMill.scopesGenitor().createFromAST(ast);
   }
 
   public void initGlobalScope(){

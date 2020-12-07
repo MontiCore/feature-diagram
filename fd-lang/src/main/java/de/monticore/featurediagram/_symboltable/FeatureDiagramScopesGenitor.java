@@ -13,16 +13,16 @@ import java.util.Deque;
 /**
  * This class builds up the symbols and scopes from an AST of an FD model.
  */
-public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableCreatorTOP {
+public class FeatureDiagramScopesGenitor extends FeatureDiagramScopesGenitorTOP {
 
-  public FeatureDiagramSymbolTableCreator() {
+  public FeatureDiagramScopesGenitor() {
   }
 
-  public FeatureDiagramSymbolTableCreator(IFeatureDiagramScope enclosingScope) {
+  public FeatureDiagramScopesGenitor(IFeatureDiagramScope enclosingScope) {
     super(enclosingScope);
   }
 
-  public FeatureDiagramSymbolTableCreator(Deque<? extends IFeatureDiagramScope> scopeStack) {
+  public FeatureDiagramScopesGenitor(Deque<? extends IFeatureDiagramScope> scopeStack) {
     super(scopeStack);
   }
 
@@ -35,11 +35,9 @@ public class FeatureDiagramSymbolTableCreator extends FeatureDiagramSymbolTableC
   @Override
   public IFeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-    IFeatureDiagramArtifactScope artifactScope = FeatureDiagramMill.artifactScope();
+    IFeatureDiagramArtifactScope artifactScope = super.createFromAST(rootNode);
     artifactScope.setPackageName(packageName);
-    putOnStack(artifactScope);
     handleImportStatements(rootNode);
-    rootNode.accept(getRealThis());
     return artifactScope;
   }
 

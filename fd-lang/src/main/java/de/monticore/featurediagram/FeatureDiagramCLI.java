@@ -92,7 +92,7 @@ public class FeatureDiagramCLI {
    */
   public IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast) {
     initGlobalScope();
-    return FeatureDiagramMill.featureDiagramSymbolTableCreatorDelegator().createFromAST(ast);
+    return FeatureDiagramMill.scopesGenitor().createFromAST(ast);
   }
 
   public void initGlobalScope(){

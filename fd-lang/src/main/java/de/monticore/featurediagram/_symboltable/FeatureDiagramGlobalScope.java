@@ -48,7 +48,7 @@ public class FeatureDiagramGlobalScope extends FeatureDiagramGlobalScopeTOP {
         if (modelCoordinate.hasLocation()) {
           Reader reader = getReader(modelCoordinate);
           ASTFDCompilationUnit ast = parse(reader);
-          FeatureDiagramMill.featureDiagramSymbolTableCreatorDelegator().createFromAST(ast);
+          FeatureDiagramMill.scopesGenitorDelegator().createFromAST(ast);
         }
       }
       addLoadedFile(filePath);

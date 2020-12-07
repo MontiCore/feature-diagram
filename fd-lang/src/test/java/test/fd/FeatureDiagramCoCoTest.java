@@ -80,7 +80,7 @@ public class FeatureDiagramCoCoTest extends AbstractLangTest {
     gs.setModelPath(mp);
     gs.setFileExt("fd");
 
-    FeatureDiagramMill.featureDiagramSymbolTableCreatorDelegator().createFromAST(ast);
+    FeatureDiagramMill.scopesGenitorDelegator().createFromAST(ast);
     return ast;
   }
 

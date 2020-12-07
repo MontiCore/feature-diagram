@@ -96,8 +96,7 @@ public class FeatureConfigurationPartialCLI {
     ModelPaths.merge(gs.getModelPath(), mp);
     ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
 
-    return FeatureConfigurationPartialMill.featureConfigurationPartialSymbolTableCreatorDelegator()
-        .createFromAST(ast);
+    return FeatureConfigurationPartialMill.scopesGenitor().createFromAST(ast);
   }
 
   public void initGlobalScope() {

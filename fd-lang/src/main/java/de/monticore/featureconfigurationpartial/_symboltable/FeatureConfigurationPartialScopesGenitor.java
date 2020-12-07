@@ -4,7 +4,7 @@ package de.monticore.featureconfigurationpartial._symboltable;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbolTableCreator;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopesGenitor;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
@@ -18,18 +18,18 @@ import java.util.List;
 /**
  * This class builds up the symbols and scopes from an AST of an FD model.
  */
-public class FeatureConfigurationPartialSymbolTableCreator
-    extends FeatureConfigurationPartialSymbolTableCreatorTOP {
+public class FeatureConfigurationPartialScopesGenitor
+    extends FeatureConfigurationPartialScopesGenitorTOP {
 
-  public FeatureConfigurationPartialSymbolTableCreator() {
+  public FeatureConfigurationPartialScopesGenitor() {
   }
 
-  public FeatureConfigurationPartialSymbolTableCreator(
+  public FeatureConfigurationPartialScopesGenitor(
       IFeatureConfigurationPartialScope enclosingScope) {
     super(enclosingScope);
   }
 
-  public FeatureConfigurationPartialSymbolTableCreator(
+  public FeatureConfigurationPartialScopesGenitor(
       Deque<? extends IFeatureConfigurationPartialScope> scopeStack) {
     super(scopeStack);
   }
@@ -43,20 +43,16 @@ public class FeatureConfigurationPartialSymbolTableCreator
   @Override public IFeatureConfigurationPartialArtifactScope createFromAST(
       ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-    IFeatureConfigurationPartialArtifactScope artifactScope = FeatureConfigurationPartialMill
-        .artifactScope();
+    IFeatureConfigurationPartialArtifactScope artifactScope = super.createFromAST(rootNode);
     artifactScope.setPackageName(packageName);
-
-    putOnStack(artifactScope);
-    FeatureConfigurationSymbolTableCreator.handleImportStatements(rootNode);
-    rootNode.accept(getRealThis());
+    FeatureConfigurationScopesGenitor.handleImportStatements(rootNode);
     return artifactScope;
   }
 
   /**
    * collect names of selected features. Resolve FeatureSymbols and add these to the
    * FeatureConfigurationSymbol.The FeatureDiagramSymbols is set in the
-   * FeatureConfigurationSymbolTableCreator.
+   * FeatureConfigurationScopesGenitor.
    *
    * @param node
    */

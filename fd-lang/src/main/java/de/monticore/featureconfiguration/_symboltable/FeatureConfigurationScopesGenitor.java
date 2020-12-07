@@ -19,21 +19,21 @@ import java.util.Optional;
 /**
  * This class builds up the symbols and scopes from an AST of an FD model.
  */
-public class FeatureConfigurationSymbolTableCreator
-    extends FeatureConfigurationSymbolTableCreatorTOP {
+public class FeatureConfigurationScopesGenitor
+    extends FeatureConfigurationScopesGenitorTOP {
 
   private FeatureConfigurationSymbol fc;
 
   private FeatureDiagramSymbol fd;
 
-  public FeatureConfigurationSymbolTableCreator() {
+  public FeatureConfigurationScopesGenitor() {
   }
 
-  public FeatureConfigurationSymbolTableCreator(IFeatureConfigurationScope enclosingScope) {
+  public FeatureConfigurationScopesGenitor(IFeatureConfigurationScope enclosingScope) {
     super(enclosingScope);
   }
 
-  public FeatureConfigurationSymbolTableCreator(
+  public FeatureConfigurationScopesGenitor(
       Deque<? extends IFeatureConfigurationScope> scopeStack) {
     super(scopeStack);
   }
@@ -46,12 +46,10 @@ public class FeatureConfigurationSymbolTableCreator
    */
   @Override public IFeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-    IFeatureConfigurationArtifactScope artifactScope = FeatureConfigurationMill.artifactScope();
-    artifactScope.setPackageName(packageName);
+    IFeatureConfigurationArtifactScope artifactScope = super.createFromAST(rootNode);
 
-    putOnStack(artifactScope);
+    artifactScope.setPackageName(packageName);
     handleImportStatements(rootNode);
-    rootNode.accept(getRealThis());
     return artifactScope;
   }
 

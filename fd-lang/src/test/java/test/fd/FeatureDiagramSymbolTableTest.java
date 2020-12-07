@@ -25,7 +25,7 @@ public class FeatureDiagramSymbolTableTest extends AbstractLangTest {
     IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
     gs.setFileExt("fd");
     ModelPaths.merge(gs.getModelPath(), mp);
-    return FeatureDiagramMill.featureDiagramSymbolTableCreator().createFromAST(ast);
+    return FeatureDiagramMill.scopesGenitor().createFromAST(ast);
   }
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile)
