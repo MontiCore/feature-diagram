@@ -15,14 +15,14 @@ import java.util.function.Predicate;
 public class FeatureDiagramResolver implements IFeatureDiagramSymbolResolver {
 
   public FeatureDiagramResolver(ModelPath mp) {
-    FeatureDiagramMill.featureDiagramGlobalScope().setModelFileExtension("fd");
-    ModelPaths.merge(FeatureDiagramMill.featureDiagramGlobalScope().getModelPath(), mp);
+    FeatureDiagramMill.globalScope().setFileExt("fd");
+    ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
   }
 
   @Override public List<FeatureDiagramSymbol> resolveAdaptedFeatureDiagramSymbol(
       boolean foundSymbols, String name, AccessModifier modifier,
       Predicate<FeatureDiagramSymbol> predicate) {
-    return FeatureDiagramMill.featureDiagramGlobalScope()
+    return FeatureDiagramMill.globalScope()
         .resolveFeatureDiagramMany(foundSymbols, name, modifier, predicate);
   }
 

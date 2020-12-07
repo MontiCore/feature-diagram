@@ -2,10 +2,7 @@
 package test.fd;
 
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
-import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
+import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import org.junit.Test;
@@ -64,7 +61,8 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
 
   @Test
   public void testLoad() {
-    IFeatureDiagramArtifactScope scope = fdDeSer
+    FeatureDiagramSymbols2Json s2j = new FeatureDiagramSymbols2Json();
+    IFeatureDiagramArtifactScope scope = s2j
         .load("src/test/resources/symbols/CarNavigation.fdsym");
     assertTrue(null != scope);
     assertEquals("CarNavigation", scope.getName());
@@ -89,7 +87,8 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
     JsonPrinter.enableIndentation();
     IFeatureDiagramArtifactScope fdScope = setupSymbolTable(
         "fdvalid/CarNavigation.fd");
-    fdDeSer.store(fdScope, "target/test-symbols/fdvalid/CarNavigation.fdsym");
+    FeatureDiagramSymbols2Json s2j = new FeatureDiagramSymbols2Json();
+    s2j.store(fdScope, "target/test-symbols/fdvalid/CarNavigation.fdsym");
 
     Path expectedPath = Paths.get("target/test-symbols/fdvalid/CarNavigation.fdsym");
     assertTrue(expectedPath.toFile().exists());

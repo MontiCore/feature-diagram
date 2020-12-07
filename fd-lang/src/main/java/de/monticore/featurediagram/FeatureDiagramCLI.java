@@ -96,10 +96,10 @@ public class FeatureDiagramCLI {
   }
 
   public void initGlobalScope(){
-    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.featureDiagramGlobalScope();
-    if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
+    if(null == gs.getFileExt() || gs.getFileExt().isEmpty()){
       ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
-      gs.setModelFileExtension("fd");
+      gs.setFileExt("fd");
     }
   }
 
@@ -182,7 +182,7 @@ public class FeatureDiagramCLI {
         path = path.getParent();
       }
     }
-    ModelPaths.addEntry(FeatureDiagramMill.featureDiagramGlobalScope().getModelPath(), path);
+    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getModelPath(), path);
 
     // setup the symbol table
     IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast);
@@ -221,7 +221,7 @@ public class FeatureDiagramCLI {
       String input = cmd.getOptionValue("input");
 
       //Set path for imported symbols
-      ModelPath mp = FeatureDiagramMill.featureDiagramGlobalScope().getModelPath();
+      ModelPath mp = FeatureDiagramMill.globalScope().getModelPath();
       if (cmd.hasOption("path")) {
         for(String p : cmd.getOptionValue("path").split(":")){
           ModelPaths.addEntry(mp, p);

@@ -18,17 +18,16 @@ public class FeatureConfigurationScopeDeSer extends FeatureConfigurationScopeDeS
       JsonObject scopeJson) {
     String packageName = scopeJson
         .getStringMemberOpt(PACKAGE).orElse("");
-    IFeatureConfigurationArtifactScope scope = FeatureConfigurationMill
-        .featureConfigurationArtifactScopeBuilder()
-        .setPackageName(packageName)
-        .build();
-    FeatureConfigurationMill.featureConfigurationGlobalScope().addSubScope(scope);
+    IFeatureConfigurationArtifactScope scope = FeatureConfigurationMill.artifactScope();
+    scope.setPackageName(packageName);
+
+    FeatureConfigurationMill.globalScope().addSubScope(scope);
     if (scopeJson.hasStringMember(NAME)) {
       scope.setName(scopeJson.getStringMember(NAME));
     }
     scope.setExportingSymbols(true);
 
-    deserializeAdditionalArtifactScopeAttributes(scope, scopeJson);
+    deserializeAddons(scope, scopeJson);
     addSymbols(scopeJson, scope);
     return scope;
   }

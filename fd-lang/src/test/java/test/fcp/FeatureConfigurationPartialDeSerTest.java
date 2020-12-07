@@ -3,6 +3,7 @@ package test.fcp;
 
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialArtifactScope;
+import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialSymbols2Json;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
@@ -64,10 +65,10 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
   @Test
   public void testLoad() {
     fcpTool.initGlobalScope();
-    ModelPaths.addEntry(FeatureDiagramMill.featureDiagramGlobalScope().getModelPath(),
+    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getModelPath(),
         "src/test/resources");
-
-    IFeatureConfigurationPartialArtifactScope scope = fcpDeSer
+    FeatureConfigurationPartialSymbols2Json s2j = new FeatureConfigurationPartialSymbols2Json();
+    IFeatureConfigurationPartialArtifactScope scope = s2j
         .load("src/test/resources/symbols/BasicCarNavigation.fcsym");
     assertTrue(null != scope);
     assertEquals("BasicCarNavigation", scope.getName());
@@ -89,7 +90,8 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
     JsonPrinter.enableIndentation();
     IFeatureConfigurationPartialArtifactScope fcScope = setupSymbolTable(
         "pfcvalid/BasicCarNavigation.fc");
-    fcpDeSer.store(fcScope,"target/test-symbols/pfcvalid/BasicCarNavigation.fcsym");
+    FeatureConfigurationPartialSymbols2Json s2j = new FeatureConfigurationPartialSymbols2Json();
+    s2j.store(fcScope, "target/test-symbols/pfcvalid/BasicCarNavigation.fcsym");
 
     Path expectedPath = Paths.get("target/test-symbols/pfcvalid/BasicCarNavigation.fcsym");
     assertTrue(expectedPath.toFile().exists());

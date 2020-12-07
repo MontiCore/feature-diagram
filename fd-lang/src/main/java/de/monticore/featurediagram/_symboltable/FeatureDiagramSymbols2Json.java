@@ -9,12 +9,12 @@ import de.monticore.symboltable.serialization.JsonPrinter;
  * strategy for FeatureSymbols deviates from the generated strategy. All FeatureSymbols are stored
  * as a list of feature names that are a member of a stored FeatureDiagramSymbol.
  */
-public class FeatureDiagramSymbolTablePrinter extends FeatureDiagramSymbolTablePrinterTOP {
+public class FeatureDiagramSymbols2Json extends FeatureDiagramSymbols2JsonTOP {
 
-  public FeatureDiagramSymbolTablePrinter() {
+  public FeatureDiagramSymbols2Json() {
   }
 
-  public FeatureDiagramSymbolTablePrinter(
+  public FeatureDiagramSymbols2Json(
       JsonPrinter printer) {
     super(printer);
   }

@@ -16,9 +16,9 @@ public class FeatureDiagramScopeDeSer extends FeatureDiagramScopeDeSerTOP {
   @Override protected void deserializeFeatureDiagramSymbol(JsonObject symbolJson,
       IFeatureDiagramScope scope) {
     FeatureDiagramSymbol symbol = featureDiagramSymbolDeSer
-        .deserializeFeatureDiagramSymbol(symbolJson, scope);
+        .deserializeFeatureDiagramSymbol(symbolJson);
 
-    IFeatureDiagramScope fdScope = FeatureDiagramMill.featureDiagramScopeBuilder().build();
+    IFeatureDiagramScope fdScope = FeatureDiagramMill.scope();
     symbol.setSpannedScope(fdScope); //for bidirectional link
     scope.addSubScope(fdScope); //for bidirectional link
     scope.add(symbol);

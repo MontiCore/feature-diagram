@@ -20,16 +20,15 @@ public class FeatureConfigurationPartialScopeDeSer
     String packageName = scopeJson
         .getStringMemberOpt(PACKAGE).orElse("");
     IFeatureConfigurationPartialArtifactScope scope = FeatureConfigurationPartialMill
-        .featureConfigurationPartialArtifactScopeBuilder()
-        .setPackageName(packageName)
-        .build();
-    FeatureConfigurationPartialMill.featureConfigurationPartialGlobalScope().addSubScope(scope);
+        .artifactScope();
+    scope.setPackageName(packageName);
+    FeatureConfigurationPartialMill.globalScope().addSubScope(scope);
     if (scopeJson.hasStringMember(NAME)) {
       scope.setName(scopeJson.getStringMember(NAME));
     }
     scope.setExportingSymbols(true);
 
-    deserializeAdditionalArtifactScopeAttributes(scope, scopeJson);
+    deserializeAddons(scope, scopeJson);
     addSymbols(scopeJson, scope);
     return scope;
   }

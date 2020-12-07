@@ -31,7 +31,7 @@ public class FeatureDiagramGlobalScope extends FeatureDiagramGlobalScopeTOP {
   }
 
   @Override public void loadFileForModelName(String modelName, String symbolName) {
-    String symbolFileExtension = getModelFileExtension() + "sym";
+    String symbolFileExtension = getFileExt() + "sym";
     ModelCoordinate modelCoordinate = createQualifiedCoordinate(modelName, symbolFileExtension);
     String filePath = modelCoordinate.getQualifiedPath().toString();
     if(!isFileLoaded(filePath)) {
@@ -39,10 +39,10 @@ public class FeatureDiagramGlobalScope extends FeatureDiagramGlobalScopeTOP {
       getModelPath().resolveModel(modelCoordinate);
       if (modelCoordinate.hasLocation()) {
         URL url = modelCoordinate.getLocation();
-        this.addSubScope(scopeDeSer.load(url));
+        this.addSubScope(symbols2Json.load(url));
       }
       else{
-        modelCoordinate = createQualifiedCoordinate(modelName, getModelFileExtension());
+        modelCoordinate = createQualifiedCoordinate(modelName, getFileExt());
         filePath = modelCoordinate.getQualifiedPath().toString();
         getModelPath().resolveModel(modelCoordinate);
         if (modelCoordinate.hasLocation()) {

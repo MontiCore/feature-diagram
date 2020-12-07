@@ -3,7 +3,9 @@
 package de.monticore.featurediagram.prettyprint;
 
 import de.monticore.featurediagram._ast.*;
+import de.monticore.featurediagram._visitor.FeatureDiagramHandler;
 import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor2;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
@@ -14,15 +16,12 @@ import java.util.List;
  * This Printer prints all AST nodes that are introduced by the FeatueDiagram grammar. It realizes
  * basic formatting through indentation and line breaks.
  */
-public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
+public class FeatureDiagramPrinter implements FeatureDiagramVisitor2 {
 
   protected IndentPrinter printer;
 
-  protected FeatureDiagramVisitor realThis;
-
   public FeatureDiagramPrinter(IndentPrinter printer) {
     this.printer = printer;
-    this.realThis = this;
   }
 
   @Override public void visit(ASTFDCompilationUnit node) {
@@ -38,12 +37,6 @@ public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
     }
     if (!node.isEmptyMCImportStatements()) {
       printer.println();
-    }
-  }
-
-  public void traverse(ASTFDCompilationUnit node) {
-    if (null != node.getFeatureDiagram()) {
-      node.getFeatureDiagram().accept(getRealThis());
     }
   }
 
@@ -110,34 +103,4 @@ public class FeatureDiagramPrinter implements FeatureDiagramVisitor {
     printer.print(" excludes ");
   }
 
-  public void handle(de.monticore.featurediagram._ast.ASTExcludes node) {
-    if (null != node.getLeft()) {
-      node.getLeft().accept(getRealThis());
-    }
-    getRealThis().visit(node);
-    if (null != node.getRight()) {
-      node.getRight().accept(getRealThis());
-    }
-    getRealThis().endVisit(node);
-  }
-
-  public void handle(de.monticore.featurediagram._ast.ASTRequires node) {
-    if (null != node.getLeft()) {
-      node.getLeft().accept(getRealThis());
-    }
-    getRealThis().visit(node);
-    if (null != node.getRight()) {
-      node.getRight().accept(getRealThis());
-    }
-    getRealThis().endVisit(node);
-  }
-
-  @Override public FeatureDiagramVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(FeatureDiagramVisitor realThis) {
-    this.realThis = realThis;
-  }
 }

@@ -23,6 +23,7 @@ public class FeatureConfigurationSymbolTableCreator
     extends FeatureConfigurationSymbolTableCreatorTOP {
 
   private FeatureConfigurationSymbol fc;
+
   private FeatureDiagramSymbol fd;
 
   public FeatureConfigurationSymbolTableCreator() {
@@ -45,10 +46,8 @@ public class FeatureConfigurationSymbolTableCreator
    */
   @Override public IFeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-    IFeatureConfigurationArtifactScope artifactScope = FeatureConfigurationMill
-        .featureConfigurationArtifactScopeBuilder()
-        .setPackageName(packageName)
-        .build();
+    IFeatureConfigurationArtifactScope artifactScope = FeatureConfigurationMill.artifactScope();
+    artifactScope.setPackageName(packageName);
 
     putOnStack(artifactScope);
     handleImportStatements(rootNode);

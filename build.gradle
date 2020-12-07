@@ -5,26 +5,13 @@ plugins {
     id "java"
     id "monticore"  version "$mc_version" // MontiCore Plugin
     id "maven-publish"
-    id "com.github.johnrengelman.shadow" version "4.0.4"
+    id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
 }
 
-def logging_version = '1.7.11'
-def antlr_version = '4.7.1'
 
-def plexus_archiver_version = '2.8.2'
-def junit_version = '4.13.1'
-def logback_version = '1.1.2'
-def choco_solver_version = '4.0.5'
-def choco_parser_version = '4.0.4'
-def commons_cli_version = '1.2'
-def sat4j_version = '2.3.1'
-def logicng_version = '1.6.2'
-
-def grammarDir = 'src/main/grammars'
 
 allprojects {
     group = 'de.monticore.lang'
-    version = '$version'
 
     repositories {
         mavenLocal()

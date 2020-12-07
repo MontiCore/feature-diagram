@@ -92,18 +92,18 @@ public class FeatureConfigurationCLI {
   public IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
       ModelPath mp) {
     initGlobalScope();
-    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.featureConfigurationGlobalScope();
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.globalScope();
     ModelPaths.merge(gs.getModelPath(), mp);
-    ModelPaths.merge(FeatureDiagramMill.featureDiagramGlobalScope().getModelPath(), mp);
+    ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
 
     return FeatureConfigurationMill.featureConfigurationSymbolTableCreatorDelegator().createFromAST(ast);
   }
 
   public void initGlobalScope(){
-    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.featureConfigurationGlobalScope();
-    if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.globalScope();
+    if(null == gs.getFileExt() || gs.getFileExt().isEmpty()){
       ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
-      gs.setModelFileExtension("fc");
+      gs.setFileExt("fc");
       gs.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver(gs.getModelPath()));
     }
   }

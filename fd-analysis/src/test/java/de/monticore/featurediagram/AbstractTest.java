@@ -59,8 +59,7 @@ public class AbstractTest {
 
   @Before
   public void cleanPartialFCGlobalScope() {
-    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
-        .featureConfigurationPartialGlobalScope();
+    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
 
     //delete all subscopes
     for (IFeatureConfigurationPartialScope s : gs.getSubScopes()) {
@@ -75,13 +74,13 @@ public class AbstractTest {
     // remove all resolving delegates
     gs.setAdaptedFeatureDiagramSymbolResolverList(new ArrayList<>());
 
-    gs.setModelFileExtension(null);
+    gs.setFileExt(null);
     gs.clearLoadedFiles();
   }
 
   @Before
   public void cleanFCGlobalScope() {
-    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.featureConfigurationGlobalScope();
+    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.globalScope();
 
     //delete all subscopes
     for (IFeatureConfigurationScope s : gs.getSubScopes()) {
@@ -96,13 +95,13 @@ public class AbstractTest {
     // remove all resolving delegates
     gs.setAdaptedFeatureDiagramSymbolResolverList(new ArrayList<>());
 
-    gs.setModelFileExtension(null);
+    gs.setFileExt(null);
     gs.clearLoadedFiles();
   }
 
   @Before
   public void cleanFDGlobalScope() {
-    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.featureDiagramGlobalScope();
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
 
     //delete all subscopes
     for (IFeatureDiagramScope s : gs.getSubScopes()) {
@@ -114,7 +113,7 @@ public class AbstractTest {
       gs.getModelPath().removeEntry(p);
     }
 
-    gs.setModelFileExtension(null);
+    gs.setFileExt(null);
     gs.clearLoadedFiles();
   }
 

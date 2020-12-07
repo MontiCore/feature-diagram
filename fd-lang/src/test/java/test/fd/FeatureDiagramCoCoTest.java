@@ -29,14 +29,14 @@ public class FeatureDiagramCoCoTest extends AbstractLangTest {
     FeatureDiagramCoCos.checkAll(readFile(dir + "Phone.fd"));
     assertEquals(0, Log.getErrorCount());
   }
-  
+
   @Test
   public void testForbiddenCTCExpressions() throws IOException {
     String[] errors = new String[14];
     Arrays.fill(errors, "0xFD011");
     testCoCo("IllegalCTCs.fd", errors);
   }
-  
+
   @Test
   public void testCTCFeatureDoesNotExist() throws IOException {
     testCoCo("CTCFeatureDoesNotExist.fd", "0xFD006", "0xFD006");
@@ -76,11 +76,9 @@ public class FeatureDiagramCoCoTest extends AbstractLangTest {
       throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
-    IFeatureDiagramGlobalScope globalScope = FeatureDiagramMill
-        .featureDiagramGlobalScopeBuilder()
-        .setModelPath(mp)
-        .setModelFileExtension("fd")
-        .build();
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
+    gs.setModelPath(mp);
+    gs.setFileExt("fd");
 
     FeatureDiagramMill.featureDiagramSymbolTableCreatorDelegator().createFromAST(ast);
     return ast;

@@ -8,13 +8,13 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 
 import java.util.List;
 
-public class FeatureConfigurationSymbolTablePrinter
-    extends FeatureConfigurationSymbolTablePrinterTOP {
+public class FeatureConfigurationSymbols2Json
+    extends FeatureConfigurationSymbols2JsonTOP {
 
-  public FeatureConfigurationSymbolTablePrinter() {
+  public FeatureConfigurationSymbols2Json() {
   }
 
-  public FeatureConfigurationSymbolTablePrinter(
+  public FeatureConfigurationSymbols2Json(
       JsonPrinter printer) {
     super(printer);
   }

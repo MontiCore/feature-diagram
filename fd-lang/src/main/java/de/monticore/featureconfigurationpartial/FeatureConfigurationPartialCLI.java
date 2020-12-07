@@ -61,11 +61,11 @@ public class FeatureConfigurationPartialCLI {
       }
       Log.error("0xFC200 Model could not be parsed.");
     }
-    catch (RecognitionException  e) {
-      Log.error("0xFC201 Failed to parse the partial FC model '" + model +"'. ");
+    catch (RecognitionException e) {
+      Log.error("0xFC201 Failed to parse the partial FC model '" + model + "'. ");
     }
     catch (IOException e) {
-      Log.error("0xFC204 Failed to find the file of the partial FC model '" + model +"'.");
+      Log.error("0xFC204 Failed to find the file of the partial FC model '" + model + "'.");
     }
     return null;
   }
@@ -92,24 +92,22 @@ public class FeatureConfigurationPartialCLI {
   public IFeatureConfigurationPartialArtifactScope createSymbolTable(
       ASTFCCompilationUnit ast, ModelPath mp) {
     initGlobalScope();
-    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
-        .featureConfigurationPartialGlobalScope();
+    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
     ModelPaths.merge(gs.getModelPath(), mp);
-    ModelPaths.merge(FeatureDiagramMill.featureDiagramGlobalScope().getModelPath(), mp);
+    ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
 
-    return FeatureConfigurationPartialMill.featureConfigurationPartialSymbolTableCreatorDelegator().createFromAST(ast);
+    return FeatureConfigurationPartialMill.featureConfigurationPartialSymbolTableCreatorDelegator()
+        .createFromAST(ast);
   }
 
-  public void initGlobalScope(){
-    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
-        .featureConfigurationPartialGlobalScope();
-    if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
+  public void initGlobalScope() {
+    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
+    if (null == gs.getFileExt() || gs.getFileExt().isEmpty()) {
       ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
-      gs.setModelFileExtension("fc");
+      gs.setFileExt("fc");
       gs.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver(gs.getModelPath()));
     }
   }
-
 
   /**
    * Check all feature configuration partial context conditions against passed ast
