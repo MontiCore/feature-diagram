@@ -243,7 +243,7 @@ where the arguments are:
 * `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
 * `-o`,`--output <outPath>`      Path of generated files
 * `-path <p>`                    Sets the artifact pathlist for imported symbols. 
-                                 The pathlist is separated by colons (':').
+                                 The pathlist is separated by whitespace.
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout or a specified output file
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
                                  specified output file
@@ -280,7 +280,7 @@ where the arguments are:
 * `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
 * `-o`,`--output <outPath>`      Path of generated files
 * `-path <p>`                    Sets the artifact pathlist for imported symbols.
-                                 The pathlist is separated by colons (':').
+                                 The pathlist is separated by whitespace.
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout or a specified output file
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
                                  specified output file
@@ -315,7 +315,7 @@ where the arguments are:
 * `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
 * `-o`,`--output <outPath>`      Path of generated files
 * `-path <p>`                    Sets the artifact pathlist for imported symbols.
-                                 The pathlist is separated by colons (':').
+                                 The pathlist is separated by whitespace.
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout or a the specified output file
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
                                  specified output file
