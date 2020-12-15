@@ -65,11 +65,11 @@ public class FeatureDiagramCLI {
       }
       Log.error("0xFD100 Model could not be parsed.");
     }
-    catch (RecognitionException  e) {
-      Log.error("0xFD101 Failed to parse the FD model '" + model +"'. ");
+    catch (RecognitionException e) {
+      Log.error("0xFD101 Failed to parse the FD model '" + model + "'. ");
     }
     catch (IOException e) {
-      Log.error("0xFD104 Failed to find the file of the FD model '" + model +"'.");
+      Log.error("0xFD104 Failed to find the file of the FD model '" + model + "'.");
     }
     return null;
   }
@@ -92,13 +92,12 @@ public class FeatureDiagramCLI {
    */
   public IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast) {
     initGlobalScope();
-    return FeatureDiagramMill.scopesGenitor().createFromAST(ast);
+    return FeatureDiagramMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
-  public void initGlobalScope(){
+  public void initGlobalScope() {
     IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
-    if(null == gs.getFileExt() || gs.getFileExt().isEmpty()){
-      ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
+    if (null == gs.getFileExt() || gs.getFileExt().isEmpty()) {
       gs.setFileExt("fd");
     }
   }
@@ -119,10 +118,11 @@ public class FeatureDiagramCLI {
    *
    * @return
    */
-  public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out, FeatureDiagramScopeDeSer deser) {
+  public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out,
+      FeatureDiagramScopeDeSer deser) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
-        .resolve(scope.getName()+".fdsym");
+        .resolve(scope.getName() + ".fdsym");
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
     return serialized;
@@ -133,7 +133,8 @@ public class FeatureDiagramCLI {
    *
    * @return
    */
-  public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName, FeatureDiagramScopeDeSer deser) {
+  public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName,
+      FeatureDiagramScopeDeSer deser) {
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
@@ -146,7 +147,8 @@ public class FeatureDiagramCLI {
    * @param modelFile
    * @return
    */
-  public ASTFeatureDiagram run(String modelFile, Path out, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
+  public ASTFeatureDiagram run(String modelFile, Path out, FeatureDiagramParser parser,
+      FeatureDiagramScopeDeSer deser) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
@@ -170,7 +172,8 @@ public class FeatureDiagramCLI {
    * @param modelFile
    * @return
    */
-  public ASTFeatureDiagram run(String modelFile, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
+  public ASTFeatureDiagram run(String modelFile, FeatureDiagramParser parser,
+      FeatureDiagramScopeDeSer deser) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
@@ -223,7 +226,7 @@ public class FeatureDiagramCLI {
       //Set path for imported symbols
       ModelPath mp = FeatureDiagramMill.globalScope().getModelPath();
       if (cmd.hasOption("path")) {
-        for(String p : cmd.getOptionValue("path").split(":")){
+        for (String p : cmd.getOptionValue("path").split(":")) {
           ModelPaths.addEntry(mp, p);
         }
       }
@@ -276,12 +279,14 @@ public class FeatureDiagramCLI {
 
   /**
    * Initialize options of the CLI
+   *
    * @return
    */
   protected Options initOptions() {
     Options options = new Options();
     options.addOption("h", "help", false, "Prints this help dialog");
-    options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
+    options.addOption("i", "input", true,
+        "Reads the (mandatory) source file resp. the contents of the model");
     options.addOption("o", "output", true, "Path of generated files");
 
     Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
@@ -289,12 +294,14 @@ public class FeatureDiagramCLI {
     modelPath.setValueSeparator(' ');
     options.addOption(modelPath);
 
-    Option symboltable = new Option("s", true,"Serializes and prints the symbol table to stdout or a specified output file");
+    Option symboltable = new Option("s", true,
+        "Serializes and prints the symbol table to stdout or a specified output file");
     symboltable.setOptionalArg(true);
     symboltable.setLongOpt("symboltable");
     options.addOption(symboltable);
 
-    Option prettyprint = new Option("pp", true, "Prints the AST to stdout or a specified output file");
+    Option prettyprint = new Option("pp", true,
+        "Prints the AST to stdout or a specified output file");
     prettyprint.setOptionalArg(true);
     prettyprint.setLongOpt("prettyprint");
     options.addOption(prettyprint);

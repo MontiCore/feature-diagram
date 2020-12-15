@@ -63,12 +63,12 @@ public class FeatureConfigurationSymbolTableTest extends AbstractLangTest {
     IFeatureConfigurationArtifactScope scope = setupSymbolTable(model);
 
     assertTrue(null != scope);
-    FeatureConfigurationSymbol fd = scope.resolveFeatureConfiguration("SelectImported")
+    FeatureConfigurationSymbol fc = scope.resolveFeatureConfiguration("SelectImported")
         .orElse(null);
-    assertTrue(null != fd);
-    assertEquals(2, fd.sizeSelectedFeatures());
+    assertTrue(null != fc);
+    assertEquals(2, fc.sizeSelectedFeatures());
     List<String> selectedFeatureNames =
-      fd.getSelectedFeaturesList().stream().map(f -> f.getName())
+      fc.getSelectedFeaturesList().stream().map(f -> f.getName())
         .collect(Collectors.toList());
 
     assertTrue(selectedFeatureNames.contains("AA"));

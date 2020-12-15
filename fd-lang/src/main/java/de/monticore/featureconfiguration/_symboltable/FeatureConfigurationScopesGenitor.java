@@ -46,10 +46,9 @@ public class FeatureConfigurationScopesGenitor
    */
   @Override public IFeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-    IFeatureConfigurationArtifactScope artifactScope = super.createFromAST(rootNode);
-
-    artifactScope.setPackageName(packageName);
     handleImportStatements(rootNode);
+    IFeatureConfigurationArtifactScope artifactScope = super.createFromAST(rootNode);
+    artifactScope.setPackageName(packageName);
     return artifactScope;
   }
 

@@ -96,13 +96,12 @@ public class FeatureConfigurationPartialCLI {
     ModelPaths.merge(gs.getModelPath(), mp);
     ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
 
-    return FeatureConfigurationPartialMill.scopesGenitor().createFromAST(ast);
+    return FeatureConfigurationPartialMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
   public void initGlobalScope() {
     IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
     if (null == gs.getFileExt() || gs.getFileExt().isEmpty()) {
-      ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
       gs.setFileExt("fc");
       gs.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver(gs.getModelPath()));
     }

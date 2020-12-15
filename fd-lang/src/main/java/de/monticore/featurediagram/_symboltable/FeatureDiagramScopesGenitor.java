@@ -35,9 +35,9 @@ public class FeatureDiagramScopesGenitor extends FeatureDiagramScopesGenitorTOP 
   @Override
   public IFeatureDiagramArtifactScope createFromAST(ASTFDCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
+    handleImportStatements(rootNode);
     IFeatureDiagramArtifactScope artifactScope = super.createFromAST(rootNode);
     artifactScope.setPackageName(packageName);
-    handleImportStatements(rootNode);
     return artifactScope;
   }
 

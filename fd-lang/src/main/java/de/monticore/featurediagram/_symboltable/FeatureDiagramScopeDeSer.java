@@ -23,14 +23,15 @@ public class FeatureDiagramScopeDeSer extends FeatureDiagramScopeDeSerTOP {
     scope.addSubScope(fdScope); //for bidirectional link
     scope.add(symbol);
 
-    for (JsonElement e : symbolJson.getArrayMember("features")) {
-      FeatureSymbol featureSymbol = FeatureDiagramMill
-          .featureSymbolBuilder()
-          .setName(e.getAsJsonString().getValue())
-          .setEnclosingScope(fdScope)
-          .build();
-      fdScope.add(featureSymbol);
+    if(symbolJson.hasArrayMember("features")){
+      for (JsonElement e : symbolJson.getArrayMember("features")) {
+        FeatureSymbol featureSymbol = FeatureDiagramMill
+            .featureSymbolBuilder()
+            .setName(e.getAsJsonString().getValue())
+            .setEnclosingScope(fdScope)
+            .build();
+        fdScope.add(featureSymbol);
+      }
     }
-
   }
 }

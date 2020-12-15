@@ -43,9 +43,9 @@ public class FeatureConfigurationPartialScopesGenitor
   @Override public IFeatureConfigurationPartialArtifactScope createFromAST(
       ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
+    FeatureConfigurationScopesGenitor.handleImportStatements(rootNode);
     IFeatureConfigurationPartialArtifactScope artifactScope = super.createFromAST(rootNode);
     artifactScope.setPackageName(packageName);
-    FeatureConfigurationScopesGenitor.handleImportStatements(rootNode);
     return artifactScope;
   }
 

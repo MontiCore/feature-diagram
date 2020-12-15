@@ -65,62 +65,10 @@ public class AbstractLangTest {
   }
 
   @Before
-  public void cleanPartialFCGlobalScope() {
-    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
-
-    //delete all subscopes
-    for (IFeatureConfigurationPartialScope s : gs.getSubScopes()) {
-      gs.removeSubScope(s);
-    }
-
-    // delete all model path entries
-    for (Path p : gs.getModelPath().getFullPathOfEntries()) {
-      gs.getModelPath().removeEntry(p);
-    }
-
-    // remove all resolving delegates
-    gs.setAdaptedFeatureDiagramSymbolResolverList(new ArrayList<>());
-
-    gs.setFileExt(null);
-    gs.clearLoadedFiles();
-  }
-
-  @Before
-  public void cleanFCGlobalScope() {
-    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.globalScope();
-
-    //delete all subscopes
-    for (IFeatureConfigurationScope s : gs.getSubScopes()) {
-      gs.removeSubScope(s);
-    }
-
-    // delete all model path entries
-    for (Path p : gs.getModelPath().getFullPathOfEntries()) {
-      gs.getModelPath().removeEntry(p);
-    }
-
-    // remove all resolving delegates
-    gs.setAdaptedFeatureDiagramSymbolResolverList(new ArrayList<>());
-
-    gs.setFileExt(null);
-    gs.clearLoadedFiles();
-  }
-
-  @Before
-  public void cleanFDGlobalScope() {
-    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
-
-    //delete all subscopes
-    for (IFeatureDiagramScope s : gs.getSubScopes()) {
-      gs.removeSubScope(s);
-    }
-
-    // delete all model path entries
-    for (Path p : gs.getModelPath().getFullPathOfEntries()) {
-      gs.getModelPath().removeEntry(p);
-    }
-    gs.setFileExt(null);
-    gs.clearLoadedFiles();
+  public void clearGlobalScopes() {
+    FeatureConfigurationPartialMill.globalScope().clear();
+    FeatureConfigurationMill.globalScope().clear();
+    FeatureDiagramMill.globalScope().clear();
   }
 
   protected static void assertPresent(Optional<?> opt) {
