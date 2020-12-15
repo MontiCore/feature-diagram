@@ -2,6 +2,7 @@
 package test.fcp;
 
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialArtifactScope;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialSymbols2Json;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
@@ -10,6 +11,7 @@ import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import org.junit.Before;
 import org.junit.Test;
 import test.AbstractLangTest;
 

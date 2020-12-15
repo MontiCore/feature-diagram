@@ -101,7 +101,7 @@ public class FeatureConfigurationPartialCLI {
 
   public void initGlobalScope() {
     IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
-    if (null == gs.getFileExt() || gs.getFileExt().isEmpty()) {
+    if (gs.getAdaptedFeatureDiagramSymbolResolverList().isEmpty()) {
       gs.setFileExt("fc");
       gs.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver(gs.getModelPath()));
     }
