@@ -3,9 +3,11 @@
 package test.fc;
 
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -21,6 +23,11 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
   protected PrintStream originalOut;
 
   protected ByteArrayOutputStream out;
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationMill.init();
+  }
 
   @Before
   public void produceFDSymbol(){

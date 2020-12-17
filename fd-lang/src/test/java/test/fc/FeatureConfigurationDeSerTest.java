@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fc;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbols2Json;
@@ -10,6 +11,7 @@ import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -25,6 +27,11 @@ public class FeatureConfigurationDeSerTest extends AbstractLangTest {
 
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
     return fcTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcParser);
+  }
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationMill.init();
   }
 
   @Test

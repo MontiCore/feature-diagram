@@ -8,6 +8,7 @@ import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -18,6 +19,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class FeatureDiagramCoCoTest extends AbstractLangTest {
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureDiagramMill.init();
+  }
 
   @Test
   public void testValid() throws IOException {

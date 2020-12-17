@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fd;
 
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -16,6 +18,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class FeatureDiagramPrettyPrinterTest extends AbstractLangTest {
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureDiagramMill.init();
+  }
 
   @Test
   public void test() {

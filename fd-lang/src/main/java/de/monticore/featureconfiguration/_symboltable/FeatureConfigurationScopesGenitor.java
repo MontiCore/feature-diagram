@@ -118,7 +118,7 @@ public class FeatureConfigurationScopesGenitor
   public void visit(ASTFeatureConfiguration node) {
     super.visit(node);
     fc = node.getSymbol();
-    Optional<FeatureDiagramSymbol> featureDiagramSymbol = this.getCurrentScope().get()
+    Optional<FeatureDiagramSymbol> featureDiagramSymbol = FeatureConfigurationMill.globalScope()
         .resolveFeatureDiagram(node.getFdName());
     if (featureDiagramSymbol.isPresent()) {
       fd = node.getFdNameSymbol();

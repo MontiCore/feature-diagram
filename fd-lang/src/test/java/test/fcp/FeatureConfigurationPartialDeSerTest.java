@@ -12,6 +12,7 @@ import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -27,6 +28,11 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
 
   protected IFeatureConfigurationPartialArtifactScope setupSymbolTable(String modelFile) {
     return fcpTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcpParser);
+  }
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationPartialMill.init();
   }
 
   @Test

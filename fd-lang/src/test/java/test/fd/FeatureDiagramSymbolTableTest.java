@@ -7,6 +7,7 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.paths.ModelPath;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -17,6 +18,11 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class FeatureDiagramSymbolTableTest extends AbstractLangTest {
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureDiagramMill.init();
+  }
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
       throws IOException {

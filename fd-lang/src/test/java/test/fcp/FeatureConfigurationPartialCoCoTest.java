@@ -4,13 +4,18 @@ package test.fcp;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.io.paths.ModelPath;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
 import java.nio.file.Paths;
 
 public class FeatureConfigurationPartialCoCoTest extends AbstractLangTest {
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationPartialMill.init();
+  }
 
   @Test
   public void testWrongBlock() {
@@ -20,7 +25,6 @@ public class FeatureConfigurationPartialCoCoTest extends AbstractLangTest {
   }
 
   protected ASTFCCompilationUnit setupSymbolTable(String modelFile) {
-    FeatureConfigurationPartialMill.init();
     ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
     ASTFCCompilationUnit ast = fcpTool.parse("src/test/resources/pfcinvalid/" + modelFile, fcpParser);
     fcpTool.createSymbolTable(ast, mp);

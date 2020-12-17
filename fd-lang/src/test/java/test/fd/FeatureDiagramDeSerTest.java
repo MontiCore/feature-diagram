@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fd;
 
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -19,6 +21,11 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
     ASTFDCompilationUnit ast = fdTool.parse("src/test/resources/" + modelFile, fdParser);
     return fdTool.createSymbolTable(ast);
+  }
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureDiagramMill.init();
   }
 
   @Test
