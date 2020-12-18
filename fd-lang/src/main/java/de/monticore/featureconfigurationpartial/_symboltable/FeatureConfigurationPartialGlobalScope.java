@@ -2,7 +2,6 @@
 
 package de.monticore.featureconfigurationpartial._symboltable;
 
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationGlobalScopeTOP;
 import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolver;
 
 /**
@@ -14,7 +13,8 @@ public class FeatureConfigurationPartialGlobalScope extends FeatureConfiguration
   protected FeatureConfigurationPartialGlobalScope realThis = this;
 
   public FeatureConfigurationPartialGlobalScope() {
-    this.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver(this.getModelPath()));
+    this.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver());
+    setFileExt("fc");
   }
 
   @Override public FeatureConfigurationPartialGlobalScope getRealThis() {

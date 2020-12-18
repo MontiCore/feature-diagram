@@ -4,6 +4,8 @@ package test.fc;
 
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
@@ -25,8 +27,13 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
   protected ByteArrayOutputStream out;
 
   @BeforeClass
-  public static void initMill(){
+  public static void initMills() {
+    FeatureConfigurationPartialMill.reset();
+    FeatureConfigurationMill.reset();
     FeatureConfigurationMill.init();
+    FeatureConfigurationMill.globalScope();
+    FeatureDiagramMill.init();
+    FeatureDiagramMill.globalScope();
   }
 
   @Before

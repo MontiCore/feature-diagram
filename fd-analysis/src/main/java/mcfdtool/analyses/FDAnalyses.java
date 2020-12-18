@@ -3,7 +3,7 @@
 package mcfdtool.analyses;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featureconfiguration._visitor.SelectedFeatureCollector;
+import de.monticore.featureconfigurationpartial._visitor.UnSelectedFeatureCollector;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import mcfdtool.solver.Solvers;
 import mcfdtool.transform.flatzinc.FlatZincModel;
@@ -42,7 +42,7 @@ public class FDAnalyses {
       List<ASTFeatureConfiguration> allConfigurations) {
     Map<String, Integer> occurrences = new HashMap<>();
     for (ASTFeatureConfiguration cfg : allConfigurations) {
-      for (String feature : SelectedFeatureCollector.getSelectedFeatures(cfg)) {
+      for (String feature : UnSelectedFeatureCollector.getSelectedFeatures(cfg)) {
         int currentOccurences = occurrences.containsKey(feature) ? occurrences.get(feature) : 0;
         occurrences.put(feature, ++currentOccurences);
       }

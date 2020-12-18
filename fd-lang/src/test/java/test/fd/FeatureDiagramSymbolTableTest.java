@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fd;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
@@ -20,8 +22,9 @@ import static org.junit.Assert.*;
 public class FeatureDiagramSymbolTableTest extends AbstractLangTest {
 
   @BeforeClass
-  public static void initMill(){
+  public static void initMills() {
     FeatureDiagramMill.init();
+    FeatureDiagramMill.globalScope();
   }
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)

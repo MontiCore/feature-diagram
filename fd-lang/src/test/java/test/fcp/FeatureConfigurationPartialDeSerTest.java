@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fcp;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialArtifactScope;
@@ -31,9 +32,15 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
   }
 
   @BeforeClass
-  public static void initMill(){
+  public static void initMills() {
+    FeatureConfigurationPartialMill.reset();
+    FeatureConfigurationMill.reset();
     FeatureConfigurationPartialMill.init();
+    FeatureConfigurationPartialMill.globalScope();
+    FeatureDiagramMill.init();
+    FeatureDiagramMill.globalScope();
   }
+
 
   @Test
   public void testRoundtripSerialization() {
@@ -72,7 +79,6 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
 
   @Test
   public void testLoad() {
-    fcpTool.initGlobalScope();
     ModelPaths.addEntry(FeatureDiagramMill.globalScope().getModelPath(),
         "src/test/resources");
     FeatureConfigurationPartialSymbols2Json s2j = new FeatureConfigurationPartialSymbols2Json();

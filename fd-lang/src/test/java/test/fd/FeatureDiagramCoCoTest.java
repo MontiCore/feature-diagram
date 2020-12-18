@@ -20,11 +20,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class FeatureDiagramCoCoTest extends AbstractLangTest {
 
-  @BeforeClass
-  public static void initMill(){
-    FeatureDiagramMill.init();
-  }
-
   @Test
   public void testValid() throws IOException {
     String dir = "src/test/resources/fdvalid/";

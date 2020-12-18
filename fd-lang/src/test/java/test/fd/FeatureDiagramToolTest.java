@@ -24,8 +24,9 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
   protected ByteArrayOutputStream out;
 
   @BeforeClass
-  public static void initMill() {
+  public static void initMills() {
     FeatureDiagramMill.init();
+    FeatureDiagramMill.globalScope();
   }
 
   @Before

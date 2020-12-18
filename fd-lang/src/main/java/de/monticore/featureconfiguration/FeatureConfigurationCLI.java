@@ -4,14 +4,13 @@ package de.monticore.featureconfiguration;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.*;
-import de.monticore.featureconfiguration._visitor.FeatureConfigurationTraverser;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopesGenitor;
-import de.monticore.featurediagram._visitor.FeatureDiagramTraverser;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -91,20 +90,10 @@ public class FeatureConfigurationCLI {
    */
   public IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
       ModelPath mp) {
-    initGlobalScope();
     IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.globalScope();
     ModelPaths.merge(gs.getModelPath(), mp);
     ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
-
     return FeatureConfigurationMill.scopesGenitorDelegator().createFromAST(ast);
-  }
-
-  public void initGlobalScope(){
-    IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.globalScope();
-    if(gs.getAdaptedFeatureDiagramSymbolResolverList().isEmpty()){
-      gs.setFileExt("fc");
-      gs.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver(gs.getModelPath()));
-    }
   }
 
   /**

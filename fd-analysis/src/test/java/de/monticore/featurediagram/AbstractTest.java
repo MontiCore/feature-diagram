@@ -6,10 +6,7 @@ import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
-import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
-import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
-import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationScope;
+import de.monticore.featureconfiguration._symboltable.*;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialScope;
@@ -50,6 +47,11 @@ public class AbstractTest {
   public static void setUpLog() {
 //        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
     LogStub.init();
+
+    FeatureConfigurationPartialMill.init();
+    FeatureDiagramMill.init();
+    FeatureConfigurationPartialMill.globalScope();
+    FeatureDiagramMill.globalScope();
   }
 
   @Before
@@ -62,6 +64,8 @@ public class AbstractTest {
     FeatureConfigurationPartialMill.globalScope().clear();
     FeatureConfigurationMill.globalScope().clear();
     FeatureDiagramMill.globalScope().clear();
+    FeatureConfigurationMill.globalScope().addAdaptedFeatureDiagramSymbolResolver(
+        new FeatureDiagramResolver());
   }
 
   protected static void assertPresent(Optional<?> opt) {

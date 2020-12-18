@@ -2,7 +2,7 @@
 
 package de.monticore.featurediagram;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfigurationpartial._visitor.UnSelectedFeatureCollector;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -28,6 +29,11 @@ public class FDSemDiffTest {
   private FeatureDiagramParser parser;
 
   private FDSemDiff semDiff;
+
+  public static void assertSelectionEquals(List<String> actual, String... expected) {
+    assertEquals(actual.size(), expected.length);
+    assertTrue(actual.containsAll(Lists.newArrayList(expected)));
+  }
 
   @Before
   public void setup() {
@@ -47,8 +53,8 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffOpenWorld(getFD("car"), getFD("car1"));
     assertTrue(witness.isPresent());
-    assertEquals(Sets.newHashSet("engine", "car", "hybrid"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "engine", "car", "hybrid");
   }
 
   @Test
@@ -61,9 +67,8 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffOpenWorld(getFD("car1"), getFD("car"));
     assertTrue(witness.isPresent());
-
-    assertEquals(Sets.newHashSet("engine", "car", "electric", "gas"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "engine", "car", "electric", "gas");
   }
 
   @Test
@@ -76,9 +81,8 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffOpenWorld(getFD("car1"), getFD("car2"));
     assertTrue(witness.isPresent());
-
-    assertEquals(Sets.newHashSet("engine", "car", "gas", "electric"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "engine", "car", "gas", "electric");
   }
 
   @Test
@@ -91,9 +95,8 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffOpenWorld(getFD("car2"), getFD("car1"));
     assertTrue(witness.isPresent());
-
-    assertEquals(Sets.newHashSet("hybrid", "engine", "car"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "hybrid", "engine", "car");
   }
 
   @Test
@@ -111,11 +114,9 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffOpenWorld(getFD("tablet1"), getFD("tablet2"));
     assertTrue(witness.isPresent());
-
-    assertEquals(
-        Sets.newHashSet("tablet", "memory", "display", "P100", "dis11", "processor", "m64GB",
-            "dis12"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "tablet", "memory", "display", "P100", "dis11", "processor",
+        "m64GB", "dis12");
   }
 
   @Test
@@ -123,10 +124,9 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffOpenWorld(getFD("tablet1"), getFD("tablet3"));
     assertTrue(witness.isPresent());
-
-    assertEquals(Sets.newHashSet("tablet", "memory", "P100", "m64GB", "display", "dis11", "dis12",
-        "processor"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "tablet", "memory", "P100", "m64GB", "display", "dis11", "dis12",
+        "processor");
   }
 
   @Test
@@ -134,10 +134,9 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffOpenWorld(getFD("tablet2"), getFD("tablet1"));
     assertTrue(witness.isPresent());
-
-    assertEquals(
-        Sets.newHashSet("tablet", "memory", "m64GB", "display", "P100", "processor", "dis12"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "tablet", "memory", "m64GB", "display", "P100", "processor",
+        "dis12");
   }
 
   @Test
@@ -150,10 +149,9 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffOpenWorld(getFD("tablet2"), getFD("tablet3"));
     assertTrue(witness.isPresent());
-
-    assertEquals(
-        Sets.newHashSet("tablet", "memory", "m64GB", "display", "P200", "processor", "dis11"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "tablet", "memory", "m64GB", "display", "P200", "processor",
+        "dis11");
   }
 
   @Test
@@ -161,10 +159,9 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffOpenWorld(getFD("tablet3"), getFD("tablet1"));
     assertTrue(witness.isPresent());
-
-    assertEquals(
-        Sets.newHashSet("tablet", "memory", "m128GB", "display", "P100", "processor", "dis12"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "tablet", "memory", "m128GB", "display", "P100", "processor",
+        "dis12");
   }
 
   @Test
@@ -172,10 +169,9 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffOpenWorld(getFD("tablet3"), getFD("tablet2"));
     assertTrue(witness.isPresent());
-
-    assertEquals(
-        Sets.newHashSet("tablet", "memory", "m256GB", "display", "P100", "processor", "dis11"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "tablet", "memory", "m256GB", "display", "P100", "processor",
+        "dis11");
   }
 
   @Test
@@ -231,9 +227,8 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffClosedWorld(getFD("carPhone"), getFD("carLocking"));
     assertTrue(witness.isPresent());
-
-    assertEquals(Sets.newHashSet("car", "locking", "phone"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "car", "locking", "phone");
   }
 
   @Test
@@ -241,9 +236,8 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffClosedWorld(getFD("carPhone"), getFD("carLockingEngine"));
     assertTrue(witness.isPresent());
-
-    assertEquals(Sets.newHashSet("car", "locking", "phone"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "car", "locking", "phone");
   }
 
   @Test
@@ -251,9 +245,8 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffClosedWorld(getFD("carLockingEngine"), getFD("carLocking"));
     assertTrue(witness.isPresent());
-
-    assertEquals(Sets.newHashSet("car", "locking", "engine"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "car", "locking", "engine");
   }
 
   @Test
@@ -261,9 +254,8 @@ public class FDSemDiffTest {
     Optional<ASTFeatureConfiguration> witness = semDiff
         .semDiffClosedWorld(getFD("carLockingEngine"), getFD("carPhone"));
     assertTrue(witness.isPresent());
-
-    assertEquals(Sets.newHashSet("car", "locking", "engine"),
-        UnSelectedFeatureCollector.getSelectedFeatures(witness.get()));
+    List<String> actual = UnSelectedFeatureCollector.getSelectedFeatures(witness.get());
+    assertSelectionEquals(actual, "car", "locking", "engine");
   }
 
   private ASTFeatureDiagram getFD(String model) {

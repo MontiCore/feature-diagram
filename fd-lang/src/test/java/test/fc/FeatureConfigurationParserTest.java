@@ -14,11 +14,6 @@ import java.io.IOException;
  */
 public class FeatureConfigurationParserTest extends AbstractLangTest {
 
-  @BeforeClass
-  public static void initMill(){
-    FeatureConfigurationMill.init();
-  }
-
   @Test
   public void testParseStringsForIndividualGrammarRules() throws IOException {
     FeatureConfigurationParser parser = new FeatureConfigurationParser();

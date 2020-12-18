@@ -4,6 +4,8 @@ package test.fc;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.io.paths.ModelPath;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,14 +19,19 @@ import static org.junit.Assert.*;
 
 public class FeatureConfigurationSymbolTableTest extends AbstractLangTest {
 
-  @BeforeClass
-  public static void initMill(){
-    FeatureConfigurationMill.init();
-  }
-
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
     ModelPath mp = new ModelPath(Paths.get("src", "test", "resources"));
     return fcTool.createSymbolTable(modelFile, mp, fcParser);
+  }
+
+  @BeforeClass
+  public static void initMills() {
+    FeatureConfigurationPartialMill.reset();
+    FeatureConfigurationMill.reset();
+    FeatureConfigurationMill.init();
+    FeatureConfigurationMill.globalScope();
+    FeatureDiagramMill.init();
+    FeatureDiagramMill.globalScope();
   }
 
   @Test

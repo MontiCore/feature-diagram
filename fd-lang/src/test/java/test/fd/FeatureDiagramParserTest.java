@@ -14,11 +14,6 @@ import java.io.IOException;
  */
 public class FeatureDiagramParserTest extends AbstractLangTest {
 
-  @BeforeClass
-  public static void initMill(){
-    FeatureDiagramMill.init();
-  }
-
   @Test
   public void testParseStringsForIndividualGrammarRules() throws IOException {
     FeatureDiagramParser parser = new FeatureDiagramParser();

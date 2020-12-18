@@ -3,6 +3,7 @@
 package de.monticore.featurediagram;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
@@ -23,6 +24,9 @@ public class FACTExampleTest extends AbstractTest {
   @Test
   public void test(){
     LogStub.init();
+//    FeatureConfigurationPartialMill.init();
+//    FeatureDiagramMill.init();
+
     factExampleInReadme();
     assertEquals(0, Log.getErrorCount());
   }

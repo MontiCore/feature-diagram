@@ -3,7 +3,6 @@ package de.monticore.featureconfigurationpartial;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolver;
 import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCos;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialScopeDeSer;
@@ -91,20 +90,11 @@ public class FeatureConfigurationPartialCLI {
    */
   public IFeatureConfigurationPartialArtifactScope createSymbolTable(
       ASTFCCompilationUnit ast, ModelPath mp) {
-    initGlobalScope();
     IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
     ModelPaths.merge(gs.getModelPath(), mp);
     ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
 
     return FeatureConfigurationPartialMill.scopesGenitorDelegator().createFromAST(ast);
-  }
-
-  public void initGlobalScope() {
-    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
-    if (gs.getAdaptedFeatureDiagramSymbolResolverList().isEmpty()) {
-      gs.setFileExt("fc");
-      gs.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver(gs.getModelPath()));
-    }
   }
 
   /**

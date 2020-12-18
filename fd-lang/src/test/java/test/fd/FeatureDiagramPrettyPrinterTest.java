@@ -20,8 +20,9 @@ import static org.junit.Assert.fail;
 public class FeatureDiagramPrettyPrinterTest extends AbstractLangTest {
 
   @BeforeClass
-  public static void initMill(){
+  public static void initMills() {
     FeatureDiagramMill.init();
+    FeatureDiagramMill.globalScope();
   }
 
   @Test

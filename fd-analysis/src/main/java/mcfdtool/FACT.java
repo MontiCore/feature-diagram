@@ -4,6 +4,7 @@ package mcfdtool;
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
@@ -49,6 +50,10 @@ public class FACT {
   public static void main(String[] args) {
     FACT tool = new FACT();
     Log.initWARN();
+
+    FeatureConfigurationPartialMill.init();
+    FeatureDiagramMill.init();
+
     tool.run(args);
   }
 

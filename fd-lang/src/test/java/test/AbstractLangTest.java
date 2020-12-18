@@ -6,6 +6,7 @@ import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
+import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolver;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationScope;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
@@ -69,6 +70,8 @@ public class AbstractLangTest {
     FeatureConfigurationPartialMill.globalScope().clear();
     FeatureConfigurationMill.globalScope().clear();
     FeatureDiagramMill.globalScope().clear();
+    FeatureConfigurationMill.globalScope().addAdaptedFeatureDiagramSymbolResolver(
+        new FeatureDiagramResolver());
   }
 
   protected static void assertPresent(Optional<?> opt) {

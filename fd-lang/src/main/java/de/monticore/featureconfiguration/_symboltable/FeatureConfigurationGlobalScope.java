@@ -11,7 +11,8 @@ public class FeatureConfigurationGlobalScope extends FeatureConfigurationGlobalS
   protected FeatureConfigurationGlobalScope realThis = this;
 
   public FeatureConfigurationGlobalScope() {
-    this.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver(this.getModelPath()));
+    this.addAdaptedFeatureDiagramSymbolResolver(new FeatureDiagramResolver());
+    setFileExt("fc");
   }
 
   @Override public FeatureConfigurationGlobalScope getRealThis() {

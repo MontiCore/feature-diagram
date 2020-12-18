@@ -6,11 +6,14 @@ import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifa
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbols2Json;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
@@ -30,8 +33,19 @@ public class FeatureConfigurationDeSerTest extends AbstractLangTest {
   }
 
   @BeforeClass
-  public static void initMill(){
+  public static void initMills() {
+    FeatureConfigurationPartialMill.reset();
+    FeatureConfigurationMill.reset();
     FeatureConfigurationMill.init();
+    FeatureConfigurationMill.globalScope();
+    FeatureDiagramMill.init();
+    FeatureDiagramMill.globalScope();
+  }
+
+  @Before
+  public void setUpFCLog() {
+    //  Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+    LogStub.init();
   }
 
   @Test
@@ -71,7 +85,6 @@ public class FeatureConfigurationDeSerTest extends AbstractLangTest {
 
   @Test
   public void testLoad() {
-    fcTool.initGlobalScope();
     ModelPaths.addEntry(FeatureDiagramMill.globalScope().getModelPath(),
         "src/test/resources");
     FeatureConfigurationSymbols2Json s2j = new FeatureConfigurationSymbols2Json();

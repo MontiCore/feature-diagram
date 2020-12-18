@@ -17,7 +17,7 @@ import de.monticore.types.prettyprint.MCBasicTypesPrettyPrinter;
 /**
  * The pretty printer for feature diagrams reuses pretty printers of the languages it inherits from.
  */
-public class FeatureDiagramPrettyPrinter implements FeatureDiagramTraverser{
+public class FeatureDiagramPrettyPrinter implements FeatureDiagramTraverser {
 
   public static String print(ASTFeatureDiagramNode node) {
     IndentPrinter printer = new IndentPrinter();
