@@ -3,9 +3,8 @@
 package de.monticore.featureconfigurationpartial._symboltable;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopesGenitor;
-import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;

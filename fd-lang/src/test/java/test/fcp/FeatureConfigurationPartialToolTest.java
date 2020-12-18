@@ -25,9 +25,8 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
   protected ByteArrayOutputStream out;
 
   @BeforeClass
-  public static void initMills() {
+  public static void initMill(){
     FeatureConfigurationPartialMill.init();
-    FeatureConfigurationPartialMill.globalScope();
   }
 
   @Before

@@ -2,8 +2,10 @@
 package de.monticore.featurediagram._cocos;
 
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
-import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._visitor.FeatureDiagramTraverser;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
@@ -15,13 +17,21 @@ import java.util.Map;
  * of a feature model.
  */
 public class CTCFeatureNameExists
-    implements FeatureDiagramASTFeatureDiagramCoCo, FeatureDiagramVisitor {
+    implements FeatureDiagramASTFeatureDiagramCoCo, ExpressionsBasisVisitor2 {
 
-  private Map<String, SourcePosition> ctcnames = new HashMap<>();
+  protected Map<String, SourcePosition> ctcnames;
+
+  protected FeatureDiagramTraverser traverser;
+
+  public CTCFeatureNameExists(){
+    ctcnames = new HashMap<>();
+    traverser = FeatureDiagramMill.traverser();
+    traverser.add4ExpressionsBasis(this);
+  }
 
   @Override
   public void check(ASTFeatureDiagram node) {
-    node.accept(this);
+    node.accept(traverser);
     ctcnames.forEach((name, pos) -> {
       if (!node.getSpannedScope().resolveFeature(name).isPresent()) {
         Log.error("0xFD006 A cross-tree constraint refers to the feature '" + name

@@ -4,7 +4,7 @@ package de.monticore.featureconfiguration;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationDeSer;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
@@ -39,7 +39,7 @@ public class FeatureConfigurationCLI {
   public static void main(String[] args) {
     FeatureConfigurationCLI cli = new FeatureConfigurationCLI();
     FeatureConfigurationParser parser = new FeatureConfigurationParser();
-    FeatureConfigurationScopeDeSer deser = new FeatureConfigurationScopeDeSer();
+    FeatureConfigurationDeSer deser = new FeatureConfigurationDeSer();
     Log.initWARN();
     cli.run(args, parser, deser);
   }
@@ -104,7 +104,7 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public String storeSymbols(IFeatureConfigurationArtifactScope scope, Path out,
-      FeatureConfigurationScopeDeSer deser) {
+      FeatureConfigurationDeSer deser) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName() + ".fcsym");
@@ -119,7 +119,7 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public String storeSymbols(IFeatureConfigurationArtifactScope scope,
-      String symbolFileName, FeatureConfigurationScopeDeSer deser) {
+      String symbolFileName, FeatureConfigurationDeSer deser) {
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
@@ -185,7 +185,7 @@ public class FeatureConfigurationCLI {
    * @param args
    */
   public void run(String[] args, FeatureConfigurationParser parser,
-      FeatureConfigurationScopeDeSer deser) {
+      FeatureConfigurationDeSer deser) {
     Options options = initOptions();
 
     try {

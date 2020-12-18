@@ -5,7 +5,7 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
+import de.monticore.featurediagram._symboltable.FeatureDiagramDeSer;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
@@ -38,7 +38,7 @@ public class FeatureDiagramCLI {
 
     FeatureDiagramCLI cli = new FeatureDiagramCLI();
     FeatureDiagramParser parser = new FeatureDiagramParser();
-    FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
+    FeatureDiagramDeSer deser = new FeatureDiagramDeSer();
 
     Log.initWARN();
     cli.run(args, parser, deser);
@@ -119,7 +119,7 @@ public class FeatureDiagramCLI {
    * @return
    */
   public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out,
-      FeatureDiagramScopeDeSer deser) {
+      FeatureDiagramDeSer deser) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName() + ".fdsym");
@@ -134,7 +134,7 @@ public class FeatureDiagramCLI {
    * @return
    */
   public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName,
-      FeatureDiagramScopeDeSer deser) {
+      FeatureDiagramDeSer deser) {
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
@@ -148,7 +148,7 @@ public class FeatureDiagramCLI {
    * @return
    */
   public ASTFeatureDiagram run(String modelFile, Path out, FeatureDiagramParser parser,
-      FeatureDiagramScopeDeSer deser) {
+      FeatureDiagramDeSer deser) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
@@ -173,7 +173,7 @@ public class FeatureDiagramCLI {
    * @return
    */
   public ASTFeatureDiagram run(String modelFile, FeatureDiagramParser parser,
-      FeatureDiagramScopeDeSer deser) {
+      FeatureDiagramDeSer deser) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
@@ -205,7 +205,7 @@ public class FeatureDiagramCLI {
    *
    * @param args
    */
-  public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
+  public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramDeSer deser) {
     Options options = initOptions();
 
     try {

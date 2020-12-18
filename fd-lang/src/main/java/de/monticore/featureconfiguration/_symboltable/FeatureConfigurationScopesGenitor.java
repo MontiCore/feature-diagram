@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featureconfiguration._symboltable;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatures;
@@ -14,7 +13,8 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.Optional;
+
+import static de.monticore.featurediagram._symboltable.FeatureModelImporter.loadFeatureModel;
 
 /**
  * This class builds up the symbols and scopes from an AST of an FD model.
@@ -22,9 +22,7 @@ import java.util.Optional;
 public class FeatureConfigurationScopesGenitor
     extends FeatureConfigurationScopesGenitorTOP {
 
-  private FeatureConfigurationSymbol fc;
-
-  private FeatureDiagramSymbol fd;
+  protected FeatureConfigurationSymbol fcSym;
 
   public FeatureConfigurationScopesGenitor() {
   }
@@ -91,19 +89,19 @@ public class FeatureConfigurationScopesGenitor
   @Override
   public void visit(ASTFeatures node) {
     super.visit(node);
-
-    //to identify symbols that could not be found
-    List<String> featureNameList = new ArrayList<>(node.getNameList());
+    FeatureDiagramSymbol fd = fcSym.getFeatureDiagram();
     if (null != fd) {
+      //to identify symbols that could not be found
+      List<String> featureNameList = new ArrayList<>(node.getNameList());
       for (FeatureSymbol symbol : fd.getAllFeatures()) {
         if (featureNameList.contains(symbol.getName())) {
           featureNameList.remove(symbol.getName());
-          fc.addSelectedFeatures(symbol);
+          fcSym.addSelectedFeatures(symbol);
         }
       }
       for (String name : featureNameList) {
-        Log.error("0xFC001 The selected Feature " + name + " does not exist in Feature Model " + fd
-            .getFullName());
+        Log.error("0xFC001 The selected Feature " + name + " does not exist in Feature Model "
+            + fd.getFullName());
       }
     }
   }
@@ -117,18 +115,9 @@ public class FeatureConfigurationScopesGenitor
   @Override
   public void visit(ASTFeatureConfiguration node) {
     super.visit(node);
-    fc = node.getSymbol();
-    Optional<FeatureDiagramSymbol> featureDiagramSymbol = FeatureConfigurationMill.globalScope()
-        .resolveFeatureDiagram(node.getFdName());
-    if (featureDiagramSymbol.isPresent()) {
-      fd = node.getFdNameSymbol();
-      fc.setFeatureDiagram(fd);
-    }
-    else {
-      Log.error(
-          "0xFC002 The feature configuration `" + node.getName() + "` uses the feature model '"
-              + node.getFdName() + "' that cannot be resolved!");
-    }
+    fcSym = node.getSymbol();
+    FeatureDiagramSymbol fdSym = loadFeatureModel(node.getFdName(), node.getName());
+    fcSym.setFeatureDiagram(fdSym);
   }
 
 }

@@ -2,7 +2,6 @@
 
 package de.monticore.featureconfiguration._symboltable;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
 import de.monticore.symboltable.serialization.json.JsonElement;
@@ -13,29 +12,50 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.featurediagram._symboltable.FeatureModelImporter.loadFeatureModel;
+
 /**
  * This class deserializes FeatureConfigurationSymbols. Especially, the attributes of the symbol of
- * the referenced  FD model and the FeatureSymbols are realized.
+ * the referenced FD model and the FeatureSymbols are realized.
  */
 public class FeatureConfigurationSymbolDeSer extends FeatureConfigurationSymbolDeSerTOP {
 
-  FeatureDiagramSymbol fdSymbol;
+  protected FeatureDiagramSymbol fdSymbol;
+
+  /**
+   * serializes the feature diagram as qualified name in form of a JSON String
+   * @param featureDiagram
+   * @param s2j
+   */
+  @Override protected void serializeFeatureDiagram(FeatureDiagramSymbol featureDiagram,
+      FeatureConfigurationSymbols2Json s2j) {
+    s2j.getJsonPrinter().member("featureDiagram", featureDiagram.getFullName());
+  }
+
+  /**
+   * serializes the list of feature symbols as JSON array of the (unqualified) feature names
+   * as JSON Strings
+   * @param selectedFeatures
+   * @param s2j
+   */
+  @Override protected void serializeSelectedFeatures(List<FeatureSymbol> selectedFeatures,
+      FeatureConfigurationSymbols2Json s2j) {
+    s2j.getJsonPrinter().array("selectedFeatures", selectedFeatures,
+        feature -> "\"" + feature.getName() + "\"");
+  }
 
   @Override public FeatureDiagramSymbol deserializeFeatureDiagram(JsonObject symbolJson) {
 
     String fdName = symbolJson.getStringMember("featureDiagram");
-    Optional<FeatureDiagramSymbol> featureDiagramSymbol = FeatureConfigurationMill.globalScope()
-        .resolveFeatureDiagram(fdName);
+    fdSymbol = loadFeatureModel(fdName, symbolJson.toString());
 
-    if (featureDiagramSymbol.isPresent()) {
-      fdSymbol = featureDiagramSymbol.get();
-      return fdSymbol;
+    if (null == fdSymbol) {
+      Log.error("0xFC646 Unable to find the FD '" + fdName
+          + "' that the stored feature configuration '"
+          + symbolJson + "' refers to!");
     }
-    Log.error("0xFC646 Unable to find the FD '" + fdName
-        + "' that the stored feature configuration '"
-        + symbolJson + "' refers to!");
 
-    return null;
+    return fdSymbol;
   }
 
   @Override public List<FeatureSymbol> deserializeSelectedFeatures(JsonObject symbolJson) {

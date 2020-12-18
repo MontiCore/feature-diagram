@@ -11,7 +11,7 @@ import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
+import de.monticore.featurediagram._symboltable.FeatureDiagramDeSer;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import fddiff.FDSemDiff;
@@ -36,7 +36,7 @@ public class FACT {
 
   protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
 
-  protected FeatureDiagramScopeDeSer fdDeSer = new FeatureDiagramScopeDeSer();
+  protected FeatureDiagramDeSer fdDeSer = new FeatureDiagramDeSer();
 
   protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
 

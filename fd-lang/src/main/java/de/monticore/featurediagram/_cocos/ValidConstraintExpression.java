@@ -2,10 +2,12 @@
 package de.monticore.featurediagram._cocos;
 
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.prettyprint.CommonExpressionsPrettyPrinter;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFeatureConstraint;
-import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._visitor.FeatureDiagramTraverser;
 import de.monticore.prettyprint.IndentPrinter;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
@@ -15,9 +17,16 @@ import de.se_rwth.commons.logging.Log;
  * uses a forbidden kind of expression.
  */
 public class ValidConstraintExpression
-    implements FeatureDiagramASTFeatureConstraintCoCo, FeatureDiagramVisitor {
+    implements FeatureDiagramASTFeatureConstraintCoCo, CommonExpressionsVisitor2 {
 
   protected ASTExpression expression;
+
+  protected FeatureDiagramTraverser traverser;
+
+  public ValidConstraintExpression(){
+    traverser = FeatureDiagramMill.traverser();
+    traverser.add4CommonExpressions(this);
+  }
 
   private void error(String expressionKind, SourcePosition pos) {
     // pretty print expression for error message
@@ -29,7 +38,7 @@ public class ValidConstraintExpression
 
   @Override public void check(ASTFeatureConstraint node) {
     expression = node.getConstraint();
-    expression.accept(this);
+    expression.accept(traverser);
   }
 
   @Override public void visit(ASTCallExpression node) {

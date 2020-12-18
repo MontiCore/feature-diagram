@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fcp;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialArtifactScope;
@@ -12,7 +11,6 @@ import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
@@ -27,20 +25,14 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
 
   protected static final ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
 
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationPartialMill.init();
+  }
+
   protected IFeatureConfigurationPartialArtifactScope setupSymbolTable(String modelFile) {
     return fcpTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcpParser);
   }
-
-  @BeforeClass
-  public static void initMills() {
-    FeatureConfigurationPartialMill.reset();
-    FeatureConfigurationMill.reset();
-    FeatureConfigurationPartialMill.init();
-    FeatureConfigurationPartialMill.globalScope();
-    FeatureDiagramMill.init();
-    FeatureDiagramMill.globalScope();
-  }
-
 
   @Test
   public void testRoundtripSerialization() {

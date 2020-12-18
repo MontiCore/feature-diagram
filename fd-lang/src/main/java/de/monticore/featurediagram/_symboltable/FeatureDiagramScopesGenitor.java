@@ -1,19 +1,23 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._symboltable;
 
+import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
+import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._ast.ASTFeatureTreeRule;
 import de.monticore.featurediagram._ast.ASTGroupPart;
-import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
-import de.se_rwth.commons.logging.Log;
 
 import java.util.Deque;
+
+import static de.monticore.featurediagram._symboltable.FeatureModelImporter.importFD;
 
 /**
  * This class builds up the symbols and scopes from an AST of an FD model.
  */
 public class FeatureDiagramScopesGenitor extends FeatureDiagramScopesGenitorTOP {
+
+  protected FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
 
   public FeatureDiagramScopesGenitor() {
   }
@@ -68,33 +72,21 @@ public class FeatureDiagramScopesGenitor extends FeatureDiagramScopesGenitorTOP 
    * for each of these, adds all elements of the imported feature diagram to the AST of the
    * current feature diagram.
    *
-   * @param rootNode
+   * @param ast
    */
-  protected void handleImportStatements(ASTFDCompilationUnit rootNode) {
-    for (ASTMCImportStatement i : rootNode.getMCImportStatementList()) {
-      if (i.isStar()) {
-        Log.error("0xFD132 Feature diagrams may not use stars '*' in import statements!");
-        continue;
-      }
-      FeatureDiagramSymbol fd = FeatureDiagramMill.globalScope()
-          .resolveFeatureDiagram(i.getQName()).orElse(null);
-      if (null == fd) {
-        Log.error("0xFD133 Cannot find imported feature diagram '" + i.getQName() + "' in '"
-            + rootNode.getFeatureDiagram().getName() + "'!");
-        continue;
-      }
-      if (!fd.isPresentAstNode()) {
-        Log.error("0xFD134 Cannot find AST of imported feature diagram '" + i.getQName() + "' in '"
-            + rootNode.getFeatureDiagram().getName() + "'!");
-        continue;
-      }
-      rootNode.getFeatureDiagram().addAllFDElements(fd.getAstNode().getFDElementList());
+  protected void handleImportStatements(ASTFDCompilationUnit ast) {
+    ASTFeatureDiagram currentFD = ast.getFeatureDiagram();
+    ASTFeatureDiagram importedFD = importFD(ast.getMCImportStatementList(), currentFD.getName());
+    // add all features and cross-tree constraints of imported FD to the current FD
+    if(null != importedFD){
+      currentFD.addAllFDElements(importedFD.getFDElementList());
     }
   }
 
   /**
    * creates a FeatureSymbol on the first occurrence of a feature name in the current model
    * and adds this symbol to the Feature Diagram's scope
+   *
    * @param name
    */
   protected void createFeatureSymbolOnFirstOccurrence(String name) {

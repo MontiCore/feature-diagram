@@ -64,8 +64,6 @@ public class AbstractTest {
     FeatureConfigurationPartialMill.globalScope().clear();
     FeatureConfigurationMill.globalScope().clear();
     FeatureDiagramMill.globalScope().clear();
-    FeatureConfigurationMill.globalScope().addAdaptedFeatureDiagramSymbolResolver(
-        new FeatureDiagramResolver());
   }
 
   protected static void assertPresent(Optional<?> opt) {
