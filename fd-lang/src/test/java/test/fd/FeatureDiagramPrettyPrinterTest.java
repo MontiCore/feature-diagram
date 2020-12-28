@@ -22,7 +22,6 @@ public class FeatureDiagramPrettyPrinterTest extends AbstractLangTest {
   @BeforeClass
   public static void initMills() {
     FeatureDiagramMill.init();
-    FeatureDiagramMill.globalScope();
   }
 
   @Test

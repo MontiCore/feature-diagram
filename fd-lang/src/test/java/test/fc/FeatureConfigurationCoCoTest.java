@@ -3,7 +3,6 @@ package test.fc;
 
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
-import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.io.paths.ModelPath;
 import org.junit.BeforeClass;
 import org.junit.Test;

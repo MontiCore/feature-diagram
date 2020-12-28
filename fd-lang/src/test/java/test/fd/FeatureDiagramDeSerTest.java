@@ -26,7 +26,6 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
   @BeforeClass
   public static void initMills() {
     FeatureDiagramMill.init();
-    FeatureDiagramMill.globalScope();
   }
 
   @Test
@@ -93,8 +92,7 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
   @Test
   public void testStore() {
     JsonPrinter.enableIndentation();
-    IFeatureDiagramArtifactScope fdScope = setupSymbolTable(
-        "fdvalid/CarNavigation.fd");
+    IFeatureDiagramArtifactScope fdScope = setupSymbolTable("fdvalid/CarNavigation.fd");
     FeatureDiagramSymbols2Json s2j = new FeatureDiagramSymbols2Json();
     s2j.store(fdScope, "target/test-symbols/fdvalid/CarNavigation.fdsym");
 
@@ -104,33 +102,33 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
     String expected = "{\n"
         + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "  \"name\": \"CarNavigation\",\n"
-        + "      \"package\": \"fdvalid\",\n"
-        + "      \"symbols\": [\n"
-        + "      {\n"
-        + "        \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\",\n"
-        + "          \"name\": \"CarNavigation\",\n"
-        + "          \"features\": [\n"
-        + "          \"CarNavigation\",\n"
-        + "          \"Display\",\n"
-        + "          \"GPS\",\n"
-        + "          \"PreinstalledMaps\",\n"
-        + "          \"Memory\",\n"
-        + "          \"VoiceControl\",\n"
-        + "          \"TouchControl\",\n"
-        + "          \"Small\",\n"
-        + "          \"Medium\",\n"
-        + "          \"Large\",\n"
-        + "          \"SmallScreen\",\n"
-        + "          \"LargeScreen\",\n"
-        + "          \"Europe\",\n"
-        + "          \"NorthAmerica\",\n"
-        + "          \"SouthAmerica\",\n"
-        + "          \"Asia\",\n"
-        + "          \"Africa\"\n"
-        + "        ]\n"
-        + "      }\n"
-        + "    ]\n"
-        + "  }";
+        + "  \"package\": \"fdvalid\"    ,\n"
+        + "    \"symbols\": [\n"
+        + "    {\n"
+        + "      \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\",\n"
+        + "        \"name\": \"CarNavigation\",\n"
+        + "        \"features\": [\n"
+        + "        \"CarNavigation\",\n"
+        + "        \"Display\",\n"
+        + "        \"GPS\",\n"
+        + "        \"PreinstalledMaps\",\n"
+        + "        \"Memory\",\n"
+        + "        \"VoiceControl\",\n"
+        + "        \"TouchControl\",\n"
+        + "        \"Small\",\n"
+        + "        \"Medium\",\n"
+        + "        \"Large\",\n"
+        + "        \"SmallScreen\",\n"
+        + "        \"LargeScreen\",\n"
+        + "        \"Europe\",\n"
+        + "        \"NorthAmerica\",\n"
+        + "        \"SouthAmerica\",\n"
+        + "        \"Asia\",\n"
+        + "        \"Africa\"\n"
+        + "      ]\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}";
     String actual = FileReaderWriter.readFromFile(expectedPath);
     assertEquals(expected, actual);
   }

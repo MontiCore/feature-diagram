@@ -1,8 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fd;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
-import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;

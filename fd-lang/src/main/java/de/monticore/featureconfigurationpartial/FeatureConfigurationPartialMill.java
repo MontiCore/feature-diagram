@@ -2,8 +2,6 @@
 
 package de.monticore.featureconfigurationpartial;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMillTOP;
-
 public class FeatureConfigurationPartialMill extends FeatureConfigurationPartialMillTOP {
 
   public  static  void reset ()  {

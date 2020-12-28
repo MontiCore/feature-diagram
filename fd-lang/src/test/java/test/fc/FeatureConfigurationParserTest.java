@@ -1,9 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fc;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 

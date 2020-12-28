@@ -26,7 +26,6 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
   @BeforeClass
   public static void initMills() {
     FeatureDiagramMill.init();
-    FeatureDiagramMill.globalScope();
   }
 
   @Before

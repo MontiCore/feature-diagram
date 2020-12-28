@@ -14,6 +14,11 @@ import java.io.IOException;
  */
 public class FeatureConfigurationPartialParserTest extends AbstractLangTest {
 
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationPartialMill.init();
+  }
+
   @Test
   public void testParseStringsForIndividualGrammarRules() throws IOException {
     FeatureConfigurationPartialParser parser = new FeatureConfigurationPartialParser();

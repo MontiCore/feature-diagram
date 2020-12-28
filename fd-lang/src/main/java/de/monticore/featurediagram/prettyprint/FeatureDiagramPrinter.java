@@ -3,8 +3,6 @@
 package de.monticore.featurediagram.prettyprint;
 
 import de.monticore.featurediagram._ast.*;
-import de.monticore.featurediagram._visitor.FeatureDiagramHandler;
-import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
 import de.monticore.featurediagram._visitor.FeatureDiagramVisitor2;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;

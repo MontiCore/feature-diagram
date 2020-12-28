@@ -2,31 +2,49 @@
 package de.monticore.featurediagram._symboltable;
 
 import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.symboltable.serialization.JsonDeSers;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 
 /**
  * This handwritten deser serializes and deserializes FeatureSymbols.
- * The serialization strategy for FeatureSymbols  * deviates from the generated strategy as it
+ * The serialization strategy for FeatureSymbols deviates from the generated strategy as it
  * stores all FeatureSymbols as a list of feature names that are a member of a stored
  * FeatureDiagramSymbol.
  */
 public class FeatureDiagramSymbolDeSer extends FeatureDiagramSymbolDeSerTOP {
 
-  @Override protected void serializeAddons(FeatureDiagramSymbol toSerialize,
+  protected static final String FEATURES = "features";
+
+  @Override public String serialize(FeatureDiagramSymbol toSerialize,
       FeatureDiagramSymbols2Json s2j) {
-    JsonPrinter printer = s2j.getJsonPrinter();
-    printer.array("features", toSerialize.getAllFeatures(), f -> ("\"" + f.getName() + "\""));
+    JsonPrinter p = s2j.getJsonPrinter();
+    p.beginObject();
+    p.member(JsonDeSers.KIND, getSerializedKind());
+    p.member(JsonDeSers.NAME, toSerialize.getName());
+
+    // do not serialize spanned scope, but list of feature names
+    p.array(FEATURES, toSerialize.getAllFeatures(), f -> ("\"" + f.getName() + "\""));
+
+    serializeAddons(toSerialize, s2j);
+    p.endObject();
+
+    return p.toString();
   }
 
-  @Override protected void deserializeAddons(FeatureDiagramSymbol symbol, JsonObject symbolJson) {
+  @Override public FeatureDiagramSymbol deserialize(JsonObject symbolJson) {
+    FeatureDiagramSymbolBuilder builder = FeatureDiagramMill.featureDiagramSymbolBuilder();
+    builder.setName(symbolJson.getStringMember(JsonDeSers.NAME));
+    FeatureDiagramSymbol symbol = builder.build();
+
+    // ignore deserializing serialized spanned scope, create and link new scope
     IFeatureDiagramScope fdScope = FeatureDiagramMill.scope();
     symbol.setSpannedScope(fdScope); //for bidirectional link
-    symbol.getEnclosingScope().addSubScope(fdScope); //for bidirectional link
 
-    if (symbolJson.hasArrayMember("features")) {
-      for (JsonElement e : symbolJson.getArrayMember("features")) {
+    // deserialize list of serialized feature names and add to scope
+    if (symbolJson.hasArrayMember(FEATURES)) {
+      for (JsonElement e : symbolJson.getArrayMember(FEATURES)) {
         FeatureSymbol featureSymbol = FeatureDiagramMill
             .featureSymbolBuilder()
             .setName(e.getAsJsonString().getValue())
@@ -35,6 +53,9 @@ public class FeatureDiagramSymbolDeSer extends FeatureDiagramSymbolDeSerTOP {
         fdScope.add(featureSymbol);
       }
     }
+
+    deserializeAddons(symbol, symbolJson);
+    return symbol;
   }
 
 }

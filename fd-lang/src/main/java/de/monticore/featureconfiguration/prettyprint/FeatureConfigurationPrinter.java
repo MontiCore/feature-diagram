@@ -6,7 +6,6 @@ import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatures;
 import de.monticore.featureconfiguration._visitor.FeatureConfigurationTraverser;
-import de.monticore.featureconfiguration._visitor.FeatureConfigurationVisitor;
 import de.monticore.featureconfiguration._visitor.FeatureConfigurationVisitor2;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;

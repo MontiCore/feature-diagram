@@ -17,6 +17,10 @@ import java.util.Optional;
 import static de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate;
 import static de.monticore.io.paths.ModelCoordinates.getReader;
 
+/**
+ * This class realizes loading of feature diagram models, as the AST of imported feature diagrams
+ * is required for realizing the import statements in the symbol table infrastructure.
+ */
 public class FeatureModelImporter {
 
   public static ASTFeatureDiagram importFD(List<ASTMCImportStatement> imports, String fdName){

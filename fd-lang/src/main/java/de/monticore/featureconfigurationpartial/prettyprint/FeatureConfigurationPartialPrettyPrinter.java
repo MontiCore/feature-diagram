@@ -6,7 +6,6 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfigurationNode;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialTraverser;
-import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
 import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.List;
