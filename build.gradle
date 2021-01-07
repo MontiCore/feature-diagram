@@ -215,3 +215,7 @@ project(':fd-analysis') {
         }
     }
 }
+
+task buildAll(type: GradleBuild) {
+  tasks = [ 'build' ]
+}
