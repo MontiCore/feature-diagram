@@ -210,7 +210,7 @@ public class FACTTest extends AbstractTest {
     });
     String printed = err.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.contains("0xFC002"));
+    assertTrue(printed.contains("0xFD133"));
     System.setErr(originalErr);
     assertEquals(1, Log.getErrorCount());
   }

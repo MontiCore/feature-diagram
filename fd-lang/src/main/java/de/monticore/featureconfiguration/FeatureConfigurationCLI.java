@@ -207,7 +207,7 @@ public class FeatureConfigurationCLI {
       //Set path for imported symbols
       ModelPath mp = new ModelPath();
       if (cmd.hasOption("path")) {
-        for (String p : cmd.getOptionValue("path").split(":")) {
+        for (String p : cmd.getOptionValues("path")) {
           mp.addEntry(Paths.get(p));
         }
       }

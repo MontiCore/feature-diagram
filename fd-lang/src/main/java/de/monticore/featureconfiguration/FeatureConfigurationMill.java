@@ -2,6 +2,7 @@
 
 package de.monticore.featureconfiguration;
 
+//TODO remove if these are resetted in generated mill
 public class FeatureConfigurationMill extends FeatureConfigurationMillTOP {
 
   public  static  void reset ()  {

@@ -14,27 +14,33 @@ import de.se_rwth.commons.logging.Log;
  * which is valid for the parser that inherits this from the FC language. However, PartialFC models
  * should use select and excludes blocks.
  */
-public class UseSelectBlock implements FeatureConfigurationASTFeatureConfigurationCoCo,
-    FeatureConfigurationVisitor2 {
-
-  protected boolean hasASTFeatures = false;
-
-  protected FeatureConfigurationPartialTraverser traverser;
-
-  public UseSelectBlock() {
-    this.traverser = FeatureConfigurationPartialMill.traverser();
-    traverser.add4FeatureConfiguration(this);
-  }
+public class UseSelectBlock implements FeatureConfigurationASTFeatureConfigurationCoCo {
 
   @Override public void check(ASTFeatureConfiguration node) {
-    node.accept(traverser);
-    if (hasASTFeatures) {
+    Checker c = new Checker(node);
+    if (c.hasASTFeatures()) {
       Log.error("0xFC203 The partial feature configuration '" + node.getName()
           + "' defines selected features outside of 'select' and 'exclude' blocks. This is forbidden!");
     }
   }
 
-  @Override public void visit(ASTFeatures node) {
-    hasASTFeatures = true;
+  class Checker implements FeatureConfigurationVisitor2 {
+    protected boolean hasASTFeatures = false;
+
+    protected FeatureConfigurationPartialTraverser traverser;
+
+    public Checker(ASTFeatureConfiguration node) {
+      this.traverser = FeatureConfigurationPartialMill.traverser();
+      traverser.add4FeatureConfiguration(this);
+      node.accept(traverser);
+    }
+
+    @Override public void visit(ASTFeatures node) {
+      hasASTFeatures = true;
+    }
+
+    public boolean hasASTFeatures() {
+      return hasASTFeatures;
+    }
   }
 }

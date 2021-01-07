@@ -7,6 +7,7 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.io.paths.ModelCoordinate;
+import de.monticore.io.paths.ModelPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
 
@@ -23,7 +24,7 @@ import static de.monticore.io.paths.ModelCoordinates.getReader;
  */
 public class FeatureModelImporter {
 
-  public static ASTFeatureDiagram importFD(List<ASTMCImportStatement> imports, String fdName){
+  public static ASTFeatureDiagram importFD(List<ASTMCImportStatement> imports, String fdName) {
     for (ASTMCImportStatement i : imports) {
 
       // 1. throw error and ignore import if it is a star import
@@ -35,24 +36,37 @@ public class FeatureModelImporter {
       //2. Check whether symbol + ast of the imported FD are already available in global scope
       Optional<FeatureDiagramSymbol> fdSymbol = FeatureDiagramMill.globalScope()
           .resolveFeatureDiagram(i.getQName());
-      if (!fdSymbol.isPresent()  || null == fdSymbol.get().getAstNode()) {
+      if (!fdSymbol.isPresent() || null == fdSymbol.get().getAstNode()) {
         //3. if no, load FD model and create symtab
         loadFeatureModel(i.getQName(), fdName);
       }
 
       //4. Check again, and if symbol is found, return the ast
       fdSymbol = FeatureDiagramMill.globalScope().resolveFeatureDiagram(i.getQName());
-      if (fdSymbol.isPresent()){
+      if (fdSymbol.isPresent()) {
         return fdSymbol.get().getAstNode();
       }
     }
     return null;
   }
 
+  public static FeatureDiagramSymbol loadFeatureModelSymbol(String qualifiedName, String callName) {
+    // try finding symbol in symbol table
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
+    Optional<FeatureDiagramSymbol> fdSym = gs.resolveFeatureDiagram(qualifiedName);
+    if (fdSym.isPresent()) {
+      return fdSym.get();
+    }
+
+    // if it was not found, try to construct from model
+    return loadFeatureModel(qualifiedName, callName);
+  }
+
   public static FeatureDiagramSymbol loadFeatureModel(String qualifiedName, String callName) {
     // 1. find fully qualified location of fd model in model path
     ModelCoordinate modelCoord = createQualifiedCoordinate(qualifiedName, "fd");
-    FeatureDiagramMill.globalScope().getModelPath().resolveModel(modelCoord);
+    ModelPath mp = FeatureDiagramMill.globalScope().getModelPath();
+    mp.resolveModel(modelCoord);
     if (!modelCoord.hasLocation()) {
       Log.error("0xFD133 Cannot find the model of the imported feature diagram '"
           + qualifiedName + "' imported in '" + callName + "'!");

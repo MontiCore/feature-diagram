@@ -17,8 +17,6 @@ import static de.monticore.featurediagram._symboltable.FeatureModelImporter.impo
  */
 public class FeatureDiagramScopesGenitor extends FeatureDiagramScopesGenitorTOP {
 
-  protected FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
-
   public FeatureDiagramScopesGenitor() {
   }
 

@@ -140,24 +140,24 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
     assertEquals("{\n"
         + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "  \"name\": \"BasicCarNavigation\",\n"
-        + "      \"package\": \"fcvalid\",\n"
-        + "      \"symbols\": [\n"
-        + "      {\n"
-        + "        \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
-        + "        \"name\": \"BasicCarNavigation\",\n"
-        + "          \"featureDiagram\": \"fdvalid.CarNavigation\",\n"
-        + "          \"selectedFeatures\": [\n"
-        + "          \"CarNavigation\",\n"
-        + "          \"Display\",\n"
-        + "          \"GPS\",\n"
-        + "          \"Memory\",\n"
-        + "          \"VoiceControl\",\n"
-        + "          \"Small\",\n"
-        + "          \"SmallScreen\"\n"
-        + "        ]\n"
-        + "      }\n"
-        + "    ]\n"
-        + "  }", printed);
+        + "  \"package\": \"fcvalid\"  ,\n"
+        + "    \"symbols\": [\n"
+        + "    {\n"
+        + "      \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
+        + "      \"name\": \"BasicCarNavigation\",\n"
+        + "      \"featureDiagram\": \"fdvalid.CarNavigation\",\n"
+        + "        \"selectedFeatures\": [\n"
+        + "        \"CarNavigation\",\n"
+        + "        \"Display\",\n"
+        + "        \"GPS\",\n"
+        + "        \"Memory\",\n"
+        + "        \"VoiceControl\",\n"
+        + "        \"Small\",\n"
+        + "        \"SmallScreen\"\n"
+        + "      ]\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}", printed);
     assertEquals(0, Log.getErrorCount());
   }
 
@@ -165,7 +165,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
   public void testPrettyPrintToFile() {
     FeatureConfigurationCLI.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
-        "-path", "src/test/resources:target/symbols",
+        "-path", "src/test/resources", "target/symbols",
         "-pp", "BasicCarNavigationOut.fc"
     });
 

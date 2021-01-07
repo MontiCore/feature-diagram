@@ -30,9 +30,8 @@ public class FeatureDiagramSymbolTableTest extends AbstractLangTest {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
     IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
-    gs.setFileExt("fd");
     ModelPaths.merge(gs.getModelPath(), mp);
-    return FeatureDiagramMill.scopesGenitor().createFromAST(ast);
+    return FeatureDiagramMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile)

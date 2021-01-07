@@ -2,6 +2,7 @@
 
 package de.monticore.featureconfigurationpartial;
 
+//TODO remove if these are resetted in generated mill
 public class FeatureConfigurationPartialMill extends FeatureConfigurationPartialMillTOP {
 
   public  static  void reset ()  {

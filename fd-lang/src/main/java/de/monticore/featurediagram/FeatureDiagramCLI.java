@@ -6,6 +6,7 @@ import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramDeSer;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
@@ -226,7 +227,7 @@ public class FeatureDiagramCLI {
       //Set path for imported symbols
       ModelPath mp = FeatureDiagramMill.globalScope().getModelPath();
       if (cmd.hasOption("path")) {
-        for (String p : cmd.getOptionValue("path").split(":")) {
+        for (String p : cmd.getOptionValues("path")) {
           ModelPaths.addEntry(mp, p);
         }
       }
