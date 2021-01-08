@@ -4,8 +4,13 @@
 [FDtool]:                    fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramCLI.java
 [FCtool]:                    fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
 [PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
-[SemDiffPaper]:              https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf
 
+[fact-link]: https://nexus.se.rwth-aachen.de/service/rest/v1/search/assets/download?sort=version&repository=monticore-snapshots&maven.groupId=de.monticore.lang&maven.artifactId=fd-analysis&maven.extension=jar&maven.classifier=cli 
+[fdtool-link]: https://nexus.se.rwth-aachen.de/service/rest/v1/search/assets/download?sort=version&repository=monticore-snapshots&maven.groupId=de.monticore.lang&maven.artifactId=fd-lang&maven.extension=jar&maven.classifier=fd-cli 
+[fctool-link]: https://nexus.se.rwth-aachen.de/service/rest/v1/search/assets/download?sort=version&repository=monticore-snapshots&maven.groupId=de.monticore.lang&maven.artifactId=fd-lang&maven.extension=jar&maven.classifier=fc-cli 
+[fcptool-link]: https://nexus.se.rwth-aachen.de/service/rest/v1/search/assets/download?sort=version&repository=monticore-snapshots&maven.groupId=de.monticore.lang&maven.artifactId=fd-lang&maven.extension=jar&maven.classifier=fcp-cli 
+
+[SemDiffPaper]: https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [choco]: https://choco-solver.org
 > NOTE: <br>
@@ -143,9 +148,18 @@ more complex constraints that involve more than two features. In the example
 FD below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`, 
 and `Asia` requires to select either a `Large` or a `Medium` memory.
 
+## Tool Download
+ * [**Download Feature Model Analysis CLI Tool (FACT)**][fact-link]
+ * [**Download FeatureDiagramCLI Tool**][fdtool-link]
+ * [**Download FeatureConfigurationCLI Tool**][fctool-link]
+ * [**Download FeatureConfigurationPartialCLI Tool**][fcptool-link]
 
-## Tool Set Up
-This section explains how to set up the command line interface tools for the FD languages.
+Alternatively, the tools can be built from source code.
+
+## Build the Tools
+This section explains how to build and set up the command line interface tools 
+for the FD languages from the source code of the tools. Alternatively, the
+tools can be [downloaded](#Tool-Download).
 Each tool is contained in a separate jar file, which is produced as result
 of building the project with gradle. The following explains this.
 
@@ -163,7 +177,7 @@ To build the project, it is required to install a Java 8 JDK and git.
 Afterwards, the jars of the tools are available in `fd-lang/target/libs` and `fd-analysis/target/libs`.
 
 
-## Tools
+## Tool Documentation
 The FDL component provides the five tools that are explained in more detail below:
 * The [Feature Model Analysis CLI Tool (FACT)][clitool] enables executing analyses against feature diagrams and feature configuration both via CLI and Java API
 * The [FeatureDiagramCLI][FDtool] enables fine-grained options for processing feature diagram models both via CLI and Java API
