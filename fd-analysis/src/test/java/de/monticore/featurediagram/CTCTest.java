@@ -1,15 +1,11 @@
 package de.monticore.featurediagram;
 
-import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import mcfdtool.analyses.AllProducts;
 import mcfdtool.analyses.NumberOfProducts;
 import org.junit.Test;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 
-public class CTCTest extends AbstractTest{
+public class CTCTest extends AbstractTest {
   
   @Test
   public void testAnd() {

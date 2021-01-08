@@ -1,6 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-import de.monticore.MCTask
-
 plugins {
     id "java"
     id "monticore"  version "$mc_version" // MontiCore Plugin

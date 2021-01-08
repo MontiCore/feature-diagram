@@ -6,7 +6,6 @@ import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramDeSer;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;

@@ -3,19 +3,15 @@
 package de.monticore.featurediagram;
 
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.*;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
+import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
-import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
-import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialScope;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
@@ -24,9 +20,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -47,23 +41,12 @@ public class AbstractTest {
   public static void setUpLog() {
 //        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
     LogStub.init();
-
-    FeatureConfigurationPartialMill.init();
-    FeatureDiagramMill.init();
-    FeatureConfigurationPartialMill.globalScope();
-    FeatureDiagramMill.globalScope();
   }
 
   @Before
   public void clearFindings() {
     Log.getFindings().clear();
-  }
-
-  @Before
-  public void clearGlobalScopes() {
-    FeatureConfigurationPartialMill.globalScope().clear();
-    FeatureConfigurationMill.globalScope().clear();
-    FeatureDiagramMill.globalScope().clear();
+    FeatureConfigurationPartialMill.reset();
   }
 
   protected static void assertPresent(Optional<?> opt) {

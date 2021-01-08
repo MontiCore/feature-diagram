@@ -2,10 +2,8 @@
 
 package de.monticore.featureconfiguration._symboltable;
 
-import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 import de.se_rwth.commons.logging.Log;
@@ -14,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.featurediagram._symboltable.FeatureModelImporter.loadFeatureModel;
 import static de.monticore.featurediagram._symboltable.FeatureModelImporter.loadFeatureModelSymbol;
 
 /**

@@ -4,10 +4,8 @@ package de.monticore.featureconfiguration._symboltable;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatures;
-import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
@@ -15,9 +13,7 @@ import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.Optional;
 
-import static de.monticore.featurediagram._symboltable.FeatureModelImporter.loadFeatureModel;
 import static de.monticore.featurediagram._symboltable.FeatureModelImporter.loadFeatureModelSymbol;
 
 /**
