@@ -3,32 +3,32 @@
 package de.monticore.featureconfigurationpartial._symboltable;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopesGenitor;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbolTableCreator;
-import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
-import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This class builds up the symbols and scopes from an AST of an FD model.
  */
-public class FeatureConfigurationPartialSymbolTableCreator
-    extends FeatureConfigurationPartialSymbolTableCreatorTOP {
+public class FeatureConfigurationPartialScopesGenitor
+    extends FeatureConfigurationPartialScopesGenitorTOP {
 
-  public FeatureConfigurationPartialSymbolTableCreator(
+  public FeatureConfigurationPartialScopesGenitor() {
+  }
+
+  public FeatureConfigurationPartialScopesGenitor(
       IFeatureConfigurationPartialScope enclosingScope) {
     super(enclosingScope);
   }
 
-  public FeatureConfigurationPartialSymbolTableCreator(
+  public FeatureConfigurationPartialScopesGenitor(
       Deque<? extends IFeatureConfigurationPartialScope> scopeStack) {
     super(scopeStack);
   }
@@ -42,28 +42,23 @@ public class FeatureConfigurationPartialSymbolTableCreator
   @Override public IFeatureConfigurationPartialArtifactScope createFromAST(
       ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-    IFeatureConfigurationPartialArtifactScope artifactScope = FeatureConfigurationPartialMill
-        .featureConfigurationPartialArtifactScopeBuilder()
-        .setPackageName(packageName)
-        .build();
-
-    putOnStack(artifactScope);
-    FeatureConfigurationSymbolTableCreator.handleImportStatements(rootNode);
-    rootNode.accept(getRealThis());
+    FeatureConfigurationScopesGenitor.handleImportStatements(rootNode);
+    IFeatureConfigurationPartialArtifactScope artifactScope = super.createFromAST(rootNode);
+    artifactScope.setPackageName(packageName);
     return artifactScope;
   }
 
   /**
    * collect names of selected features. Resolve FeatureSymbols and add these to the
    * FeatureConfigurationSymbol.The FeatureDiagramSymbols is set in the
-   * FeatureConfigurationSymbolTableCreator.
+   * FeatureConfigurationScopesGenitor.
    *
    * @param node
    */
   @Override
   public void visit(ASTSelect node) {
     super.visit(node);
-    List<String> selectedFeatureNames =  new ArrayList<>(node.getNameList());
+    List<String> selectedFeatureNames = new ArrayList<>(node.getNameList());
     List<FeatureSymbol> selectedSymbols = new ArrayList<>();
     FeatureConfigurationSymbol fc = (FeatureConfigurationSymbol) node
         .getEnclosingScope()

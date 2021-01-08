@@ -1,16 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fc;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbols2Json;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
-import de.monticore.symboltable.serialization.JsonPrinter;
+import de.se_rwth.commons.logging.LogStub;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,12 +22,23 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FeatureConfigurationDeSerTest extends AbstractTest {
+public class FeatureConfigurationDeSerTest extends AbstractLangTest {
 
   protected static final ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
 
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
     return fcTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcParser);
+  }
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationMill.init();
+  }
+
+  @Before
+  public void setUpFCLog() {
+    //  Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+    LogStub.init();
   }
 
   @Test
@@ -63,11 +78,11 @@ public class FeatureConfigurationDeSerTest extends AbstractTest {
 
   @Test
   public void testLoad() {
-    fcTool.initGlobalScope();
-    ModelPaths.addEntry(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(),
+    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getModelPath(),
         "src/test/resources");
+    FeatureConfigurationSymbols2Json s2j = new FeatureConfigurationSymbols2Json();
 
-    IFeatureConfigurationArtifactScope scope = fcDeSer
+    IFeatureConfigurationArtifactScope scope = s2j
         .load("src/test/resources/symbols/BasicCarNavigation.fcsym");
     assertTrue(null != scope);
     assertEquals("BasicCarNavigation", scope.getName());
@@ -86,34 +101,28 @@ public class FeatureConfigurationDeSerTest extends AbstractTest {
 
   @Test
   public void testStore() {
-    JsonPrinter.enableIndentation();
     IFeatureConfigurationArtifactScope fcScope = setupSymbolTable("fcvalid/BasicCarNavigation.fc");
-    fcDeSer.store(fcScope, "target/test-symbols/fcvalid/BasicCarNavigation.fcsym");
+    FeatureConfigurationSymbols2Json s2j = new FeatureConfigurationSymbols2Json();
+    s2j.store(fcScope, "target/test-symbols/fcvalid/BasicCarNavigation.fcsym");
 
     Path expectedPath = Paths.get("target/test-symbols/fcvalid/BasicCarNavigation.fcsym");
     assertTrue(expectedPath.toFile().exists());
 
-    String expected = "{\n"
-        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
-        + "  \"name\": \"BasicCarNavigation\",\n"
-        + "      \"package\": \"fcvalid\",\n"
-        + "      \"symbols\": [\n"
-        + "      {\n"
-        + "        \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
-        + "        \"name\": \"BasicCarNavigation\",\n"
-        + "          \"featureDiagram\": \"fdvalid.CarNavigation\",\n"
-        + "          \"selectedFeatures\": [\n"
-        + "          \"CarNavigation\",\n"
-        + "          \"Display\",\n"
-        + "          \"GPS\",\n"
-        + "          \"Memory\",\n"
-        + "          \"VoiceControl\",\n"
-        + "          \"Small\",\n"
-        + "          \"SmallScreen\"\n"
-        + "        ]\n"
-        + "      }\n"
-        + "    ]\n"
-        + "  }";
+    String expected = "{\"generated-using\":\"www.MontiCore.de technology\","
+        + "\"name\":\"BasicCarNavigation\","
+        + "\"package\":\"fcvalid\","
+        + "\"symbols\":[{"
+        + "\"kind\":\"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\","
+        + "\"name\":\"BasicCarNavigation\","
+        + "\"featureDiagram\":\"fdvalid.CarNavigation\","
+        + "\"selectedFeatures\":["
+        + "\"CarNavigation\","
+        + "\"Display\","
+        + "\"GPS\","
+        + "\"Memory\","
+        + "\"VoiceControl\","
+        + "\"Small\","
+        + "\"SmallScreen\"]}]}";
     String actual = FileReaderWriter.readFromFile(expectedPath);
     assertEquals(expected, actual);
   }

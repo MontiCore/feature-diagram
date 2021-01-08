@@ -1,12 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featureconfiguration._symboltable;
 
-import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatures;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
@@ -16,20 +17,25 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
+import static de.monticore.featurediagram._symboltable.FeatureModelImporter.loadFeatureModel;
+import static de.monticore.featurediagram._symboltable.FeatureModelImporter.loadFeatureModelSymbol;
+
 /**
  * This class builds up the symbols and scopes from an AST of an FD model.
  */
-public class FeatureConfigurationSymbolTableCreator
-    extends FeatureConfigurationSymbolTableCreatorTOP {
+public class FeatureConfigurationScopesGenitor
+    extends FeatureConfigurationScopesGenitorTOP {
 
-  private FeatureConfigurationSymbol fc;
-  private FeatureDiagramSymbol fd;
+  protected FeatureConfigurationSymbol fcSym;
 
-  public FeatureConfigurationSymbolTableCreator(IFeatureConfigurationScope enclosingScope) {
+  public FeatureConfigurationScopesGenitor() {
+  }
+
+  public FeatureConfigurationScopesGenitor(IFeatureConfigurationScope enclosingScope) {
     super(enclosingScope);
   }
 
-  public FeatureConfigurationSymbolTableCreator(
+  public FeatureConfigurationScopesGenitor(
       Deque<? extends IFeatureConfigurationScope> scopeStack) {
     super(scopeStack);
   }
@@ -42,14 +48,9 @@ public class FeatureConfigurationSymbolTableCreator
    */
   @Override public IFeatureConfigurationArtifactScope createFromAST(ASTFCCompilationUnit rootNode) {
     String packageName = rootNode.isPresentPackage() ? rootNode.getPackage().toString() : "";
-    IFeatureConfigurationArtifactScope artifactScope = FeatureConfigurationMill
-        .featureConfigurationArtifactScopeBuilder()
-        .setPackageName(packageName)
-        .build();
-
-    putOnStack(artifactScope);
     handleImportStatements(rootNode);
-    rootNode.accept(getRealThis());
+    IFeatureConfigurationArtifactScope artifactScope = super.createFromAST(rootNode);
+    artifactScope.setPackageName(packageName);
     return artifactScope;
   }
 
@@ -92,19 +93,19 @@ public class FeatureConfigurationSymbolTableCreator
   @Override
   public void visit(ASTFeatures node) {
     super.visit(node);
-
-    //to identify symbols that could not be found
-    List<String> featureNameList = new ArrayList<>(node.getNameList());
+    FeatureDiagramSymbol fd = fcSym.getFeatureDiagram();
     if (null != fd) {
+      //to identify symbols that could not be found
+      List<String> featureNameList = new ArrayList<>(node.getNameList());
       for (FeatureSymbol symbol : fd.getAllFeatures()) {
         if (featureNameList.contains(symbol.getName())) {
           featureNameList.remove(symbol.getName());
-          fc.addSelectedFeatures(symbol);
+          fcSym.addSelectedFeatures(symbol);
         }
       }
       for (String name : featureNameList) {
-        Log.error("0xFC001 The selected Feature " + name + " does not exist in Feature Model " + fd
-            .getFullName());
+        Log.error("0xFC001 The selected Feature " + name + " does not exist in Feature Model "
+            + fd.getFullName());
       }
     }
   }
@@ -118,18 +119,9 @@ public class FeatureConfigurationSymbolTableCreator
   @Override
   public void visit(ASTFeatureConfiguration node) {
     super.visit(node);
-    fc = node.getSymbol();
-    Optional<FeatureDiagramSymbol> featureDiagramSymbol = this.getCurrentScope().get()
-        .resolveFeatureDiagram(node.getFdName());
-    if (featureDiagramSymbol.isPresent()) {
-      fd = node.getFdNameSymbol();
-      fc.setFeatureDiagram(fd);
-    }
-    else {
-      Log.error(
-          "0xFC002 The feature configuration `" + node.getName() + "` uses the feature model '"
-              + node.getFdName() + "' that cannot be resolved!");
-    }
+    fcSym = node.getSymbol();
+    FeatureDiagramSymbol fdSym = loadFeatureModelSymbol(node.getFdName(), node.getName());
+    fcSym.setFeatureDiagram(fdSym);
   }
 
 }

@@ -3,11 +3,13 @@
 package test.fc;
 
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -16,17 +18,22 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-public class FeatureConfigurationToolTest extends AbstractTest {
+public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   protected PrintStream originalOut;
 
   protected ByteArrayOutputStream out;
 
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationMill.init();
+  }
+
   @Before
   public void produceFDSymbol(){
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
     fdTool.run("src/test/resources/fdvalid/CarNavigation.fd",
-        Paths.get("target/symbols"),fdParser, fdDeSer);
+        Paths.get("target/symbols"), fdParser, fdDeSer);
   }
 
   @Before
@@ -133,24 +140,24 @@ public class FeatureConfigurationToolTest extends AbstractTest {
     assertEquals("{\n"
         + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "  \"name\": \"BasicCarNavigation\",\n"
-        + "      \"package\": \"fcvalid\",\n"
-        + "      \"symbols\": [\n"
-        + "      {\n"
-        + "        \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
-        + "        \"name\": \"BasicCarNavigation\",\n"
-        + "          \"featureDiagram\": \"fdvalid.CarNavigation\",\n"
-        + "          \"selectedFeatures\": [\n"
-        + "          \"CarNavigation\",\n"
-        + "          \"Display\",\n"
-        + "          \"GPS\",\n"
-        + "          \"Memory\",\n"
-        + "          \"VoiceControl\",\n"
-        + "          \"Small\",\n"
-        + "          \"SmallScreen\"\n"
-        + "        ]\n"
-        + "      }\n"
-        + "    ]\n"
-        + "  }", printed);
+        + "  \"package\": \"fcvalid\"  ,\n"
+        + "    \"symbols\": [\n"
+        + "    {\n"
+        + "      \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
+        + "      \"name\": \"BasicCarNavigation\",\n"
+        + "      \"featureDiagram\": \"fdvalid.CarNavigation\",\n"
+        + "        \"selectedFeatures\": [\n"
+        + "        \"CarNavigation\",\n"
+        + "        \"Display\",\n"
+        + "        \"GPS\",\n"
+        + "        \"Memory\",\n"
+        + "        \"VoiceControl\",\n"
+        + "        \"Small\",\n"
+        + "        \"SmallScreen\"\n"
+        + "      ]\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}", printed);
     assertEquals(0, Log.getErrorCount());
   }
 
@@ -158,7 +165,7 @@ public class FeatureConfigurationToolTest extends AbstractTest {
   public void testPrettyPrintToFile() {
     FeatureConfigurationCLI.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
-        "-path", "src/test/resources:target/symbols",
+        "-path", "src/test/resources", "target/symbols",
         "-pp", "BasicCarNavigationOut.fc"
     });
 

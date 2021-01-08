@@ -3,11 +3,9 @@ package de.monticore.featureconfigurationpartial;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featureconfiguration._symboltable.FeatureDiagramResolvingDelegate;
 import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCos;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
-import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialScopeDeSer;
-import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialSymbolTableCreatorDelegator;
+import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialDeSer;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
@@ -42,7 +40,7 @@ public class FeatureConfigurationPartialCLI {
   public static void main(String[] args) {
     FeatureConfigurationPartialCLI cli = new FeatureConfigurationPartialCLI();
     FeatureConfigurationPartialParser parser = new FeatureConfigurationPartialParser();
-    FeatureConfigurationPartialScopeDeSer deser = new FeatureConfigurationPartialScopeDeSer();
+    FeatureConfigurationPartialDeSer deser = new FeatureConfigurationPartialDeSer();
     Log.initWARN();
     cli.run(args, parser, deser);
   }
@@ -62,11 +60,11 @@ public class FeatureConfigurationPartialCLI {
       }
       Log.error("0xFC200 Model could not be parsed.");
     }
-    catch (RecognitionException  e) {
-      Log.error("0xFC201 Failed to parse the partial FC model '" + model +"'. ");
+    catch (RecognitionException e) {
+      Log.error("0xFC201 Failed to parse the partial FC model '" + model + "'. ");
     }
     catch (IOException e) {
-      Log.error("0xFC204 Failed to find the file of the partial FC model '" + model +"'.");
+      Log.error("0xFC204 Failed to find the file of the partial FC model '" + model + "'.");
     }
     return null;
   }
@@ -92,29 +90,12 @@ public class FeatureConfigurationPartialCLI {
    */
   public IFeatureConfigurationPartialArtifactScope createSymbolTable(
       ASTFCCompilationUnit ast, ModelPath mp) {
-    initGlobalScope();
-    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
-        .getFeatureConfigurationPartialGlobalScope();
+    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
     ModelPaths.merge(gs.getModelPath(), mp);
-    ModelPaths.merge(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), mp);
+    ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
 
-    FeatureConfigurationPartialSymbolTableCreatorDelegator symbolTable = FeatureConfigurationPartialMill
-        .featureConfigurationPartialSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(gs)
-        .build();
-    return symbolTable.createFromAST(ast);
+    return FeatureConfigurationPartialMill.scopesGenitorDelegator().createFromAST(ast);
   }
-
-  public void initGlobalScope(){
-    IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill
-        .getFeatureConfigurationPartialGlobalScope();
-    if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
-      ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
-      gs.setModelFileExtension("fc");
-      gs.addAdaptedFeatureDiagramSymbolResolvingDelegate(new FeatureDiagramResolvingDelegate(gs.getModelPath()));
-    }
-  }
-
 
   /**
    * Check all feature configuration partial context conditions against passed ast
@@ -133,7 +114,7 @@ public class FeatureConfigurationPartialCLI {
    * @return
    */
   public String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, Path out,
-      FeatureConfigurationPartialScopeDeSer deser) {
+      FeatureConfigurationPartialDeSer deser) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName() + ".fcsym");
@@ -148,7 +129,7 @@ public class FeatureConfigurationPartialCLI {
    * @return
    */
   public String storeSymbols(IFeatureConfigurationPartialArtifactScope scope,
-      String symbolFileName, FeatureConfigurationPartialScopeDeSer deser) {
+      String symbolFileName, FeatureConfigurationPartialDeSer deser) {
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
@@ -163,7 +144,7 @@ public class FeatureConfigurationPartialCLI {
    * @return
    */
   public ASTFeatureConfiguration run(String modelFile, ModelPath mp,
-      FeatureConfigurationPartialParser parser, FeatureConfigurationPartialScopeDeSer deser) {
+      FeatureConfigurationPartialParser parser, FeatureConfigurationPartialDeSer deser) {
 
     // parse the model and create the AST representation
     final ASTFCCompilationUnit ast = parse(modelFile, parser);
@@ -188,7 +169,7 @@ public class FeatureConfigurationPartialCLI {
    * @return
    */
   public ASTFeatureConfiguration run(String modelFile, FeatureConfigurationPartialParser parser,
-      FeatureConfigurationPartialScopeDeSer deser) {
+      FeatureConfigurationPartialDeSer deser) {
     // parse the model and create the AST representation
     final ASTFCCompilationUnit ast = parse(modelFile, parser);
 
@@ -219,7 +200,7 @@ public class FeatureConfigurationPartialCLI {
    * @param args
    */
   public void run(String[] args, FeatureConfigurationPartialParser parser,
-      FeatureConfigurationPartialScopeDeSer deser) {
+      FeatureConfigurationPartialDeSer deser) {
     Options options = initOptions();
 
     try {
@@ -241,7 +222,7 @@ public class FeatureConfigurationPartialCLI {
       //Set path for imported symbols
       ModelPath mp = new ModelPath();
       if (cmd.hasOption("path")) {
-        for (String p : cmd.getOptionValue("path").split(":")) {
+        for (String p : cmd.getOptionValues("path")) {
           mp.addEntry(Paths.get(p));
         }
       }
@@ -311,7 +292,7 @@ public class FeatureConfigurationPartialCLI {
 
     Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
     modelPath.setArgs(Option.UNLIMITED_VALUES);
-    modelPath.setValueSeparator(':');
+    modelPath.setValueSeparator(' ');
     options.addOption(modelPath);
 
     Option symboltable = new Option("s", true,

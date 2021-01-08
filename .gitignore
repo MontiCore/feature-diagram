@@ -6,3 +6,5 @@ target/
 *.iml
 .gradle
 /build/
+/fd-lang/out/
+/fd-analysis/out/

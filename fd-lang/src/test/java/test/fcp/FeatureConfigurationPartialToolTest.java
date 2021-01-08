@@ -3,11 +3,13 @@
 package test.fcp;
 
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -16,11 +18,16 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.*;
 
-public class FeatureConfigurationPartialToolTest extends AbstractTest {
+public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   protected PrintStream originalOut;
 
   protected ByteArrayOutputStream out;
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationPartialMill.init();
+  }
 
   @Before
   public void produceFDSymbol(){
@@ -114,29 +121,29 @@ public class FeatureConfigurationPartialToolTest extends AbstractTest {
     String printed = out.toString().trim();
     assertEquals("{\n"
         + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
+        + "  \"name\": \"PremiumPhone\"  ,\n"
+        + "    \"symbols\": [\n"
+        + "    {\n"
+        + "      \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
         + "      \"name\": \"PremiumPhone\",\n"
-        + "      \"symbols\": [\n"
-        + "      {\n"
-        + "        \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
-        + "        \"name\": \"PremiumPhone\",\n"
-        + "          \"featureDiagram\": \"Phone\",\n"
-        + "          \"selectedFeatures\": [\n"
-        + "          \"Phone\",\n"
-        + "          \"Memory\",\n"
-        + "          \"OS\",\n"
-        + "          \"Camera\",\n"
-        + "          \"Screen\",\n"
-        + "          \"Internal\",\n"
-        + "          \"External\",\n"
-        + "          \"Medium\",\n"
-        + "          \"Large\",\n"
-        + "          \"FruitOS\",\n"
-        + "          \"Flexible\",\n"
-        + "          \"FullHD\"\n"
-        + "        ]\n"
-        + "      }\n"
-        + "    ]\n"
-        + "  }", printed);
+        + "      \"featureDiagram\": \"Phone\",\n"
+        + "        \"selectedFeatures\": [\n"
+        + "        \"Phone\",\n"
+        + "        \"Memory\",\n"
+        + "        \"OS\",\n"
+        + "        \"Camera\",\n"
+        + "        \"Screen\",\n"
+        + "        \"Internal\",\n"
+        + "        \"External\",\n"
+        + "        \"Medium\",\n"
+        + "        \"Large\",\n"
+        + "        \"FruitOS\",\n"
+        + "        \"Flexible\",\n"
+        + "        \"FullHD\"\n"
+        + "      ]\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}", printed);
     assertEquals(0, Log.getErrorCount());
   }
 
