@@ -124,6 +124,11 @@ public class FeatureConfigurationDeSerTest extends AbstractLangTest {
         + "\"Small\","
         + "\"SmallScreen\"]}]}";
     String actual = FileReaderWriter.readFromFile(expectedPath);
+
+    // ignore whitespace
+    expected = expected.replaceAll("\\s", "");
+    actual = actual.replaceAll("\\s", "");
+
     assertEquals(expected, actual);
   }
 

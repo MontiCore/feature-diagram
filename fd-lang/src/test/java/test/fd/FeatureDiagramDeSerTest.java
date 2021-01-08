@@ -99,37 +99,42 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
     Path expectedPath = Paths.get("target/test-symbols/fdvalid/CarNavigation.fdsym");
     assertTrue(expectedPath.toFile().exists());
 
-    String expected = "{\n"
-        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
-        + "  \"name\": \"CarNavigation\",\n"
-        + "  \"package\": \"fdvalid\"  ,\n"
-        + "    \"symbols\": [\n"
-        + "    {\n"
-        + "      \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\",\n"
-        + "      \"name\": \"CarNavigation\",\n"
-        + "        \"features\": [\n"
-        + "        \"CarNavigation\",\n"
-        + "        \"Display\",\n"
-        + "        \"GPS\",\n"
-        + "        \"PreinstalledMaps\",\n"
-        + "        \"Memory\",\n"
-        + "        \"VoiceControl\",\n"
-        + "        \"TouchControl\",\n"
-        + "        \"Small\",\n"
-        + "        \"Medium\",\n"
-        + "        \"Large\",\n"
-        + "        \"SmallScreen\",\n"
-        + "        \"LargeScreen\",\n"
-        + "        \"Europe\",\n"
-        + "        \"NorthAmerica\",\n"
-        + "        \"SouthAmerica\",\n"
-        + "        \"Asia\",\n"
-        + "        \"Africa\"\n"
-        + "      ]\n"
-        + "    }\n"
-        + "  ]\n"
+    String expected = "{"
+        + "  \"generated-using\": \"www.MontiCore.de technology\","
+        + "  \"name\": \"CarNavigation\","
+        + "  \"package\": \"fdvalid\","
+        + "  \"symbols\": ["
+        + "    {"
+        + "      \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\","
+        + "      \"name\": \"CarNavigation\","
+        + "        \"features\": ["
+        + "        \"CarNavigation\","
+        + "        \"Display\","
+        + "        \"GPS\","
+        + "        \"PreinstalledMaps\","
+        + "        \"Memory\","
+        + "        \"VoiceControl\","
+        + "        \"TouchControl\","
+        + "        \"Small\","
+        + "        \"Medium\","
+        + "        \"Large\","
+        + "        \"SmallScreen\","
+        + "        \"LargeScreen\","
+        + "        \"Europe\","
+        + "        \"NorthAmerica\","
+        + "        \"SouthAmerica\","
+        + "        \"Asia\","
+        + "        \"Africa\""
+        + "      ]"
+        + "    }"
+        + "  ]"
         + "}";
     String actual = FileReaderWriter.readFromFile(expectedPath);
+
+    // ignore whitespace
+    expected = expected.replaceAll("\\s", "");
+    actual = actual.replaceAll("\\s", "");
+    
     assertEquals(expected, actual);
   }
 

@@ -102,28 +102,33 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
     Path expectedPath = Paths.get("target/test-symbols/pfcvalid/BasicCarNavigation.fcsym");
     assertTrue(expectedPath.toFile().exists());
 
-    String expected = "{\n"
-        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
-        + "  \"name\": \"BasicCarNavigation\",\n"
-        + "  \"package\": \"fcvalid\"  ,\n"
-        + "    \"symbols\": [\n"
-        + "    {\n"
-        + "      \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
-        + "      \"name\": \"BasicCarNavigation\",\n"
-        + "      \"featureDiagram\": \"fdvalid.CarNavigation\",\n"
-        + "        \"selectedFeatures\": [\n"
-        + "        \"CarNavigation\",\n"
-        + "        \"Display\",\n"
-        + "        \"GPS\",\n"
-        + "        \"Memory\",\n"
-        + "        \"VoiceControl\",\n"
-        + "        \"Small\",\n"
-        + "        \"SmallScreen\"\n"
-        + "      ]\n"
-        + "    }\n"
-        + "  ]\n"
+    String expected = "{"
+        + "  \"generated-using\": \"www.MontiCore.de technology\","
+        + "  \"name\": \"BasicCarNavigation\","
+        + "  \"package\": \"fcvalid\","
+        + "  \"symbols\": ["
+        + "    {"
+        + "      \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\","
+        + "      \"name\": \"BasicCarNavigation\","
+        + "      \"featureDiagram\": \"fdvalid.CarNavigation\","
+        + "        \"selectedFeatures\": ["
+        + "        \"CarNavigation\","
+        + "        \"Display\","
+        + "        \"GPS\","
+        + "        \"Memory\","
+        + "        \"VoiceControl\","
+        + "        \"Small\","
+        + "        \"SmallScreen\""
+        + "      ]"
+        + "    }"
+        + "  ]"
         + "}";
     String actual = FileReaderWriter.readFromFile(expectedPath);
+
+    // ignore whitespace
+    expected = expected.replaceAll("\\s", "");
+    actual = actual.replaceAll("\\s", "");
+    
     assertEquals(expected, actual);
   }
 
