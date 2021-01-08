@@ -5,10 +5,10 @@
 [FCtool]:                    fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
 [PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
 
-[fact-link]: https://nexus.se.rwth-aachen.de/service/rest/v1/search/assets/download?sort=version&repository=monticore-snapshots&maven.groupId=de.monticore.lang&maven.artifactId=fd-analysis&maven.extension=jar&maven.classifier=cli 
-[fdtool-link]: https://nexus.se.rwth-aachen.de/service/rest/v1/search/assets/download?sort=version&repository=monticore-snapshots&maven.groupId=de.monticore.lang&maven.artifactId=fd-lang&maven.extension=jar&maven.classifier=fd-cli 
-[fctool-link]: https://nexus.se.rwth-aachen.de/service/rest/v1/search/assets/download?sort=version&repository=monticore-snapshots&maven.groupId=de.monticore.lang&maven.artifactId=fd-lang&maven.extension=jar&maven.classifier=fc-cli 
-[fcptool-link]: https://nexus.se.rwth-aachen.de/service/rest/v1/search/assets/download?sort=version&repository=monticore-snapshots&maven.groupId=de.monticore.lang&maven.artifactId=fd-lang&maven.extension=jar&maven.classifier=fcp-cli 
+[fact-link]: http://www.monticore.de/download/FACT.jar
+[fdtool-link]: http://www.monticore.de/download/FeatureDiagramCLI.jar
+[fctool-link]: http://www.monticore.de/download/FeatureConfigurationCLI.jar
+[fcptool-link]: http://www.monticore.de/download/FeatureConfigurationPartialCLI.jar
 
 [SemDiffPaper]: https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
