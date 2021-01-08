@@ -21,7 +21,7 @@ def grammarDir = 'src/main/grammars'
 
 allprojects {
     group = 'de.monticore.lang'
-    version = '$version'
+    version = "$version"
 
     repositories {
         mavenLocal()
@@ -122,12 +122,13 @@ project(':fd-lang') {
             attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramCLI"
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
-
+        archiveClassifier = "fd-cli"
         archiveFileName  =  "FeatureDiagramCLI.jar"
     }
 
     task buildFeatureConfigurationToolCLI(type: Jar, dependsOn: shadowJar) {
         archiveFileName = 'FeatureConfigurationCLI.jar'
+        archiveClassifier = "fc-cli"
         manifest {
             attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationCLI')
         }
@@ -136,6 +137,7 @@ project(':fd-lang') {
 
     task buildFeatureConfigurationToolPartialCLI(type: Jar, dependsOn: shadowJar) {
         archiveFileName = 'FeatureConfigurationPartialCLI.jar'
+        archiveClassifier = "fcp-cli"
         manifest {
             attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI')
         }
@@ -155,6 +157,9 @@ project(':fd-lang') {
                 from components.java
                 artifact sourcesJar
                 artifact grammarJar
+                artifact shadowJar
+                artifact buildFeatureConfigurationToolCLI
+                artifact buildFeatureConfigurationToolPartialCLI
             }
         }
         repositories.maven {
@@ -198,6 +203,7 @@ project(':fd-analysis') {
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
         archiveFileName  =  "FACT.jar"
+        archiveClassifier = "cli"
     }
 
     jar.dependsOn(shadowJar)
