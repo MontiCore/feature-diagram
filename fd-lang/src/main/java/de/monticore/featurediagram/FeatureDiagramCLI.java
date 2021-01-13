@@ -5,7 +5,9 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.*;
+import de.monticore.featurediagram._symboltable.FeatureDiagramDeSer;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.ModelPath;
@@ -36,7 +38,7 @@ public class FeatureDiagramCLI {
 
     FeatureDiagramCLI cli = new FeatureDiagramCLI();
     FeatureDiagramParser parser = new FeatureDiagramParser();
-    FeatureDiagramScopeDeSer deser = new FeatureDiagramScopeDeSer();
+    FeatureDiagramDeSer deser = new FeatureDiagramDeSer();
 
     Log.initWARN();
     cli.run(args, parser, deser);
@@ -63,11 +65,11 @@ public class FeatureDiagramCLI {
       }
       Log.error("0xFD100 Model could not be parsed.");
     }
-    catch (RecognitionException  e) {
-      Log.error("0xFD101 Failed to parse the FD model '" + model +"'. ");
+    catch (RecognitionException e) {
+      Log.error("0xFD101 Failed to parse the FD model '" + model + "'. ");
     }
     catch (IOException e) {
-      Log.error("0xFD104 Failed to find the file of the FD model '" + model +"'.");
+      Log.error("0xFD104 Failed to find the file of the FD model '" + model + "'.");
     }
     return null;
   }
@@ -90,23 +92,13 @@ public class FeatureDiagramCLI {
    */
   public IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast) {
     initGlobalScope();
-
-    FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
-        .featureDiagramSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(FeatureDiagramMill.getFeatureDiagramGlobalScope())
-        .build();
-    return symbolTable.createFromAST(ast);
+    return FeatureDiagramMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
-  public void initGlobalScope(){
-    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.getFeatureDiagramGlobalScope();
-    if(null == gs.getModelFileExtension() || gs.getModelFileExtension().isEmpty()){
-      ModelPaths.addEntry(gs.getModelPath(), FeatureDiagramCLI.SYMBOL_OUT);
-      gs.setModelFileExtension("fd");
-
-      // TODO: the following two lines can be removed when switching to MC 6.5.0
-      FeatureDiagramMill.getFeatureDiagramGlobalScope().setSymbolFileExtension("fdsym");
-      ((FeatureDiagramGlobalScope)FeatureDiagramMill.getFeatureDiagramGlobalScope()).enableModelLoader();
+  public void initGlobalScope() {
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
+    if (null == gs.getFileExt() || gs.getFileExt().isEmpty()) {
+      gs.setFileExt("fd");
     }
   }
 
@@ -126,10 +118,11 @@ public class FeatureDiagramCLI {
    *
    * @return
    */
-  public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out, FeatureDiagramScopeDeSer deser) {
+  public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out,
+      FeatureDiagramDeSer deser) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
-        .resolve(scope.getName()+".fdsym");
+        .resolve(scope.getName() + ".fdsym");
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
     return serialized;
@@ -140,7 +133,8 @@ public class FeatureDiagramCLI {
    *
    * @return
    */
-  public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName, FeatureDiagramScopeDeSer deser) {
+  public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName,
+      FeatureDiagramDeSer deser) {
     String serialized = deser.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
@@ -153,7 +147,8 @@ public class FeatureDiagramCLI {
    * @param modelFile
    * @return
    */
-  public ASTFeatureDiagram run(String modelFile, Path out, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
+  public ASTFeatureDiagram run(String modelFile, Path out, FeatureDiagramParser parser,
+      FeatureDiagramDeSer deser) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
@@ -177,7 +172,8 @@ public class FeatureDiagramCLI {
    * @param modelFile
    * @return
    */
-  public ASTFeatureDiagram run(String modelFile, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
+  public ASTFeatureDiagram run(String modelFile, FeatureDiagramParser parser,
+      FeatureDiagramDeSer deser) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
@@ -189,7 +185,7 @@ public class FeatureDiagramCLI {
         path = path.getParent();
       }
     }
-    ModelPaths.addEntry(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), path);
+    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getModelPath(), path);
 
     // setup the symbol table
     IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast);
@@ -209,7 +205,7 @@ public class FeatureDiagramCLI {
    *
    * @param args
    */
-  public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramScopeDeSer deser) {
+  public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramDeSer deser) {
     Options options = initOptions();
 
     try {
@@ -228,9 +224,9 @@ public class FeatureDiagramCLI {
       String input = cmd.getOptionValue("input");
 
       //Set path for imported symbols
-      ModelPath mp = FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath();
+      ModelPath mp = FeatureDiagramMill.globalScope().getModelPath();
       if (cmd.hasOption("path")) {
-        for(String p : cmd.getOptionValue("path").split(":")){
+        for (String p : cmd.getOptionValues("path")) {
           ModelPaths.addEntry(mp, p);
         }
       }
@@ -283,25 +279,29 @@ public class FeatureDiagramCLI {
 
   /**
    * Initialize options of the CLI
+   *
    * @return
    */
   protected Options initOptions() {
     Options options = new Options();
     options.addOption("h", "help", false, "Prints this help dialog");
-    options.addOption("i", "input", true, "Reads the (mandatory) source file resp. the contents of the model");
+    options.addOption("i", "input", true,
+        "Reads the (mandatory) source file resp. the contents of the model");
     options.addOption("o", "output", true, "Path of generated files");
 
     Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
     modelPath.setArgs(Option.UNLIMITED_VALUES);
-    modelPath.setValueSeparator(':');
+    modelPath.setValueSeparator(' ');
     options.addOption(modelPath);
 
-    Option symboltable = new Option("s", true,"Serializes and prints the symbol table to stdout or a specified output file");
+    Option symboltable = new Option("s", true,
+        "Serializes and prints the symbol table to stdout or a specified output file");
     symboltable.setOptionalArg(true);
     symboltable.setLongOpt("symboltable");
     options.addOption(symboltable);
 
-    Option prettyprint = new Option("pp", true, "Prints the AST to stdout or a specified output file");
+    Option prettyprint = new Option("pp", true,
+        "Prints the AST to stdout or a specified output file");
     prettyprint.setOptionalArg(true);
     prettyprint.setLongOpt("prettyprint");
     options.addOption(prettyprint);

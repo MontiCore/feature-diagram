@@ -4,27 +4,24 @@ package mcfdtool;
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationScopeDeSer;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
 import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramScopeDeSer;
+import de.monticore.featurediagram._symboltable.FeatureDiagramDeSer;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import fddiff.FDSemDiff;
-import freemarker.core.OptInTemplateClassResolver;
 import mcfdtool.analyses.*;
 import mcfdtool.transform.flatzinc.Constraint;
 import org.apache.commons.cli.*;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -39,7 +36,7 @@ public class FACT {
 
   protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
 
-  protected FeatureDiagramScopeDeSer fdDeSer = new FeatureDiagramScopeDeSer();
+  protected FeatureDiagramDeSer fdDeSer = new FeatureDiagramDeSer();
 
   protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
 
@@ -53,6 +50,10 @@ public class FACT {
   public static void main(String[] args) {
     FACT tool = new FACT();
     Log.initWARN();
+
+    FeatureConfigurationPartialMill.init();
+    FeatureDiagramMill.init();
+
     tool.run(args);
   }
 
@@ -74,7 +75,8 @@ public class FACT {
       // help:
       if (null == cmd || 0 == cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar FACT.jar <test1.fd> <test2.fd>? [analysis options] ", options);
+        formatter
+            .printHelp("java -jar FACT.jar <test1.fd> <test2.fd>? [analysis options] ", options);
         return;
       }
 
@@ -88,35 +90,35 @@ public class FACT {
       ASTFeatureDiagram firstFD = readFeatureDiagram(cmd, 0);
 
       // check all implemented analysis one after another
-      if (cmd.hasOption("isValid") && checkInputFDNum(cmd.getArgList(), 1, "isValid")) {
+      if (checkInput("isValid", cmd, 1)) {
         String fcString = cmd.getOptionValue("isValid"); //read FC file path from command line
         ASTFeatureConfiguration fc = readFeatureConfiguration(fcString, cmd);
         execIsValid(firstFD, fc);
       }
-      if (cmd.hasOption("allProducts") && checkInputFDNum(cmd.getArgList(), 1, "allProducts")) {
+      if (checkInput("allProducts", cmd, 1)) {
         execAllProducts(firstFD);
       }
-      if (cmd.hasOption("deadFeatures") && checkInputFDNum(cmd.getArgList(), 1, "deadFeatures")) {
+      if (checkInput("deadFeatures", cmd, 1)) {
         execDeadFeature(firstFD);
       }
-      if (cmd.hasOption("falseOptional") && checkInputFDNum(cmd.getArgList(), 1, "falseOptional")) {
+      if (checkInput("falseOptional", cmd, 1)) {
         execFalseOptional(firstFD);
       }
-      if (cmd.hasOption("completeToValid") && checkInputFDNum(cmd.getArgList(), 1, "completeToValid")) {
-        String fcString = cmd.getOptionValue("completeToValid"); //read FC file path from command line
+      if (checkInput("completeToValid", cmd, 1)) {
+        String fcString = cmd.getOptionValue("completeToValid"); //read FC file path from cmd
         ASTFeatureConfiguration fc = readFeatureConfiguration(fcString, cmd);
         execCompleteToValid(firstFD, fc);
       }
-      if (cmd.hasOption("findValid") && checkInputFDNum(cmd.getArgList(), 1, "findValid")) {
+      if (checkInput("findValid", cmd, 1)) {
         execFindValid(firstFD);
       }
-      if (cmd.hasOption("isVoidFeatureModel") && checkInputFDNum(cmd.getArgList(), 1, "isVoidFeatureModel")) {
+      if (checkInput("isVoidFeatureModel", cmd, 1)) {
         execIsVoidFeatureModel(firstFD);
       }
-      if (cmd.hasOption("numberOfProducts") && checkInputFDNum(cmd.getArgList(), 1, "numberOfProducts")) {
+      if (checkInput("numberOfProducts", cmd, 1)) {
         execNumberOfProducts(firstFD);
       }
-      if (cmd.hasOption("semdiff") && checkInputFDNum(cmd.getArgList(), 2, "semdiff")) {
+      if (checkInput("semdiff", cmd, 2)) {
         ASTFeatureDiagram secondFD = readFeatureDiagram(cmd, 1);
         if (secondFD != null) {
           String optionVal = cmd.getOptionValue("semdiff");
@@ -130,20 +132,25 @@ public class FACT {
   }
 
   /**
-   * Logs error and returns false if expected number of arguments is not equal to
-   * actual number of arguments. Otherwise, returns true.
+   * Checks whether the current command line arguments contain the passed analysis option.
+   * If not, return false. Otherwise, check whether the number of passed arguments
+   * (i.e., FeatureDiagrams) equals the expected number of feature diagrams for
+   * the analysis. If the numbers match, return true. Otherwise, log an error and return false.
    *
-   * @param argList
-   * @param expectedArgNum
    * @param optionName
+   * @param cmd
+   * @param expectedArgNum
    * @return
    */
-  private boolean checkInputFDNum(List argList, int expectedArgNum, String optionName) {
-    if(argList.size() != expectedArgNum) {
+  private boolean checkInput(String optionName, CommandLine cmd, int expectedArgNum) {
+    if (!cmd.hasOption(optionName)) {
+      return false;
+    }
+    if (cmd.getArgList().size() != expectedArgNum) {
       Log.error(
-        String.format("0xFC910 Number of specified input FDs is '%s'. "
-          +"Option '%s' expects that number of input FDs is exactly '%s'",
-        argList.size(), optionName, expectedArgNum));
+          String.format("0xFC910 Number of specified input FDs is '%s'. "
+                  + "Option '%s' expects that number of input FDs is exactly '%s'",
+              cmd.getArgList().size(), optionName, expectedArgNum));
       return false;
     }
     return true;
@@ -161,15 +168,17 @@ public class FACT {
         witness = fdSemDiff.semDiffClosedWorld(from, to);
       }
       if (witness.isPresent()) {
-        System.out.println("Diff witness: " + FeatureConfigurationPartialPrettyPrinter.print(witness.get()));
+        System.out.println(
+            "Diff witness: " + FeatureConfigurationPartialPrettyPrinter.print(witness.get()));
       }
       else {
         System.out.println("The first input FD is a refinement of the second input FD.");
       }
     }
     else {
-      Log.error(String.format("0xFC902 Unknown value '%s' for the argument 'semantics' of the option '-semdiff'. "
-        + "Possible values for the argument are 'open' and 'closed'.", optionVal));
+      Log.error(String.format(
+          "0xFC902 Unknown value '%s' for the argument 'semantics' of the option '-semdiff'. "
+              + "Possible values for the argument are 'open' and 'closed'.", optionVal));
     }
   }
 
@@ -185,7 +194,7 @@ public class FACT {
     }
     else {
       System.out.println("Result of AllProducts: "
-        + FeatureConfigurationPartialPrettyPrinter.print(result));
+          + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -193,7 +202,8 @@ public class FACT {
   /**
    * handle -completeToValid
    */
-  public ASTFeatureConfiguration execCompleteToValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
+  public ASTFeatureConfiguration execCompleteToValid(ASTFeatureDiagram fd,
+      ASTFeatureConfiguration fc) {
     CompleteToValid analysis = new CompleteToValid();
     ASTFeatureConfiguration result = analysis.perform(fd, fc);
 
@@ -202,7 +212,7 @@ public class FACT {
     }
     else {
       System.out.println("Result of CompleteToValid: "
-        + FeatureConfigurationPartialPrettyPrinter.print(result));
+          + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -219,7 +229,7 @@ public class FACT {
     }
     else {
       System.out.println("Result of DeadFeature: "
-        + result.stream().collect(Collectors.joining(", ")));
+          + result.stream().collect(Collectors.joining(", ")));
     }
     return result;
   }
@@ -236,7 +246,7 @@ public class FACT {
     }
     else {
       System.out.println("Result of FalseOptional: "
-        + result.stream().collect(Collectors.joining(", ")));
+          + result.stream().collect(Collectors.joining(", ")));
     }
     return result;
   }
@@ -253,7 +263,7 @@ public class FACT {
     }
     else {
       System.out.println("Result of FindValid: "
-        + FeatureConfigurationPartialPrettyPrinter.print(result));
+          + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -261,7 +271,8 @@ public class FACT {
   /**
    * handle -generalFilter
    */
-  public List<ASTFeatureConfiguration> execGeneralFilter(ASTFeatureDiagram fd, List<Constraint> constraints) {
+  public List<ASTFeatureConfiguration> execGeneralFilter(ASTFeatureDiagram fd,
+      List<Constraint> constraints) {
     GeneralFilter analysis = new GeneralFilter();
     List<ASTFeatureConfiguration> result = analysis.perform(fd, constraints);
 
@@ -270,7 +281,7 @@ public class FACT {
     }
     else {
       System.out.println("Result of GeneralFilter: "
-        + FeatureConfigurationPartialPrettyPrinter.print(result));
+          + FeatureConfigurationPartialPrettyPrinter.print(result));
     }
     return result;
   }
@@ -332,8 +343,9 @@ public class FACT {
    * @param symbolInputPath
    * @return
    */
-  public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, ModelPath symbolInputPath) {
-    ModelPaths.merge(FeatureDiagramMill.getFeatureDiagramGlobalScope().getModelPath(), symbolInputPath);
+  public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath,
+      ModelPath symbolInputPath) {
+    ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), symbolInputPath);
     return fdTool.run(modelFile, Paths.get(symbolOutPath), fdParser, fdDeSer);
   }
 
@@ -345,7 +357,8 @@ public class FACT {
    * @param symbolInputPath
    * @return
    */
-  public ASTFeatureConfiguration readFeatureConfiguration(String modelFile, ModelPath symbolInputPath) {
+  public ASTFeatureConfiguration readFeatureConfiguration(String modelFile,
+      ModelPath symbolInputPath) {
     return fcTool.run(modelFile, symbolInputPath, fcParser);
   }
 
@@ -379,7 +392,7 @@ public class FACT {
     if (cmd.getArgList().size() < num + 1) {
       // received a smaller number of FDs as inputs as expected
       Log.error(String.format("0xFC998 Received %s feature diagrams as inputs. "
-        + "Expecting at least %s feature diagrams as inputs!", cmd.getArgList().size(), num + 1));
+          + "Expecting at least %s feature diagrams as inputs!", cmd.getArgList().size(), num + 1));
       return null;
     }
     else {
@@ -435,38 +448,41 @@ public class FACT {
   protected Options initOptions() {
     Options options = new Options();
 
-    createAnalysisOption(options, "isValid", "test.fc", false, "check if <test.fc> is a valid configuration in <test1.fd>");
-    createAnalysisOption(options, "allProducts", null, false, "find all valid configurations for <test1.fd>");
-    createAnalysisOption(options, "deadFeatures", null, false, "find all dead "
-      + "features for <test1.fd>");
-    createAnalysisOption(options, "falseOptional", null, false, "find "
-      + "all false optional features for <test1.fd>");
+    createAnalysisOption(options, "isValid", "test.fc", false,
+        "check if <test.fc> is a valid configuration in <test1.fd>");
+    createAnalysisOption(options, "allProducts", "find all valid configurations for <test1.fd>");
+    createAnalysisOption(options, "deadFeatures", "find all dead features for <test1.fd>");
+    createAnalysisOption(options, "falseOptional",
+        "find all false optional features for <test1.fd>");
     createAnalysisOption(options, "completeToValid", "test.fc", false, "find a valid "
-      + "configurations of <test1.fd> that fulfils the partial configuration <test.fc>");
-    createAnalysisOption(options, "findValid", null, false, "find a valid"
-      + " configuration for <test1.fd>");
-    createAnalysisOption(options, "isVoidFeatureModel", null, false, "check if <test1.fd> "
-      + "has any valid configuration");
-    createAnalysisOption(options, "numberOfProducts", null, false, "calculate "
-      + "the number of valid configurations for <test1.fd>");
+        + "configurations of <test1.fd> that fulfils the partial configuration <test.fc>");
+    createAnalysisOption(options, "findValid", "find a valid configuration for <test1.fd>");
+    createAnalysisOption(options, "isVoidFeatureModel",
+        "check if <test1.fd> has any valid configuration");
+    createAnalysisOption(options, "numberOfProducts",
+        "calculate the number of valid configurations for <test1.fd>");
     createAnalysisOption(options, "semdiff", "semantics", true, "calculate "
-      + "a diff witness contained in the semantic difference from <test1.fd> to <test2.fd> using the semantics "
-      + "as specified by the argument <semantics>. Possible values for the argument are 'closed' and 'open' "
-      + "for choosing between the closed- and open-world semantics. If no argument is specified, then 'open' "
-      + "is chosen by default. The differences between the semantics are described here: "
-      + "'https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf'");
+        + "a diff witness contained in the semantic difference from <test1.fd> to <test2.fd> using the semantics "
+        + "as specified by the argument <semantics>. Possible values for the argument are 'closed' and 'open' "
+        + "for choosing between the closed- and open-world semantics. If no argument is specified, then 'open' "
+        + "is chosen by default. The differences between the semantics are described here: "
+        + "'https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf'");
     // ... place for further analyses
 
     options.addOption("h", "help", false, "show this explanation");
     return options;
   }
 
-  protected static void createAnalysisOption(Options options, String key, String argName, boolean optionalArg, String description) {
+  protected static void createAnalysisOption(Options options, String key, String argName,
+      boolean optionalArg, String description) {
     Option opt = new Option(key, argName != null, description);
-    if (argName != null) {
-      opt.setArgName(argName);
-      opt.setOptionalArg(optionalArg);
-    }
+    opt.setArgName(argName);
+    opt.setOptionalArg(optionalArg);
+    options.addOption(opt);
+  }
+
+  protected static void createAnalysisOption(Options options, String key, String description) {
+    Option opt = new Option(key, false, description);
     options.addOption(opt);
   }
 

@@ -1,25 +1,32 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fc;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.io.paths.ModelPath;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.nio.file.Paths;
 
-public class FeatureConfigurationCoCoTest extends AbstractTest {
+public class FeatureConfigurationCoCoTest extends AbstractLangTest {
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationMill.init();
+  }
 
   @Test
   public void testInvalidFD() {
     setupSymbolTable("InvalidFD.fc");
-    assertErrorCode("0xFC002");
+    assertErrorCode("0xFD133");
   }
 
   @Test
   public void testInvalidStarImport() {
     setupSymbolTable("InvalidStarImport.fc");
-    assertErrorCode("0xFC002");
+    assertErrorCode("0xFD133");
   }
 
   @Test

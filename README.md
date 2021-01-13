@@ -3,9 +3,14 @@
 [fddifftool]:                fd-analysis/src/main/java/fddiff/FDSemDiff.java
 [FDtool]:                    fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramCLI.java
 [FCtool]:                    fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
-[PFCtool]:                   fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
-[SemDiffPaper]:              https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf
+[PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
 
+[fact-link]: http://www.monticore.de/download/FACT.jar
+[fdtool-link]: http://www.monticore.de/download/FeatureDiagramCLI.jar
+[fctool-link]: http://www.monticore.de/download/FeatureConfigurationCLI.jar
+[fcptool-link]: http://www.monticore.de/download/FeatureConfigurationPartialCLI.jar
+
+[SemDiffPaper]: https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [choco]: https://choco-solver.org
 > NOTE: <br>
@@ -143,9 +148,18 @@ more complex constraints that involve more than two features. In the example
 FD below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`, 
 and `Asia` requires to select either a `Large` or a `Medium` memory.
 
+## Tool Download
+ * [**Download Feature Model Analysis CLI Tool (FACT)**][fact-link]
+ * [**Download FeatureDiagramCLI Tool**][fdtool-link]
+ * [**Download FeatureConfigurationCLI Tool**][fctool-link]
+ * [**Download FeatureConfigurationPartialCLI Tool**][fcptool-link]
 
-## Tool Set Up
-This section explains how to set up the command line interface tools for the FD languages.
+Alternatively, the tools can be built from source code.
+
+## Build the Tools
+This section explains how to build and set up the command line interface tools 
+for the FD languages from the source code of the tools. Alternatively, the
+tools can be [downloaded](#Tool-Download).
 Each tool is contained in a separate jar file, which is produced as result
 of building the project with gradle. The following explains this.
 
@@ -163,7 +177,7 @@ To build the project, it is required to install a Java 8 JDK and git.
 Afterwards, the jars of the tools are available in `fd-lang/target/libs` and `fd-analysis/target/libs`.
 
 
-## Tools
+## Tool Documentation
 The FDL component provides the five tools that are explained in more detail below:
 * The [Feature Model Analysis CLI Tool (FACT)][clitool] enables executing analyses against feature diagrams and feature configuration both via CLI and Java API
 * The [FeatureDiagramCLI][FDtool] enables fine-grained options for processing feature diagram models both via CLI and Java API
@@ -243,7 +257,7 @@ where the arguments are:
 * `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
 * `-o`,`--output <outPath>`      Path of generated files
 * `-path <p>`                    Sets the artifact pathlist for imported symbols. 
-                                 The pathlist is separated by colons (':').
+                                 The pathlist is separated by whitespace.
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout or a specified output file
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
                                  specified output file
@@ -280,7 +294,7 @@ where the arguments are:
 * `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
 * `-o`,`--output <outPath>`      Path of generated files
 * `-path <p>`                    Sets the artifact pathlist for imported symbols.
-                                 The pathlist is separated by colons (':').
+                                 The pathlist is separated by whitespace.
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout or a specified output file
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
                                  specified output file
@@ -315,7 +329,7 @@ where the arguments are:
 * `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
 * `-o`,`--output <outPath>`      Path of generated files
 * `-path <p>`                    Sets the artifact pathlist for imported symbols.
-                                 The pathlist is separated by colons (':').
+                                 The pathlist is separated by whitespace.
 * `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout or a the specified output file
 * `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
                                  specified output file
@@ -438,11 +452,9 @@ symbol table of the FD model):
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
-
 * [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
 * [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
 * [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

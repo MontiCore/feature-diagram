@@ -1,15 +1,14 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fd;
 
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
-import de.monticore.featurediagram._symboltable.FeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramScope;
+import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,11 +16,16 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FeatureDiagramDeSerTest extends AbstractTest {
+public class FeatureDiagramDeSerTest extends AbstractLangTest {
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
     ASTFDCompilationUnit ast = fdTool.parse("src/test/resources/" + modelFile, fdParser);
     return fdTool.createSymbolTable(ast);
+  }
+
+  @BeforeClass
+  public static void initMills() {
+    FeatureDiagramMill.init();
   }
 
   @Test
@@ -64,7 +68,8 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
 
   @Test
   public void testLoad() {
-    IFeatureDiagramArtifactScope scope = fdDeSer
+    FeatureDiagramSymbols2Json s2j = new FeatureDiagramSymbols2Json();
+    IFeatureDiagramArtifactScope scope = s2j
         .load("src/test/resources/symbols/CarNavigation.fdsym");
     assertTrue(null != scope);
     assertEquals("CarNavigation", scope.getName());
@@ -87,44 +92,49 @@ public class FeatureDiagramDeSerTest extends AbstractTest {
   @Test
   public void testStore() {
     JsonPrinter.enableIndentation();
-    IFeatureDiagramArtifactScope fdScope = setupSymbolTable(
-        "fdvalid/CarNavigation.fd");
-    fdDeSer.store(fdScope, "target/test-symbols/fdvalid/CarNavigation.fdsym");
+    IFeatureDiagramArtifactScope fdScope = setupSymbolTable("fdvalid/CarNavigation.fd");
+    FeatureDiagramSymbols2Json s2j = new FeatureDiagramSymbols2Json();
+    s2j.store(fdScope, "target/test-symbols/fdvalid/CarNavigation.fdsym");
 
     Path expectedPath = Paths.get("target/test-symbols/fdvalid/CarNavigation.fdsym");
     assertTrue(expectedPath.toFile().exists());
 
-    String expected = "{\n"
-        + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
-        + "  \"name\": \"CarNavigation\",\n"
-        + "      \"package\": \"fdvalid\",\n"
-        + "      \"symbols\": [\n"
-        + "      {\n"
-        + "        \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\",\n"
-        + "          \"name\": \"CarNavigation\",\n"
-        + "          \"features\": [\n"
-        + "          \"CarNavigation\",\n"
-        + "          \"Display\",\n"
-        + "          \"GPS\",\n"
-        + "          \"PreinstalledMaps\",\n"
-        + "          \"Memory\",\n"
-        + "          \"VoiceControl\",\n"
-        + "          \"TouchControl\",\n"
-        + "          \"Small\",\n"
-        + "          \"Medium\",\n"
-        + "          \"Large\",\n"
-        + "          \"SmallScreen\",\n"
-        + "          \"LargeScreen\",\n"
-        + "          \"Europe\",\n"
-        + "          \"NorthAmerica\",\n"
-        + "          \"SouthAmerica\",\n"
-        + "          \"Asia\",\n"
-        + "          \"Africa\"\n"
-        + "        ]\n"
-        + "      }\n"
-        + "    ]\n"
-        + "  }";
+    String expected = "{"
+        + "  \"generated-using\": \"www.MontiCore.de technology\","
+        + "  \"name\": \"CarNavigation\","
+        + "  \"package\": \"fdvalid\","
+        + "  \"symbols\": ["
+        + "    {"
+        + "      \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\","
+        + "      \"name\": \"CarNavigation\","
+        + "        \"features\": ["
+        + "        \"CarNavigation\","
+        + "        \"Display\","
+        + "        \"GPS\","
+        + "        \"PreinstalledMaps\","
+        + "        \"Memory\","
+        + "        \"VoiceControl\","
+        + "        \"TouchControl\","
+        + "        \"Small\","
+        + "        \"Medium\","
+        + "        \"Large\","
+        + "        \"SmallScreen\","
+        + "        \"LargeScreen\","
+        + "        \"Europe\","
+        + "        \"NorthAmerica\","
+        + "        \"SouthAmerica\","
+        + "        \"Asia\","
+        + "        \"Africa\""
+        + "      ]"
+        + "    }"
+        + "  ]"
+        + "}";
     String actual = FileReaderWriter.readFromFile(expectedPath);
+
+    // ignore whitespace
+    expected = expected.replaceAll("\\s", "");
+    actual = actual.replaceAll("\\s", "");
+    
     assertEquals(expected, actual);
   }
 

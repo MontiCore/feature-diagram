@@ -3,7 +3,7 @@ package de.monticore.featureconfigurationpartial.prettyprint;
 
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
 import de.monticore.featureconfigurationpartial._ast.ASTUnselect;
-import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
+import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor2;
 import de.monticore.prettyprint.IndentPrinter;
 
 import java.util.stream.Collectors;
@@ -12,16 +12,13 @@ import java.util.stream.Collectors;
  * This printer prints language elements introduced in the FeatureConfigurationPartial, namely
  * select and exclude blocks. It realizes basic formatting through indentation and line breaks.
  */
-public class FeatureConfigurationPartialPrinter implements FeatureConfigurationPartialVisitor {
+public class FeatureConfigurationPartialPrinter implements FeatureConfigurationPartialVisitor2 {
 
   protected IndentPrinter printer;
-
-  protected FeatureConfigurationPartialVisitor realThis;
 
 
   public FeatureConfigurationPartialPrinter(IndentPrinter printer) {
     this.printer = printer;
-    this.realThis = this;
   }
 
   @Override
@@ -47,13 +44,4 @@ public class FeatureConfigurationPartialPrinter implements FeatureConfigurationP
     }
   }
 
-  @Override
-  public FeatureConfigurationPartialVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(FeatureConfigurationPartialVisitor realThis) {
-    this.realThis = realThis;
-  }
 }

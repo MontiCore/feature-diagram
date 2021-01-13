@@ -11,7 +11,6 @@ public class FeatureDiagramCoCos {
 
   public static FeatureDiagramCoCoChecker getCheckerForAllCoCos() {
     FeatureDiagramCoCoChecker checker = new FeatureDiagramCoCoChecker();
-    checker.addCoCo((FeatureDiagramASTFeatureTreeRuleCoCo) new HasTreeShape());
     checker.addCoCo((FeatureDiagramASTFeatureDiagramCoCo) new HasTreeShape());
     checker.addCoCo(new NonUniqueNameInGroup());
     checker.addCoCo(new CTCFeatureNameExists());

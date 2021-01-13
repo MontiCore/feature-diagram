@@ -1,11 +1,13 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fc;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.io.paths.ModelPath;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -13,11 +15,16 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
-public class FeatureConfigurationSymbolTableTest extends AbstractTest {
+public class FeatureConfigurationSymbolTableTest extends AbstractLangTest {
 
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
     ModelPath mp = new ModelPath(Paths.get("src", "test", "resources"));
     return fcTool.createSymbolTable(modelFile, mp, fcParser);
+  }
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureConfigurationMill.init();
   }
 
   @Test
@@ -63,12 +70,12 @@ public class FeatureConfigurationSymbolTableTest extends AbstractTest {
     IFeatureConfigurationArtifactScope scope = setupSymbolTable(model);
 
     assertTrue(null != scope);
-    FeatureConfigurationSymbol fd = scope.resolveFeatureConfiguration("SelectImported")
+    FeatureConfigurationSymbol fc = scope.resolveFeatureConfiguration("SelectImported")
         .orElse(null);
-    assertTrue(null != fd);
-    assertEquals(2, fd.sizeSelectedFeatures());
+    assertTrue(null != fc);
+    assertEquals(2, fc.sizeSelectedFeatures());
     List<String> selectedFeatureNames =
-      fd.getSelectedFeaturesList().stream().map(f -> f.getName())
+      fc.getSelectedFeaturesList().stream().map(f -> f.getName())
         .collect(Collectors.toList());
 
     assertTrue(selectedFeatureNames.contains("AA"));

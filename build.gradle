@@ -1,27 +1,15 @@
 /* (c) https://github.com/MontiCore/monticore */
-import de.monticore.MCTask
-
 plugins {
     id "java"
     id "monticore"  version "$mc_version" // MontiCore Plugin
     id "maven-publish"
-    id "com.github.johnrengelman.shadow" version "4.0.4"
+    id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
 }
 
-def plexus_archiver_version = '2.8.2'
-def junit_version = '4.13.1'
-def logback_version = '1.1.2'
-def choco_solver_version = '4.0.5'
-def choco_parser_version = '4.0.4'
-def sat4j_version = '2.3.1'
-def logicng_version = '1.6.2'
-def commons_cli_version = '1.2'
 
-def grammarDir = 'src/main/grammars'
 
 allprojects {
     group = 'de.monticore.lang'
-    version = '$version'
 
     repositories {
         mavenLocal()
@@ -43,6 +31,8 @@ subprojects {
 
     dependencies {
         implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
         implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
         implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
 
@@ -71,6 +61,7 @@ project(':fd-lang') {
     apply plugin : 'com.github.johnrengelman.shadow'
 
     dependencies {
+        implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
         grammar (group:'de.monticore', name:'monticore-grammar', version:mc_version, classifier: "grammars",
                 changing: true) { force = true }
     }
@@ -122,12 +113,13 @@ project(':fd-lang') {
             attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramCLI"
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
-
+        archiveClassifier = "fd-cli"
         archiveFileName  =  "FeatureDiagramCLI.jar"
     }
 
     task buildFeatureConfigurationToolCLI(type: Jar, dependsOn: shadowJar) {
         archiveFileName = 'FeatureConfigurationCLI.jar'
+        archiveClassifier = "fc-cli"
         manifest {
             attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationCLI')
         }
@@ -136,6 +128,7 @@ project(':fd-lang') {
 
     task buildFeatureConfigurationToolPartialCLI(type: Jar, dependsOn: shadowJar) {
         archiveFileName = 'FeatureConfigurationPartialCLI.jar'
+        archiveClassifier = "fcp-cli"
         manifest {
             attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI')
         }
@@ -155,6 +148,9 @@ project(':fd-lang') {
                 from components.java
                 artifact sourcesJar
                 artifact grammarJar
+                artifact shadowJar
+                artifact buildFeatureConfigurationToolCLI
+                artifact buildFeatureConfigurationToolPartialCLI
             }
         }
         repositories.maven {
@@ -198,6 +194,7 @@ project(':fd-analysis') {
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
         archiveFileName  =  "FACT.jar"
+        archiveClassifier = "cli"
     }
 
     jar.dependsOn(shadowJar)
@@ -221,4 +218,8 @@ project(':fd-analysis') {
             url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
+}
+
+task buildAll(type: GradleBuild) {
+  tasks = [ 'build' ]
 }

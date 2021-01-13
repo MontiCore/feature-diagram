@@ -3,11 +3,13 @@
 package de.monticore.featurediagram;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.se_rwth.commons.logging.Log;
 import mcfdtool.FACT;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -24,6 +26,12 @@ public class FACTTest extends AbstractTest {
   protected PrintStream originalOut;
 
   protected ByteArrayOutputStream out;
+
+  @BeforeClass
+  public static void initMills(){
+    FeatureConfigurationPartialMill.init();
+    FeatureDiagramMill.init();
+  }
 
   @Before
   public void redirectSysOut() {
@@ -202,7 +210,7 @@ public class FACTTest extends AbstractTest {
     });
     String printed = err.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.contains("0xFC002"));
+    assertTrue(printed.contains("0xFD133"));
     System.setErr(originalErr);
     assertEquals(1, Log.getErrorCount());
   }
