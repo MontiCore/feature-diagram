@@ -49,6 +49,9 @@ public class AbstractLangTest {
   public static void setUpLog() {
 //  Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
     LogStub.init();
+    FeatureDiagramMill.reset();
+    FeatureConfigurationMill.reset();
+    FeatureConfigurationPartialMill.reset();
   }
 
   @Before
