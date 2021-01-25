@@ -62,8 +62,9 @@ project(':fd-lang') {
 
     dependencies {
         implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
-        grammar (group:'de.monticore', name:'monticore-grammar', version:mc_version, classifier: "grammars",
-                changing: true) { force = true }
+        grammar ("de.monticore:monticore-grammar:$mc_version") {capabilities {
+          requireCapability("$group:monticore-grammar-grammars") }
+        }
     }
 
     description = 'Feature Diagram Language'
@@ -223,3 +224,5 @@ project(':fd-analysis') {
 task buildAll(type: GradleBuild) {
   tasks = [ 'build' ]
 }
+
+defaultTasks 'build'
