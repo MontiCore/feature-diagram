@@ -12,7 +12,9 @@ allprojects {
     group = 'de.monticore.lang'
 
     repositories {
+      if(("true").equals(getProperty('useLocalRepo'))){
         mavenLocal()
+      }
         maven {
             credentials.username mavenUser
             credentials.password mavenPassword
@@ -63,7 +65,7 @@ project(':fd-lang') {
     dependencies {
         implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
         grammar ("de.monticore:monticore-grammar:$mc_version") {capabilities {
-          requireCapability("$group:monticore-grammar-grammars") }
+          requireCapability("de.monticore:monticore-grammar-grammars") }
         }
     }
 
