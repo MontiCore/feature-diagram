@@ -10,10 +10,6 @@ plugins {
 
 allprojects {
     group = 'de.monticore.lang'
-  tasks.withType(MCTask) {
-    getService().set(project.ext.serviceProvider)
-    println(name)
-  }
 
     repositories {
       if(("true").equals(getProperty('useLocalRepo'))){
