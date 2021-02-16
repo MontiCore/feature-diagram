@@ -2,7 +2,7 @@
 package mcfdtool.visitors;
 
 import de.monticore.featurediagram._ast.ASTFeature;
-import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * Collects all Featurenames in a List<String> result.
  * (unsorted)
  */
-public class FeatureNameCollector implements FeatureDiagramVisitor {
+public class FeatureNameCollector implements FeatureDiagramVisitor2 {
 
   List<String> names = new ArrayList<>();
 

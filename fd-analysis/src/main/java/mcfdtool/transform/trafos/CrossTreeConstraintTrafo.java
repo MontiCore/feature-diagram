@@ -3,12 +3,16 @@ package mcfdtool.transform.trafos;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTExcludes;
 import de.monticore.featurediagram._ast.ASTFeatureConstraint;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._ast.ASTRequires;
-import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._visitor.FeatureDiagramTraverser;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor2;
 import de.se_rwth.commons.logging.Log;
 import mcfdtool.transform.flatzinc.Constraint;
 import mcfdtool.transform.flatzinc.FlatZincModel;
@@ -21,21 +25,32 @@ import java.util.Map;
 /**
  * This translated cross-tree constraints of feature diagrams into flatzinc constraints
  */
-public class CrossTreeConstraintTrafo implements FeatureDiagramVisitor {
+public class CrossTreeConstraintTrafo implements FeatureDiagramVisitor2,
+    CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
 
   protected FlatZincModel flatZincModel;
 
   private Map<ASTNode, Variable> variables;
 
   public static void apply(ASTFeatureDiagram fd, FlatZincModel result) {
+    FeatureDiagramTraverser traverser = FeatureDiagramMill.traverser();
+
+
     //create all variables for cross-tree constraints (at once, to yield unique names)
     CTCVariableCreator varCreator = new CTCVariableCreator(result);
-    fd.accept(varCreator);
+    traverser.add4FeatureDiagram(varCreator);
+    traverser.add4CommonExpressions(varCreator);
+    traverser.add4ExpressionsBasis(varCreator);
+//    fd.accept(traverser);
 
     //then create all flatzinc constraints realizing the cross-tree constraints
     CrossTreeConstraintTrafo trafo = new CrossTreeConstraintTrafo(result,
         varCreator.getVariables());
-    fd.accept(trafo);
+    traverser.add4FeatureDiagram(trafo);
+    traverser.add4CommonExpressions(trafo);
+    traverser.add4ExpressionsBasis(trafo);
+
+    fd.accept(traverser);
   }
 
   protected CrossTreeConstraintTrafo(FlatZincModel result, Map<ASTNode, Variable> variables) {
@@ -83,8 +98,8 @@ public class CrossTreeConstraintTrafo implements FeatureDiagramVisitor {
     String conditionVarName = variables.get(node.getCondition()).getName();
     String trueVarName = variables.get(node.getTrueExpression()).getName();
     String falseVarName = variables.get(node.getFalseExpression()).getName();
-    String posName = varName+"pos";
-    String negName = varName+"neg";
+    String posName = varName + "pos";
+    String negName = varName + "neg";
     Variable pos = new Variable(posName, Variable.Type.BOOL);
     Variable neg = new Variable(negName, Variable.Type.BOOL);
     flatZincModel.add(pos);

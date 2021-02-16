@@ -4,10 +4,12 @@ package mcfdtool.transform.trafos;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.featurediagram._ast.ASTExcludes;
 import de.monticore.featurediagram._ast.ASTRequires;
-import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor2;
 import mcfdtool.transform.flatzinc.Constraint;
 import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.flatzinc.Variable;
@@ -18,7 +20,8 @@ import java.util.Map;
 /**
  * This creates FlatZinc variables with unique names for parts of cross-tree constraints
  */
-public class CTCVariableCreator implements FeatureDiagramVisitor {
+public class CTCVariableCreator implements FeatureDiagramVisitor2,
+    CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
 
   protected int i;
 
