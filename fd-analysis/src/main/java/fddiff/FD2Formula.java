@@ -6,7 +6,8 @@ import com.google.common.collect.Sets;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.featurediagram._ast.*;
-import de.monticore.featurediagram._visitor.FeatureDiagramInheritanceVisitor;
+import de.monticore.featurediagram._visitor.FeatureDiagramTraverser;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor2;
 import de.se_rwth.commons.logging.Log;
 import org.logicng.formulas.Formula;
 import org.logicng.formulas.FormulaFactory;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
  *   * requires clause (if a left-sided feature of a requires clause is selected, then the right-sided feature must also be selected)
  *   * excludes clause (both, the left- and right-sided feature, cannot be selected at the same time)
  */
-class FD2Formula implements FeatureDiagramInheritanceVisitor {
+class FD2Formula implements FeatureDiagramVisitor2 {
 
   private final FormulaFactory ff;
 
@@ -39,9 +40,7 @@ class FD2Formula implements FeatureDiagramInheritanceVisitor {
     this.ff = ff;
   }
 
-  Formula getFormula(ASTFeatureDiagram fd) {
-    formulas = new ArrayList<>();
-    fd.accept(this);
+  Formula getFormula() {
     return ff.and(formulas);
   }
 
@@ -58,6 +57,7 @@ class FD2Formula implements FeatureDiagramInheritanceVisitor {
 
   @Override
   public void visit(ASTFeatureDiagram node) {
+    formulas = new ArrayList<>();
     formulas.add(Var(node.getRootFeature()));
   }
 
