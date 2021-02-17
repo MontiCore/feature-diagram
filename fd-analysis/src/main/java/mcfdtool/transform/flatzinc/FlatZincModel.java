@@ -120,4 +120,9 @@ public class FlatZincModel {
     objective.print(stringBuilder);
     return stringBuilder.toString();
   }
+
+  @Override public String toString() {
+    return print();
+  }
+
 }

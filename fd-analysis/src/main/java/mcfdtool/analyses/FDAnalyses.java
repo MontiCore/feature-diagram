@@ -25,7 +25,7 @@ public class FDAnalyses {
    * @return
    */
   public static Map<String, Integer> countOccurrencesInFCs(ASTFeatureDiagram ast) {
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(ast).build();
+    FlatZincModel model = FlatZincTrafo.getInstance().addFeatureDiagram(ast).build();
     List<Map<String, Integer>> allSolutions = Solvers.getSolver().getAllSolutions(model);
     List<ASTFeatureConfiguration> allConfigurations = Solvers
         .transformResultToFC("intermediateResult", allSolutions, ast);

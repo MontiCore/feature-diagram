@@ -1,8 +1,10 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool.transform.trafos;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatures;
+import de.monticore.featureconfiguration._visitor.FeatureConfigurationTraverser;
 import de.monticore.featureconfiguration._visitor.FeatureConfigurationVisitor2;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._ast.ASTSelect;
@@ -25,7 +27,7 @@ public class FCTrafo implements FeatureConfigurationPartialVisitor2, FeatureConf
 
     FeatureConfigurationPartialTraverser traverser = FeatureConfigurationPartialMill.traverser();
     traverser.add4FeatureConfiguration(this);
-    traverser.add4FeatureConfiguration(this);
+    traverser.add4FeatureConfigurationPartial(this);
     fc.accept(traverser);
   }
 

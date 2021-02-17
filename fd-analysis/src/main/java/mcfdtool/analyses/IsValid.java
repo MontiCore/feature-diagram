@@ -24,7 +24,10 @@ public class IsValid {
     // fc, we need to explicitly mark features that are not selected as excluded:
     excludeNotSelectedFeatures(fd, fc);
 
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd)._addFeatureConfiguration(fc).build();
+    FlatZincModel model = FlatZincTrafo.getInstance()
+        .addFeatureDiagram(fd)
+        .addFeatureConfiguration(fc)
+        .build();
     return Solvers.getSolver().hasSolution(model);
   }
 
