@@ -2,19 +2,11 @@
 package de.monticore.featurediagram;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
-import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
-import de.monticore.io.paths.ModelPath;
 import mcfdtool.analyses.*;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 

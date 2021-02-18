@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._visitor;
 
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFeatureTreeRule;
 import de.monticore.featurediagram._ast.ASTGroupPart;
 
@@ -17,9 +18,17 @@ import java.util.stream.Collectors;
  *  - only on the right-hand side: it is a leaf feature.
  *  - both: it is an inner feature in the feature tree
  */
-public class FeatureNamesCollector implements FeatureDiagramVisitor {
+public class FeatureNamesCollector implements FeatureDiagramVisitor2 {
 
-  private HashMap<String, Occurrence> occurrences = new HashMap<>();
+  protected HashMap<String, Occurrence> occurrences;
+
+  protected FeatureDiagramTraverser traverser;
+
+  public FeatureNamesCollector(){
+    traverser = FeatureDiagramMill.traverser();
+    occurrences = new HashMap<>();
+    traverser.add4FeatureDiagram(this);
+  }
 
   @Override
   public void visit(ASTFeatureTreeRule node) {
@@ -51,5 +60,13 @@ public class FeatureNamesCollector implements FeatureDiagramVisitor {
         .filter(e -> o == e.getValue())
         .map(Map.Entry::getKey)
         .collect(Collectors.toList());
+  }
+
+  public FeatureDiagramTraverser getTraverser() {
+    return traverser;
+  }
+
+  public void setTraverser(FeatureDiagramTraverser traverser) {
+    this.traverser = traverser;
   }
 }

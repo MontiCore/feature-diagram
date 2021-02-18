@@ -3,9 +3,11 @@
 package test.fd;
 
 import de.monticore.featurediagram.FeatureDiagramCLI;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -20,6 +22,11 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
   protected PrintStream originalOut;
 
   protected ByteArrayOutputStream out;
+
+  @BeforeClass
+  public static void initMills() {
+    FeatureDiagramMill.init();
+  }
 
   @Before
   public void redirectSysOut() {
@@ -90,7 +97,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
 
   @Test
   public void testSymbolTable() {
-    FeatureDiagramCLI.main( new String[] {
+    FeatureDiagramCLI.main(new String[] {
         "-i", validFD("BasicElements"),
         "-s", "testSymbolTable.symbols"
     });
@@ -100,7 +107,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
 
   @Test
   public void testSymbolTableWithoutArgs() {
-    FeatureDiagramCLI.main( new String[] {
+    FeatureDiagramCLI.main(new String[] {
         "-i", validFD("BasicElements"),
         "-s"
     });
@@ -109,29 +116,29 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
     assertEquals("{\n"
         + "  \"generated-using\": \"www.MontiCore.de technology\",\n"
         + "  \"name\": \"BasicElements\",\n"
-        + "      \"package\": \"fdvalid\",\n"
-        + "      \"symbols\": [\n"
-        + "      {\n"
-        + "        \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\",\n"
-        + "          \"name\": \"BasicElements\",\n"
-        + "          \"features\": [\n"
-        + "          \"A\",\n"
-        + "          \"B\",\n"
-        + "          \"C\",\n"
-        + "          \"D\",\n"
-        + "          \"E\",\n"
-        + "          \"F\",\n"
-        + "          \"G\",\n"
-        + "          \"H\",\n"
-        + "          \"I\",\n"
-        + "          \"J\",\n"
-        + "          \"K\",\n"
-        + "          \"L\",\n"
-        + "          \"M\"\n"
-        + "        ]\n"
-        + "      }\n"
-        + "    ]\n"
-        + "  }", printed);
+        + "  \"package\": \"fdvalid\"  ,\n"
+        + "    \"symbols\": [\n"
+        + "    {\n"
+        + "      \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\",\n"
+        + "      \"name\": \"BasicElements\",\n"
+        + "        \"features\": [\n"
+        + "        \"A\",\n"
+        + "        \"B\",\n"
+        + "        \"C\",\n"
+        + "        \"D\",\n"
+        + "        \"E\",\n"
+        + "        \"F\",\n"
+        + "        \"G\",\n"
+        + "        \"H\",\n"
+        + "        \"I\",\n"
+        + "        \"J\",\n"
+        + "        \"K\",\n"
+        + "        \"L\",\n"
+        + "        \"M\"\n"
+        + "      ]\n"
+        + "    }\n"
+        + "  ]\n"
+        + "}", printed);
     assertEquals(0, Log.getErrorCount());
   }
 

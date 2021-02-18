@@ -29,22 +29,10 @@ public class FalseOptional {
    * @return
    */
   public List<String> perform(ASTFeatureDiagram fd) {
-    List<String> optionalFeatures = getOptionalFeatures(fd);
+    List<String> optionalFeatures = OptionalFeatureCollector.getOptionalFeatures(fd);
     Set<String> alwaysSelected = getFeaturesAlwaysSelected(fd);
     optionalFeatures.retainAll(alwaysSelected);
     return optionalFeatures;
-  }
-
-  /**
-   * calculate a list of features directly marked as optional in the passed FD
-   *
-   * @param fd
-   * @return
-   */
-  protected List<String> getOptionalFeatures(ASTFeatureDiagram fd) {
-    OptionalFeatureCollector finder = new OptionalFeatureCollector();
-    fd.accept(finder);
-    return finder.getOptionalFeatures();
   }
 
   /**

@@ -47,7 +47,7 @@ public class ASTFeatureDiagram extends ASTFeatureDiagramTOP {
    */
   protected void initFeaturesAndRoot() {
     FeatureNamesCollector collector = new FeatureNamesCollector();
-    this.accept(collector);
+    this.accept(collector.getTraverser());
     HashMap<String, Occurrence> featuresMap = collector.getOccurrences();
         features = new ArrayList<>();
     featuresMap.forEach((k, v) -> {
