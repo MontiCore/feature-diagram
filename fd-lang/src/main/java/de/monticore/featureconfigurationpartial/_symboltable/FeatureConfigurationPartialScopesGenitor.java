@@ -20,19 +20,6 @@ import java.util.List;
 public class FeatureConfigurationPartialScopesGenitor
     extends FeatureConfigurationPartialScopesGenitorTOP {
 
-  public FeatureConfigurationPartialScopesGenitor() {
-  }
-
-  public FeatureConfigurationPartialScopesGenitor(
-      IFeatureConfigurationPartialScope enclosingScope) {
-    super(enclosingScope);
-  }
-
-  public FeatureConfigurationPartialScopesGenitor(
-      Deque<? extends IFeatureConfigurationPartialScope> scopeStack) {
-    super(scopeStack);
-  }
-
   /**
    * Create the symbl table for a passed AST of a PartialFC model.
    *
