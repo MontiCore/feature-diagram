@@ -14,4 +14,10 @@ public class Objective {
         .append(name)
         .append(";");
   }
+
+  @Override public String toString() {
+    StringBuilder sb = new StringBuilder();
+    print(sb);
+    return sb.toString();
+  }
 }

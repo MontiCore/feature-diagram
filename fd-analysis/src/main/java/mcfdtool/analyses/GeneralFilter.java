@@ -13,12 +13,12 @@ import java.util.Map;
 
 /**
  * Returns all configurations of a passed FD that satisfy a passed list of constraints
- *  !! WARNING: This analysis can be slow for large FDs !!
+ * !! WARNING: This analysis can be slow for large FDs !!
  */
 public class GeneralFilter {
 
   public List<ASTFeatureConfiguration> perform(ASTFeatureDiagram fd, List<Constraint> filters) {
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
+    FlatZincModel model = FlatZincTrafo.getInstance().addFeatureDiagram(fd).build();
     model.addConstraints(filters);
     List<Map<String, Integer>> allSolutions = Solvers.getSolver().getAllSolutions(model);
     return Solvers.transformResultToFC("CompletedConfiguration", allSolutions, fd);

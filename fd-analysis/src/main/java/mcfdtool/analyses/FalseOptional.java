@@ -44,7 +44,7 @@ public class FalseOptional {
   protected Set<String> getFeaturesAlwaysSelected(ASTFeatureDiagram fd) {
     // Step 1: populate a map that maps feature names to the number of times these occur
     // in all valid configurations of fd
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
+    FlatZincModel model = FlatZincTrafo.getInstance().addFeatureDiagram(fd).build();
     List<Map<String, Integer>> allSolutions = Solvers.getSolver().getAllSolutions(model);
     List<ASTFeatureConfiguration> allConfigurations = Solvers
         .transformResultToFC("IntermediateResult", allSolutions, fd);

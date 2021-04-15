@@ -16,7 +16,7 @@ import java.util.Map;
 public class FindValid {
 
   public ASTFeatureConfiguration perform(ASTFeatureDiagram fd) {
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
+    FlatZincModel model = FlatZincTrafo.getInstance().addFeatureDiagram(fd).build();
     Map<String, Integer> anySolution = Solvers.getSolver().getAnySolution(model);
     return Solvers.transformResultToFC("ValidConfiguration", anySolution, fd);
   }

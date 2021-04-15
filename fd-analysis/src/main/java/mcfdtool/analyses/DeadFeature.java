@@ -1,7 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool.analyses;
 
-import de.monticore.featureconfigurationpartial._visitor.FeatureConfigurationPartialVisitor;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.Map;
  * configuration of FD.
  * !! WARNING: This analysis can be slow for large FDs !!
  */
-public class DeadFeature implements FeatureConfigurationPartialVisitor {
+public class DeadFeature {
 
   public List<String> perform(ASTFeatureDiagram fd) {
     //Step 1: initialize a list with all features of the passed FD

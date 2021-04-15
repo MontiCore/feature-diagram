@@ -1,9 +1,11 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool.transform.trafos;
 
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.*;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
-import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._visitor.FeatureDiagramTraverser;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor2;
 import mcfdtool.transform.flatzinc.Constraint;
 import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.flatzinc.Variable;
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
 /**
  * This class transforms a feature diagram into a flatzinc model
  */
-public class FDTrafo implements FeatureDiagramVisitor {
+public class FDTrafo implements FeatureDiagramVisitor2 {
 
   protected FlatZincModel flatZincModel;
 
@@ -22,7 +24,10 @@ public class FDTrafo implements FeatureDiagramVisitor {
 
   public void apply(ASTFeatureDiagram fd, FlatZincModel result) {
     this.flatZincModel = result;
-    fd.accept(this);
+
+    FeatureDiagramTraverser traverser = FeatureDiagramMill.traverser();
+    traverser.add4FeatureDiagram(this);
+    fd.accept(traverser);
 
     //add contraint for selecting the root feature
     Constraint rootFeature = new Constraint("bool_eq", "true", fd.getRootFeature());

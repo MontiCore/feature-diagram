@@ -24,18 +24,6 @@ public class FeatureConfigurationScopesGenitor
 
   protected FeatureConfigurationSymbol fcSym;
 
-  public FeatureConfigurationScopesGenitor() {
-  }
-
-  public FeatureConfigurationScopesGenitor(IFeatureConfigurationScope enclosingScope) {
-    super(enclosingScope);
-  }
-
-  public FeatureConfigurationScopesGenitor(
-      Deque<? extends IFeatureConfigurationScope> scopeStack) {
-    super(scopeStack);
-  }
-
   /**
    * Create the symbl table for a passed AST of an FC model.
    *

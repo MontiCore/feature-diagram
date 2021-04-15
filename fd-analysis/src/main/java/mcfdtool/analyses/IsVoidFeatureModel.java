@@ -12,7 +12,7 @@ import mcfdtool.transform.trafos.FlatZincTrafo;
 public class IsVoidFeatureModel {
 
   public Boolean perform(ASTFeatureDiagram fd) {
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
+    FlatZincModel model = FlatZincTrafo.getInstance().addFeatureDiagram(fd).build();
     return !Solvers.getSolver().hasSolution(model);
   }
 
