@@ -29,22 +29,10 @@ public class FalseOptional {
    * @return
    */
   public List<String> perform(ASTFeatureDiagram fd) {
-    List<String> optionalFeatures = getOptionalFeatures(fd);
+    List<String> optionalFeatures = OptionalFeatureCollector.getOptionalFeatures(fd);
     Set<String> alwaysSelected = getFeaturesAlwaysSelected(fd);
     optionalFeatures.retainAll(alwaysSelected);
     return optionalFeatures;
-  }
-
-  /**
-   * calculate a list of features directly marked as optional in the passed FD
-   *
-   * @param fd
-   * @return
-   */
-  protected List<String> getOptionalFeatures(ASTFeatureDiagram fd) {
-    OptionalFeatureCollector finder = new OptionalFeatureCollector();
-    fd.accept(finder);
-    return finder.getOptionalFeatures();
   }
 
   /**
@@ -56,7 +44,7 @@ public class FalseOptional {
   protected Set<String> getFeaturesAlwaysSelected(ASTFeatureDiagram fd) {
     // Step 1: populate a map that maps feature names to the number of times these occur
     // in all valid configurations of fd
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
+    FlatZincModel model = FlatZincTrafo.getInstance().addFeatureDiagram(fd).build();
     List<Map<String, Integer>> allSolutions = Solvers.getSolver().getAllSolutions(model);
     List<ASTFeatureConfiguration> allConfigurations = Solvers
         .transformResultToFC("IntermediateResult", allSolutions, fd);

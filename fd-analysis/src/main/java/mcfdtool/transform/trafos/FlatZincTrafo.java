@@ -63,27 +63,19 @@ public class FlatZincTrafo {
     this.model = model;
   }
 
-  public static FlatZincTrafo addFeatureDiagram(ASTFeatureDiagram fd) {
-    return getInstance()._addFeatureDiagram(fd);
-  }
-
-  public FlatZincTrafo _addFeatureDiagram(ASTFeatureDiagram fd) {
+  public FlatZincTrafo addFeatureDiagram(ASTFeatureDiagram fd) {
     getFdTrafo().apply(fd, getModel());
     return this;
   }
 
-  public static FlatZincTrafo addFeatureConfiguration(ASTFeatureConfiguration fc) {
-    return getInstance()._addFeatureConfiguration(fc);
-  }
-
-  public FlatZincTrafo _addFeatureConfiguration(ASTFeatureConfiguration fc) {
+  public FlatZincTrafo addFeatureConfiguration(ASTFeatureConfiguration fc) {
     getFcTrafo().apply(fc, getModel());
     return this;
   }
 
-  public static FlatZincModel build() {
+  public FlatZincModel build() {
     FlatZincModel model = getInstance().getModel();
-    getInstance().setModel(null);
+    setModel(null);
     return model;
   }
 

@@ -16,7 +16,10 @@ import java.util.Map;
 public class CompleteToValid {
 
   public ASTFeatureConfiguration perform(ASTFeatureDiagram fd, ASTFeatureConfiguration fc) {
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd)._addFeatureConfiguration(fc).build();
+    FlatZincModel model = FlatZincTrafo.getInstance()
+        .addFeatureDiagram(fd)
+        .addFeatureConfiguration(fc)
+        .build();
     Map<String, Integer> anySolution = Solvers.getSolver().getAnySolution(model);
     return Solvers.transformResultToFC("CompletedConfiguration", anySolution, fd);
   }

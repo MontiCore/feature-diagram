@@ -1,10 +1,16 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-[tool]:                      ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FeatureModelAnalysisTool.java
-[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
-[FDtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
-[FCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationTool.java
+[clitool]:                   fd-analysis/src/main/java/mcfdtool/FACT.java
+[fddifftool]:                fd-analysis/src/main/java/fddiff/FDSemDiff.java
+[FDtool]:                    fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramCLI.java
+[FCtool]:                    fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
+[PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
 
+[fact-link]: http://www.monticore.de/download/FACT.jar
+[fdtool-link]: http://www.monticore.de/download/FeatureDiagramCLI.jar
+[fctool-link]: http://www.monticore.de/download/FeatureConfigurationCLI.jar
+[fcptool-link]: http://www.monticore.de/download/FeatureConfigurationPartialCLI.jar
 
+[SemDiffPaper]: https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [choco]: https://choco-solver.org
 > NOTE: <br>
@@ -16,6 +22,8 @@ or extending the feature configuration language is located
 **[here](fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.md)**.
 
 # Feature Diagram Languages in MontiCore
+
+[[_TOC_]]
 
 The models of the feature diagram language (FDL) are called *feature diagrams (FDs)*. Sometimes
 the term feature model is used interchangeably. 
@@ -40,8 +48,8 @@ and to perform analyses on the FDs.
 * [**doc**](doc) contains slides and images used for the documentation of the language
 * [**fd-analysis**](fd-analysis) contains several FD analyses and a tool to execute these 
 * [**fd-lang**](fd-lang) contains the technical realization of the languages
-  * The FD language is documented [here](d-lang/src/main/grammars/de/monticore/FeatureDiagram.md)
-  * The FC languages are documented [here](d-lang/src/main/grammars/de/monticore/FeatureConfiguration.md)
+  * The FD language is documented [here](fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md)
+  * The FC languages are documented [here](fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.md)
 
 ## Textual Syntax
 This section presents two examples for FDs: The phone example gives an overview
@@ -140,78 +148,313 @@ more complex constraints that involve more than two features. In the example
 FD below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`, 
 and `Asia` requires to select either a `Large` or a `Medium` memory.
 
-## Tools
-The FDL component provides the following three tools:
+## Tool Download
+ * [**Download Feature Model Analysis CLI Tool (FACT)**][fact-link]
+ * [**Download FeatureDiagramCLI Tool**][fdtool-link]
+ * [**Download FeatureConfigurationCLI Tool**][fctool-link]
+ * [**Download FeatureConfigurationPartialCLI Tool**][fcptool-link]
+
+Alternatively, the tools can be built from source code.
+
+## Build the Tools
+This section explains how to build and set up the command line interface tools 
+for the FD languages from the source code of the tools. Alternatively, the
+tools can be [downloaded](#Tool-Download).
+Each tool is contained in a separate jar file, which is produced as result
+of building the project with gradle. The following explains this.
+
+##### Prerequisites
+To build the project, it is required to install a Java 8 JDK and git. 
+
+##### Step 1: Clone Project with git
+
+    git clone <link to this Git repository>
+    cd feature-diagram
+
+##### Step 2: Build Project with gradle
+
+    gradle build --refresh-dependencies
+Afterwards, the jars of the tools are available in `fd-lang/target/libs` and `fd-analysis/target/libs`.
+
+
+## Tool Documentation
+The FDL component provides the five tools that are explained in more detail below:
+* The [Feature Model Analysis CLI Tool (FACT)][clitool] enables executing analyses against feature diagrams and feature configuration both via CLI and Java API
+* The [FeatureDiagramCLI][FDtool] enables fine-grained options for processing feature diagram models both via CLI and Java API
+* The [FeatureConfigurationCLI][FCtool] enables fine-grained options to process feature configuration models both via CLI and Java API
+* The [FeatureConfigurationPartialCLI][PFCtool] enables fine-grained options to process partial feature configuration models both via CLI and Java API
+* The [Semantic Differencing for Feature Diagrams][fddifftool] enables performing the semantic difference operator for feature diagrams via Java API. 
 
 ### [The FeatureModelAnalysisCLITool][clitool] 
+The [Feature Model Analysis CLI Tool (FACT)][clitool] coordinates the execution of one or more several analyses against a FD
+and, optionally, additional information (depends on the analysis kinds) in form of a CLI tool. 
+An overview of the different analyses is given by [[BSRC10]](https://www.sciencedirect.com/science/article/abs/pii/S0306437910000025?via%3Dihub).
 
-The [FeatureModelAnalysisCLITool][clitool] coordinates the execution of one or more several analyses against a FD
-and, optionally, additional information (depends on the analysis kinds) in form of a CLI tool. It can be used as follows:
-```java -jar FACT.jar <Car.fd> [-<analysis>]+```, where
+FACT can be used as follows:
+`java -jar FACT.jar <Car.fd> [-<analysis>]+`, where
 * `<Car.fd>` is the (optionally, qualified) fileName of an FD "Car"
 * `<analysis>` is the name of an analysis followed by arguments for the analysis that depend on the type of analysis.
 
 Currently, the FeatureModelAnalysisCLITool supports the following analyses:
-* `isValid <Basic.fc>`, the check whether a passed configuration "Basic" is valid w.r.t the FD.
+* `isValid <Basic.fc>`, to check whether a passed configuration "Basic" is valid w.r.t the FD
+* `allProducts`, to find all valid configurations of the FD
+* `deadFeatures`, to find all features of FD that are not included in any valid configuration of FD
+* `falseOptional`, to find all optional features of FD that are included in every valid vonfiguration of FD
+* `completeToValid <Basic.fc>`, to complete the passed configuration "Basic" to a valid configuration, if this is possible
+* `findValid`, to find any valid configuration of FD
+* `isVoidFeatureModel`, to check whether there is at least one valid configuration of FD
+* `numberOfProducts`, to count the number of valid configurations of FD
+* `semdiff <semantics>`, to compute a diff witness contained in the semantic difference from an FD to another FD using 
+  the semantics as specified by the argument `<semantics>`. Possible values for the argument are `open` and `closed` where 
+  `open` is chosen by default if no argument is specified. The differences between the open- and closed-world semantics are
+   described [in this paper][SemDiffPaper] in detail. 
 
 For example, `java -jar FACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the FD "Car". 
 The result, in this case `true` or `false`, is printed to the console.
+Currently, `semdiff` is the only option that expects two FDs as inputs. 
+For example, `java -jar FACT.jar Car1.fd Car2.fd -semdiff open` computes and outputs a diff witness 
+contained in the open-world semantic difference from `Car1.fd` to `Car2.fd` if at least one exists.
+Otherwise, the tool outputs that `Car1.fd` is a refinement of `Car2.fd`.
 
-#### Supported Feature Analyses
+[FACT][clitool] can further be used for direct access from Java through the following methods:
+* `boolean execIsValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc)`, to execute the [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java) analysis
+* `List<ASTFeatureConfiguration> execAllProducts(ASTFeatureDiagram fd)`, to execute the [all products](fd-analysis/src/main/java/tool/analyses/AllProducts.java) analysis
+* `List<String> execDeadFeature(ASTFeatureDiagram fd)`, to execute the [dead features](fd-analysis/src/main/java/tool/analyses/DeadFeatures.java) analysis
+* `List<String> execFalseOptional(ASTFeatureDiagram fd)`, to execute the [false optional features](fd-analysis/src/main/java/tool/analyses/FalseOptional.java) analysis
+* `ASTFeatureConfiguration execCompleteToValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc)`, to execute the [filter](fd-analysis/src/main/java/tool/analyses/Filter.java) analysis
+* `ASTFeatureConfiguration execFindValid(ASTFeatureDiagram fd)`, to execute the [find valid product](fd-analysis/src/main/java/tool/analyses/FindValidConfig.java) analysis
+* `boolean execIsVoidFeatureModel(ASTFeatureDiagram fd)`, to execute the [is void](fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java) analysis
+* `int execNumberOfProducts(ASTFeatureDiagram fd)`, to execute the [number of products](fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java) analysis
+* `ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, ModelPath symbolInputPath)`, to read in a feature diagram model
+* `ASTFeatureConfiguration readFeatureConfiguration(String modelFile, ModelPath symbolInputPath)`, to read in a feature configuration model
 
-FDs and feature configurations can be analyzed to extract information
-about the software product line and its products.
-An overview of the different analyses is given by [[BSRC10]](https://doi.org/10.1016/j.is.2010.01.001).
-The following table shows the analyses currently implemented in the FD analysis tool:
+Example:
+```groovy
+FACT tool = new FACT();
+ModelPath mp = new ModelPath();
+mp.addEntry(Paths.get("target"));
 
-| name | input | result |
-| ------ | ------ | ------ |
-| [all products](fd-analysis/src/main/java/tool/analyses/AllProducts.java) | FD | list of FCs |
-| [dead features](fd-analysis/src/main/java/tool/analyses/DeadFeatures.java) | FD | list of features |
-| [false optional features](fd-analysis/src/main/java/tool/analyses/FalseOptional.java) | FD | list of features |
-| [filter](fd-analysis/src/main/java/tool/analyses/Filter.java) | FD & FC | list of FCs |
-| [find valid product](fd-analysis/src/main/java/tool/analyses/FindValidConfig.java) | FD | FC |
-| [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java)| FD & FC | boolean |
-| [is void](fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java) | FD | boolean |
-| [number of products](fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java) | FD | integer |
+ASTFeatureDiagram fd = tool.readFeatureDiagram("src/test/resources/fdvalid/CarNavigation.fd", "target", mp);
+ASTFeatureConfiguration fc = tool.readFeatureConfiguration("src/test/resources/Basic.fc", mp);
+boolean result = tool.execIsValid(fd, fc);
 
+if(result){
+  System.out.println("Is valid!");
+}
+else{
+  System.out.println("Is invalid!");
+}
+```
 
-### [The FeatureModelAnalysisTool][tool] 
-The [FeatureModelAnalysisTool][tool] coordinates the execution of one or more analyses against a FD
-and, optionally, additional information (depends on the analysis kinds) such as a feature configuration, in form of a Java API.
-It contains the following constructors and methods:
-* `FeatureModelAnalysisTool(ASTFeatureDiagram featureModel, ISolver solver)` instantiates the tool with the AST of the passed 
-  featureModel and uses the passed solver for conducting the analses.
-* `FeatureModelAnalysisTool(ASTFeatureDiagram featureModel)` instantiates the tool with the AST of the passed featureModel. By default, a Solver based on [Choco][choco] is employed.
-* `void addAnalysis(Analysis analysis)` adds an analysis to the set of analyses conducted in this tool. Arguments for the analysis have to be added to each analysis object individually. 
-* `void performAnalyses()` performs the analyses. The analysis results are then available in each Analysis object
+### [The FeatureDiagramCLI Tool][FDtool] 
+The [FeatureDiagramCLI][FDtool] offers both CLI and a Java API for processing FeatureDiagram models. 
+It provides through the CLI as follows:
 
-### [The FeatureDiagramTool][FDtool] 
-The [FeatureDiagramTool][FDtool] offers a Java API for processing FeatureDiagram models. 
-It contains the following (static) methods:
+`java -jar FeatureDiagramCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+        
+where the arguments are:
+* `-h`,`--help`                  Prints this help dialog
+* `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
+* `-o`,`--output <outPath>`      Path of generated files
+* `-path <p>`                    Sets the artifact pathlist for imported symbols. 
+                                 The pathlist is separated by whitespace.
+* `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout or a specified output file
+* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
+                                 specified output file
+
+For using the tool as Java API, it contains the following methods:
 * `ASTFDCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
-* `FeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at the passed path and 
-  instantiates the symbol table using passed modelpath entries for finding imported FDs
-* `FeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp)` instantiates the symbol table 
-  using the passed AST as basis and the passed modelpath entries for finding imported FDs
+* `IFeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
+  the passed path and instantiates the symbol table using passed modelpath entries for finding imported FDs
+* `IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp)` instantiates the 
+  symbol table using the passed AST as basis and the passed modelpath entries for finding imported FDs
 * `void checkCoCos(ASTFDCompilationUnit ast)` checks all context conditions of the FDL against the passed AST
-* `File storeSymbols(ASTFDCompilationUnit ast, String fileName)` stores the symbol table for the passed ast in a file with the path fileName. 
-  If the file exists, it is overridden. Otherwise, a new file is created.
-* `ASTFeatureDiagram run(String modelFile, ModelPath mp)` parses the passed modelFile, creates the symbol table, 
-  checks the context conditions, and then stores the symbol table.
-* `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, checks the context conditions, and stores symbol table - all
-  without an explicit modelpath. Care: this can only take into account imported FDs if these are located next to the passed FD modelFile.
+* `String storeSymbols(IFeatureDiagramArtifactScope scope, String fileName)` stores the symbol table 
+  for the passed artifact scope in a file with the passed fileName. If the file exists, it is overridden. 
+  Otherwise, a new file is created.
+* `String storeSymbols(IFeatureDiagramArtifactScope scope, Path out)` stores the symbol table for 
+  the passed artifact scope in a file with the usual name, package, and fileEnding at the passed 
+  'out' location. If the file exists, it is overridden. Otherwise, a new file is created.
+* `ASTFeatureDiagram run(String modelFile, Path out, ModelPath mp)` parses the passed modelFile, creates the 
+  symbol table, checks the context conditions, and then stores the symbol table at the passed location.
+* `ASTFeatureDiagram run(String modelFile, ModelPath mp)` parses the passed modelFile, creates the 
+  symbol table, checks the context conditions, and then stores the symbol table.
+* `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, 
+  checks the context conditions, and stores symbol table - all without an explicit modelpath. Care: 
+  this can only take into account imported FDs if these are located next to the passed FD modelFile.
 
+### [The FeatureConfigurationCLI Tool][FCtool] 
+The [FeatureConfigurationCLI][FCtool] offers both CLI and a Java API for processing FeatureConfiguration models. 
+It provides through the CLI as follows:
 
+`java -jar FeatureConfigurationCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+        
+where the arguments are:
+* `-h`,`--help`                  Prints this help dialog
+* `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
+* `-o`,`--output <outPath>`      Path of generated files
+* `-path <p>`                    Sets the artifact pathlist for imported symbols.
+                                 The pathlist is separated by whitespace.
+* `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout or a specified output file
+* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
+                                 specified output file
+
+For using the tool as Java API, it contains the following methods:
+* `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
+* `IFeatureConfigurationArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
+  the passed path and instantiates the symbol table using passed modelpath entries for finding FDs
+* `IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp)` instantiates the 
+  symbol table using the passed AST as basis and the passed modelpath entries for finding FDs
+* `String storeSymbols(IFeatureConfigurationArtifactScope scope, String fileName)` stores the symbol table 
+  for the passed artifact scope in a file with the passed fileName. If the file exists, it is overridden. 
+  Otherwise, a new file is created.
+* `String storeSymbols(IFeatureConfigurationArtifactScope scope, Path out)` stores the symbol table for 
+  the passed artifact scope in a file with the usual name, package, and fileEnding at the passed 
+  'out' location. If the file exists, it is overridden. Otherwise, a new file is created.
+* `ASTFeatureConfiguration run(String modelFile, ModelPath mp)` parses the passed modelFile and creates 
+  the symbol table. Through this, conformance to the feature model is checked as well.
+* `ASTFeatureConfiguration run(String modelFile)` parses the passed modelFile and creates 
+   the symbol table. Through this, conformance to the feature model is checked as well - all without 
+   an explicit modelpath. Care: this can only take into account FDs if these are located next to the 
+   passed FC modelFile.
+   
+### [The FeatureConfigurationPartialCLI Tool][PFCtool] 
+The [FeatureConfigurationPartialCLI][PFCtool] offers both CLI and a Java API for processing 
+PartialFeatureConfiguration models. It provides through the CLI as follows:
+
+`java -jar FeatureConfigurationPartialCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+        
+where the arguments are:
+* `-h`,`--help`                  Prints this help dialog
+* `-i`,`--input <fileName>`      Reads the (mandatory) source file resp. the contents of the model
+* `-o`,`--output <outPath>`      Path of generated files
+* `-path <p>`                    Sets the artifact pathlist for imported symbols.
+                                 The pathlist is separated by whitespace.
+* `-pp`,`--prettyprint [<file>]` Prettyprints the model to stdout or a the specified output file
+* `-s`,`--symboltable [<file>]`  Serializes and prints the symbol table either to stdout or to a
+                                 specified output file
+
+For using the tool as Java API, it contains the following methods:
+* `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
+* `IFeatureConfigurationPartialArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
+  the passed path and instantiates the symbol table using passed modelpath entries for finding FDs
+* `IFeatureConfigurationPartialArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp)` instantiates the 
+  symbol table using the passed AST as basis and the passed modelpath entries for finding FDs
+* `void checkCoCos(ASTFCCompilationUnit ast)` checks all context conditions of the partial FC language
+   against the passed AST
+* `String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, String fileName)` stores the symbol table 
+  for the passed artifact scope in a file with the passed fileName. If the file exists, it is overridden. 
+  Otherwise, a new file is created.
+* `String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, Path out)` stores the symbol table for 
+  the passed artifact scope in a file with the usual name, package, and fileEnding at the passed 
+  'out' location. If the file exists, it is overridden. Otherwise, a new file is created.
+* `ASTFeatureConfiguration run(String modelFile, ModelPath mp)` parses the passed modelFile and creates 
+  the symbol table. Through this, conformance to the feature model is checked as well.
+* `ASTFeatureConfiguration run(String modelFile)` parses the passed modelFile and creates 
+   the symbol table. Through this, conformance to the feature model is checked as well - all without 
+   an explicit modelpath. Care: this can only take into account FDs if these are located next to the 
+   passed modelFile.
+
+### [Semantic Differencing for Feature Diagrams][fddifftool]
+The [Semantic Differencing for Feature Diagrams Tool][fddifftool] offers a Java API to perform semantic differencing between two 
+feature diagrams. The semantics of a feature diagram are the set of all of its valid feature configurations.
+The semantic difference between two feature diagram is therefore the set of feature configurations, that are valid in 
+the first but invalid in the second feature diagram.
+The Java API offers a class to calculate the semantic difference witness, given two parsed feature diagrams.
+Simply invoke the `semDiff` method of the `FDSemDiff` class provided [here][fddifftool]. 
+
+## Tool Usage Examples
+This section provides some copy and paste templates for executing the resulting tools against 
+some test models that are contained in the language project. This is a good basis 
+for getting familiar with the tools while experimenting with changes to the models. 
+The tools are explained here and the languages are documented there.
+
+#### Print tool argument options
+(1) Print argument options of the FACT tool:
+
+    java -jar fd-analysis/target/libs/FACT.jar -h
+        
+(2) Print argument options of the FD tool:
+
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -h
+
+(3) Print argument options of the FC tool:
+
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -h
+
+(4) Print argument options of the PartialFC tool:
+
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar -h
+
+#### Process A Single Model
+(5) Parse an FD model and store its symbol table to a file `CarNavigation.fdsym` (in the default output directory `target`):
+
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar \
+        -i fd-lang/src/test/resources/fdvalid/CarNavigation.fd \
+        -s fdvalid/CarNavigation.fdsym
+
+(6) Parse an FD model and store its symbol table to a file in the non-default output directory `target/symbols`:
+
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar \
+        -i fd-lang/src/test/resources/fdvalid/BasicElements.fd \
+        -o target/symbols \
+        -s fdvalid/BasicElements.fdsym
+ 
+(7) Parse an FC model and print its symbol table, where the used feature diagram is loaded from the 
+stored symbol table (**requires executing (5) first** to store the symbol table of the FD model):
+
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar \
+        -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc \
+        -path target \
+        -s
+        
+<!--        
+(7 alternative) Parse an FC model and print its symbol table, where the used feature diagram is loaded from the model. 
+**Warning:** This is not recommended and produces a warning message as result. Instead, the FD should 
+be loaded from the symbol table (cf. (7) ).
+
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar \
+        -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc \
+        -path fd-lang/src/test/resources \
+        -s
+-->
+
+(8) Parse and then pretty print a Partial FC model (**requires executing (6) first** to store the 
+symbol table of the FD model):
+
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar \
+        -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc \
+        -path target/symbols \
+        -pp
+
+#### Perform Feature Analyses
+
+(9) Check whether an FC is valid:
+
+    java -jar fd-analysis/target/libs/FACT.jar \
+        fd-analysis/src/test/resources/FalseOptional.fd \
+        -isValid fd-analysis/src/test/resources/ValidConfig.fc
+
+(10) Return any valid configuration of an FD:
+
+    java -jar fd-analysis/target/libs/FACT.jar \
+        fd-analysis/src/test/resources/fdvalid/CarNavigation.fd \
+        -findValid
+
+(11) Calculate semantic difference between two FDs:
+
+    java -jar fd-analysis/target/libs/FACT.jar \
+        fd-analysis/src/test/resources/fddiff/car2.fd \
+        fd-analysis/src/test/resources/fddiff/car1.fd \
+        -semdiff
+   
 ## Further Information
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
-
-* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](BestPractices.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

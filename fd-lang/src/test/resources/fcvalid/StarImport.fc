@@ -3,6 +3,6 @@ package fcvalid;
 
 import fdvalid.*;
 
-featureconfig InvalidStarImport for BasicElements {
+featureconfig StarImport for BasicElements {
   A;
 }

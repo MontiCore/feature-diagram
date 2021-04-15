@@ -4,5 +4,4 @@ package fcvalid;
 import fdvalid.BasicElements;
 
 featureconfig SelectNone for BasicElements {
-  A;
 }

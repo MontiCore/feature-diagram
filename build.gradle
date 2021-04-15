@@ -1,29 +1,20 @@
 /* (c) https://github.com/MontiCore/monticore */
-import de.monticore.MCTask
-
 plugins {
     id "java"
-    id "monticore"  version "6.3.0-SNAPSHOT" // MontiCore Plugin
+    id "monticore"  version "$mc_version" // MontiCore Plugin
     id "maven-publish"
-    id "com.github.johnrengelman.shadow" version "4.0.4"
+    id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
 }
 
-def monticore_version = '6.3.0-SNAPSHOT'
-def plexus_archiver_version = '2.8.2'
-def junit_version = '4.12'
-def logback_version = '1.1.2'
-def choco_solver_version = '4.0.5'
-def choco_parser_version = '4.0.4'
-def commons_cli_version = '1.2'
 
-def grammarDir = 'src/main/grammars'
 
 allprojects {
     group = 'de.monticore.lang'
-    version = '0.0.3-SNAPSHOT'
 
     repositories {
+      if(("true").equals(getProperty('useLocalRepo'))){
         mavenLocal()
+      }
         maven {
             credentials.username mavenUser
             credentials.password mavenPassword
@@ -41,9 +32,12 @@ subprojects {
     apply plugin: 'maven-publish'
 
     dependencies {
-//        implementation group: 'de.monticore', name: 'monticore-runtime', version: monticore_version
-        implementation group: 'de.monticore', name: 'monticore-grammar', version: monticore_version
+        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
         implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
+        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+
         testImplementation group: 'junit', name: 'junit', version: junit_version
         testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
     }
@@ -66,10 +60,13 @@ subprojects {
 project(':fd-lang') {
     apply plugin : 'java'
     apply plugin : 'monticore'
+    apply plugin : 'com.github.johnrengelman.shadow'
 
     dependencies {
-        grammar (group:'de.monticore', name:'monticore-grammar', version:monticore_version, classifier: "grammars",
-                changing: true) { force = true }
+        implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
+        grammar ("de.monticore:monticore-grammar:$mc_version") {capabilities {
+          requireCapability("de.monticore:monticore-grammar-grammars") }
+        }
     }
 
     description = 'Feature Diagram Language'
@@ -95,6 +92,9 @@ project(':fd-lang') {
         outputs.upToDateWhen { uptoDate }
     }
 
+    generateFeatureConfiguration.dependsOn(generateFeatureDiagram)
+    generateFeatureConfigurationPartial.dependsOn(generateFeatureConfiguration)
+
     compileJava {
         dependsOn project.collect { it.tasks.withType(MCTask) }
     }
@@ -111,6 +111,37 @@ project(':fd-lang') {
         archiveClassifier = "grammars"
     }
 
+    shadowJar { // all in one jar
+        manifest {
+            attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramCLI"
+        }
+        minimize() // sort out unused files automatically (does not find everything we don't need)
+        archiveClassifier = "fd-cli"
+        archiveFileName  =  "FeatureDiagramCLI.jar"
+    }
+
+    task buildFeatureConfigurationToolCLI(type: Jar, dependsOn: shadowJar) {
+        archiveFileName = 'FeatureConfigurationCLI.jar'
+        archiveClassifier = "fc-cli"
+        manifest {
+            attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationCLI')
+        }
+        from zipTree(shadowJar.archiveFile)
+    }
+
+    task buildFeatureConfigurationToolPartialCLI(type: Jar, dependsOn: shadowJar) {
+        archiveFileName = 'FeatureConfigurationPartialCLI.jar'
+        archiveClassifier = "fcp-cli"
+        manifest {
+            attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI')
+        }
+        from zipTree(shadowJar.archiveFile)
+    }
+
+//    jar.dependsOn(shadowJar)
+    jar.dependsOn(buildFeatureConfigurationToolCLI)
+    jar.dependsOn(buildFeatureConfigurationToolPartialCLI)
+
     // configure deployment
     publishing {
         // configure what artifacts to publish
@@ -120,6 +151,9 @@ project(':fd-lang') {
                 from components.java
                 artifact sourcesJar
                 artifact grammarJar
+                artifact shadowJar
+                artifact buildFeatureConfigurationToolCLI
+                artifact buildFeatureConfigurationToolPartialCLI
             }
         }
         repositories.maven {
@@ -134,7 +168,9 @@ project(':fd-lang') {
 
 
 project(':fd-analysis') {
+
     apply plugin: 'java'
+    apply plugin : 'com.github.johnrengelman.shadow'
 
     dependencies {
         implementation project(':fd-lang')
@@ -142,7 +178,9 @@ project(':fd-analysis') {
         implementation (group: 'org.choco-solver', name: 'choco-parsers', version: choco_parser_version){
             exclude group: "xcsp3", module:"xcsp3"
         }
-        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+
+        implementation group:'org.sat4j', name: 'org.sat4j.core', version: sat4j_version
+        implementation group: 'org.logicng', name: 'logicng', version: logicng_version
     }
 
     description = 'Feature Diagram Analyses'
@@ -158,15 +196,11 @@ project(':fd-analysis') {
             attributes "Main-Class": "mcfdtool.FACT"
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
-        // we do not need artifacts conforming to these regexes either:
-//        exclude "freemarker/**"
-//        exclude "com/**"
-//        exclude "dk/**"
-//        exclude "**/*.aut"
-
         archiveFileName  =  "FACT.jar"
+        archiveClassifier = "cli"
     }
 
+    jar.dependsOn(shadowJar)
 
     // configure deployment
     publishing {
@@ -176,6 +210,7 @@ project(':fd-analysis') {
                 artifactId = "$project.name"
                 from components.java
                 artifact sourcesJar
+                artifact shadowJar
             }
         }
         repositories.maven {
@@ -187,3 +222,9 @@ project(':fd-analysis') {
         }
     }
 }
+
+task buildAll(type: GradleBuild) {
+  tasks = [ 'build' ]
+}
+
+defaultTasks 'build'

@@ -3,12 +3,12 @@ package mcfdtool.analyses;
 
 import de.monticore.featureconfiguration._ast.ASTFCElement;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfiguration._visitor.SelectedFeatureCollector;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import mcfdtool.solver.Solvers;
 import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.trafos.FlatZincTrafo;
-import mcfdtool.visitors.SelectedFeatureCollector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,10 @@ public class IsValid {
     // fc, we need to explicitly mark features that are not selected as excluded:
     excludeNotSelectedFeatures(fd, fc);
 
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd)._addFeatureConfiguration(fc).build();
+    FlatZincModel model = FlatZincTrafo.getInstance()
+        .addFeatureDiagram(fd)
+        .addFeatureConfiguration(fc)
+        .build();
     return Solvers.getSolver().hasSolution(model);
   }
 

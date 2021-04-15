@@ -4,10 +4,13 @@ package mcfdtool.transform.trafos;
 
 import de.monticore.ast.ASTNode;
 import de.monticore.expressions.commonexpressions._ast.*;
+import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
+import de.monticore.expressions.expressionsbasis._visitor.ExpressionsBasisVisitor2;
 import de.monticore.featurediagram._ast.ASTExcludes;
 import de.monticore.featurediagram._ast.ASTRequires;
-import de.monticore.featurediagram._visitor.FeatureDiagramVisitor;
+import de.monticore.featurediagram._visitor.FeatureDiagramVisitor2;
+import mcfdtool.transform.flatzinc.Constraint;
 import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.flatzinc.Variable;
 
@@ -17,7 +20,8 @@ import java.util.Map;
 /**
  * This creates FlatZinc variables with unique names for parts of cross-tree constraints
  */
-public class CTCVariableCreator implements FeatureDiagramVisitor {
+public class CTCVariableCreator implements FeatureDiagramVisitor2,
+    CommonExpressionsVisitor2, ExpressionsBasisVisitor2 {
 
   protected int i;
 
@@ -37,130 +41,62 @@ public class CTCVariableCreator implements FeatureDiagramVisitor {
     names.put(node, variable);
   }
 
-  @Override
-  public void visit(ASTMultExpression node) {
-    //attention: int is only a placeholder, actual type is set in endVisit method
-    addNewVariable(node, Variable.Type.INT, "multExpr" + i++);
-  }
-
-  public void endVisit(ASTMultExpression node) {
-    Variable.Type actualType = names.get(node.getLeft()).getType();
-    names.get(node).setType(actualType);
-  }
-
-  @Override
-  public void visit(ASTDivideExpression node) {
-    //attention: int is only a placeholder, actual type is set in endVisit method
-    addNewVariable(node, Variable.Type.INT, "divExpr" + i++);
-  }
-
-  public void endVisit(ASTDivideExpression node) {
-    Variable.Type actualType = names.get(node.getLeft()).getType();
-    names.get(node).setType(actualType);
-  }
-
-  @Override
-  public void visit(ASTPlusExpression node) {
-    //attention: int is only a placeholder, actual type is set in endVisit method
-    addNewVariable(node, Variable.Type.INT, "plusExpr" + i++);
-  }
-
-  public void endVisit(ASTPlusExpression node) {
-    Variable.Type actualType = names.get(node.getLeft()).getType();
-    names.get(node).setType(actualType);
-  }
-
-  @Override
-  public void visit(ASTMinusExpression node) {
-    //attention: int is only a placeholder, actual type is set in endVisit method
-    addNewVariable(node, Variable.Type.INT, "minusExpr" + i++);
-  }
-
-  public void endVisit(ASTMinusExpression node) {
-    Variable.Type actualType = names.get(node.getLeft()).getType();
-    names.get(node).setType(actualType);
-  }
-
-  @Override
-  public void visit(ASTModuloExpression node) {
-    addNewVariable(node, Variable.Type.INT, "modExpr" + i++);
-  }
-
-  @Override
-  public void visit(ASTLessEqualExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "leqExpr" + i++);
-  }
-
-  @Override
-  public void visit(ASTGreaterEqualExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "geqExpr" + i++);
-  }
-
-  @Override
-  public void visit(ASTLessThanExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "lessExpr" + i++);
-  }
-
-  @Override
-  public void visit(ASTGreaterThanExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "greaterExpr" + i++);
+  protected void addNewBoolVariable(ASTNode node, String name) {
+    Variable variable = new Variable(name + "Negated", Variable.Type.BOOL, "var_is_introduced");
+    flatZincModel.add(variable);
+    flatZincModel.add(new Constraint("bool_not", name, name + "Negated"));
+    addNewVariable(node, Variable.Type.BOOL, name);
   }
 
   @Override
   public void visit(ASTEqualsExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "eqExpr" + i++);
+    addNewBoolVariable(node, "eqExpr" + i++);
   }
 
   @Override
   public void visit(ASTNotEqualsExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "neqExpr" + i++);
+    addNewBoolVariable(node, "neqExpr" + i++);
   }
 
   @Override
   public void visit(ASTBooleanAndOpExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "boolAndExpr" + i++);
+    addNewBoolVariable(node, "boolAndExpr" + i++);
   }
 
   @Override
   public void visit(ASTBooleanOrOpExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "boolOrExpr" + i++);
-  }
-
-  @Override
-  public void visit(ASTBooleanNotExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "boolNotExpr" + i++);
+    addNewBoolVariable(node, "boolOrExpr" + i++);
   }
 
   @Override
   public void visit(ASTLogicalNotExpression node) {
-    addNewVariable(node, Variable.Type.BOOL, "logicalNotExpr" + i++);
+    addNewBoolVariable(node, "logicalNotExpr" + i++);
   }
 
   @Override
   public void visit(ASTConditionalExpression node) {
-    //attention: bool is only a placeholder, actual type is set in endVisit method
-    addNewVariable(node, Variable.Type.BOOL, "condExpr" + i++);
-  }
-
-  public void endVisit(ASTConditionalExpression node) {
-    Variable.Type actualType = names.get(node.getTrueExpression()).getType();
-    names.get(node).setType(actualType);
+    addNewBoolVariable(node, "condExpr" + i++);
   }
 
   @Override
   public void visit(ASTExcludes node) {
-    addNewVariable(node, Variable.Type.BOOL, "excludes" + i++);
+    addNewBoolVariable(node, "excludes" + i++);
   }
 
   @Override
   public void visit(ASTRequires node) {
-    addNewVariable(node, Variable.Type.BOOL, "requires" + i++);
+    addNewBoolVariable(node, "requires" + i++);
   }
 
   @Override
   public void visit(ASTNameExpression node) {
-    Variable variable = Variable.newIntVariable(node.getName());
+    Variable variable = Variable.newBoolVariable(node.getName());
     names.put(node, variable);
+  }
+
+  @Override
+  public void endVisit(ASTBracketExpression node) {
+    names.put(node, names.get(node.getExpression()));
   }
 
   public Map<ASTNode, Variable> getVariables() {

@@ -5,18 +5,25 @@ import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramGlobalScope;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbolTableCreatorDelegator;
+import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import test.AbstractTest;
+import test.AbstractLangTest;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class FeatureDiagramCoCoTest extends AbstractTest {
+public class FeatureDiagramCoCoTest extends AbstractLangTest {
+
+  @BeforeClass
+  public static void initMill(){
+    FeatureDiagramMill.init();
+  }
 
   @Test
   public void testValid() throws IOException {
@@ -27,6 +34,13 @@ public class FeatureDiagramCoCoTest extends AbstractTest {
     FeatureDiagramCoCos.checkAll(readFile(dir + "GraphLibrary.fd"));
     FeatureDiagramCoCos.checkAll(readFile(dir + "Phone.fd"));
     assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
+  public void testForbiddenCTCExpressions() throws IOException {
+    String[] errors = new String[14];
+    Arrays.fill(errors, "0xFD011");
+    testCoCo("IllegalCTCs.fd", errors);
   }
 
   @Test
@@ -68,18 +82,11 @@ public class FeatureDiagramCoCoTest extends AbstractTest {
       throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
-    FeatureDiagramGlobalScope globalScope = FeatureDiagramMill
-        .featureDiagramGlobalScopeBuilder()
-        .setModelPath(mp)
-        .setModelFileExtension("fd")
-        .build();
+    IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
+    gs.setModelPath(mp);
+    gs.setFileExt("fd");
 
-    FeatureDiagramSymbolTableCreatorDelegator symbolTable = FeatureDiagramMill
-        .featureDiagramSymbolTableCreatorDelegatorBuilder()
-        .setGlobalScope(globalScope)
-        .build();
-
-    symbolTable.createFromAST(ast);
+    FeatureDiagramMill.scopesGenitorDelegator().createFromAST(ast);
     return ast;
   }
 

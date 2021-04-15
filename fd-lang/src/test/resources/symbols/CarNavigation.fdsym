@@ -1,0 +1,29 @@
+{
+  "name": "CarNavigation",
+      "package": "fdvalid",
+      "symbols": [
+      {
+        "kind": "de.monticore.featurediagram._symboltable.FeatureDiagramSymbol",
+          "name": "CarNavigation",
+          "features": [
+          "CarNavigation",
+          "Display",
+          "GPS",
+          "PreinstalledMaps",
+          "Memory",
+          "VoiceControl",
+          "TouchControl",
+          "Small",
+          "Medium",
+          "Large",
+          "SmallScreen",
+          "LargeScreen",
+          "Europe",
+          "NorthAmerica",
+          "SouthAmerica",
+          "Asia",
+          "Africa"
+        ]
+      }
+    ]
+  }

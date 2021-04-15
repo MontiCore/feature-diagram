@@ -1,20 +1,55 @@
 # (c) https://github.com/MontiCore/monticore  
-image: maven:3.5.4-jdk-8-alpine
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk8
 
 cache:
   paths:
     - .m2/
 
+
 stages:
   - build-sources
+  - check
 #  - it-test
 
 build_gradle:
   stage: build-sources
   script:
-    - chmod +x gradlew
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - "./gradlew assemble"
+    - "gradle build"
+  artifacts:
+    paths:
+      # CLI jars
+      - "fd-analysis/target/libs/FACT.jar"
+      - "fd-lang/target/libs/FeatureDiagramCLI.jar"
+      - "fd-lang/target/libs/FeatureConfigurationCLI.jar"
+      - "fd-lang/target/libs/FeatureConfigurationPartialCLI.jar"
+      # Example models
+      - "fd-lang/src/test/resources/fdvalid/BasicElements.fd"
+      - "fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc"
+      - "fd-lang/src/test/resources/fdvalid/CarNavigation.fd"
+      - "fd-lang/src/test/resources/pfcvalid/SelectOne.fc"
+      - "fd-lang/src/test/resources/fdvalid/BasicElements.fd"
+      - "fd-analysis/src/test/resources/FalseOptional.fd"
+      - "fd-analysis/src/test/resources/ValidConfig.fc"
+      - "fd-analysis/src/test/resources/fdvalid/CarNavigation.fd"
+      - "fd-analysis/src/test/resources/fddiff/car2.fd"
+      - "fd-analysis/src/test/resources/fddiff/car1.fd"
+    expire_in: 1 week
+
+
+checkMDLinks:
+  stage: check
+  dependencies:
+    - build_gradle
+  script:
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
+    - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/tree/develop"
+    - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken -p)"
+    - "echo \"$linkCheckRes\""
+    - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
+  only:
+    - develop
+
 
 # trigger_langexp:                        
 #  stage: it-test                           

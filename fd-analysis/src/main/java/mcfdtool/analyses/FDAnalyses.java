@@ -3,11 +3,11 @@
 package mcfdtool.analyses;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfigurationpartial._visitor.UnSelectedFeatureCollector;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import mcfdtool.solver.Solvers;
 import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.trafos.FlatZincTrafo;
-import mcfdtool.visitors.SelectedFeatureCollector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,7 @@ public class FDAnalyses {
    * @return
    */
   public static Map<String, Integer> countOccurrencesInFCs(ASTFeatureDiagram ast) {
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(ast).build();
+    FlatZincModel model = FlatZincTrafo.getInstance().addFeatureDiagram(ast).build();
     List<Map<String, Integer>> allSolutions = Solvers.getSolver().getAllSolutions(model);
     List<ASTFeatureConfiguration> allConfigurations = Solvers
         .transformResultToFC("intermediateResult", allSolutions, ast);
@@ -42,11 +42,12 @@ public class FDAnalyses {
       List<ASTFeatureConfiguration> allConfigurations) {
     Map<String, Integer> occurrences = new HashMap<>();
     for (ASTFeatureConfiguration cfg : allConfigurations) {
-      for (String feature : SelectedFeatureCollector.getSelectedFeatures(cfg)) {
+      for (String feature : UnSelectedFeatureCollector.getSelectedFeatures(cfg)) {
         int currentOccurences = occurrences.containsKey(feature) ? occurrences.get(feature) : 0;
         occurrences.put(feature, ++currentOccurences);
       }
     }
     return occurrences;
   }
+
 }

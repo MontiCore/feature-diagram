@@ -3,18 +3,14 @@
 <!-- Alpha-version: This is intended to become a MontiCore stable explanation. -->
 
 <!-- List with all references used within this markdown file: -->
-[Grammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.mc4
-[fcstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/_symboltable/FeatureConfigurationSymbolTableCreator.java
-[tool]:                      ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationTool.java
-
-[PartialGrammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfigurationPartial.mc4
-[pfcstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/_symboltable/FeatureConfigurationPartialSymbolTableCreator.java
-[tool]:                      ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialTool.java
-[UseSelectBlockCoCo]:                      ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/_cocos/UseSelectBlock.java
-
-[Readme]:                    ../../../../../../../../README.md
-[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/tool/FACT.java
+[Grammar]:             ../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.mc4
+[fcstc]:               ../../../../../../fd-lang/src/main/java/de/monticore/featureconfiguration/_symboltable/FeatureConfigurationSymbolTableCreator.java
+[PartialGrammar]:      ../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureConfigurationPartial.mc4
+[pfcstc]:              ../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/_symboltable/FeatureConfigurationPartialSymbolTableCreator.java
+[UseSelectBlockCoCo]:  ../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/_cocos/UseSelectBlock.java
+[Readme]:              ../../../../../../README.md
 [FeatureDiagram MLC]: FeatureDiagram.md
+[BasicSymbols MLC]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/symbols/BasicSymbols.mc4
 
 > NOTE: <br>
 This document is intended for  **language engineers** who extend, adapt or embed the FC language.
@@ -50,7 +46,7 @@ applications.
 The configuration `BasicCarNavigation` refers to the feature diagram `CarNavigation`
 and from this, selects seven features. It does not make any assertions about other
 features of `CarNavigation`. 
-For a detailed explanation of the meaning, please have a look at 
+For a detailed explanation of the meaning and the tools to process FCs, please have a look at 
 **[the readme][Readme]**.
 
 ### Syntax
@@ -73,8 +69,11 @@ For realizing the FC language, it was not necessary to implement handwritten
 extensions of AST classes, symbol classes, or the scope class.
 
 #### Symboltable
-- De-/Serialization functionality for the symbol table of the FC language does not exist,
-  because (to the best of our knowledge) there is no use case for which this is beneficial.
+- De-/Serialization functionality for the symbol table of the FC language exists, but is not 
+  integrated into the model processing because to the best of our knowledge, there is no use case 
+  for which this is beneficial. For language engineers who intend to store symbol tables 
+  of feature configurations, methods of the Java API and an optional argument of the CLI are realized
+  in the feature configuration tool (see **[the readme][Readme]** for more details).
    
 - The [`FeatureConfigurationSymbolTableCreator`][fcstc] handles the creation and linking of the
   symbols after the FC is parsed. It creates a `FeatureConfigurationSymbol` and loads the 
@@ -82,15 +81,15 @@ extensions of AST classes, symbol classes, or the scope class.
 
 
 #### Symbol kinds used by FC (importable):
-- An FC (as defined here) imports `FeatureDiagramSymbols` and `FeatureSymbols` 
+- An FC (as defined here) imports the symbol kinds `FeatureDiagramSymbol` and `FeatureSymbol` 
   from the [FeatureDiagram][FeatureDiagram MLC] language. These symbols are used
   to check whether the feature diagram name and feature names used in an FC model
-  are defined in an FD model. For performing more sophisticacted analyses on an FC
+  are defined in an FD model. Please note: For performing more sophisticacted analyses on an FC
   (as described in the [Readme][Readme]) loading stored symbols of the FD language 
-  is not sufficient. For these, the FD model has to be parsed.  
+  is not sufficient. For these, the imported FD models are loaded as well.  
 
 #### Symbol kinds defined by FC (exported):
- - For each FC there is a FeatureConfigurationSymbol defined as:
+ - For each FC there is a `FeatureConfigurationSymbol` defined as:
   ```
   class FeatureConfigurationSymbol {
       String name;
@@ -98,9 +97,15 @@ extensions of AST classes, symbol classes, or the scope class.
       /List<FeatureSymbol> selectedFeatures;
   }
   ```
+  The FC language does not reuse the `DiagramSymbol` of the 
+  [BasicSymbols][BasicSymbols MLC] language component. This is due to the fact 
+  that `FeatureConfigurationSymbols` have attributes of the feature diagram and the selected 
+  features that the `DiagramSymbol` does not provide.
 
 #### Symbols exported by FC in the stored symboltable:
-No symbols are exported from an FC model. 
+No symbols are exported from an FC model by default. If language engineers intend to export
+`FeatureConfigurationSymbols` in the future, the Feature Configuration tool, described in the 
+[Readme][Readme], provides access to the serialization and deserialization.
 
 #### Context Conditions
 The feature configuration language does not define any CoCo classes.
@@ -117,6 +122,8 @@ For a description of the generator and feature analyses, please have a look
 at **[the FeatureDiagram description][FeatureDiagram MLC]**. 
 
 <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+___
+___
 
 ### The Language for Partial Feature Configurations
 
@@ -156,9 +163,12 @@ It adds two nonterminals for realizing blocks of selected features and for reali
 excluded features.
 
 #### Symboltable
-- De-/Serialization functionality for the symbol table of the language does not exist,
-  because (to the best of our knowledge) there is no use case for which this is beneficial.
-   
+- De-/Serialization functionality for the symbol table of the language exists, but is not 
+  integrated into the model processing because to the best of our knowledge, there is no use case 
+  for which this is beneficial. For language engineers who intend to store symbol tables 
+  of partial feature configurations, methods of the Java API and an optional argument of the CLI 
+  are realized in the feature configuration tool (see **[the readme][Readme]** for more details).
+      
 - The [`FeatureConfigurationPartialSymbolTableCreator`][pfcstc] handles the creation and linking of the
   symbols after the FC is parsed. It creates a `FeatureConfigurationSymbol` and loads the 
   referenced `FeatureDiagramSymbol` and te `FeatureSymbols` of selected features. 
@@ -184,7 +194,9 @@ excluded features.
   ```
 
 #### Symbols exported by partial FC in the stored symboltable:
-No symbols are exported from an FC model. 
+No symbols are exported from a partial FC model by default. If language engineers intend to export
+`FeatureConfigurationSymbols` in the future, the Partial Feature Configuration tool, described in 
+the [Readme][Readme], provides access to the serialization and deserialization.
 
 #### Context Conditions
 The existance of the feature diagram referred from a partial FC model is 
@@ -206,11 +218,9 @@ at **[the FeatureDiagram description][FeatureDiagram MLC]**.
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
-
-* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](BestPractices.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
 

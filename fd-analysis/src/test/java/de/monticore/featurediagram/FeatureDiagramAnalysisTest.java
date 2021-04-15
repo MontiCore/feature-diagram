@@ -1,58 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram;
 
-import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
-import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
-import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
-import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
-import de.monticore.io.paths.ModelPath;
 import mcfdtool.analyses.*;
 import org.junit.Test;
 
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.*;
 
 public class FeatureDiagramAnalysisTest extends AbstractTest {
-
-  public static final String TEST_RES = "src/test/resources/";
-
-  protected ASTFeatureDiagram getFD(String modelFile) {
-    IFeatureDiagramArtifactScope as = FeatureDiagramTool
-        .createSymbolTable(TEST_RES + modelFile, new ModelPath());
-    String modelName = modelFile.replace(".fd", "");
-    if (modelName.contains("/")) {
-      modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
-    }
-
-    Optional<FeatureDiagramSymbol> optionalFeatureDiagramSymbol = as
-        .resolveFeatureDiagram(modelName);
-    assertTrue(optionalFeatureDiagramSymbol.isPresent());
-    assertNotNull(optionalFeatureDiagramSymbol.get());
-    assertNotNull(optionalFeatureDiagramSymbol.get().getAstNode());
-    return optionalFeatureDiagramSymbol.get().getAstNode();
-  }
-
-  protected ASTFeatureConfiguration getFC(String modelFile) {
-    IFeatureConfigurationArtifactScope symbolTable = FeatureConfigurationTool
-        .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)));
-
-    String modelName = modelFile.replace(".fc", "");
-    if (modelName.contains("/")) {
-      modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
-    }
-
-    Optional<FeatureConfigurationSymbol> featureConfOpt = symbolTable
-        .resolveFeatureConfiguration(modelName);
-    assertTrue(featureConfOpt.isPresent());
-    assertNotNull(featureConfOpt.get());
-    return featureConfOpt.get().getAstNode();
-  }
 
   @Test
   public void testPhoneExample() {

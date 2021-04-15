@@ -17,7 +17,7 @@ import java.util.Map;
 public class AllProducts {
 
   public List<ASTFeatureConfiguration> perform(ASTFeatureDiagram fd) {
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
+    FlatZincModel model = FlatZincTrafo.getInstance().addFeatureDiagram(fd).build();
     List<Map<String, Integer>> allSolutions = Solvers.getSolver().getAllSolutions(model);
     return Solvers.transformResultToFC("Configuration", allSolutions, fd);
   }

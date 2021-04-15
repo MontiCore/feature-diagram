@@ -1,10 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featureconfiguration.prettyprint;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._ast.ASTFeatures;
-import de.monticore.featureconfiguration._visitor.FeatureConfigurationVisitor;
+import de.monticore.featureconfiguration._visitor.FeatureConfigurationTraverser;
+import de.monticore.featureconfiguration._visitor.FeatureConfigurationVisitor2;
 import de.monticore.prettyprint.CommentPrettyPrinter;
 import de.monticore.prettyprint.IndentPrinter;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
@@ -14,17 +16,29 @@ import java.util.stream.Collectors;
 /**
  * This Printer prints all AST nodes that are introduced by the
  * FeatueConfiguration grammar. It realizes basic formatting through
- * indentation and line breaks.
+ * indentation and line breaks. No inherited language elements have to
+ * be printed, thus not delegatorvisitor is required to realize this printer.
  */
-public class FeatureConfigurationPrinter implements FeatureConfigurationVisitor {
+public class FeatureConfigurationPrinter implements FeatureConfigurationVisitor2 {
 
   protected IndentPrinter printer;
 
-  protected FeatureConfigurationVisitor realThis;
+  /**
+   * prettyprints a formatted Strong from the passed AST
+   * @param node
+   * @return
+   */
+  public static String print(ASTFCCompilationUnit node) {
+    IndentPrinter printer = new IndentPrinter();
+    FeatureConfigurationPrinter visitor = new FeatureConfigurationPrinter(printer);
+    FeatureConfigurationTraverser traverser = FeatureConfigurationMill.traverser();
+    traverser.add4FeatureConfiguration(visitor);
+    node.accept(traverser);
+    return printer.getContent();
+  }
 
   public FeatureConfigurationPrinter(IndentPrinter printer){
     this.printer = printer;
-    this.realThis = this;
   }
 
   @Override
@@ -41,12 +55,6 @@ public class FeatureConfigurationPrinter implements FeatureConfigurationVisitor 
     }
     if (!node.isEmptyMCImportStatements()) {
       printer.println();
-    }
-  }
-
-  public void traverse(ASTFCCompilationUnit node){
-    if (node.getFeatureConfiguration() != null){
-      node.getFeatureConfiguration().accept(getRealThis());
     }
   }
 
@@ -73,13 +81,4 @@ public class FeatureConfigurationPrinter implements FeatureConfigurationVisitor 
     printer.println();
   }
 
-  @Override
-  public FeatureConfigurationVisitor getRealThis() {
-    return realThis;
-  }
-
-  @Override
-  public void setRealThis(FeatureConfigurationVisitor realThis) {
-    this.realThis = realThis;
-  }
 }

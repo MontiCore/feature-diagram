@@ -3,35 +3,32 @@
 <!-- This is a MontiCore stable explanation. -->
 
 <!-- List with all references used within this markdown file: -->
-[Readme]:                    ../../../../../../../../README.md
-[Grammar]:                   ../../../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4
-[fdstc]:                     ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
-[serialization]:             ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/
-[HasTreeShape]:              ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/HasTreeShape.java
-[CTCFeatureNamesExist]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/CTCFeatureNameExists.java
-[NonUniqueNameInGroup]:      ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/NonUniqueNameInGroup.java
-[ValidConstraintExpression]: ../../../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/ValidConstraintExpression.java
-[AllProducts]:               ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/AllProducts.java
-[CompleteToValid]:           ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/Filter.java
-[DeadFeature]:               ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/DeadFeature.java
-[FalseOptional]:             ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/FalseOptional.java
-[IsValid]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsValid.java
-[IsVoid]:                    ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsVoidFeatureModel.java
-[NumberOfProducts]:          ../../../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/NumberOfProducts.java
-[generator]:                 ../../../../../../../../fd-analysis/src/main/java/mcfdtool/transform
-[tool]:                      ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FeatureModelAnalysisTool.java
-[clitool]:                   ../../../../../../../../fd-analysis/src/main/java/mcfdtool/FACT.java
-[FDtool]:                    ../../../../../../../../fd-analysis/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
-
+[Readme]:                    ../../../../../../README.md
+[Grammar]:                   ../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4
+[fdstc]:                     ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
+[serialization]:             ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/
+[HasTreeShape]:              ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/HasTreeShape.java
+[CTCFeatureNamesExist]:      ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/CTCFeatureNameExists.java
+[NonUniqueNameInGroup]:      ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/NonUniqueNameInGroup.java
+[ValidConstraintExpression]: ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/ValidConstraintExpression.java
+[AllProducts]:               ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/AllProducts.java
+[CompleteToValid]:           ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/Filter.java
+[DeadFeature]:               ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/DeadFeature.java
+[FalseOptional]:             ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/FalseOptional.java
+[IsValid]:                   ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsValid.java
+[IsVoid]:                    ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/IsVoidFeatureModel.java
+[NumberOfProducts]:          ../../../../../../fd-analysis/src/main/java/mcfdtool/analyses/NumberOfProducts.java
+[generator]:                 ../../../../../../fd-analysis/src/main/java/mcfdtool/transform
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [choco]: https://choco-solver.org
 [KTC90]: https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf
 
 <!-- The following references should point towards the markdown files, once these exist -->
-[Cardinality MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
-[MCBasicTypes MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/types/MCBasicTypes.mc4
-[CommonExpressions MLC]: https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/monticore-grammar/src/main/grammars/de/monticore/expressions/CommonExpressions.mc4
+[Cardinality MLC]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
+[MCBasicTypes MLC]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/types/MCBasicTypes.mc4
+[CommonExpressions MLC]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/expressions/CommonExpressions.mc4
+[BasicSymbols MLC]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/symbols/BasicSymbols.mc4
 [FeatureConfiguration MLC]: FeatureConfiguration.md
 
 > NOTE: <br>
@@ -91,7 +88,7 @@ featurediagram CarNavigation {
 }
 ```
 
-For a detailed explanation of the meaning, please have a look at 
+For a detailed explanation of the meaning and the tools to process FDs, please have a look at 
 **[the readme][Readme]**.
 
 ## Syntax
@@ -176,8 +173,8 @@ contained in the FD.
       within an FD are unique.
 
 ### Symbol kinds used by FD (importable):
-- An FD (as defined here) does not import any symbols from other 
-  languages; it defines all symbols in its own language.
+- An FD (as defined here) does not use any symbol kinds from other 
+  languages; it defines all symbol kinds in its own language.
 
 ### Symbol kinds defined by FD (exported):
 - An FD defines its own type of FeatureSymbols.
@@ -187,14 +184,21 @@ contained in the FD.
       String name;
   }
   ```
-  - For each FD there is also a DiagramSymbol defined as:
-  TODO: noch anpassen, dass es tatsächlich nur ein DiagramSymbol sein wird:
+  - For each FD there is also a FeatureDiagramSymbol defined as:
   ```
   class FeatureDiagramSymbol {
       String name;
       /List<FeatureSymbol> allFeatures;
   }
   ```
+  The FD language does not reuse the `DiagramSymbol` of the 
+  [BasicSymbols][BasicSymbols MLC] language component. This is due to the fact 
+  that feature configurations use the name of a feature diagram model to indicate, from which model
+  its selected features originate. Thus, feature configurations check whether
+  a FD model with the respective features exist. For realizing feature analyses, it is not
+  sufficient for FCs to check whether a model exists that contains any diagram, as the 
+  analysis requires - besides checking that the referenced feature names exist - to obtain a feature 
+  tree.  
 
 ### Symbols exported by FD in the stored symboltable:
 - An FD exports the diagram symbol and all its feature symbols.
@@ -261,13 +265,9 @@ In this table, we use `FM` as abbreviation for type `ASTFeatureDiagram`,
 
 * [Project root: MontiCore @github](https://github.com/MontiCore/monticore)
 * [MontiCore documentation](http://www.monticore.de/)
-
-* [**List of languages**](https://git.rwth-aachen.de/monticore/monticore/-/blob/dev/docs/Languages.md)
-* [**MontiCore Core Grammar Library**](https://git.rwth-aachen.de/monticore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
-* [Best Practices](BestPractices.md)
+* [**List of languages**](https://github.com/MontiCore/monticore/blob/dev/docs/Languages.md)
+* [**MontiCore Core Grammar Library**](https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Grammars.md)
+* [Best Practices](https://github.com/MontiCore/monticore/blob/dev/docs/BestPractices.md)
 * [Publications about MBSE and MontiCore](https://www.se-rwth.de/publications/)
-
 * [Licence definition](https://github.com/MontiCore/monticore/blob/master/00.org/Licenses/LICENSE-MONTICORE-3-LEVEL.md)
-
-  
 
