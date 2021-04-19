@@ -6,6 +6,7 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCos;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialDeSer;
+import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialSymbols2Json;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
@@ -40,9 +41,9 @@ public class FeatureConfigurationPartialCLI {
   public static void main(String[] args) {
     FeatureConfigurationPartialCLI cli = new FeatureConfigurationPartialCLI();
     FeatureConfigurationPartialParser parser = new FeatureConfigurationPartialParser();
-    FeatureConfigurationPartialDeSer deser = new FeatureConfigurationPartialDeSer();
+    FeatureConfigurationPartialSymbols2Json symbols2Json = new FeatureConfigurationPartialSymbols2Json();
     Log.initWARN();
-    cli.run(args, parser, deser);
+    cli.run(args, parser, symbols2Json);
   }
 
   /**
@@ -114,11 +115,11 @@ public class FeatureConfigurationPartialCLI {
    * @return
    */
   public String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, Path out,
-      FeatureConfigurationPartialDeSer deser) {
+      FeatureConfigurationPartialSymbols2Json symbols2Json) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName() + ".fcsym");
-    String serialized = deser.serialize(scope);
+    String serialized = symbols2Json.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
     return serialized;
   }
@@ -129,8 +130,8 @@ public class FeatureConfigurationPartialCLI {
    * @return
    */
   public String storeSymbols(IFeatureConfigurationPartialArtifactScope scope,
-      String symbolFileName, FeatureConfigurationPartialDeSer deser) {
-    String serialized = deser.serialize(scope);
+      String symbolFileName, FeatureConfigurationPartialSymbols2Json symbols2Json) {
+    String serialized = symbols2Json.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
   }
@@ -200,7 +201,7 @@ public class FeatureConfigurationPartialCLI {
    * @param args
    */
   public void run(String[] args, FeatureConfigurationPartialParser parser,
-      FeatureConfigurationPartialDeSer deser) {
+      FeatureConfigurationPartialSymbols2Json symbols2Json) {
     Options options = initOptions();
 
     try {
@@ -250,12 +251,12 @@ public class FeatureConfigurationPartialCLI {
           // store symbol table to passed file
           JsonPrinter.disableIndentation();
           String symbolFile = output.resolve(s).toString();
-          storeSymbols(symbolTable, symbolFile, deser);
+          storeSymbols(symbolTable, symbolFile, symbols2Json);
         }
         else {
           //print (formatted!) symboltable to console
           JsonPrinter.enableIndentation();
-          System.out.println(deser.serialize(symbolTable));
+          System.out.println(symbols2Json.serialize(symbolTable));
         }
       }
 

@@ -6,6 +6,7 @@ import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramDeSer;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
@@ -38,10 +39,10 @@ public class FeatureDiagramCLI {
 
     FeatureDiagramCLI cli = new FeatureDiagramCLI();
     FeatureDiagramParser parser = new FeatureDiagramParser();
-    FeatureDiagramDeSer deser = new FeatureDiagramDeSer();
+    FeatureDiagramSymbols2Json symbols2Json = new FeatureDiagramSymbols2Json();
 
     Log.initWARN();
-    cli.run(args, parser, deser);
+    cli.run(args, parser, symbols2Json);
   }
 
   /**
@@ -119,11 +120,11 @@ public class FeatureDiagramCLI {
    * @return
    */
   public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out,
-      FeatureDiagramDeSer deser) {
+      FeatureDiagramSymbols2Json symbols2Json) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName() + ".fdsym");
-    String serialized = deser.serialize(scope);
+    String serialized = symbols2Json.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
     return serialized;
   }
@@ -134,8 +135,8 @@ public class FeatureDiagramCLI {
    * @return
    */
   public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName,
-      FeatureDiagramDeSer deser) {
-    String serialized = deser.serialize(scope);
+      FeatureDiagramSymbols2Json symbols2Json) {
+    String serialized = symbols2Json.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
   }
@@ -148,7 +149,7 @@ public class FeatureDiagramCLI {
    * @return
    */
   public ASTFeatureDiagram run(String modelFile, Path out, FeatureDiagramParser parser,
-      FeatureDiagramDeSer deser) {
+      FeatureDiagramSymbols2Json symbols2Json) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
@@ -160,7 +161,7 @@ public class FeatureDiagramCLI {
     checkCoCos(ast);
 
     // store artifact scope after context conditions have been checked
-    storeSymbols(modelTopScope, out, deser);
+    storeSymbols(modelTopScope, out, symbols2Json);
 
     return ast.getFeatureDiagram();
   }
@@ -173,7 +174,7 @@ public class FeatureDiagramCLI {
    * @return
    */
   public ASTFeatureDiagram run(String modelFile, FeatureDiagramParser parser,
-      FeatureDiagramDeSer deser) {
+      FeatureDiagramSymbols2Json symbols2Json) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
@@ -194,7 +195,7 @@ public class FeatureDiagramCLI {
     FeatureDiagramCoCos.checkAll(ast);
 
     // store artifact scope after context conditions have been checked
-    storeSymbols(modelTopScope, SYMBOL_OUT, deser);
+    storeSymbols(modelTopScope, SYMBOL_OUT, symbols2Json);
 
     return ast.getFeatureDiagram();
   }
@@ -205,7 +206,7 @@ public class FeatureDiagramCLI {
    *
    * @param args
    */
-  public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramDeSer deser) {
+  public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramSymbols2Json symbols2Json) {
     Options options = initOptions();
 
     try {
@@ -249,12 +250,12 @@ public class FeatureDiagramCLI {
           // store symbol table to passed file
           JsonPrinter.disableIndentation();
           String symbolFile = output.resolve(s).toString();
-          storeSymbols(symbolTable, symbolFile, deser);
+          storeSymbols(symbolTable, symbolFile, symbols2Json);
         }
         else {
           //print (formatted!) symboltable to console
           JsonPrinter.enableIndentation();
-          System.out.println(deser.serialize(symbolTable));
+          System.out.println(symbols2Json.serialize(symbolTable));
         }
       }
 

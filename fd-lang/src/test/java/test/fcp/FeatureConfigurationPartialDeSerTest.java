@@ -38,10 +38,10 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
   public void testRoundtripSerialization() {
     IFeatureConfigurationPartialArtifactScope scope = setupSymbolTable("pfcvalid/SelectSome.fc");
     assertTrue(null != scope);
-    String serialized = fcpDeSer.serialize(scope);
+    String serialized = fcpSymbols2Json.serialize(scope);
     assertTrue(null != serialized);
 
-    IFeatureConfigurationPartialArtifactScope deserializedScope = fcpDeSer.deserialize(serialized);
+    IFeatureConfigurationPartialArtifactScope deserializedScope = fcpSymbols2Json.deserialize(serialized);
     assertTrue(deserializedScope instanceof FeatureConfigurationPartialArtifactScope);
     FeatureConfigurationPartialArtifactScope deserialized = (FeatureConfigurationPartialArtifactScope) deserializedScope;
 

@@ -45,10 +45,10 @@ public class FeatureConfigurationDeSerTest extends AbstractLangTest {
   public void testRoundtripSerialization() {
     IFeatureConfigurationArtifactScope scope = setupSymbolTable("fcvalid/SelectSome.fc");
     assertTrue(null != scope);
-    String serialized = fcDeSer.serialize(scope);
+    String serialized = fcSymbols2Json.serialize(scope);
     assertTrue(null != serialized);
 
-    IFeatureConfigurationArtifactScope deserializedScope = fcDeSer.deserialize(serialized);
+    IFeatureConfigurationArtifactScope deserializedScope = fcSymbols2Json.deserialize(serialized);
     assertTrue(deserializedScope instanceof FeatureConfigurationArtifactScope);
     FeatureConfigurationArtifactScope deserialized = (FeatureConfigurationArtifactScope) deserializedScope;
 
