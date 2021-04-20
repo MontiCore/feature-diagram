@@ -29,7 +29,6 @@ public class FACTTest extends AbstractTest {
 
   @BeforeClass
   public static void initMills(){
-    FeatureConfigurationPartialMill.init();
     FeatureDiagramMill.init();
   }
 

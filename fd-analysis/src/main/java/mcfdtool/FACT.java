@@ -11,7 +11,7 @@ import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramDeSer;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
 import de.monticore.io.paths.ModelPath;
 import de.se_rwth.commons.logging.Log;
 import fddiff.FDSemDiff;
@@ -36,7 +36,7 @@ public class FACT {
 
   protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
 
-  protected FeatureDiagramDeSer fdDeSer = new FeatureDiagramDeSer();
+  protected FeatureDiagramSymbols2Json s2j = new FeatureDiagramSymbols2Json();
 
   protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
 
@@ -346,7 +346,7 @@ public class FACT {
   public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath,
       ModelPath symbolInputPath) {
     ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), symbolInputPath);
-    return fdTool.run(modelFile, Paths.get(symbolOutPath), fdParser, fdDeSer);
+    return fdTool.run(modelFile, Paths.get(symbolOutPath), fdParser, s2j);
   }
 
   /**
