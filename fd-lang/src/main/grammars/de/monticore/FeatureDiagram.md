@@ -91,6 +91,8 @@ featurediagram CarNavigation {
 For a detailed explanation of the meaning and the tools to process FDs, please have a look at 
 **[the readme][Readme]**.
 
+Examples for the syntax of feature configurations are contained in the **[description of the feature configuration languages][FeatureConfiguration MLC]**.
+
 ## Syntax
 
 The syntax of the FDL is specified through the FD 
