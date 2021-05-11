@@ -72,7 +72,7 @@ githubmirror:
     - "if [ -d \"tmp\" ]; then rm -rf tmp; fi"
     - mkdir "tmp"
     - cd tmp
-    - git git@github.com:MontiCore/feature-diagram.git
+    - git clone git@github.com:MontiCore/feature-diagram.git
     - cd ..
     - rm -r tmp/feature-diagram/*
     - mv feature-diagram/* tmp/feature-diagram/
