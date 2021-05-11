@@ -5,6 +5,7 @@ import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationDeSer;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbols2Json;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
@@ -39,9 +40,9 @@ public class FeatureConfigurationCLI {
   public static void main(String[] args) {
     FeatureConfigurationCLI cli = new FeatureConfigurationCLI();
     FeatureConfigurationParser parser = new FeatureConfigurationParser();
-    FeatureConfigurationDeSer deser = new FeatureConfigurationDeSer();
+    FeatureConfigurationSymbols2Json symbols2J = new FeatureConfigurationSymbols2Json();
     Log.initWARN();
-    cli.run(args, parser, deser);
+    cli.run(args, parser, symbols2J);
   }
 
   /**
@@ -104,11 +105,11 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public String storeSymbols(IFeatureConfigurationArtifactScope scope, Path out,
-      FeatureConfigurationDeSer deser) {
+      FeatureConfigurationSymbols2Json symbols2Json) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName() + ".fcsym");
-    String serialized = deser.serialize(scope);
+    String serialized = symbols2Json.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
     return serialized;
   }
@@ -119,8 +120,8 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public String storeSymbols(IFeatureConfigurationArtifactScope scope,
-      String symbolFileName, FeatureConfigurationDeSer deser) {
-    String serialized = deser.serialize(scope);
+      String symbolFileName, FeatureConfigurationSymbols2Json symbols2Json) {
+    String serialized = symbols2Json.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
   }
@@ -185,7 +186,7 @@ public class FeatureConfigurationCLI {
    * @param args
    */
   public void run(String[] args, FeatureConfigurationParser parser,
-      FeatureConfigurationDeSer deser) {
+      FeatureConfigurationSymbols2Json symbols2Json) {
     Options options = initOptions();
 
     try {
@@ -234,12 +235,12 @@ public class FeatureConfigurationCLI {
           // store symbol table to passed file
           JsonPrinter.disableIndentation();
           String symbolFile = output.resolve(s).toString();
-          storeSymbols(symbolTable, symbolFile, deser);
+          storeSymbols(symbolTable, symbolFile, symbols2Json);
         }
         else {
           //print (formatted!) symboltable to console
           JsonPrinter.enableIndentation();
-          System.out.println(deser.serialize(symbolTable));
+          System.out.println(symbols2Json.serialize(symbolTable));
         }
       }
 

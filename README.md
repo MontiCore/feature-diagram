@@ -23,7 +23,7 @@ or extending the feature configuration language is located
 
 # Feature Diagram Languages in MontiCore
 
-[[_TOC_]]
+
 
 The models of the feature diagram language (FDL) are called *feature diagrams (FDs)*. Sometimes
 the term feature model is used interchangeably. 
@@ -37,7 +37,7 @@ and their applications, as this is provided by several books (e.g.,
 [[CN02]](https://dl.acm.org/doi/book/10.5555/501065)) and 
 research papers (e.g., 
 [[BSL+13]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.650.9121&rep=rep1&type=pdf), 
-[[KCH+90]](https://resources.sei.cmu.edu/asset_files/TechnicalReport/1990_005_001_15872.pdf)).
+[[KCH+90]](https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf)).
 
 Instead, the purpose of this documentation is to 
 introduce the [textual syntax](#textual-syntax) of the FDL and
