@@ -39,4 +39,10 @@ public class Constraint {
     stringBuilder.deleteCharAt(stringBuilder.length() - 1)
         .append(");\r\n");
   }
+
+  @Override public String toString() {
+    StringBuilder sb = new StringBuilder();
+    print(sb);
+    return sb.toString();
+  }
 }

@@ -16,17 +16,6 @@ import static de.monticore.featurediagram._symboltable.FeatureModelImporter.impo
  */
 public class FeatureDiagramScopesGenitor extends FeatureDiagramScopesGenitorTOP {
 
-  public FeatureDiagramScopesGenitor() {
-  }
-
-  public FeatureDiagramScopesGenitor(IFeatureDiagramScope enclosingScope) {
-    super(enclosingScope);
-  }
-
-  public FeatureDiagramScopesGenitor(Deque<? extends IFeatureDiagramScope> scopeStack) {
-    super(scopeStack);
-  }
-
   /**
    * Create the symbl table for a passed AST of an FD model.
    *
@@ -90,7 +79,7 @@ public class FeatureDiagramScopesGenitor extends FeatureDiagramScopesGenitorTOP 
     // if this feature name has already occured in the current feature model, stop
     if (!getCurrentScope().get().resolveFeatureLocally(name).isPresent()) {
       //otherwise, create new FeatureSymbol
-      addToScope(FeatureDiagramMill
+      getCurrentScope().get().add(FeatureDiagramMill
           .featureSymbolBuilder()
           .setName(name)
           .build());

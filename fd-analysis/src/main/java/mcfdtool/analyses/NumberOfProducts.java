@@ -17,7 +17,7 @@ import java.util.Map;
 public class NumberOfProducts {
 
   public Integer perform(ASTFeatureDiagram fd) {
-    FlatZincModel model = FlatZincTrafo.addFeatureDiagram(fd).build();
+    FlatZincModel model = FlatZincTrafo.getInstance().addFeatureDiagram(fd).build();
 
     //each solution is a valid configuration
     List<Map<String, Integer>> allSolutions = Solvers.getSolver().getAllSolutions(model);

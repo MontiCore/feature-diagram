@@ -98,4 +98,10 @@ public class Variable {
   public enum Type {
     BOOL, INT, FLOAT
   }
+
+  @Override public String toString() {
+    StringBuilder sb = new StringBuilder();
+    print(sb);
+    return sb.toString();
+  }
 }

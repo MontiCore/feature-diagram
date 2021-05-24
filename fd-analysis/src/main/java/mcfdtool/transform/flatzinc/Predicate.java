@@ -9,7 +9,7 @@ public class Predicate {
 
   private List<String> parameters = new ArrayList<>();
 
-  private String experession;
+  private String expression;
 
   public void setIdentifier(String identifier) {
     this.identifier = identifier;
@@ -19,10 +19,10 @@ public class Predicate {
     parameters.add(parameter);
   }
 
-  public void setExperession(String experession) {
-    this.experession = experession;
+  public void setExpression(String expression) {
+    this.expression = expression;
   }
-  
+
   public void print(StringBuilder stringBuilder) {
     stringBuilder
         .append("predicate ")
@@ -30,7 +30,13 @@ public class Predicate {
         .append("(")
         .append(String.join(", ", parameters))
         .append(") = ")
-        .append(experession)
+        .append(expression)
         .append(";\n");
+  }
+
+  @Override public String toString() {
+    StringBuilder sb = new StringBuilder();
+    print(sb);
+    return sb.toString();
   }
 }

@@ -8,7 +8,9 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfigurationBuilder;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._ast.ASTSelectBuilder;
 import de.monticore.featureconfigurationpartial._ast.ASTUnselectBuilder;
+import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
+import de.monticore.featurediagram._visitor.FeatureDiagramTraverser;
 import org.logicng.datastructures.Assignment;
 import org.logicng.formulas.Formula;
 import org.logicng.formulas.FormulaFactory;
@@ -84,10 +86,16 @@ public class FDSemDiff {
       ff::variable, Function.identity()
     ));
 
+    FeatureDiagramTraverser traverser = FeatureDiagramMill.traverser();
     FD2Formula trafo = new FD2Formula(ff);
+    traverser.add4FeatureDiagram(trafo);
+    // traverser.setFeatureDiagramHandler(trafo);
+    // trafo.setTraverser(traverser);
 
-    Formula phi_1 = trafo.getFormula(fd1);
-    Formula phi_2 = trafo.getFormula(fd2);
+    fd1.accept(traverser);
+    Formula phi_1 = trafo.getFormula();
+    fd2.accept(traverser);
+    Formula phi_2 = trafo.getFormula();
 
     if(closedWorld) {
       // features of FD1 that are not features of FD2 must not be selected in FD2

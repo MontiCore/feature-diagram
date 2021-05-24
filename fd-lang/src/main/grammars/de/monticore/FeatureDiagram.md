@@ -37,7 +37,7 @@ This document is intended for  **language engineers** who extend, adapt or embed
 
 # MontiCore Feature Diagram Language (FDL)
 
-[[_TOC_]]
+
 
 The following documents the MontiCore feature diagram language FDL. 
 Feature diagrams (FDs) consist of features and their relationships
@@ -90,6 +90,8 @@ featurediagram CarNavigation {
 
 For a detailed explanation of the meaning and the tools to process FDs, please have a look at 
 **[the readme][Readme]**.
+
+Examples for the syntax of feature configurations are contained in the **[description of the feature configuration languages][FeatureConfiguration MLC]**.
 
 ## Syntax
 

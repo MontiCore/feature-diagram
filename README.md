@@ -23,7 +23,7 @@ or extending the feature configuration language is located
 
 # Feature Diagram Languages in MontiCore
 
-[[_TOC_]]
+
 
 The models of the feature diagram language (FDL) are called *feature diagrams (FDs)*. Sometimes
 the term feature model is used interchangeably. 
@@ -173,7 +173,7 @@ To build the project, it is required to install a Java 8 JDK and git.
 
 ##### Step 2: Build Project with gradle
 
-    gradlew build --refresh-dependencies
+    gradle build --refresh-dependencies
 Afterwards, the jars of the tools are available in `fd-lang/target/libs` and `fd-analysis/target/libs`.
 
 
