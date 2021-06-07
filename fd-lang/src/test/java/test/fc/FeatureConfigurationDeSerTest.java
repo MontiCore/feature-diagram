@@ -9,7 +9,7 @@ import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtif
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 public class FeatureConfigurationDeSerTest extends AbstractLangTest {
 
-  protected static final ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
+  protected static final MCPath mp = new MCPath(Paths.get("src/test/resources"));
 
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
     return fcTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcParser);
@@ -78,7 +78,7 @@ public class FeatureConfigurationDeSerTest extends AbstractLangTest {
 
   @Test
   public void testLoad() {
-    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getModelPath(),
+    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getSymbolPath(),
         "src/test/resources");
     FeatureConfigurationSymbols2Json s2j = new FeatureConfigurationSymbols2Json();
 

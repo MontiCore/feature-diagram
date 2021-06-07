@@ -6,7 +6,7 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -78,12 +78,12 @@ public class FeatureDiagramCoCoTest extends AbstractLangTest {
     assertErrorCode(errorCode);
   }
 
-  protected ASTFDCompilationUnit readFile(String modelFile, ModelPath mp)
+  protected ASTFDCompilationUnit readFile(String modelFile, MCPath mp)
       throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
     IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
-    gs.setModelPath(mp);
+    gs.setSymbolPath(mp);
     gs.setFileExt("fd");
 
     FeatureDiagramMill.scopesGenitorDelegator().createFromAST(ast);
@@ -92,7 +92,7 @@ public class FeatureDiagramCoCoTest extends AbstractLangTest {
 
   protected ASTFDCompilationUnit readFile(String modelName)
       throws IOException {
-    return readFile(modelName, new ModelPath());
+    return readFile(modelName, new MCPath());
   }
 
 }
