@@ -7,7 +7,6 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.io.paths.MCPath;
-import de.monticore.io.paths.ModelCoordinate;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
 
@@ -16,8 +15,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate;
-import static de.monticore.io.paths.ModelCoordinates.getReader;
+import static de.monticore.io.FileReaderWriter.getReader;
+
 
 /**
  * This class realizes loading of feature diagram models, as the AST of imported feature diagrams
