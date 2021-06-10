@@ -6,17 +6,17 @@ import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.io.paths.ModelCoordinate;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
 import de.se_rwth.commons.logging.Log;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
-import static de.monticore.io.paths.ModelCoordinates.createQualifiedCoordinate;
-import static de.monticore.io.paths.ModelCoordinates.getReader;
+import static de.monticore.io.FileReaderWriter.getReader;
+
 
 /**
  * This class realizes loading of feature diagram models, as the AST of imported feature diagrams
@@ -64,10 +64,9 @@ public class FeatureModelImporter {
 
   public static FeatureDiagramSymbol loadFeatureModel(String qualifiedName, String callName) {
     // 1. find fully qualified location of fd model in model path
-    ModelCoordinate modelCoord = createQualifiedCoordinate(qualifiedName, "fd");
-    ModelPath mp = FeatureDiagramMill.globalScope().getModelPath();
-    mp.resolveModel(modelCoord);
-    if (!modelCoord.hasLocation()) {
+    MCPath mp = FeatureDiagramMill.globalScope().getSymbolPath();
+    Optional<URL> coord = mp.find(qualifiedName, "fd");
+    if (!coord.isPresent()) {
       Log.error("0xFD133 Cannot find the model of the imported feature diagram '"
           + qualifiedName + "' imported in '" + callName + "'!");
       return null;
@@ -77,7 +76,7 @@ public class FeatureModelImporter {
     FeatureDiagramParser parser = new FeatureDiagramParser();
     ASTFDCompilationUnit ast;
     try {
-      ast = parser.parse(getReader(modelCoord)).orElse(null);
+      ast = parser.parse(getReader(coord.get())).orElse(null);
     }
     catch (IOException e) {
       Log.error("0xFD134 Cannot parse the imported feature diagram '" + qualifiedName +

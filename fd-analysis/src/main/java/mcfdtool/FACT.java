@@ -12,7 +12,7 @@ import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import fddiff.FDSemDiff;
 import mcfdtool.analyses.*;
@@ -336,7 +336,7 @@ public class FACT {
 
   /**
    * Read in a Feature Diagram at the passed location, with the passed location for storing FD symbol
-   * tables and the passed ModelPath for searching stored symbol tables (e.g., of imported FDs)
+   * tables and the passed MCPath for searching stored symbol tables (e.g., of imported FDs)
    *
    * @param modelFile
    * @param symbolOutPath
@@ -344,13 +344,13 @@ public class FACT {
    * @return
    */
   public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath,
-      ModelPath symbolInputPath) {
-    ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), symbolInputPath);
+      MCPath symbolInputPath) {
+    ModelPaths.merge(FeatureDiagramMill.globalScope().getSymbolPath(), symbolInputPath);
     return fdTool.run(modelFile, Paths.get(symbolOutPath), fdParser, s2j);
   }
 
   /**
-   * Read in a Feature Configuration at the passed location with the passed  ModelPath for searching
+   * Read in a Feature Configuration at the passed location with the passed  MCPath for searching
    * stored symbol tables (of FDs). No symbol table is stored for FCs themselves.
    *
    * @param modelFile
@@ -358,7 +358,7 @@ public class FACT {
    * @return
    */
   public ASTFeatureConfiguration readFeatureConfiguration(String modelFile,
-      ModelPath symbolInputPath) {
+      MCPath symbolInputPath) {
     return fcTool.run(modelFile, symbolInputPath, fcParser);
   }
 
@@ -405,7 +405,7 @@ public class FACT {
       if (cmd.hasOption("symbolPath")) {
         symbolOutPath = cmd.getOptionValue("symbolPath");
       }
-      ModelPath mp = new ModelPath(Paths.get(symbolOutPath));
+      MCPath mp = new MCPath(Paths.get(symbolOutPath));
       return readFeatureDiagram(fdModelFile, symbolOutPath, mp);
     }
 
@@ -424,12 +424,12 @@ public class FACT {
 
     //if the option "modelPath" is set, use the passed location to load symbols
     if (cmd.hasOption("modelPath")) {
-      ModelPath mp = new ModelPath(Paths.get(cmd.getOptionValue("modelPath")));
+      MCPath mp = new MCPath(Paths.get(cmd.getOptionValue("modelPath")));
       return readFeatureConfiguration(fcString, mp);
     }
     //if "modelPath" is not set, but "symbolPath" is set to store FD symbols, use this as modelPath
     else if (cmd.hasOption("symbolPath")) {
-      ModelPath mp = new ModelPath(Paths.get(cmd.getOptionValue("symbolPath")));
+      MCPath mp = new MCPath(Paths.get(cmd.getOptionValue("symbolPath")));
       return readFeatureConfiguration(fcString, mp);
     }
     // else use the folder, in which the FC model is located, as modelpath. This is done by the

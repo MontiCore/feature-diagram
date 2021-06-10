@@ -5,13 +5,12 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramDeSer;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
@@ -186,7 +185,7 @@ public class FeatureDiagramCLI {
         path = path.getParent();
       }
     }
-    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getModelPath(), path);
+    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getSymbolPath(), path);
 
     // setup the symbol table
     IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast);
@@ -225,7 +224,7 @@ public class FeatureDiagramCLI {
       String input = cmd.getOptionValue("input");
 
       //Set path for imported symbols
-      ModelPath mp = FeatureDiagramMill.globalScope().getModelPath();
+      MCPath mp = FeatureDiagramMill.globalScope().getSymbolPath();
       if (cmd.hasOption("path")) {
         for (String p : cmd.getOptionValues("path")) {
           ModelPaths.addEntry(mp, p);

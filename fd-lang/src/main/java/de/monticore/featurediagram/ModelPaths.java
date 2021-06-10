@@ -2,26 +2,27 @@
 
 package de.monticore.featurediagram;
 
-import de.monticore.io.paths.ModelPath;
+
+import de.monticore.io.paths.MCPath;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ModelPaths {
 
-  public static void addEntry(ModelPath mp, String p) {
+  public static void addEntry(MCPath mp, String p) {
     addEntry(mp, Paths.get(p));
   }
 
-  public static void addEntry(ModelPath mp, Path p) {
+  public static void addEntry(MCPath mp, Path p) {
     p = p.toAbsolutePath();
-    if (!mp.getFullPathOfEntries().contains(p)) {
+    if (!mp.getEntries().contains(p)) {
       mp.addEntry(p);
     }
   }
 
-  public static void merge(ModelPath mp, ModelPath newEntries) {
-    for (Path p : newEntries.getFullPathOfEntries()) {
+  public static void merge(MCPath mp, MCPath newEntries) {
+    for (Path p : newEntries.getEntries()) {
       addEntry(mp, p);
     }
   }

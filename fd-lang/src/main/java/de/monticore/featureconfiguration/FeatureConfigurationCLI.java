@@ -4,7 +4,6 @@ package de.monticore.featureconfiguration;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationDeSer;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbols2Json;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
@@ -13,7 +12,7 @@ import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
@@ -77,7 +76,7 @@ public class FeatureConfigurationCLI {
    * @param mp
    * @return
    */
-  public IFeatureConfigurationArtifactScope createSymbolTable(String model, ModelPath mp,
+  public IFeatureConfigurationArtifactScope createSymbolTable(String model, MCPath mp,
       FeatureConfigurationParser parser) {
     return createSymbolTable(parse(model, parser), mp);
   }
@@ -90,10 +89,10 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
-      ModelPath mp) {
+      MCPath mp) {
     IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.globalScope();
-    ModelPaths.merge(gs.getModelPath(), mp);
-    ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
+    ModelPaths.merge(gs.getSymbolPath(), mp);
+    ModelPaths.merge(FeatureDiagramMill.globalScope().getSymbolPath(), mp);
     return FeatureConfigurationMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
@@ -134,7 +133,7 @@ public class FeatureConfigurationCLI {
    * @param mp
    * @return
    */
-  public ASTFeatureConfiguration run(String modelFile, ModelPath mp,
+  public ASTFeatureConfiguration run(String modelFile, MCPath mp,
       FeatureConfigurationParser parser) {
 
     // parse the model and create the AST representation
@@ -170,7 +169,7 @@ public class FeatureConfigurationCLI {
     }
 
     // setup the symbol table
-    ModelPath mp = new ModelPath(path, FeatureDiagramCLI.SYMBOL_OUT);
+    MCPath mp = new MCPath(path, FeatureDiagramCLI.SYMBOL_OUT);
     createSymbolTable(ast, mp);
 
     // currently no context conditions exist for feature configurations.
@@ -206,7 +205,7 @@ public class FeatureConfigurationCLI {
       String input = cmd.getOptionValue("input");
 
       //Set path for imported symbols
-      ModelPath mp = new ModelPath();
+      MCPath mp = new MCPath();
       if (cmd.hasOption("path")) {
         for (String p : cmd.getOptionValues("path")) {
           mp.addEntry(Paths.get(p));

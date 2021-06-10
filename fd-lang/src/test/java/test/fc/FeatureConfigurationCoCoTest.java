@@ -3,7 +3,7 @@ package test.fc;
 
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
@@ -49,7 +49,7 @@ public class FeatureConfigurationCoCoTest extends AbstractLangTest {
 
   protected ASTFCCompilationUnit setupSymbolTable(String modelFile) {
     ASTFCCompilationUnit ast = fcTool.parse("src/test/resources/fcinvalid/" + modelFile, fcParser);
-    ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
+    MCPath mp = new MCPath(Paths.get("src/test/resources"));
     fcTool.createSymbolTable(ast, mp);
     return ast;
   }

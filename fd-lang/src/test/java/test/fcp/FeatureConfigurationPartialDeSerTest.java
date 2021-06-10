@@ -9,7 +9,7 @@ import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurati
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
 
-  protected static final ModelPath mp = new ModelPath(Paths.get("src/test/resources"));
+  protected static final MCPath mp = new MCPath(Paths.get("src/test/resources"));
 
   @BeforeClass
   public static void initMill(){
@@ -71,7 +71,7 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
 
   @Test
   public void testLoad() {
-    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getModelPath(),
+    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getSymbolPath(),
         "src/test/resources");
     FeatureConfigurationPartialSymbols2Json s2j = new FeatureConfigurationPartialSymbols2Json();
     IFeatureConfigurationPartialArtifactScope scope = s2j
