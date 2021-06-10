@@ -17,8 +17,6 @@ stages:
   - build
   - test
   - deploy
-  - check
-  - mirror
 
 build:
   stage: build
@@ -39,7 +37,7 @@ test:
 deploy:
   stage: deploy
   dependencies:
-    - build
+    - checkMDLinks
   script:
     - "gradle publish $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
   only:
@@ -48,7 +46,7 @@ deploy:
 
 
 checkMDLinks:
-  stage: check
+  stage: deploy
   script:
     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
     - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/tree/develop"
@@ -60,7 +58,7 @@ checkMDLinks:
 
 githubmirror:
   image: maven:3-jdk-8
-  stage: mirror
+  stage: deploy
   dependencies:
     - checkMDLinks
   before_script:
