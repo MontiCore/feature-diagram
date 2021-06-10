@@ -14,7 +14,7 @@ import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
@@ -78,7 +78,7 @@ public class FeatureConfigurationPartialCLI {
    * @return
    */
   public IFeatureConfigurationPartialArtifactScope createSymbolTable(String model,
-      ModelPath mp, FeatureConfigurationPartialParser parser) {
+                                                                     MCPath mp, FeatureConfigurationPartialParser parser) {
     return createSymbolTable(parse(model, parser), mp);
   }
 
@@ -90,10 +90,10 @@ public class FeatureConfigurationPartialCLI {
    * @return
    */
   public IFeatureConfigurationPartialArtifactScope createSymbolTable(
-      ASTFCCompilationUnit ast, ModelPath mp) {
+      ASTFCCompilationUnit ast, MCPath mp) {
     IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
-    ModelPaths.merge(gs.getModelPath(), mp);
-    ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
+    ModelPaths.merge(gs.getSymbolPath(), mp);
+    ModelPaths.merge(FeatureDiagramMill.globalScope().getSymbolPath(), mp);
 
     return FeatureConfigurationPartialMill.scopesGenitorDelegator().createFromAST(ast);
   }
@@ -144,7 +144,7 @@ public class FeatureConfigurationPartialCLI {
    * @param mp
    * @return
    */
-  public ASTFeatureConfiguration run(String modelFile, ModelPath mp,
+  public ASTFeatureConfiguration run(String modelFile, MCPath mp,
       FeatureConfigurationPartialParser parser, FeatureConfigurationPartialDeSer deser) {
 
     // parse the model and create the AST representation
@@ -183,7 +183,7 @@ public class FeatureConfigurationPartialCLI {
     }
 
     // setup the symbol table
-    ModelPath mp = new ModelPath(path, FeatureDiagramCLI.SYMBOL_OUT);
+    MCPath mp = new MCPath(path, FeatureDiagramCLI.SYMBOL_OUT);
     createSymbolTable(ast, mp);
 
     // check context conditions
@@ -221,7 +221,7 @@ public class FeatureConfigurationPartialCLI {
       String input = cmd.getOptionValue("input");
 
       //Set path for imported symbols
-      ModelPath mp = new ModelPath();
+      MCPath mp = new MCPath();
       if (cmd.hasOption("path")) {
         for (String p : cmd.getOptionValues("path")) {
           mp.addEntry(Paths.get(p));

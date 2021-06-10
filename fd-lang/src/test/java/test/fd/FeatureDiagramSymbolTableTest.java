@@ -6,7 +6,7 @@ import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.*;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
@@ -25,18 +25,18 @@ public class FeatureDiagramSymbolTableTest extends AbstractLangTest {
     FeatureDiagramMill.globalScope();
   }
 
-  protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile, ModelPath mp)
+  protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile, MCPath mp)
       throws IOException {
     ASTFDCompilationUnit ast = new FeatureDiagramParser().parse(modelFile).orElse(null);
     assertNotNull(ast);
     IFeatureDiagramGlobalScope gs = FeatureDiagramMill.globalScope();
-    ModelPaths.merge(gs.getModelPath(), mp);
+    ModelPaths.merge(gs.getSymbolPath(), mp);
     return FeatureDiagramMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile)
       throws IOException {
-    return setupSymbolTable(modelFile, new ModelPath(Paths.get("src", "test", "resources")));
+    return setupSymbolTable(modelFile, new MCPath(Paths.get("src", "test", "resources")));
   }
 
   @Test

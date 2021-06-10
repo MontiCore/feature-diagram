@@ -37,6 +37,7 @@ subprojects {
         implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
         implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
         implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+        implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
         testImplementation group: 'junit', name: 'junit', version: junit_version
         testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version

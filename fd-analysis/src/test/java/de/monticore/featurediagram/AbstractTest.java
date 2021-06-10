@@ -12,7 +12,7 @@ import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
@@ -97,7 +97,7 @@ public class AbstractTest {
 
   protected ASTFeatureConfiguration getFC(String modelFile) {
     IFeatureConfigurationArtifactScope symbolTable = fcTool
-        .createSymbolTable(TEST_RES + modelFile, new ModelPath(Paths.get(TEST_RES)), fcParser);
+        .createSymbolTable(TEST_RES + modelFile, new MCPath(Paths.get(TEST_RES)), fcParser);
 
     String modelName = modelFile.replace(".fc", "");
     if (modelName.contains("/")) {
