@@ -1,41 +1,50 @@
 # (c) https://github.com/MontiCore/monticore  
 image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk8
 
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
+
 cache:
   paths:
-    - .m2/
+    - .gradle/wrapper
+  key: ${CI_COMMIT_REF_SLUG}
 
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
 
 stages:
-  - build-sources
+  - build
+  - test
+  - deploy
   - check
   - mirror
-#  - it-test
 
-build_gradle:
-  stage: build-sources
+build:
+  stage: build
   script:
-    - export GRADLE_USER_HOME=`pwd`/.gradle
-    - "gradle build"
+    - "gradle assemble --refresh-dependencies $GRADLE_OPTS $ARGS1"
   artifacts:
     paths:
-      # CLI jars
-      - "fd-analysis/target/libs/FACT.jar"
-      - "fd-lang/target/libs/FeatureDiagramCLI.jar"
-      - "fd-lang/target/libs/FeatureConfigurationCLI.jar"
-      - "fd-lang/target/libs/FeatureConfigurationPartialCLI.jar"
-      # Example models
-      - "fd-lang/src/test/resources/fdvalid/BasicElements.fd"
-      - "fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc"
-      - "fd-lang/src/test/resources/fdvalid/CarNavigation.fd"
-      - "fd-lang/src/test/resources/pfcvalid/SelectOne.fc"
-      - "fd-lang/src/test/resources/fdvalid/BasicElements.fd"
-      - "fd-analysis/src/test/resources/FalseOptional.fd"
-      - "fd-analysis/src/test/resources/ValidConfig.fc"
-      - "fd-analysis/src/test/resources/fdvalid/CarNavigation.fd"
-      - "fd-analysis/src/test/resources/fddiff/car2.fd"
-      - "fd-analysis/src/test/resources/fddiff/car1.fd"
+      - "."
     expire_in: 1 week
+
+test:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - "gradle check $GRADLE_OPTS $ARGS2"
+
+deploy:
+  stage: deploy
+  dependencies:
+    - build
+  script:
+    - "gradle publish $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
+  only:
+    - master
+    - develop
 
 
 checkMDLinks:
