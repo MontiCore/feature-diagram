@@ -49,8 +49,6 @@ subprojects {
     }
 
 
-    // Fixes issue with java plugin in projects without resources
-    compileTestJava.doFirst { mkdir sourceSets.main.output.resourcesDir }
 
     buildDir = file("$projectDir/target")
 
@@ -105,6 +103,8 @@ project(':fd-lang') {
         archiveClassifier = 'sources'
         from(sourceSets.main.allJava)
     }
+  
+  sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask)}
 
     // build grammar jar as well
     task grammarJar(type: Jar) {
@@ -191,6 +191,8 @@ project(':fd-analysis') {
         archiveClassifier = 'sources'
         from(sourceSets.main.allJava)
     }
+  
+  sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask)}
 
     shadowJar { // all in one jar
         manifest {
