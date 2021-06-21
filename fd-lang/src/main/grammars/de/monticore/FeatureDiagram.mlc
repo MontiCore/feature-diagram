@@ -20,7 +20,7 @@ mlc FeatureDiagram {
     exclude "$mp/java/lang/reflect/**";
   }
 
-  uses {  // allow using other languages TODO: replace by using languages
+  promote {  // allow using other languages TODO: replace by using languages
     include "$mp/de/monticore/expressions/**";
     include "$mp/de/monticore/literals/**";
     include "$mp/de/monticore/types/**";
