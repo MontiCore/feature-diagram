@@ -38,9 +38,10 @@ subprojects {
     dependencies {
         implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
         implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
-        implementation group: 'com.google.guava', name: 'guava', version: guava_version
+        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
         implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
         implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+        implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
         testImplementation group: 'junit', name: 'junit', version: junit_version
         testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
@@ -100,16 +101,16 @@ project(':fd-lang') {
     generateFeatureConfigurationPartial.dependsOn(generateFeatureConfiguration)
 
     // two tasks per MLC file
-    fileTree(".").matching { include '**/*.mlc' }.each {
-        def f = it
-        def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
-        task "checkArtifacts${mlcName}"(type: de.monticore.mlc.MLCCheckArtifactsTask) {
-            mlcFile = file(f).absoluteFile
-        }
-        task "showArtifacts${mlcName}"(type: de.monticore.mlc.MLCShowArtifactsTask) {
-            mlcFile = file f.absoluteFile
-        }
-    }
+//    fileTree(".").matching { include '**/*.mlc' }.each {
+//        def f = it
+//        def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
+//        task "checkArtifacts${mlcName}"(type: de.monticore.mlc.MLCCheckArtifactsTask) {
+//            mlcFile = file(f).absoluteFile
+//        }
+//        task "showArtifacts${mlcName}"(type: de.monticore.mlc.MLCShowArtifactsTask) {
+//            mlcFile = file f.absoluteFile
+//        }
+//    }
 
     compileJava {
         dependsOn project.collect { it.tasks.withType(MCTask) }
