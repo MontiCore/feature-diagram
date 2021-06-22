@@ -80,11 +80,13 @@ configuration by example.
 
 
 The content of the FD begins with the keyword `featurediagram` followed 
-by the FD's name (l. 3) and the FD body, enclosed by curly 
+by the FD's name (l. 1) and the FD body, enclosed by curly 
 braces. 
-The body of an FD must contain a statement introducing the root feature (l. 4).
-Further, it can introduce subfeatures through feature groups (ll. 5-9) and 
-cross-tree constraints (ll.11-12).
+
+The body of an FD contains feature rules that describe either relations between parent
+and child features (l. 3 and l. 7) or introduce subfeatures through feature 
+groups (l. 5). Further, the feature diagram may contain cross-tree constraints (l. 9).
+The root feature is determined automatically through the feature rules.
 
 Feature configurations start with the keyword `featureconfig` followed by an optional
 name of the feature configuration. Afterward, the feature configuration has to 
