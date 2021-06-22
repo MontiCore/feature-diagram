@@ -205,6 +205,18 @@ public class FeatureDiagramCLI {
    *
    * @param args
    */
+  public void run (String[] args) {
+    FeatureDiagramParser parser = new FeatureDiagramParser();
+    FeatureDiagramSymbols2Json symbols2Json = new FeatureDiagramSymbols2Json();
+    run(args, parser, symbols2Json);
+  }
+
+  /**
+   * This method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
   public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramSymbols2Json s2j) {
     Options options = initOptions();
 

@@ -200,6 +200,18 @@ public class FeatureConfigurationPartialCLI {
    *
    * @param args
    */
+  public void run(String[] args) {
+    FeatureConfigurationPartialParser parser = new FeatureConfigurationPartialParser();
+    FeatureConfigurationPartialSymbols2Json symbols2Json = new FeatureConfigurationPartialSymbols2Json();
+    run(args, parser, symbols2Json);
+  }
+
+  /**
+   * This method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
   public void run(String[] args, FeatureConfigurationPartialParser parser,
       FeatureConfigurationPartialSymbols2Json symbols2Json) {
     Options options = initOptions();

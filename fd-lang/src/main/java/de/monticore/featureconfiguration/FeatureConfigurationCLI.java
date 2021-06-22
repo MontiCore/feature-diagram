@@ -184,6 +184,18 @@ public class FeatureConfigurationCLI {
    *
    * @param args
    */
+  public void run (String args[]) {
+    FeatureConfigurationParser parser = new FeatureConfigurationParser();
+    FeatureConfigurationSymbols2Json symbols2J = new FeatureConfigurationSymbols2Json();
+    run(args, parser, symbols2J);
+  }
+
+  /**
+   * This method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
   public void run(String[] args, FeatureConfigurationParser parser,
       FeatureConfigurationSymbols2Json symbols2Json) {
     Options options = initOptions();
