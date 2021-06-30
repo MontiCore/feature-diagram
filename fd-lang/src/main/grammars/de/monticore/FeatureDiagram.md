@@ -5,7 +5,7 @@
 <!-- List with all references used within this markdown file: -->
 [Readme]:                    ../../../../../../README.md
 [Grammar]:                   ../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4
-[fdstc]:                     ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
+[fdstc]:                     ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramScopesGenitor.java
 [serialization]:             ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/
 [HasTreeShape]:              ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/HasTreeShape.java
 [CTCFeatureNamesExist]:      ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/CTCFeatureNameExists.java
@@ -146,7 +146,7 @@ contained in the FD.
 
 ### Symboltable
 - De-/Serialization functionality for the symbol table ([`serialization`][serialization])
-- [`FeatureDiagramSymbolTableCreator`][fdstc] handles the creation and linking of the
+- [`FeatureDiagramScopesGenitor`][fdstc] handles the creation and linking of the
   symbols after the FD is parsed.
   It creates:
   - A `FeatureDiagramSymbol` 
