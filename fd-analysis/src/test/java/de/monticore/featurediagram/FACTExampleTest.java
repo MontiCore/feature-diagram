@@ -4,7 +4,7 @@ package de.monticore.featurediagram;
 
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mcfdtool.FACT;
@@ -29,7 +29,7 @@ public class FACTExampleTest extends AbstractTest {
 
   public void factExampleInReadme(){
     FACT tool = new FACT();
-    ModelPath mp = new ModelPath();
+    MCPath mp = new MCPath();
     mp.addEntry(Paths.get("target"));
 
     ASTFeatureDiagram fd = tool.readFeatureDiagram("src/test/resources/fdvalid/CarNavigation.fd", "target", mp);

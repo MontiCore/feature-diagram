@@ -4,7 +4,7 @@ package de.monticore.featureconfiguration;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
-import de.monticore.featureconfiguration._symboltable.FeatureConfigurationDeSer;
+import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbols2Json;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
 import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
@@ -12,7 +12,7 @@ import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
@@ -39,9 +39,9 @@ public class FeatureConfigurationCLI {
   public static void main(String[] args) {
     FeatureConfigurationCLI cli = new FeatureConfigurationCLI();
     FeatureConfigurationParser parser = new FeatureConfigurationParser();
-    FeatureConfigurationDeSer deser = new FeatureConfigurationDeSer();
+    FeatureConfigurationSymbols2Json symbols2J = new FeatureConfigurationSymbols2Json();
     Log.initWARN();
-    cli.run(args, parser, deser);
+    cli.run(args, parser, symbols2J);
   }
 
   /**
@@ -76,7 +76,7 @@ public class FeatureConfigurationCLI {
    * @param mp
    * @return
    */
-  public IFeatureConfigurationArtifactScope createSymbolTable(String model, ModelPath mp,
+  public IFeatureConfigurationArtifactScope createSymbolTable(String model, MCPath mp,
       FeatureConfigurationParser parser) {
     return createSymbolTable(parse(model, parser), mp);
   }
@@ -89,10 +89,10 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast,
-      ModelPath mp) {
+      MCPath mp) {
     IFeatureConfigurationGlobalScope gs = FeatureConfigurationMill.globalScope();
-    ModelPaths.merge(gs.getModelPath(), mp);
-    ModelPaths.merge(FeatureDiagramMill.globalScope().getModelPath(), mp);
+    ModelPaths.merge(gs.getSymbolPath(), mp);
+    ModelPaths.merge(FeatureDiagramMill.globalScope().getSymbolPath(), mp);
     return FeatureConfigurationMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
@@ -104,11 +104,11 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public String storeSymbols(IFeatureConfigurationArtifactScope scope, Path out,
-      FeatureConfigurationDeSer deser) {
+      FeatureConfigurationSymbols2Json symbols2Json) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName() + ".fcsym");
-    String serialized = deser.serialize(scope);
+    String serialized = symbols2Json.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
     return serialized;
   }
@@ -119,8 +119,8 @@ public class FeatureConfigurationCLI {
    * @return
    */
   public String storeSymbols(IFeatureConfigurationArtifactScope scope,
-      String symbolFileName, FeatureConfigurationDeSer deser) {
-    String serialized = deser.serialize(scope);
+      String symbolFileName, FeatureConfigurationSymbols2Json symbols2Json) {
+    String serialized = symbols2Json.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
   }
@@ -133,7 +133,7 @@ public class FeatureConfigurationCLI {
    * @param mp
    * @return
    */
-  public ASTFeatureConfiguration run(String modelFile, ModelPath mp,
+  public ASTFeatureConfiguration run(String modelFile, MCPath mp,
       FeatureConfigurationParser parser) {
 
     // parse the model and create the AST representation
@@ -169,7 +169,7 @@ public class FeatureConfigurationCLI {
     }
 
     // setup the symbol table
-    ModelPath mp = new ModelPath(path, FeatureDiagramCLI.SYMBOL_OUT);
+    MCPath mp = new MCPath(path, FeatureDiagramCLI.SYMBOL_OUT);
     createSymbolTable(ast, mp);
 
     // currently no context conditions exist for feature configurations.
@@ -184,8 +184,20 @@ public class FeatureConfigurationCLI {
    *
    * @param args
    */
+  public void run (String args[]) {
+    FeatureConfigurationParser parser = new FeatureConfigurationParser();
+    FeatureConfigurationSymbols2Json symbols2J = new FeatureConfigurationSymbols2Json();
+    run(args, parser, symbols2J);
+  }
+
+  /**
+   * This method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
   public void run(String[] args, FeatureConfigurationParser parser,
-      FeatureConfigurationDeSer deser) {
+      FeatureConfigurationSymbols2Json symbols2Json) {
     Options options = initOptions();
 
     try {
@@ -205,7 +217,7 @@ public class FeatureConfigurationCLI {
       String input = cmd.getOptionValue("input");
 
       //Set path for imported symbols
-      ModelPath mp = new ModelPath();
+      MCPath mp = new MCPath();
       if (cmd.hasOption("path")) {
         for (String p : cmd.getOptionValues("path")) {
           mp.addEntry(Paths.get(p));
@@ -234,12 +246,12 @@ public class FeatureConfigurationCLI {
           // store symbol table to passed file
           JsonPrinter.disableIndentation();
           String symbolFile = output.resolve(s).toString();
-          storeSymbols(symbolTable, symbolFile, deser);
+          storeSymbols(symbolTable, symbolFile, symbols2Json);
         }
         else {
           //print (formatted!) symboltable to console
           JsonPrinter.enableIndentation();
-          System.out.println(deser.serialize(symbolTable));
+          System.out.println(symbols2Json.serialize(symbolTable));
         }
       }
 

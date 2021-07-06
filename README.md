@@ -37,7 +37,7 @@ and their applications, as this is provided by several books (e.g.,
 [[CN02]](https://dl.acm.org/doi/book/10.5555/501065)) and 
 research papers (e.g., 
 [[BSL+13]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.650.9121&rep=rep1&type=pdf), 
-[[KCH+90]](https://resources.sei.cmu.edu/asset_files/TechnicalReport/1990_005_001_15872.pdf)).
+[[KCH+90]](https://apps.dtic.mil/sti/pdfs/ADA235785.pdf)).
 
 Instead, the purpose of this documentation is to 
 introduce the [textual syntax](#textual-syntax) of the FDL and
@@ -80,11 +80,13 @@ configuration by example.
 
 
 The content of the FD begins with the keyword `featurediagram` followed 
-by the FD's name (l. 3) and the FD body, enclosed by curly 
+by the FD's name (l. 1) and the FD body, enclosed by curly 
 braces. 
-The body of an FD must contain a statement introducing the root feature (l. 4).
-Further, it can introduce subfeatures through feature groups (ll. 5-9) and 
-cross-tree constraints (ll.11-12).
+
+The body of an FD contains feature rules that describe either relations between parent
+and child features (l. 3 and l. 7) or introduce subfeatures through feature 
+groups (l. 5). Further, the feature diagram may contain cross-tree constraints (l. 9).
+The root feature is determined automatically through the feature rules.
 
 Feature configurations start with the keyword `featureconfig` followed by an optional
 name of the feature configuration. Afterward, the feature configuration has to 
@@ -225,13 +227,13 @@ Otherwise, the tool outputs that `Car1.fd` is a refinement of `Car2.fd`.
 * `ASTFeatureConfiguration execFindValid(ASTFeatureDiagram fd)`, to execute the [find valid product](fd-analysis/src/main/java/tool/analyses/FindValidConfig.java) analysis
 * `boolean execIsVoidFeatureModel(ASTFeatureDiagram fd)`, to execute the [is void](fd-analysis/src/main/java/tool/analyses/IsVoidFeatureModel.java) analysis
 * `int execNumberOfProducts(ASTFeatureDiagram fd)`, to execute the [number of products](fd-analysis/src/main/java/tool/analyses/NumberOfProducts.java) analysis
-* `ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, ModelPath symbolInputPath)`, to read in a feature diagram model
-* `ASTFeatureConfiguration readFeatureConfiguration(String modelFile, ModelPath symbolInputPath)`, to read in a feature configuration model
+* `ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath, MCPath symbolInputPath)`, to read in a feature diagram model
+* `ASTFeatureConfiguration readFeatureConfiguration(String modelFile, MCPath symbolInputPath)`, to read in a feature configuration model
 
 Example:
 ```groovy
 FACT tool = new FACT();
-ModelPath mp = new ModelPath();
+MCPath mp = new MCPath();
 mp.addEntry(Paths.get("target"));
 
 ASTFeatureDiagram fd = tool.readFeatureDiagram("src/test/resources/fdvalid/CarNavigation.fd", "target", mp);
@@ -264,10 +266,10 @@ where the arguments are:
 
 For using the tool as Java API, it contains the following methods:
 * `ASTFDCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
-* `IFeatureDiagramArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
-  the passed path and instantiates the symbol table using passed modelpath entries for finding imported FDs
-* `IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, ModelPath mp)` instantiates the 
-  symbol table using the passed AST as basis and the passed modelpath entries for finding imported FDs
+* `IFeatureDiagramArtifactScope createSymbolTable(String modelFile, MCPath mp)` parses the model at 
+  the passed path and instantiates the symbol table using passed mcpath entries for finding imported FDs
+* `IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast, MCPath mp)` instantiates the 
+  symbol table using the passed AST as basis and the passed mcpath entries for finding imported FDs
 * `void checkCoCos(ASTFDCompilationUnit ast)` checks all context conditions of the FDL against the passed AST
 * `String storeSymbols(IFeatureDiagramArtifactScope scope, String fileName)` stores the symbol table 
   for the passed artifact scope in a file with the passed fileName. If the file exists, it is overridden. 
@@ -275,12 +277,12 @@ For using the tool as Java API, it contains the following methods:
 * `String storeSymbols(IFeatureDiagramArtifactScope scope, Path out)` stores the symbol table for 
   the passed artifact scope in a file with the usual name, package, and fileEnding at the passed 
   'out' location. If the file exists, it is overridden. Otherwise, a new file is created.
-* `ASTFeatureDiagram run(String modelFile, Path out, ModelPath mp)` parses the passed modelFile, creates the 
+* `ASTFeatureDiagram run(String modelFile, Path out, MCPath mp)` parses the passed modelFile, creates the 
   symbol table, checks the context conditions, and then stores the symbol table at the passed location.
-* `ASTFeatureDiagram run(String modelFile, ModelPath mp)` parses the passed modelFile, creates the 
+* `ASTFeatureDiagram run(String modelFile, MCPath mp)` parses the passed modelFile, creates the 
   symbol table, checks the context conditions, and then stores the symbol table.
 * `ASTFeatureDiagram run(String modelFile)` parses the passed modelFile, creates the symbol table, 
-  checks the context conditions, and stores symbol table - all without an explicit modelpath. Care: 
+  checks the context conditions, and stores symbol table - all without an explicit mcpath. Care: 
   this can only take into account imported FDs if these are located next to the passed FD modelFile.
 
 ### [The FeatureConfigurationCLI Tool][FCtool] 
@@ -301,21 +303,21 @@ where the arguments are:
 
 For using the tool as Java API, it contains the following methods:
 * `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
-* `IFeatureConfigurationArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
-  the passed path and instantiates the symbol table using passed modelpath entries for finding FDs
-* `IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp)` instantiates the 
-  symbol table using the passed AST as basis and the passed modelpath entries for finding FDs
+* `IFeatureConfigurationArtifactScope createSymbolTable(String modelFile, MCPath mp)` parses the model at 
+  the passed path and instantiates the symbol table using passed mcpath entries for finding FDs
+* `IFeatureConfigurationArtifactScope createSymbolTable(ASTFCCompilationUnit ast, MCPath mp)` instantiates the 
+  symbol table using the passed AST as basis and the passed mcpath entries for finding FDs
 * `String storeSymbols(IFeatureConfigurationArtifactScope scope, String fileName)` stores the symbol table 
   for the passed artifact scope in a file with the passed fileName. If the file exists, it is overridden. 
   Otherwise, a new file is created.
 * `String storeSymbols(IFeatureConfigurationArtifactScope scope, Path out)` stores the symbol table for 
   the passed artifact scope in a file with the usual name, package, and fileEnding at the passed 
   'out' location. If the file exists, it is overridden. Otherwise, a new file is created.
-* `ASTFeatureConfiguration run(String modelFile, ModelPath mp)` parses the passed modelFile and creates 
+* `ASTFeatureConfiguration run(String modelFile, MCPath mp)` parses the passed modelFile and creates 
   the symbol table. Through this, conformance to the feature model is checked as well.
 * `ASTFeatureConfiguration run(String modelFile)` parses the passed modelFile and creates 
    the symbol table. Through this, conformance to the feature model is checked as well - all without 
-   an explicit modelpath. Care: this can only take into account FDs if these are located next to the 
+   an explicit mcpath. Care: this can only take into account FDs if these are located next to the 
    passed FC modelFile.
    
 ### [The FeatureConfigurationPartialCLI Tool][PFCtool] 
@@ -336,10 +338,10 @@ where the arguments are:
 
 For using the tool as Java API, it contains the following methods:
 * `ASTFCCompilationUnit parse(String modelFile)` processes the model at the passed path and produces an AST
-* `IFeatureConfigurationPartialArtifactScope createSymbolTable(String modelFile, ModelPath mp)` parses the model at 
-  the passed path and instantiates the symbol table using passed modelpath entries for finding FDs
-* `IFeatureConfigurationPartialArtifactScope createSymbolTable(ASTFCCompilationUnit ast, ModelPath mp)` instantiates the 
-  symbol table using the passed AST as basis and the passed modelpath entries for finding FDs
+* `IFeatureConfigurationPartialArtifactScope createSymbolTable(String modelFile, MCPath mp)` parses the model at 
+  the passed path and instantiates the symbol table using passed mcpath entries for finding FDs
+* `IFeatureConfigurationPartialArtifactScope createSymbolTable(ASTFCCompilationUnit ast, MCPath mp)` instantiates the 
+  symbol table using the passed AST as basis and the passed mcpath entries for finding FDs
 * `void checkCoCos(ASTFCCompilationUnit ast)` checks all context conditions of the partial FC language
    against the passed AST
 * `String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, String fileName)` stores the symbol table 
@@ -348,11 +350,11 @@ For using the tool as Java API, it contains the following methods:
 * `String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, Path out)` stores the symbol table for 
   the passed artifact scope in a file with the usual name, package, and fileEnding at the passed 
   'out' location. If the file exists, it is overridden. Otherwise, a new file is created.
-* `ASTFeatureConfiguration run(String modelFile, ModelPath mp)` parses the passed modelFile and creates 
+* `ASTFeatureConfiguration run(String modelFile, MCPath mp)` parses the passed modelFile and creates 
   the symbol table. Through this, conformance to the feature model is checked as well.
 * `ASTFeatureConfiguration run(String modelFile)` parses the passed modelFile and creates 
    the symbol table. Through this, conformance to the feature model is checked as well - all without 
-   an explicit modelpath. Care: this can only take into account FDs if these are located next to the 
+   an explicit mcpath. Care: this can only take into account FDs if these are located next to the 
    passed modelFile.
 
 ### [Semantic Differencing for Feature Diagrams][fddifftool]

@@ -1,46 +1,52 @@
 # (c) https://github.com/MontiCore/monticore  
 image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk8
 
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  MAVEN_CLI_OPTS: "--settings settings.xml --batch-mode"
+
 cache:
   paths:
-    - .m2/
+    - .gradle/wrapper
+  key: ${CI_COMMIT_REF_SLUG}
 
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
 
 stages:
-  - build-sources
-  - check
-#  - it-test
+  - build
+  - test
+  - deploy
 
-build_gradle:
-  stage: build-sources
+build:
+  stage: build
   script:
-    - export GRADLE_USER_HOME=`pwd`/.gradle
-    - "gradle build"
+    - "gradle assemble --refresh-dependencies $GRADLE_OPTS $ARGS1"
   artifacts:
     paths:
-      # CLI jars
-      - "fd-analysis/target/libs/FACT.jar"
-      - "fd-lang/target/libs/FeatureDiagramCLI.jar"
-      - "fd-lang/target/libs/FeatureConfigurationCLI.jar"
-      - "fd-lang/target/libs/FeatureConfigurationPartialCLI.jar"
-      # Example models
-      - "fd-lang/src/test/resources/fdvalid/BasicElements.fd"
-      - "fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc"
-      - "fd-lang/src/test/resources/fdvalid/CarNavigation.fd"
-      - "fd-lang/src/test/resources/pfcvalid/SelectOne.fc"
-      - "fd-lang/src/test/resources/fdvalid/BasicElements.fd"
-      - "fd-analysis/src/test/resources/FalseOptional.fd"
-      - "fd-analysis/src/test/resources/ValidConfig.fc"
-      - "fd-analysis/src/test/resources/fdvalid/CarNavigation.fd"
-      - "fd-analysis/src/test/resources/fddiff/car2.fd"
-      - "fd-analysis/src/test/resources/fddiff/car1.fd"
+      - "."
     expire_in: 1 week
+
+test:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - "gradle check $GRADLE_OPTS $ARGS2"
+
+deploy:
+  stage: deploy
+  dependencies:
+    - checkMDLinks
+  script:
+    - "gradle publish $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
+  only:
+    - master
+    - develop
 
 
 checkMDLinks:
-  stage: check
-  dependencies:
-    - build_gradle
+  stage: test
   script:
     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
     - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/tree/develop"
@@ -49,6 +55,43 @@ checkMDLinks:
     - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
   only:
     - develop
+
+githubmirror:
+  image: maven:3-jdk-8
+  stage: deploy
+  dependencies:
+    - checkMDLinks
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SE_CIBUILD_SSH_PRIV_KEY")
+    - echo "$SE_CIBUILD_SSH_PRIV_KEY" | tr -d '\r' | ssh-add -
+    - git config --global user.email "noreply-ci@se-rwth.de"
+    - git config --global user.name "MontiCore Mirroring Bot"
+    - mkdir -p ~/.ssh
+    - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+  script:
+    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkChangerCLI.jar?job=build\" --output MDLinkChangerCLI.jar"
+    - sh pre/mirror.sh
+    - cd ..
+    - "if [ -d \"tmp\" ]; then rm -rf tmp; fi"
+    - mkdir "tmp"
+    - cd tmp
+    - git clone git@github.com:MontiCore/feature-diagram.git
+    - cd ..
+    - rm -r tmp/feature-diagram/*
+    - mv feature-diagram/* tmp/feature-diagram/
+    - cd tmp/feature-diagram
+    - git add --all
+    - "(git commit -m 'Updated branch with most recent version.') || true"
+    - git push --force
+    - cd ..
+    - cd ..
+    - rm -rf tmp
+    - exit 0
+  only:
+    - develop
+
 
 
 # trigger_langexp:                        

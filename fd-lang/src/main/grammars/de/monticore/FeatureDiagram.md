@@ -5,7 +5,7 @@
 <!-- List with all references used within this markdown file: -->
 [Readme]:                    ../../../../../../README.md
 [Grammar]:                   ../../../../../../fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mc4
-[fdstc]:                     ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramSymbolTableCreator.java
+[fdstc]:                     ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/FeatureDiagramScopesGenitor.java
 [serialization]:             ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_symboltable/
 [HasTreeShape]:              ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/HasTreeShape.java
 [CTCFeatureNamesExist]:      ../../../../../../fd-lang/src/main/java/de/monticore/featurediagram/_cocos/CTCFeatureNameExists.java
@@ -22,7 +22,7 @@
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [choco]: https://choco-solver.org
-[KTC90]: https://apps.dtic.mil/dtic/tr/fulltext/u2/a235785.pdf
+[KTC90]: https://apps.dtic.mil/sti/pdfs/ADA235785.pdf
 
 <!-- The following references should point towards the markdown files, once these exist -->
 [Cardinality MLC]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
@@ -91,6 +91,8 @@ featurediagram CarNavigation {
 For a detailed explanation of the meaning and the tools to process FDs, please have a look at 
 **[the readme][Readme]**.
 
+Examples for the syntax of feature configurations are contained in the **[description of the feature configuration languages][FeatureConfiguration MLC]**.
+
 ## Syntax
 
 The syntax of the FDL is specified through the FD 
@@ -144,7 +146,7 @@ contained in the FD.
 
 ### Symboltable
 - De-/Serialization functionality for the symbol table ([`serialization`][serialization])
-- [`FeatureDiagramSymbolTableCreator`][fdstc] handles the creation and linking of the
+- [`FeatureDiagramScopesGenitor`][fdstc] handles the creation and linking of the
   symbols after the FD is parsed.
   It creates:
   - A `FeatureDiagramSymbol` 

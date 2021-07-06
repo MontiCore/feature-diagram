@@ -32,10 +32,10 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
   public void testRoundtripSerialization() {
     IFeatureDiagramArtifactScope scope = setupSymbolTable("fdvalid/BasicElements.fd");
     assertTrue(null != scope);
-    String serialized = fdDeSer.serialize(scope);
+    String serialized = fdSymbols2Json.serialize(scope);
     assertTrue(null != serialized);
 
-    IFeatureDiagramScope deserializedScope = fdDeSer.deserialize(serialized);
+    IFeatureDiagramScope deserializedScope = fdSymbols2Json.deserialize(serialized);
     assertTrue(deserializedScope instanceof FeatureDiagramArtifactScope);
     FeatureDiagramArtifactScope deserialized = (FeatureDiagramArtifactScope) deserializedScope;
 

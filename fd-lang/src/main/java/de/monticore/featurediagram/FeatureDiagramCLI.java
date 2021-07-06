@@ -5,12 +5,12 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.monticore.featurediagram._symboltable.FeatureDiagramDeSer;
+import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
-import de.monticore.io.paths.ModelPath;
+import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
@@ -38,10 +38,10 @@ public class FeatureDiagramCLI {
 
     FeatureDiagramCLI cli = new FeatureDiagramCLI();
     FeatureDiagramParser parser = new FeatureDiagramParser();
-    FeatureDiagramDeSer deser = new FeatureDiagramDeSer();
+    FeatureDiagramSymbols2Json symbols2Json = new FeatureDiagramSymbols2Json();
 
     Log.initWARN();
-    cli.run(args, parser, deser);
+    cli.run(args, parser, symbols2Json);
   }
 
   /**
@@ -119,11 +119,11 @@ public class FeatureDiagramCLI {
    * @return
    */
   public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out,
-      FeatureDiagramDeSer deser) {
+      FeatureDiagramSymbols2Json s2j) {
     Path f = out
         .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
         .resolve(scope.getName() + ".fdsym");
-    String serialized = deser.serialize(scope);
+    String serialized = s2j.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
     return serialized;
   }
@@ -134,8 +134,8 @@ public class FeatureDiagramCLI {
    * @return
    */
   public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName,
-      FeatureDiagramDeSer deser) {
-    String serialized = deser.serialize(scope);
+      FeatureDiagramSymbols2Json s2j) {
+    String serialized = s2j.serialize(scope);
     FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
   }
@@ -148,7 +148,7 @@ public class FeatureDiagramCLI {
    * @return
    */
   public ASTFeatureDiagram run(String modelFile, Path out, FeatureDiagramParser parser,
-      FeatureDiagramDeSer deser) {
+      FeatureDiagramSymbols2Json s2j) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
@@ -160,7 +160,7 @@ public class FeatureDiagramCLI {
     checkCoCos(ast);
 
     // store artifact scope after context conditions have been checked
-    storeSymbols(modelTopScope, out, deser);
+    storeSymbols(modelTopScope, out, s2j);
 
     return ast.getFeatureDiagram();
   }
@@ -173,7 +173,7 @@ public class FeatureDiagramCLI {
    * @return
    */
   public ASTFeatureDiagram run(String modelFile, FeatureDiagramParser parser,
-      FeatureDiagramDeSer deser) {
+      FeatureDiagramSymbols2Json s2j) {
 
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile, parser);
@@ -185,7 +185,7 @@ public class FeatureDiagramCLI {
         path = path.getParent();
       }
     }
-    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getModelPath(), path);
+    ModelPaths.addEntry(FeatureDiagramMill.globalScope().getSymbolPath(), path);
 
     // setup the symbol table
     IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast);
@@ -194,7 +194,7 @@ public class FeatureDiagramCLI {
     FeatureDiagramCoCos.checkAll(ast);
 
     // store artifact scope after context conditions have been checked
-    storeSymbols(modelTopScope, SYMBOL_OUT, deser);
+    storeSymbols(modelTopScope, SYMBOL_OUT, s2j);
 
     return ast.getFeatureDiagram();
   }
@@ -205,7 +205,19 @@ public class FeatureDiagramCLI {
    *
    * @param args
    */
-  public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramDeSer deser) {
+  public void run (String[] args) {
+    FeatureDiagramParser parser = new FeatureDiagramParser();
+    FeatureDiagramSymbols2Json symbols2Json = new FeatureDiagramSymbols2Json();
+    run(args, parser, symbols2Json);
+  }
+
+  /**
+   * This method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
+  public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramSymbols2Json s2j) {
     Options options = initOptions();
 
     try {
@@ -224,7 +236,7 @@ public class FeatureDiagramCLI {
       String input = cmd.getOptionValue("input");
 
       //Set path for imported symbols
-      ModelPath mp = FeatureDiagramMill.globalScope().getModelPath();
+      MCPath mp = FeatureDiagramMill.globalScope().getSymbolPath();
       if (cmd.hasOption("path")) {
         for (String p : cmd.getOptionValues("path")) {
           ModelPaths.addEntry(mp, p);
@@ -249,12 +261,12 @@ public class FeatureDiagramCLI {
           // store symbol table to passed file
           JsonPrinter.disableIndentation();
           String symbolFile = output.resolve(s).toString();
-          storeSymbols(symbolTable, symbolFile, deser);
+          storeSymbols(symbolTable, symbolFile, s2j);
         }
         else {
           //print (formatted!) symboltable to console
           JsonPrinter.enableIndentation();
-          System.out.println(deser.serialize(symbolTable));
+          System.out.println(s2j.serialize(symbolTable));
         }
       }
 
