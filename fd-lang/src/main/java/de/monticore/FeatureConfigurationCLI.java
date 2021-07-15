@@ -31,8 +31,6 @@ import java.util.Optional;
 @Deprecated
 public class FeatureConfigurationCLI {
 
-  //TODO init-Methode überschreiben: FeatureConfigMill.init(); FeatureDiagramMill.init();
-
   /**
    * This main method realizes a CLI for processing FC models.
    * See the project's Readme for a documentation of the CLI
