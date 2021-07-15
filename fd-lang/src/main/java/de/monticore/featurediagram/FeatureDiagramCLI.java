@@ -242,6 +242,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
       .longOpt("symboltable")
       .argName("file")
       .optionalArg(true)
+      .numberOfArgs(1)
       .desc("Serialized the Symbol table of the given artifact.")
       .build());
 
