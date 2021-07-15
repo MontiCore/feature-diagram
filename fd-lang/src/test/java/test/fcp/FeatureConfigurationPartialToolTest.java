@@ -33,12 +33,10 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
   public void produceFDSymbol(){
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
     fdTool.run("src/test/resources/fdvalid/CarNavigation.fd",
-        Paths.get("target/symbols"),
-        fdParser, fdSymbols2Json);
+        Paths.get("target/symbols"));
 
     fdTool.run("src/test/resources/phone/Phone.fd",
-        Paths.get("target/symbols"),
-        fdParser, fdSymbols2Json);
+        Paths.get("target/symbols"));
   }
 
   @Before

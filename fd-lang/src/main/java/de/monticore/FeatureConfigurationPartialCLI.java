@@ -1,14 +1,16 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.featureconfigurationpartial;
+package de.monticore;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationPartialCoCos;
+import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
+import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialDeSer;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialSymbols2Json;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
-import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
@@ -16,12 +18,70 @@ import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
+import org.antlr.v4.runtime.RecognitionException;
 import org.apache.commons.cli.*;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
-public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialCLITOP {
+/**
+ * This tool can process partial feature configuration models both in form of a Java API with individual methods
+ * as well as via Command Line Interface (CLI)
+ */
+@Deprecated
+public class FeatureConfigurationPartialCLI {
+
+  /**
+   * This main method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
+  public static void main(String[] args) {
+    FeatureConfigurationPartialCLI cli = new FeatureConfigurationPartialCLI();
+    FeatureConfigurationPartialParser parser = new FeatureConfigurationPartialParser();
+    FeatureConfigurationPartialSymbols2Json symbols2Json = new FeatureConfigurationPartialSymbols2Json();
+    Log.initWARN();
+    cli.run(args, parser, symbols2Json);
+  }
+
+  /**
+   * Parse the model contained in the specified file.
+   *
+   * @param model - file to parse
+   * @return
+   */
+  public ASTFCCompilationUnit parse(String model, FeatureConfigurationPartialParser parser) {
+    try {
+      Optional<ASTFCCompilationUnit> optFC = parser.parse(model);
+
+      if (!parser.hasErrors() && optFC.isPresent()) {
+        return optFC.get();
+      }
+      Log.error("0xFC200 Model could not be parsed.");
+    }
+    catch (RecognitionException e) {
+      Log.error("0xFC201 Failed to parse the partial FC model '" + model + "'. ");
+    }
+    catch (IOException e) {
+      Log.error("0xFC204 Failed to find the file of the partial FC model '" + model + "'.");
+    }
+    return null;
+  }
+
+  /**
+   * Create the symbol table from a model file location
+   *
+   * @param model
+   * @param mp
+   * @return
+   */
+  public IFeatureConfigurationPartialArtifactScope createSymbolTable(String model,
+                                                                     MCPath mp, FeatureConfigurationPartialParser parser) {
+    return createSymbolTable(parse(model, parser), mp);
+  }
 
   /**
    * Create the symbol table from the parsed AST.
@@ -31,7 +91,7 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
    * @return
    */
   public IFeatureConfigurationPartialArtifactScope createSymbolTable(
-    ASTFCCompilationUnit ast, MCPath mp) {
+      ASTFCCompilationUnit ast, MCPath mp) {
     IFeatureConfigurationPartialGlobalScope gs = FeatureConfigurationPartialMill.globalScope();
     ModelPaths.merge(gs.getSymbolPath(), mp);
     ModelPaths.merge(FeatureDiagramMill.globalScope().getSymbolPath(), mp);
@@ -39,19 +99,12 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
     return FeatureConfigurationPartialMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
-  @Override
-  public IFeatureConfigurationPartialArtifactScope createSymbolTable(ASTFCCompilationUnit node) {
-    Log.warn("0xFD113 Please use the createSymbolTable method with two parameters");
-    return null;
-  }
-
   /**
    * Check all feature configuration partial context conditions against passed ast
    *
    * @param ast
    */
-  @Override
-  public void runDefaultCoCos(ASTFCCompilationUnit ast) {
+  public void checkCoCos(ASTFCCompilationUnit ast) {
     FeatureConfigurationPartialCoCos.checkAll(ast);
   }
 
@@ -62,12 +115,25 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
    *
    * @return
    */
-  public String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, Path out) {
+  public String storeSymbols(IFeatureConfigurationPartialArtifactScope scope, Path out,
+      FeatureConfigurationPartialSymbols2Json symbols2Json) {
     Path f = out
-      .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
-      .resolve(scope.getName() + ".fcsym");
-    String serialized = new FeatureConfigurationPartialSymbols2Json().serialize(scope);
+        .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
+        .resolve(scope.getName() + ".fcsym");
+    String serialized = symbols2Json.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
+    return serialized;
+  }
+
+  /**
+   * stores the symbol table of a passed ast in a file at the passed symbolFileName
+   *
+   * @return
+   */
+  public String storeSymbols(IFeatureConfigurationPartialArtifactScope scope,
+      String symbolFileName, FeatureConfigurationPartialSymbols2Json symbols2Json) {
+    String serialized = symbols2Json.serialize(scope);
+    FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
   }
 
@@ -79,16 +145,17 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
    * @param mp
    * @return
    */
-  public ASTFeatureConfiguration run(String modelFile, MCPath mp) {
+  public ASTFeatureConfiguration run(String modelFile, MCPath mp,
+      FeatureConfigurationPartialParser parser, FeatureConfigurationPartialDeSer deser) {
 
     // parse the model and create the AST representation
-    final ASTFCCompilationUnit ast = parse(modelFile);
+    final ASTFCCompilationUnit ast = parse(modelFile, parser);
 
     // setup the symbol table
     createSymbolTable(ast, mp);
 
     // check context conditions
-    runDefaultCoCos(ast);
+    checkCoCos(ast);
 
     // do not store artifact scope
 
@@ -103,9 +170,10 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
    * @param modelFile
    * @return
    */
-  public ASTFeatureConfiguration run(String modelFile) {
+  public ASTFeatureConfiguration run(String modelFile, FeatureConfigurationPartialParser parser,
+      FeatureConfigurationPartialDeSer deser) {
     // parse the model and create the AST representation
-    final ASTFCCompilationUnit ast = parse(modelFile);
+    final ASTFCCompilationUnit ast = parse(modelFile, parser);
 
     //reconstruct modelpath from input file
     Path path = Paths.get(modelFile).toAbsolutePath().getParent();
@@ -120,7 +188,7 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
     createSymbolTable(ast, mp);
 
     // check context conditions
-    runDefaultCoCos(ast);
+    checkCoCos(ast);
 
     // do not store artifact scope
 
@@ -134,10 +202,23 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
    * @param args
    */
   public void run(String[] args) {
+    FeatureConfigurationPartialParser parser = new FeatureConfigurationPartialParser();
+    FeatureConfigurationPartialSymbols2Json symbols2Json = new FeatureConfigurationPartialSymbols2Json();
+    run(args, parser, symbols2Json);
+  }
+
+  /**
+   * This method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
+  public void run(String[] args, FeatureConfigurationPartialParser parser,
+      FeatureConfigurationPartialSymbols2Json symbols2Json) {
     Options options = initOptions();
 
     try {
-      CommandLineParser cliParser = new DefaultParser();
+      CommandLineParser cliParser = new BasicParser();
       CommandLine cmd = cliParser.parse(options, args);
       if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
@@ -148,7 +229,7 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
       //Set input file and parse it
       if (!cmd.hasOption("input")) {
         Log.error(
-          "0xFE102 The input file is a mandatory argument of the FeatureConfigurationPartialTool!");
+            "0xFE102 The input file is a mandatory argument of the FeatureConfigurationPartialTool!");
       }
       String input = cmd.getOptionValue("input");
 
@@ -172,9 +253,9 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
       }
 
       // parse, create symbol table, check all cocos
-      ASTFCCompilationUnit ast = parse(input);
+      ASTFCCompilationUnit ast = parse(input, parser);
       IFeatureConfigurationPartialArtifactScope symbolTable = createSymbolTable(ast, mp);
-      runDefaultCoCos(ast);
+      checkCoCos(ast);
 
       // print or store symbol table
       if (cmd.hasOption("symboltable")) {
@@ -183,12 +264,12 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
           // store symbol table to passed file
           JsonPrinter.disableIndentation();
           String symbolFile = output.resolve(s).toString();
-          storeSymbols(symbolTable, symbolFile);
+          storeSymbols(symbolTable, symbolFile, symbols2Json);
         }
         else {
           //print (formatted!) symboltable to console
           JsonPrinter.enableIndentation();
-          System.out.println(new FeatureConfigurationPartialSymbols2Json().serialize(symbolTable));
+          System.out.println(symbols2Json.serialize(symbolTable));
         }
       }
 
@@ -211,61 +292,36 @@ public class FeatureConfigurationPartialCLI extends FeatureConfigurationPartialC
     }
   }
 
-  @Override
-  public Options addStandardOptions(Options options) {
-    //help
-    options.addOption(org.apache.commons.cli.Option.builder("h")
-      .longOpt("help")
-      .desc("Prints this help dialog")
-      .build());
-
-//parse input file
-    options.addOption(org.apache.commons.cli.Option.builder("i")
-      .longOpt("input")
-      .argName("file")
-      .hasArg()
-      .desc("Reads the source file (mandatory) and parses the contents")
-      .build());
-
-//pretty print runner
-    options.addOption(org.apache.commons.cli.Option.builder("pp")
-      .longOpt("prettyprint")
-      .argName("file")
-      .optionalArg(true)
-      .numberOfArgs(1)
-      .desc("Prints the AST to stdout or the specified file (optional)")
-      .build());
-
-// pretty print SC
-    options.addOption(org.apache.commons.cli.Option.builder("s")
-      .longOpt("symboltable")
-      .argName("file")
-      .optionalArg(true)
-      .desc("Serialized the Symbol table of the given artifact.")
-      .build());
-
-//reports about the runner
-    options.addOption(org.apache.commons.cli.Option.builder("r")
-      .longOpt("report")
-      .argName("dir")
-      .hasArg(true)
-      .desc("Prints reports of the artifact to the specified directory.")
-      .build());
-
-// model paths
-    options.addOption(org.apache.commons.cli.Option.builder("path")
-      .hasArgs()
-      .desc("Sets the artifact path for imported symbols, space separated.")
-      .build());
-    return options;
-  }
-
   /**
-   * initializes the additional cli options
+   * Initialize options of the CLI
+   *
+   * @return
    */
-  @Override
-  public Options addAdditionalOptions(Options options) {
+  protected Options initOptions() {
+    Options options = new Options();
+    options.addOption("h", "help", false, "Prints this help dialog");
+    options.addOption("i", "input", true,
+        "Reads the (mandatory) source file resp. the contents of the model");
     options.addOption("o", "output", true, "Path of generated files");
+
+    Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
+    modelPath.setArgs(Option.UNLIMITED_VALUES);
+    modelPath.setValueSeparator(' ');
+    options.addOption(modelPath);
+
+    Option symboltable = new Option("s", true,
+        "Serializes and prints the symbol table to stdout or a specified output file");
+    symboltable.setOptionalArg(true);
+    symboltable.setLongOpt("symboltable");
+    options.addOption(symboltable);
+
+    Option prettyprint = new Option("pp", true,
+        "Prints the AST to stdout or a specified output file");
+    prettyprint.setOptionalArg(true);
+    prettyprint.setLongOpt("prettyprint");
+    options.addOption(prettyprint);
+
     return options;
   }
+
 }

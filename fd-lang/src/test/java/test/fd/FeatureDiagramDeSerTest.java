@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class FeatureDiagramDeSerTest extends AbstractLangTest {
 
   protected IFeatureDiagramArtifactScope setupSymbolTable(String modelFile) {
-    ASTFDCompilationUnit ast = fdTool.parse("src/test/resources/" + modelFile, fdParser);
+    ASTFDCompilationUnit ast = fdTool.parse("src/test/resources/" + modelFile);
     return fdTool.createSymbolTable(ast);
   }
 

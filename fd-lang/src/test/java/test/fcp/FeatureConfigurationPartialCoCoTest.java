@@ -20,14 +20,14 @@ public class FeatureConfigurationPartialCoCoTest extends AbstractLangTest {
   @Test
   public void testWrongBlock() {
     ASTFCCompilationUnit ast = setupSymbolTable("WrongBlock.fc");
-    fcpTool.checkCoCos(ast);
+    fcpTool.runDefaultCoCos(ast);
     assertErrorCode("0xFC203");
   }
 
   protected ASTFCCompilationUnit setupSymbolTable(String modelFile) {
     MCPath mp = new MCPath(Paths.get("src/test/resources"));
     ASTFCCompilationUnit ast = fcpTool
-        .parse("src/test/resources/pfcinvalid/" + modelFile, fcpParser);
+        .parse("src/test/resources/pfcinvalid/" + modelFile);
     fcpTool.createSymbolTable(ast, mp);
     return ast;
   }

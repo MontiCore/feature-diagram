@@ -1,6 +1,8 @@
 /* (c) https://github.com/MontiCore/monticore */
-package de.monticore.featurediagram;
+package de.monticore;
 
+import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
@@ -22,7 +24,28 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
+/**
+ * This tool can process feature diagram models both in form of a Java API with individual methods
+ * as well as via Command Line Interface (CLI)
+ */
+@Deprecated
+public class FeatureDiagramCLI {
+
+  /**
+   * This main method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
+  public static void main(String[] args) {
+
+    FeatureDiagramCLI cli = new FeatureDiagramCLI();
+    FeatureDiagramParser parser = new FeatureDiagramParser();
+    FeatureDiagramSymbols2Json symbols2Json = new FeatureDiagramSymbols2Json();
+
+    Log.initWARN();
+    cli.run(args, parser, symbols2Json);
+  }
 
   /**
    * constant for the default folder into which symbols are stored
@@ -30,15 +53,49 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
   public static final Path SYMBOL_OUT = Paths.get("target/symbols");
 
   /**
+   * Parse the model contained in the specified file and return the created AST.
+   *
+   * @param model - file to parse
+   * @return
+   */
+  public ASTFDCompilationUnit parse(String model, FeatureDiagramParser parser) {
+    try {
+      Optional<ASTFDCompilationUnit> optFD = parser.parse(model);
+
+      if (!parser.hasErrors() && optFD.isPresent()) {
+        Log.info(model + " parsed successfully!", "FeatureDiagramTool");
+        return optFD.get();
+      }
+      Log.error("0xFD100 Model could not be parsed.");
+    }
+    catch (RecognitionException e) {
+      Log.error("0xFD101 Failed to parse the FD model '" + model + "'. ");
+    }
+    catch (IOException e) {
+      Log.error("0xFD104 Failed to find the file of the FD model '" + model + "'.");
+    }
+    return null;
+  }
+
+  /**
+   * Create the symbol table from a model file location and returns the produced artifact scope
+   *
+   * @param model
+   * @return
+   */
+  public IFeatureDiagramArtifactScope createSymbolTable(String model, FeatureDiagramParser parser) {
+    return createSymbolTable(parse(model, parser));
+  }
+
+  /**
    * Create the symbol table from the parsed AST.
    *
    * @param ast
    * @return
    */
-  @Override
   public IFeatureDiagramArtifactScope createSymbolTable(ASTFDCompilationUnit ast) {
     initGlobalScope();
-    return super.createSymbolTable(ast);
+    return FeatureDiagramMill.scopesGenitorDelegator().createFromAST(ast);
   }
 
   public void initGlobalScope() {
@@ -53,8 +110,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
    *
    * @param ast
    */
-  @Override
-  public void runDefaultCoCos(ASTFDCompilationUnit ast) {
+  public void checkCoCos(ASTFDCompilationUnit ast) {
     FeatureDiagramCoCos.checkAll(ast);
   }
 
@@ -65,12 +121,25 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
    *
    * @return
    */
-  public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out) {
+  public String storeSymbols(IFeatureDiagramArtifactScope scope, Path out,
+      FeatureDiagramSymbols2Json s2j) {
     Path f = out
-      .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
-      .resolve(scope.getName() + ".fdsym");
-    String serialized = new FeatureDiagramSymbols2Json().serialize(scope);
+        .resolve(Paths.get(Names.getPathFromPackage(scope.getPackageName())))
+        .resolve(scope.getName() + ".fdsym");
+    String serialized = s2j.serialize(scope);
     FileReaderWriter.storeInFile(f, serialized);
+    return serialized;
+  }
+
+  /**
+   * stores the symbol table of a passed ast in a file at the passed symbolFileName
+   *
+   * @return
+   */
+  public String storeSymbols(IFeatureDiagramArtifactScope scope, String symbolFileName,
+      FeatureDiagramSymbols2Json s2j) {
+    String serialized = s2j.serialize(scope);
+    FileReaderWriter.storeInFile(Paths.get(symbolFileName), serialized);
     return serialized;
   }
 
@@ -81,19 +150,20 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
    * @param modelFile
    * @return
    */
-  public ASTFeatureDiagram run(String modelFile, Path out) {
+  public ASTFeatureDiagram run(String modelFile, Path out, FeatureDiagramParser parser,
+      FeatureDiagramSymbols2Json s2j) {
 
     // parse the model and create the AST representation
-    final ASTFDCompilationUnit ast = parse(modelFile);
+    final ASTFDCompilationUnit ast = parse(modelFile, parser);
 
     // setup the symbol table
     IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast);
 
     // execute default context conditions
-    runDefaultCoCos(ast);
+    checkCoCos(ast);
 
     // store artifact scope after context conditions have been checked
-    storeSymbols(modelTopScope, out);
+    storeSymbols(modelTopScope, out, s2j);
 
     return ast.getFeatureDiagram();
   }
@@ -105,10 +175,11 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
    * @param modelFile
    * @return
    */
-  public ASTFeatureDiagram run(String modelFile) {
+  public ASTFeatureDiagram run(String modelFile, FeatureDiagramParser parser,
+      FeatureDiagramSymbols2Json s2j) {
 
     // parse the model and create the AST representation
-    final ASTFDCompilationUnit ast = parse(modelFile);
+    final ASTFDCompilationUnit ast = parse(modelFile, parser);
 
     //reconstruct modelpath from input file
     Path path = Paths.get(modelFile).toAbsolutePath().getParent();
@@ -126,7 +197,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
     FeatureDiagramCoCos.checkAll(ast);
 
     // store artifact scope after context conditions have been checked
-    storeSymbols(modelTopScope, SYMBOL_OUT);
+    storeSymbols(modelTopScope, SYMBOL_OUT, s2j);
 
     return ast.getFeatureDiagram();
   }
@@ -137,13 +208,23 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
    *
    * @param args
    */
-  @Override
-  public void run(String[] args) {
-    init();
+  public void run (String[] args) {
+    FeatureDiagramParser parser = new FeatureDiagramParser();
+    FeatureDiagramSymbols2Json symbols2Json = new FeatureDiagramSymbols2Json();
+    run(args, parser, symbols2Json);
+  }
+
+  /**
+   * This method realizes a CLI for processing FC models.
+   * See the project's Readme for a documentation of the CLI
+   *
+   * @param args
+   */
+  public void run(String[] args, FeatureDiagramParser parser, FeatureDiagramSymbols2Json s2j) {
     Options options = initOptions();
 
     try {
-      CommandLineParser cliParser = new DefaultParser();
+      CommandLineParser cliParser = new BasicParser();
       CommandLine cmd = cliParser.parse(options, args);
       if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
@@ -172,9 +253,9 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
       }
 
       // parse, create symbol table, check all cocos
-      ASTFDCompilationUnit ast = parse(input);
+      ASTFDCompilationUnit ast = parse(input, parser);
       IFeatureDiagramArtifactScope symbolTable = createSymbolTable(ast);
-      runDefaultCoCos(ast);
+      checkCoCos(ast);
 
       // print or store symbol table
       if (cmd.hasOption("symboltable")) {
@@ -183,11 +264,10 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
           // store symbol table to passed file
           JsonPrinter.disableIndentation();
           String symbolFile = output.resolve(s).toString();
-          storeSymbols(symbolTable, symbolFile);
+          storeSymbols(symbolTable, symbolFile, s2j);
         }
         else {
           //print (formatted!) symboltable to console
-          FeatureDiagramSymbols2Json s2j = new FeatureDiagramSymbols2Json();
           JsonPrinter.enableIndentation();
           System.out.println(s2j.serialize(symbolTable));
         }
@@ -212,63 +292,36 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
     }
   }
 
-  @Override
-  public Options addStandardOptions(Options options) {
-    //help
-    options.addOption(org.apache.commons.cli.Option.builder("h")
-      .longOpt("help")
-      .desc("Prints this help dialog")
-      .build());
-
-//parse input file
-    options.addOption(org.apache.commons.cli.Option.builder("i")
-      .longOpt("input")
-      .argName("file")
-      .hasArg()
-      .desc("Reads the source file (mandatory) and parses the contents")
-      .build());
-
-//pretty print runner
-    options.addOption(org.apache.commons.cli.Option.builder("pp")
-      .longOpt("prettyprint")
-      .argName("file")
-      .optionalArg(true)
-      .numberOfArgs(1)
-      .desc("Prints the AST to stdout or the specified file (optional)")
-      .build());
-
-// pretty print SC
-    options.addOption(org.apache.commons.cli.Option.builder("s")
-      .longOpt("symboltable")
-      .argName("file")
-      .optionalArg(true)
-      .desc("Serialized the Symbol table of the given artifact.")
-      .build());
-
-//reports about the runner
-    options.addOption(org.apache.commons.cli.Option.builder("r")
-      .longOpt("report")
-      .argName("dir")
-      .hasArg(true)
-      .desc("Prints reports of the artifact to the specified directory.")
-      .build());
-
-// model paths
-    options.addOption(org.apache.commons.cli.Option.builder("path")
-      .hasArgs()
-      .desc("Sets the artifact path for imported symbols, space separated.")
-      .build());
-    return options;
-  }
-
   /**
+   * Initialize options of the CLI
    *
-   * @param options the additional cli options for this class
    * @return
    */
-  @Override
-  public Options addAdditionalOptions(Options options) {
+  protected Options initOptions() {
+    Options options = new Options();
+    options.addOption("h", "help", false, "Prints this help dialog");
+    options.addOption("i", "input", true,
+        "Reads the (mandatory) source file resp. the contents of the model");
     options.addOption("o", "output", true, "Path of generated files");
+
+    Option modelPath = new Option("path", true, "Sets the artifact path for imported symbols");
+    modelPath.setArgs(Option.UNLIMITED_VALUES);
+    modelPath.setValueSeparator(' ');
+    options.addOption(modelPath);
+
+    Option symboltable = new Option("s", true,
+        "Serializes and prints the symbol table to stdout or a specified output file");
+    symboltable.setOptionalArg(true);
+    symboltable.setLongOpt("symboltable");
+    options.addOption(symboltable);
+
+    Option prettyprint = new Option("pp", true,
+        "Prints the AST to stdout or a specified output file");
+    prettyprint.setOptionalArg(true);
+    prettyprint.setLongOpt("prettyprint");
+    options.addOption(prettyprint);
+
     return options;
   }
+
 }
