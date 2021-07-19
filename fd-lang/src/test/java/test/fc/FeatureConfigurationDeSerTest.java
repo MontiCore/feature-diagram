@@ -2,6 +2,7 @@
 package test.fc;
 
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
+import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbols2Json;
@@ -27,7 +28,8 @@ public class FeatureConfigurationDeSerTest extends AbstractLangTest {
   protected static final MCPath mp = new MCPath(Paths.get("src/test/resources"));
 
   protected IFeatureConfigurationArtifactScope setupSymbolTable(String modelFile) {
-    return fcTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcParser);
+    ASTFCCompilationUnit ast = fcTool.parse("src/test/resources/" + modelFile);
+    return fcTool.createSymbolTable(ast, mp);
   }
 
   @BeforeClass

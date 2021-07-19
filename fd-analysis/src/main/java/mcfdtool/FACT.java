@@ -346,7 +346,7 @@ public class FACT {
   public ASTFeatureDiagram readFeatureDiagram(String modelFile, String symbolOutPath,
       MCPath symbolInputPath) {
     ModelPaths.merge(FeatureDiagramMill.globalScope().getSymbolPath(), symbolInputPath);
-    return fdTool.run(modelFile, Paths.get(symbolOutPath), fdParser, s2j);
+    return fdTool.run(modelFile, Paths.get(symbolOutPath));
   }
 
   /**
@@ -359,7 +359,7 @@ public class FACT {
    */
   public ASTFeatureConfiguration readFeatureConfiguration(String modelFile,
       MCPath symbolInputPath) {
-    return fcTool.run(modelFile, symbolInputPath, fcParser);
+    return fcTool.run(modelFile, symbolInputPath);
   }
 
   /**
@@ -371,7 +371,7 @@ public class FACT {
    * @return
    */
   public ASTFeatureConfiguration readFeatureConfiguration(String modelFile) {
-    return fcTool.run(modelFile, fcParser);
+    return fcTool.run(modelFile);
   }
 
   /**
