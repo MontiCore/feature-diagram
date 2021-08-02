@@ -22,7 +22,7 @@
 
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
 [choco]: https://choco-solver.org
-[KTC90]: https://apps.dtic.mil/sti/pdfs/ADA235785.pdf
+[KTC90]: https://resources.sei.cmu.edu/asset_files/TechnicalReport/1990_005_001_15872.pdf
 
 <!-- The following references should point towards the markdown files, once these exist -->
 [Cardinality MLC]: https://github.com/MontiCore/monticore/blob/dev/monticore-grammar/src/main/grammars/de/monticore/Cardinality.mc4
