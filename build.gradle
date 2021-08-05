@@ -40,7 +40,6 @@ subprojects {
         implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
         testImplementation group: 'junit', name: 'junit', version: junit_version
-        testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: logback_version
     }
 
     // configure non-standard source sets
