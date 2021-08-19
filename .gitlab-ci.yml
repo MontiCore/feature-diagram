@@ -54,7 +54,7 @@ checkArtifacts:
 checkArtifacts2:
   stage: test
   script:
-    - "curl --location \"http://monticore.de/download/MLCCLI.jar\""
+    - "curl --location \"http://monticore.de/download/MLCCLI.jar\"
     - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/tree/mlc"
     - "checkRes=$(java -jar MLCCLI.jar -input fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mlc - projectDir ./ -check)"
     - "echo \"$checkRes\""
