@@ -1,6 +1,6 @@
 /* (c) https://github.com/MontiCore/monticore */
 buildscript {
-    dependencies.classpath "de.monticore.lang:mlc-gradle:$version"
+    dependencies.classpath "de.monticore.lang:mlc-gradle:7.1.0-SNAPSHOT"
 }
 
 plugins {
