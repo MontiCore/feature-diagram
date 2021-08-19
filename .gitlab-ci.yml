@@ -47,21 +47,9 @@ deploy:
 checkArtifacts:
   stage: test
   script:
-    - "gradle showArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
+    - "gradle checkArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
   only:
     - mlc
-
-checkArtifacts2:
-  stage: test
-  script:
-    - "curl --location \"https://nexus.se.rwth-aachen.de/repository/public/de/monticore/lang/mlc-tool/7.1.0-SNAPSHOT/mlc-tool-7.1.0-20210819.092830-31-cli.jar\" --output MLCCLI.jar"
-    - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/tree/mlc"
-    - "checkRes=$(java -jar MLCCLI.jar -input fd-lang/src/main/grammars/de/monticore/FeatureDiagram.mlc - projectDir ./ -check)"
-    - "echo \"$checkRes\""
-    - "if [[ $checkRes == *\"Failed.\"* ]]; then exit 1; fi"
-  only:
-    - mlc
-
 
 checkMDLinks:
   stage: test
