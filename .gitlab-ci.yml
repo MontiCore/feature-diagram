@@ -51,6 +51,17 @@ checkArtifacts:
   only:
     - mlc
 
+checkArtifacts2:
+  stage: test
+  script:
+    - "curl --location \"https://nexus.se.rwth-aachen.de/repository/public/de/monticore/lang/mlc-tool/7.1.0-SNAPSHOT/mlc-tool-7.1.0-20210818.010346-30-cli.jar\" --output MLCCLI.jar"
+    - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/tree/mlc"
+    - "checkRes=$(java -jar MLCCLI.jar -h)"
+    - "echo \"$checkRes\""
+    - "if [[ $checkRes == *\"ERROR\"* ]]; then exit 1; fi"
+  only:
+    - mlc
+
 
 checkMDLinks:
   stage: test
