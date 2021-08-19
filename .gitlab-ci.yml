@@ -44,13 +44,6 @@ deploy:
     - master
     - develop
 
-checkArtifacts:
-  stage: test
-  script:
-    - "gradle showArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
-  only:
-    - mlc
-
 
 checkMDLinks:
   stage: test
