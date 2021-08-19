@@ -112,6 +112,7 @@ fileTree(".").matching { include '**/*.mlc' }.each {
         group = 'MLC'
         mainClass = 'de.monticore.mlc.MLCCLI'
         args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-all"
+        dependsOn(generate${mlcName})
     }
 
     task "checkArtifacts${mlcName}"(type: JavaExec) {
@@ -119,6 +120,7 @@ fileTree(".").matching { include '**/*.mlc' }.each {
         group = 'MLC'
         mainClass = 'de.monticore.mlc.MLCCLI'
         args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
+        dependsOn(generate${mlcName})
     }
 }
 
