@@ -1,7 +1,4 @@
 /* (c) https://github.com/MontiCore/monticore */
-/*buildscript {
-    dependencies.classpath "de.monticore.lang:mlc-gradle:7.1.0-SNAPSHOT"
-}*/
 
 plugins {
     id "java"
@@ -98,17 +95,32 @@ project(':fd-lang') {
     generateFeatureConfigurationPartial.dependsOn(generateFeatureConfiguration)
 
 
-    // two tasks per MLC file
-//    fileTree(".").matching { include '**/*.mlc' }.each {
-//        def f = it
-//        def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
-//        task "checkArtifacts${mlcName}"(type: de.monticore.mlc.MLCCheckArtifactsTask) {
-//            mlcFile = file(f).absoluteFile
-//        }
-//        task "showArtifacts${mlcName}"(type: de.monticore.mlc.MLCShowArtifactsTask) {
-//            mlcFile = file f.absoluteFile
-//        }
-//    }
+configurations { MLC }
+dependencies { MLC "de.monticore.lang:mlc-gradle:$version" }
+StringJoiner joiner = new StringJoiner(" ");
+configurations.compileClasspath.resolve().forEach(e -> joiner.add(e.toString()));
+joiner.add Paths.get(project.rootDir.toString(), "target/symbols").toString()
+String mp = joiner.toString()
+
+// two tasks per MLC file
+fileTree(".").matching { include '**/*.mlc' }.each {
+    def f = it
+    def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
+
+    task "showArtifacts${mlcName}"(type: JavaExec) {
+        classpath = configurations.MLC
+        group = 'MLC'
+        mainClass = 'de.monticore.mlc.MLCCLI'
+        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-all"
+    }
+
+    task "checkArtifacts${mlcName}"(type: JavaExec) {
+        classpath = configurations.MLC
+        group = 'MLC'
+        mainClass = 'de.monticore.mlc.MLCCLI'
+        args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
+    }
+}
 
 
     compileJava {
