@@ -57,7 +57,6 @@ checkMDLinks:
     - develop
 
 githubmirror:
-  image: maven:3-jdk-8
   stage: deploy
   dependencies:
     - checkMDLinks
@@ -80,7 +79,8 @@ githubmirror:
     - git clone git@github.com:MontiCore/feature-diagram.git
     - cd ..
     - rm -r tmp/feature-diagram/*
-    - mv feature-diagram/* tmp/feature-diagram/
+    - shopt -s extglob
+    - mv feature-diagram/!(MDLinkChangerCLI.jar) tmp/feature-diagram/
     - cd tmp/feature-diagram
     - git add --all
     - "(git commit -m 'Updated branch with most recent version.') || true"
