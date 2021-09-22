@@ -1,4 +1,5 @@
 /* (c) https://github.com/MontiCore/monticore */
+
 plugins {
     id "java"
     id "monticore"  version "$mc_version" // MontiCore Plugin
@@ -92,6 +93,41 @@ project(':fd-lang') {
 
     generateFeatureConfiguration.dependsOn(generateFeatureDiagram)
     generateFeatureConfigurationPartial.dependsOn(generateFeatureConfiguration)
+
+
+    /**
+     * Integration with MLC language and tool
+    */
+    task checkArtifacts {}
+    configurations { MLC }
+    dependencies { MLC (group: 'de.monticore.lang', name: 'mlc-gradle', version: '7.2.0-SNAPSHOT') }
+    StringJoiner joiner = new StringJoiner(" ")
+    configurations.compileClasspath.resolve().each{joiner.add(it.toString()) }
+    joiner.add "$projectDir/target/symbols"
+    String mp = joiner.toString()
+
+    // two tasks per MLC file
+    fileTree(".").matching { include '**/*.mlc' }.each {
+        def f = it
+        def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
+
+        task "showArtifacts${mlcName}"(type: JavaExec) {
+            classpath = configurations.MLC
+            group = 'MLC'
+            mainClass = 'de.monticore.mlc.MLCCLI'
+            args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-all"
+            dependsOn("generate${mlcName}")
+        }
+
+        task "checkArtifacts${mlcName}"(type: JavaExec) {
+            classpath = configurations.MLC
+            group = 'MLC'
+            mainClass = 'de.monticore.mlc.MLCCLI'
+            args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
+            dependsOn("generate${mlcName}")
+            checkArtifacts.dependsOn("checkArtifacts${mlcName}")
+        }
+    }    // end integration with MLC
 
     compileJava {
         dependsOn project.collect { it.tasks.withType(MCTask) }
