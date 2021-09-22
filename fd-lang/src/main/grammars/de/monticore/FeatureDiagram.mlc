@@ -1,3 +1,5 @@
+package de.monticore;
+
 mlc FeatureDiagram {
 
   export "$projectDir/src/main/grammars" {
@@ -15,7 +17,7 @@ mlc FeatureDiagram {
     include "de/monticore/featurediagram/*.java";
   }
 
-  uses {  // allow using the JDK except for reflection
+  promote {  // allow using the JDK except for reflection
     include "$mp/java/**";
     exclude "$mp/java/lang/reflect/**";
   }
@@ -26,7 +28,7 @@ mlc FeatureDiagram {
     include "$mp/de/monticore/types/**";
   }
 
-  uses {  // allow using everything from MontiCore RTE and co.
+  promote {  // allow using everything from MontiCore RTE and co.
     include "$mp/de/monticore/ast/**";
     include "$mp/de/monticore/generating/**";
     include "$mp/de/monticore/io/**";

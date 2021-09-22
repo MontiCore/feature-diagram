@@ -1,0 +1,22 @@
+package de.monticore;
+
+mlc FeatureConfigurationPartial {
+
+  export "$projectDir/src/main/grammars" {
+    include "**/FeatureConfigurationPartial.mc4";
+    include "**/FeatureConfigurationPartial.md";
+  }
+
+  export "$projectDir/src/main/java" {
+    include "de/monticore/featureconfigurationpartial/**/*.java";
+    include "de/monticore/featureconfigurationpartial/*.java";
+  }
+
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/featureconfigurationpartial/**/*.java";
+    include "de/monticore/featureconfigurationpartial/*.java";
+  }
+
+  promote mlc "de.monticore.FeatureConfiguration";
+
+}
