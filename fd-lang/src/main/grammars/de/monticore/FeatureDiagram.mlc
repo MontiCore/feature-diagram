@@ -8,13 +8,11 @@ mlc FeatureDiagram {
   }
 
   export "$projectDir/src/main/java" {
-    include "de/monticore/featurediagram/**/*.java";
-    include "de/monticore/featurediagram/*.java";
+    include "de/monticore/featurediagram/**.java";
   }
 
   export "$projectDir/target/generated-sources/monticore/sourcecode" {
-    include "de/monticore/featurediagram/**/*.java";
-    include "de/monticore/featurediagram/*.java";
+    include "de/monticore/featurediagram/**.java";
   }
 
   promote {  // allow using the JDK except for reflection
