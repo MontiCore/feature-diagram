@@ -41,7 +41,6 @@ deploy:
   script:
     - "gradle publish $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
   only:
-    - master
     - develop
 
 checkArtifacts:
