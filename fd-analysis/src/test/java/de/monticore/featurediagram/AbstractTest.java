@@ -2,12 +2,15 @@
 
 package de.monticore.featurediagram;
 
+import de.monticore.featurediagram.FeatureDiagramCLI;
 import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
@@ -80,8 +83,9 @@ public class AbstractTest {
   }
 
   protected ASTFeatureDiagram getFD(String modelFile) {
+    ASTFDCompilationUnit ast = fdTool.parse(TEST_RES + modelFile);
     IFeatureDiagramArtifactScope as = fdTool
-        .createSymbolTable(TEST_RES + modelFile, fdParser);
+        .createSymbolTable(ast);
     String modelName = modelFile.replace(".fd", "");
     if (modelName.contains("/")) {
       modelName = modelName.substring(modelFile.lastIndexOf("/") + 1);
@@ -96,8 +100,9 @@ public class AbstractTest {
   }
 
   protected ASTFeatureConfiguration getFC(String modelFile) {
+    ASTFCCompilationUnit config = fcTool.parse(TEST_RES + modelFile);
     IFeatureConfigurationArtifactScope symbolTable = fcTool
-        .createSymbolTable(TEST_RES + modelFile, new MCPath(Paths.get(TEST_RES)), fcParser);
+        .createSymbolTable(config, new MCPath(Paths.get(TEST_RES)));
 
     String modelName = modelFile.replace(".fc", "");
     if (modelName.contains("/")) {

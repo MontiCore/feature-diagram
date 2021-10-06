@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fcp;
 
+import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialArtifactScope;
@@ -31,7 +32,8 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
   }
 
   protected IFeatureConfigurationPartialArtifactScope setupSymbolTable(String modelFile) {
-    return fcpTool.createSymbolTable("src/test/resources/" + modelFile, mp, fcpParser);
+    ASTFCCompilationUnit ast = fcpTool.parse("src/test/resources/" + modelFile);
+    return fcpTool.createSymbolTable(ast, mp);
   }
 
   @Test

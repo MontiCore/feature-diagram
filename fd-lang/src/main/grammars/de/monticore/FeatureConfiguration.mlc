@@ -1,0 +1,20 @@
+package de.monticore;
+
+mlc FeatureConfiguration {
+
+  export "$projectDir/src/main/grammars" {
+    include "**/FeatureConfiguration.mc4";
+    include "**/FeatureConfiguration.md";
+  }
+
+  export "$projectDir/src/main/java" {
+    include "de/monticore/featureconfiguration/**.java";
+  }
+
+  export "$projectDir/target/generated-sources/monticore/sourcecode" {
+    include "de/monticore/featureconfiguration/**.java";
+  }
+
+  promote mlc "de.monticore.FeatureDiagram";
+
+}

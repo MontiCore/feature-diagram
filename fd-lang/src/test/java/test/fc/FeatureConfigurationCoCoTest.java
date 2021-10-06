@@ -48,7 +48,7 @@ public class FeatureConfigurationCoCoTest extends AbstractLangTest {
   }
 
   protected ASTFCCompilationUnit setupSymbolTable(String modelFile) {
-    ASTFCCompilationUnit ast = fcTool.parse("src/test/resources/fcinvalid/" + modelFile, fcParser);
+    ASTFCCompilationUnit ast = fcTool.parse("src/test/resources/fcinvalid/" + modelFile);
     MCPath mp = new MCPath(Paths.get("src/test/resources"));
     fcTool.createSymbolTable(ast, mp);
     return ast;
