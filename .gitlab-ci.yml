@@ -41,9 +41,12 @@ deploy:
   script:
     - "gradle publish $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
   only:
-    - master
     - develop
 
+checkArtifacts:
+  stage: test
+  script:
+    - "gradle checkArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
 
 checkMDLinks:
   stage: test
