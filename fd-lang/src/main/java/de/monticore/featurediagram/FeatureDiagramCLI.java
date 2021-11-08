@@ -208,7 +208,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("java -jar FeatureDiagramTool.jar", options, true);
-      Log.error("0xFD112 An exception occured while processing the CLI input!", e);
+      Log.error("0xFD114 An exception occured while processing the CLI input!", e);
     }
   }
 

@@ -190,7 +190,7 @@ public class FACT {
     List<ASTFeatureConfiguration> result = analysis.perform(fd);
 
     if (null == result) {
-      Log.error("0xFC774 AllProducts was not successful");
+      Log.error("0xFC782 AllProducts was not successful");
     }
     else {
       System.out.println("Result of AllProducts: "
