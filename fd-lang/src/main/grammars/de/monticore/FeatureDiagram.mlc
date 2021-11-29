@@ -22,7 +22,7 @@ mlc FeatureDiagram {
 
 
   promote {  // allow using other languages
-    mlc "de.monticore.expressions.CommonExpressions"; // TODO find out why only grammars are found
+    mlc "de.monticore.expressions.CommonExpressions";
     mlc "de.monticore.Cardinality";
     mlc "de.monticore.types.MCBasicTypes";
   }
