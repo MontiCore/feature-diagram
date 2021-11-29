@@ -43,10 +43,10 @@ deploy:
   only:
     - develop
 
-checkArtifacts:
-  stage: test
-  script:
-    - "gradle checkArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
+# checkArtifacts:
+#   stage: test
+#   script:
+#     - "gradle checkArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
 
 checkMDLinks:
   stage: test
