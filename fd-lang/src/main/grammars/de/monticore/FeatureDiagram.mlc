@@ -20,10 +20,11 @@ mlc FeatureDiagram {
     exclude "$mp/java/lang/reflect/**";
   }
 
-  promote {  // allow using other languages TODO: replace by using languages
-    include "$mp/de/monticore/expressions/**";
-    include "$mp/de/monticore/literals/**";
-    include "$mp/de/monticore/types/**";
+
+  promote {  // allow using other languages
+    mlc "de.monticore.expressions.CommonExpressions"; // TODO find out why only grammars are found
+    mlc "de.monticore.Cardinality";
+    mlc "de.monticore.types.MCBasicTypes";
   }
 
   promote {  // allow using everything from MontiCore RTE and co.

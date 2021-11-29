@@ -34,6 +34,7 @@ subprojects {
 
     dependencies {
         implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version, classifier: 'sources'
         implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
         implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
         implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
@@ -103,6 +104,7 @@ project(':fd-lang') {
     dependencies { MLC (group: 'de.monticore.lang', name: 'mlc-gradle', version: mlc_version) }
     StringJoiner joiner = new StringJoiner(" ")
     configurations.compileClasspath.resolve().each{joiner.add(it.toString()) }
+    configurations.grammar.resolve().each{joiner.add(it.toString()) }
     joiner.add "$projectDir/target/symbols"
     String mp = joiner.toString()
 
