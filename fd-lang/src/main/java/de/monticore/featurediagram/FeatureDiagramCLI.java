@@ -4,7 +4,6 @@ package de.monticore.featurediagram;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
-import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
@@ -12,15 +11,13 @@ import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
+import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
-import org.antlr.v4.runtime.RecognitionException;
 import org.apache.commons.cli.*;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
 
@@ -82,7 +79,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
    * @return
    */
   public ASTFeatureDiagram run(String modelFile, Path out) {
-
+    MCFullGenericTypesPrettyPrinter pp;
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
 
@@ -118,7 +115,6 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
       }
     }
     ModelPaths.addEntry(FeatureDiagramMill.globalScope().getSymbolPath(), path);
-
     // setup the symbol table
     IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast);
 
