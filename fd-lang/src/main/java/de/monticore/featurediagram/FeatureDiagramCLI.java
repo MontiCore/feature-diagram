@@ -11,7 +11,6 @@ import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.types.prettyprint.MCFullGenericTypesPrettyPrinter;
 import de.monticore.utils.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
@@ -79,7 +78,6 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
    * @return
    */
   public ASTFeatureDiagram run(String modelFile, Path out) {
-    MCFullGenericTypesPrettyPrinter pp;
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
 
