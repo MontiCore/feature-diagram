@@ -116,7 +116,7 @@ project(':fd-lang') {
         task "showArtifacts${mlcName}"(type: JavaExec) {
             classpath = configurations.MLC
             group = 'MLC'
-            mainClass = 'de.monticore.mlc.MLCCLI'
+            mainClass = 'de.monticore.mlc.MLTool'
             args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-all"
             dependsOn("generate${mlcName}")
         }
@@ -124,7 +124,7 @@ project(':fd-lang') {
         task "checkArtifacts${mlcName}"(type: JavaExec) {
             classpath = configurations.MLC
             group = 'MLC'
-            mainClass = 'de.monticore.mlc.MLCCLI'
+            mainClass = 'de.monticore.mlc.MLCTool'
             args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
             dependsOn("generate${mlcName}")
             checkArtifacts.dependsOn("checkArtifacts${mlcName}")
