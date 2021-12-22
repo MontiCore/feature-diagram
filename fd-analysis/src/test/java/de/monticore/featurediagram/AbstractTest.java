@@ -2,8 +2,7 @@
 
 package de.monticore.featurediagram;
 
-import de.monticore.featurediagram.FeatureDiagramCLI;
-import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
@@ -30,11 +29,11 @@ import static org.junit.Assert.*;
 
 public class AbstractTest {
 
-  protected FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
+  protected FeatureDiagramTool fdTool = new FeatureDiagramTool();
 
   protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
 
-  protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
+  protected FeatureConfigurationTool fcTool = new FeatureConfigurationTool();
 
   protected FeatureConfigurationParser fcParser = new FeatureConfigurationParser();
 

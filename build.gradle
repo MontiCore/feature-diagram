@@ -151,7 +151,7 @@ project(':fd-lang') {
 
     shadowJar { // all in one jar
         manifest {
-            attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramCLI"
+            attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
         archiveClassifier = "fd-cli"
@@ -162,7 +162,7 @@ project(':fd-lang') {
         archiveFileName = 'FeatureConfigurationCLI.jar'
         archiveClassifier = "fc-cli"
         manifest {
-            attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationCLI')
+            attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationTool')
         }
         from zipTree(shadowJar.archiveFile)
     }
@@ -171,7 +171,7 @@ project(':fd-lang') {
         archiveFileName = 'FeatureConfigurationPartialCLI.jar'
         archiveClassifier = "fcp-cli"
         manifest {
-            attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI')
+            attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool')
         }
         from zipTree(shadowJar.archiveFile)
     }

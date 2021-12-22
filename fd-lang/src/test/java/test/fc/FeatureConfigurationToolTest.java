@@ -2,7 +2,7 @@
 
 package test.fc;
 
-import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
@@ -52,7 +52,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testHelp() {
-    FeatureConfigurationCLI.main(new String[] { "-h" });
+    FeatureConfigurationTool.main(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -62,7 +62,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testHelpLong() {
-    FeatureConfigurationCLI.main(new String[] { "-help" });
+    FeatureConfigurationTool.main(new String[] { "-help" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -72,24 +72,24 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testParseValidModel() {
-    FeatureConfigurationCLI
+    FeatureConfigurationTool
         .main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationCLI
+    FeatureConfigurationTool
         .main(new String[] { "-i", validFC("PremiumCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationCLI
+    FeatureConfigurationTool
         .main(new String[] { "-input", validFC("SelectImported"), "-path", "src/test/resources"});
-    FeatureConfigurationCLI
+    FeatureConfigurationTool
         .main(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
-    FeatureConfigurationCLI
+    FeatureConfigurationTool
         .main(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
-    FeatureConfigurationCLI
+    FeatureConfigurationTool
         .main(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testWithoutSetPath() {
-    FeatureConfigurationCLI.main(
+    FeatureConfigurationTool.main(
         new String[] {
             "-i", "src/test/resources/phone/BasicPhone.fc"
         });
@@ -98,7 +98,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testPrettyPrintToConsole() {
-    FeatureConfigurationCLI.main(new String[] {
+    FeatureConfigurationTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-pp"
@@ -119,7 +119,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testSymbolTable() {
-    FeatureConfigurationCLI.main( new String[] {
+    FeatureConfigurationTool.main( new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-s", "testSymbolTable.fcsymbols"
@@ -130,7 +130,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testSymbolTableWithoutArgs() {
-    FeatureConfigurationCLI.main( new String[] {
+    FeatureConfigurationTool.main( new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-s"
@@ -163,7 +163,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testPrettyPrintToFile() {
-    FeatureConfigurationCLI.main(new String[] {
+    FeatureConfigurationTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "src/test/resources", "target/symbols",
         "-pp", "BasicCarNavigationOut.fc"
@@ -177,7 +177,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testSetOutput() {
-    FeatureConfigurationCLI.main(
+    FeatureConfigurationTool.main(
         new String[] {
             "-i", validFC("BasicCarNavigation"),
             "-path", "src/test/resources",
