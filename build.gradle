@@ -154,22 +154,22 @@ project(':fd-lang') {
             attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
-        archiveClassifier = "fd-cli"
-        archiveFileName  =  "FeatureDiagramCLI.jar"
+        archiveClassifier = "fd-tool"
+        archiveFileName  =  "FeatureDiagramTool.jar"
     }
 
-    task buildFeatureConfigurationToolCLI(type: Jar, dependsOn: shadowJar) {
-        archiveFileName = 'FeatureConfigurationCLI.jar'
-        archiveClassifier = "fc-cli"
+    task buildFeatureConfigurationToolJar(type: Jar, dependsOn: shadowJar) {
+        archiveFileName = 'FeatureConfigurationTool.jar'
+        archiveClassifier = "fc-tool"
         manifest {
             attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationTool')
         }
         from zipTree(shadowJar.archiveFile)
     }
 
-    task buildFeatureConfigurationToolPartialCLI(type: Jar, dependsOn: shadowJar) {
-        archiveFileName = 'FeatureConfigurationPartialCLI.jar'
-        archiveClassifier = "fcp-cli"
+    task buildFeatureConfigurationToolPartialJar(type: Jar, dependsOn: shadowJar) {
+        archiveFileName = 'FeatureConfigurationPartialTool.jar'
+        archiveClassifier = "fcp-tool"
         manifest {
             attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool')
         }
@@ -177,8 +177,8 @@ project(':fd-lang') {
     }
 
 //    jar.dependsOn(shadowJar)
-    jar.dependsOn(buildFeatureConfigurationToolCLI)
-    jar.dependsOn(buildFeatureConfigurationToolPartialCLI)
+    jar.dependsOn(buildFeatureConfigurationToolJar)
+    jar.dependsOn(buildFeatureConfigurationToolPartialJar)
 
     // configure deployment
     publishing {
@@ -190,8 +190,8 @@ project(':fd-lang') {
                 artifact sourcesJar
                 artifact grammarJar
                 artifact shadowJar
-                artifact buildFeatureConfigurationToolCLI
-                artifact buildFeatureConfigurationToolPartialCLI
+                artifact buildFeatureConfigurationToolJar
+                artifact buildFeatureConfigurationToolPartialJar
             }
         }
         repositories.maven {
@@ -237,7 +237,7 @@ project(':fd-analysis') {
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
         archiveFileName  =  "FACT.jar"
-        archiveClassifier = "cli"
+        archiveClassifier = "tool"
     }
 
     jar.dependsOn(shadowJar)

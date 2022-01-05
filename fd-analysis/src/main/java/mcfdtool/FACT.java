@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * FACT is the main class of the Feature Diagram Language
  * <p>
- * It provides a CLI processing inputs and commands to
+ * It provides a tool processing inputs and commands to
  * perform analyses on FDs, provide symtabs and pretty printing
  */
 public class FACT {
@@ -64,7 +64,7 @@ public class FACT {
    */
   public void run(String[] args) {
 
-    //init CLI options and log
+    //init tool options and log
     Options options = initOptions();
     try {
       // Basic processing

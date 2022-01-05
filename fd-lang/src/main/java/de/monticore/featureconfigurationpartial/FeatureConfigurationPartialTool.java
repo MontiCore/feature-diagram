@@ -128,8 +128,8 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
   }
 
   /**
-   * This method realizes a CLI for processing FC models.
-   * See the project's Readme for a documentation of the CLI
+   * This method realizes a tool for processing FC models.
+   * See the project's Readme for a documentation of the tool
    *
    * @param args
    */
@@ -214,13 +214,13 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
   @Override
   public Options addStandardOptions(Options options) {
     //help
-    options.addOption(org.apache.commons.cli.Option.builder("h")
+    options.addOption(Option.builder("h")
       .longOpt("help")
       .desc("Prints this help dialog")
       .build());
 
 //parse input file
-    options.addOption(org.apache.commons.cli.Option.builder("i")
+    options.addOption(Option.builder("i")
       .longOpt("input")
       .argName("file")
       .hasArg()
@@ -228,7 +228,7 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
       .build());
 
 //pretty print runner
-    options.addOption(org.apache.commons.cli.Option.builder("pp")
+    options.addOption(Option.builder("pp")
       .longOpt("prettyprint")
       .argName("file")
       .optionalArg(true)
@@ -237,7 +237,7 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
       .build());
 
 // pretty print SC
-    options.addOption(org.apache.commons.cli.Option.builder("s")
+    options.addOption(Option.builder("s")
       .longOpt("symboltable")
       .argName("file")
       .optionalArg(true)
@@ -246,7 +246,7 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
       .build());
 
 //reports about the runner
-    options.addOption(org.apache.commons.cli.Option.builder("r")
+    options.addOption(Option.builder("r")
       .longOpt("report")
       .argName("dir")
       .hasArg(true)
@@ -254,7 +254,7 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
       .build());
 
 // model paths
-    options.addOption(org.apache.commons.cli.Option.builder("path")
+    options.addOption(Option.builder("path")
       .hasArgs()
       .desc("Sets the artifact path for imported symbols, space separated.")
       .build());
@@ -262,7 +262,7 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
   }
 
   /**
-   * initializes the additional cli options
+   * initializes the additional tool options
    */
   @Override
   public Options addAdditionalOptions(Options options) {
