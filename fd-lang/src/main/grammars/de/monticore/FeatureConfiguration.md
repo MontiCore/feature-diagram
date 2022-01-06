@@ -72,8 +72,8 @@ extensions of AST classes, symbol classes, or the scope class.
 - De-/Serialization functionality for the symbol table of the FC language exists, but is not 
   integrated into the model processing because to the best of our knowledge, there is no use case 
   for which this is beneficial. For language engineers who intend to store symbol tables 
-  of feature configurations, methods of the Java API and an optional argument of the CLI are realized
-  in the feature configuration tool (see **[the readme][Readme]** for more details).
+  of feature configurations, methods of the Java API and an optional argument for the command line 
+  are realized in the feature configuration tool (see **[the readme][Readme]** for more details).
    
 - The [`FeatureConfigurationSymbolTableCreator`][fcstc] handles the creation and linking of the
   symbols after the FC is parsed. It creates a `FeatureConfigurationSymbol` and loads the 
@@ -166,8 +166,8 @@ excluded features.
 - De-/Serialization functionality for the symbol table of the language exists, but is not 
   integrated into the model processing because to the best of our knowledge, there is no use case 
   for which this is beneficial. For language engineers who intend to store symbol tables 
-  of partial feature configurations, methods of the Java API and an optional argument of the CLI 
-  are realized in the feature configuration tool (see **[the readme][Readme]** for more details).
+  of partial feature configurations, methods of the Java API and an optional argument for the command
+  line are realized in the feature configuration tool (see **[the readme][Readme]** for more details).
       
 - The [`FeatureConfigurationPartialSymbolTableCreator`][pfcstc] handles the creation and linking of the
   symbols after the FC is parsed. It creates a `FeatureConfigurationSymbol` and loads the 

@@ -1,9 +1,9 @@
 <!-- (c) https://github.com/MontiCore/monticore -->
-[clitool]:                   fd-analysis/src/main/java/mcfdtool/FACT.java
+[tool]:                   fd-analysis/src/main/java/mcfdtool/FACT.java
 [fddifftool]:                fd-analysis/src/main/java/fddiff/FDSemDiff.java
-[FDtool]:                    fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramCLI.java
-[FCtool]:                    fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationCLI.java
-[PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialCLI.java
+[FDtool]:                    fd-lang/src/main/java/de/monticore/featurediagram/FeatureDiagramTool.java
+[FCtool]:                    fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationTool.java
+[PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialTool.java
 
 [fact-link]: http://www.monticore.de/download/FACT.jar
 [fdtool-link]: http://www.monticore.de/download/FeatureDiagramCLI.jar
@@ -151,10 +151,10 @@ FD below, selecting all three preinstalled maps  `Europe`, `NorthAmerica`,
 and `Asia` requires to select either a `Large` or a `Medium` memory.
 
 ## Tool Download
- * [**Download Feature Model Analysis CLI Tool (FACT)**][fact-link]
- * [**Download FeatureDiagramCLI Tool**][fdtool-link]
- * [**Download FeatureConfigurationCLI Tool**][fctool-link]
- * [**Download FeatureConfigurationPartialCLI Tool**][fcptool-link]
+ * [**Download Feature Model Analysis Tool (FACT)**][fact-link]
+ * [**Download FeatureDiagram Tool**][fdtool-link]
+ * [**Download FeatureConfiguration Tool**][fctool-link]
+ * [**Download FeatureConfigurationPartial Tool**][fcptool-link]
 
 Alternatively, the tools can be built from source code.
 
@@ -181,15 +181,15 @@ Afterwards, the jars of the tools are available in `fd-lang/target/libs` and `fd
 
 ## Tool Documentation
 The FDL component provides the five tools that are explained in more detail below:
-* The [Feature Model Analysis CLI Tool (FACT)][clitool] enables executing analyses against feature diagrams and feature configuration both via CLI and Java API
-* The [FeatureDiagramCLI][FDtool] enables fine-grained options for processing feature diagram models both via CLI and Java API
-* The [FeatureConfigurationCLI][FCtool] enables fine-grained options to process feature configuration models both via CLI and Java API
-* The [FeatureConfigurationPartialCLI][PFCtool] enables fine-grained options to process partial feature configuration models both via CLI and Java API
+* The [Feature Model Analysis Tool (FACT)][tool] enables executing analyses against feature diagrams and feature configuration both via command line and Java API
+* The [FeatureDiagram][FDtool] enables fine-grained options for processing feature diagram models both via command line and Java API
+* The [FeatureConfiguration][FCtool] enables fine-grained options to process feature configuration models both via command line and Java API
+* The [FeatureConfigurationPartial][PFCtool] enables fine-grained options to process partial feature configuration models both via command line and Java API
 * The [Semantic Differencing for Feature Diagrams][fddifftool] enables performing the semantic difference operator for feature diagrams via Java API. 
 
-### [The FeatureModelAnalysisCLITool][clitool] 
-The [Feature Model Analysis CLI Tool (FACT)][clitool] coordinates the execution of one or more several analyses against a FD
-and, optionally, additional information (depends on the analysis kinds) in form of a CLI tool. 
+### [The FeatureModelAnalysisCLITool][tool] 
+The [Feature Model Analysis CLI Tool (FACT)][tool] coordinates the execution of one or more several analyses against a FD
+and, optionally, additional information (depends on the analysis kinds) in form of a command line tool. 
 An overview of the different analyses is given by [[BSRC10]](https://www.sciencedirect.com/science/article/abs/pii/S0306437910000025?via%3Dihub).
 
 FACT can be used as follows:
@@ -218,7 +218,7 @@ For example, `java -jar FACT.jar Car1.fd Car2.fd -semdiff open` computes and out
 contained in the open-world semantic difference from `Car1.fd` to `Car2.fd` if at least one exists.
 Otherwise, the tool outputs that `Car1.fd` is a refinement of `Car2.fd`.
 
-[FACT][clitool] can further be used for direct access from Java through the following methods:
+[FACT][tool] can further be used for direct access from Java through the following methods:
 * `boolean execIsValid(ASTFeatureDiagram fd, ASTFeatureConfiguration fc)`, to execute the [is valid](fd-analysis/src/main/java/tool/analyses/IsValid.java) analysis
 * `List<ASTFeatureConfiguration> execAllProducts(ASTFeatureDiagram fd)`, to execute the [all products](fd-analysis/src/main/java/tool/analyses/AllProducts.java) analysis
 * `List<String> execDeadFeature(ASTFeatureDiagram fd)`, to execute the [dead features](fd-analysis/src/main/java/tool/analyses/DeadFeatures.java) analysis
@@ -248,8 +248,8 @@ else{
 }
 ```
 
-### [The FeatureDiagramCLI Tool][FDtool] 
-The [FeatureDiagramCLI][FDtool] offers both CLI and a Java API for processing FeatureDiagram models. 
+### [The FeatureDiagram Tool][FDtool] 
+The [FeatureDiagramTool][FDtool] offers both CLI and a Java API for processing FeatureDiagram models. 
 It provides through the CLI as follows:
 
 `java -jar FeatureDiagramCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
@@ -285,8 +285,8 @@ For using the tool as Java API, it contains the following methods:
   checks the context conditions, and stores symbol table - all without an explicit mcpath. Care: 
   this can only take into account imported FDs if these are located next to the passed FD modelFile.
 
-### [The FeatureConfigurationCLI Tool][FCtool] 
-The [FeatureConfigurationCLI][FCtool] offers both CLI and a Java API for processing FeatureConfiguration models. 
+### [The FeatureConfiguration Tool][FCtool] 
+The [FeatureConfigurationTool][FCtool] offers both CLI and a Java API for processing FeatureConfiguration models. 
 It provides through the CLI as follows:
 
 `java -jar FeatureConfigurationCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
@@ -320,8 +320,8 @@ For using the tool as Java API, it contains the following methods:
    an explicit mcpath. Care: this can only take into account FDs if these are located next to the 
    passed FC modelFile.
    
-### [The FeatureConfigurationPartialCLI Tool][PFCtool] 
-The [FeatureConfigurationPartialCLI][PFCtool] offers both CLI and a Java API for processing 
+### [The FeatureConfigurationPartial Tool][PFCtool] 
+The [FeatureConfigurationPartialTool][PFCtool] offers both CLI and a Java API for processing 
 PartialFeatureConfiguration models. It provides through the CLI as follows:
 
 `java -jar FeatureConfigurationPartialCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`

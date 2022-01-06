@@ -2,7 +2,7 @@
 
 package test.fcp;
 
-import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
@@ -55,7 +55,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testHelp() {
-    FeatureConfigurationPartialCLI.main(new String[] { "-h" });
+    FeatureConfigurationPartialTool.main(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -65,7 +65,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testHelpLong() {
-    FeatureConfigurationPartialCLI.main(new String[] { "-help" });
+    FeatureConfigurationPartialTool.main(new String[] { "-help" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -75,22 +75,22 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testParseValidModel() {
-    FeatureConfigurationPartialCLI
+    FeatureConfigurationPartialTool
         .main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialCLI
+    FeatureConfigurationPartialTool
         .main(new String[] { "-i", validFC("SelectImported"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialCLI
+    FeatureConfigurationPartialTool
         .main(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialCLI
+    FeatureConfigurationPartialTool
         .main(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialCLI
+    FeatureConfigurationPartialTool
         .main(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
   public void testWithoutSetPath() {
-    FeatureConfigurationPartialCLI.main(
+    FeatureConfigurationPartialTool.main(
         new String[] {
             "-i", "src/test/resources/phone/PremiumPhone.fc"
         });
@@ -99,7 +99,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testSymbolTable() {
-    FeatureConfigurationPartialCLI.main( new String[] {
+    FeatureConfigurationPartialTool.main( new String[] {
         "-i", "src/test/resources/phone/PremiumPhone.fc",
         "-path", "target/symbols",
         "-s", "testSymbolTable.pfcsymbols"
@@ -110,7 +110,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testSymbolTableWithoutArgs() {
-    FeatureConfigurationPartialCLI.main( new String[] {
+    FeatureConfigurationPartialTool.main( new String[] {
         "-i", "src/test/resources/phone/PremiumPhone.fc",
         "-path", "target/symbols",
         "-s"
@@ -147,7 +147,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testPrettyPrintToConsole() {
-    FeatureConfigurationPartialCLI.main(new String[] {
+    FeatureConfigurationPartialTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-pp"
@@ -169,7 +169,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testPrettyPrintToFile() {
-    FeatureConfigurationPartialCLI.main(new String[] {
+    FeatureConfigurationPartialTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-pp", "BasicCarNavigationOut.fc"
@@ -183,7 +183,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testSetOutput() {
-    FeatureConfigurationPartialCLI.main(
+    FeatureConfigurationPartialTool.main(
         new String[] {
             "-i", validFC("BasicCarNavigation"),
             "-path", "src/test/resources",

@@ -1,12 +1,12 @@
 /* (c) https://github.com/MontiCore/monticore */
 package mcfdtool;
 
-import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
-import de.monticore.featurediagram.FeatureDiagramCLI;
+import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
@@ -27,18 +27,18 @@ import java.util.stream.Collectors;
 /**
  * FACT is the main class of the Feature Diagram Language
  * <p>
- * It provides a CLI processing inputs and commands to
+ * It provides a tool processing inputs and commands to
  * perform analyses on FDs, provide symtabs and pretty printing
  */
 public class FACT {
 
-  protected FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
+  protected FeatureDiagramTool fdTool = new FeatureDiagramTool();
 
   protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
 
   protected FeatureDiagramSymbols2Json s2j = new FeatureDiagramSymbols2Json();
 
-  protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
+  protected FeatureConfigurationTool fcTool = new FeatureConfigurationTool();
 
   protected FeatureConfigurationParser fcParser = new FeatureConfigurationParser();
 
@@ -64,7 +64,7 @@ public class FACT {
    */
   public void run(String[] args) {
 
-    //init CLI options and log
+    //init tool options and log
     Options options = initOptions();
     try {
       // Basic processing
@@ -399,7 +399,7 @@ public class FACT {
       String fdModelFile = cmd.getArgList().get(num).toString();
 
       //by default, use this for the symbol output
-      String symbolOutPath = FeatureDiagramCLI.SYMBOL_OUT.toString();
+      String symbolOutPath = FeatureDiagramTool.SYMBOL_OUT.toString();
 
       //except if the option "symbolPath" is set, then use the passed location to store (and load) symbols
       if (cmd.hasOption("symbolPath")) {
