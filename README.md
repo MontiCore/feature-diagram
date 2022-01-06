@@ -187,8 +187,8 @@ The FDL component provides the five tools that are explained in more detail belo
 * The [FeatureConfigurationPartial][PFCtool] enables fine-grained options to process partial feature configuration models both via command line and Java API
 * The [Semantic Differencing for Feature Diagrams][fddifftool] enables performing the semantic difference operator for feature diagrams via Java API. 
 
-### [The FeatureModelAnalysisTool][tool] 
-The [Feature Model Analysis Tool (FACT)][tool] coordinates the execution of one or more several analyses against a FD
+### [The FeatureModelAnalysisCLITool][tool] 
+The [Feature Model Analysis CLI Tool (FACT)][tool] coordinates the execution of one or more several analyses against a FD
 and, optionally, additional information (depends on the analysis kinds) in form of a command line tool. 
 An overview of the different analyses is given by [[BSRC10]](https://www.sciencedirect.com/science/article/abs/pii/S0306437910000025?via%3Dihub).
 
@@ -197,7 +197,7 @@ FACT can be used as follows:
 * `<Car.fd>` is the (optionally, qualified) fileName of an FD "Car"
 * `<analysis>` is the name of an analysis followed by arguments for the analysis that depend on the type of analysis.
 
-Currently, the FeatureModelAnalysisTool supports the following analyses:
+Currently, the FeatureModelAnalysisCLITool supports the following analyses:
 * `isValid <Basic.fc>`, to check whether a passed configuration "Basic" is valid w.r.t the FD
 * `allProducts`, to find all valid configurations of the FD
 * `deadFeatures`, to find all features of FD that are not included in any valid configuration of FD
@@ -249,10 +249,10 @@ else{
 ```
 
 ### [The FeatureDiagram Tool][FDtool] 
-The [FeatureDiagram][FDtool] offers both CLI and a Java API for processing FeatureDiagram models. 
+The [FeatureDiagramTool][FDtool] offers both CLI and a Java API for processing FeatureDiagram models. 
 It provides through the CLI as follows:
 
-`java -jar FeatureDiagramTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+`java -jar FeatureDiagramCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -286,10 +286,10 @@ For using the tool as Java API, it contains the following methods:
   this can only take into account imported FDs if these are located next to the passed FD modelFile.
 
 ### [The FeatureConfiguration Tool][FCtool] 
-The [FeatureConfiguration][FCtool] offers both CLI and a Java API for processing FeatureConfiguration models. 
+The [FeatureConfigurationTool][FCtool] offers both CLI and a Java API for processing FeatureConfiguration models. 
 It provides through the CLI as follows:
 
-`java -jar FeatureConfigurationTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+`java -jar FeatureConfigurationCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -321,10 +321,10 @@ For using the tool as Java API, it contains the following methods:
    passed FC modelFile.
    
 ### [The FeatureConfigurationPartial Tool][PFCtool] 
-The [FeatureConfigurationPartial][PFCtool] offers both CLI and a Java API for processing 
+The [FeatureConfigurationPartialTool][PFCtool] offers both CLI and a Java API for processing 
 PartialFeatureConfiguration models. It provides through the CLI as follows:
 
-`java -jar FeatureConfigurationPartialTool.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+`java -jar FeatureConfigurationPartialCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -378,26 +378,26 @@ The tools are explained here and the languages are documented there.
         
 (2) Print argument options of the FD tool:
 
-    java -jar fd-lang/target/libs/FeatureDiagramTool.jar -h
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -h
 
 (3) Print argument options of the FC tool:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar -h
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -h
 
 (4) Print argument options of the PartialFC tool:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationPartialTool.jar -h
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar -h
 
 #### Process A Single Model
 (5) Parse an FD model and store its symbol table to a file `CarNavigation.fdsym` (in the default output directory `target`):
 
-    java -jar fd-lang/target/libs/FeatureDiagramTool.jar \
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar \
         -i fd-lang/src/test/resources/fdvalid/CarNavigation.fd \
         -s fdvalid/CarNavigation.fdsym
 
 (6) Parse an FD model and store its symbol table to a file in the non-default output directory `target/symbols`:
 
-    java -jar fd-lang/target/libs/FeatureDiagramTool.jar \
+    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar \
         -i fd-lang/src/test/resources/fdvalid/BasicElements.fd \
         -o target/symbols \
         -s fdvalid/BasicElements.fdsym
@@ -405,7 +405,7 @@ The tools are explained here and the languages are documented there.
 (7) Parse an FC model and print its symbol table, where the used feature diagram is loaded from the 
 stored symbol table (**requires executing (5) first** to store the symbol table of the FD model):
 
-    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar \
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar \
         -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc \
         -path target \
         -s
@@ -415,7 +415,7 @@ stored symbol table (**requires executing (5) first** to store the symbol table 
 **Warning:** This is not recommended and produces a warning message as result. Instead, the FD should 
 be loaded from the symbol table (cf. (7) ).
 
-    java -jar fd-lang/target/libs/FeatureConfigurationTool.jar \
+    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar \
         -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc \
         -path fd-lang/src/test/resources \
         -s
@@ -424,7 +424,7 @@ be loaded from the symbol table (cf. (7) ).
 (8) Parse and then pretty print a Partial FC model (**requires executing (6) first** to store the 
 symbol table of the FD model):
 
-    java -jar fd-lang/target/libs/FeatureConfigurationPartialTool.jar \
+    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar \
         -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc \
         -path target/symbols \
         -pp

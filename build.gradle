@@ -154,13 +154,13 @@ project(':fd-lang') {
             attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
-        archiveClassifier = "fd-tool"
-        archiveFileName  =  "FeatureDiagramTool.jar"
+        archiveClassifier = "fd-cli"
+        archiveFileName  =  "FeatureDiagramCLI.jar"
     }
 
     task buildFeatureConfigurationToolJar(type: Jar, dependsOn: shadowJar) {
-        archiveFileName = 'FeatureConfigurationTool.jar'
-        archiveClassifier = "fc-tool"
+        archiveFileName = 'FeatureConfigurationCLI.jar'
+        archiveClassifier = "fc-cli"
         manifest {
             attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationTool')
         }
@@ -168,8 +168,8 @@ project(':fd-lang') {
     }
 
     task buildFeatureConfigurationToolPartialJar(type: Jar, dependsOn: shadowJar) {
-        archiveFileName = 'FeatureConfigurationPartialTool.jar'
-        archiveClassifier = "fcp-tool"
+        archiveFileName = 'FeatureConfigurationPartialCLI.jar'
+        archiveClassifier = "fcp-cli"
         manifest {
             attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool')
         }
@@ -237,7 +237,7 @@ project(':fd-analysis') {
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
         archiveFileName  =  "FACT.jar"
-        archiveClassifier = "tool"
+        archiveClassifier = "cli"
     }
 
     jar.dependsOn(shadowJar)
