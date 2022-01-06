@@ -1,4 +1,4 @@
-# (c) https://github.com/MontiCore/monticore  
+# (c) https://github.com/MontiCore/monticore
 image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:6.8.2-jdk8
 
 variables:
@@ -43,11 +43,12 @@ deploy:
   only:
     - develop
 
-# checkArtifacts:
-#   stage: test
-#   script:
-#     - "gradle checkArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
-
+checkArtifacts:
+  stage: test
+  script:
+    - "gradle checkArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
+    - "gradle checkArtifactsFeatureConfiguration $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
+    - "gradle checkArtifactsFeatureConfigurationPartial $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
 checkMDLinks:
   stage: test
   script:
@@ -59,7 +60,7 @@ checkMDLinks:
   only:
     - develop
 
-# Mirrors this repository's `develop` branch to GitHub.
+# Mirrors this repository's `develop` and `master` branches to GitHub.
 #
 # The mirror will always be at either HEAD or HEAD+1 (depending on whether cleanup is necessary).
 # For more information, visit: https://git.rwth-aachen.de/monticore/auxiliary-development-tools/github-mirror-tools (Available internally only)
@@ -97,6 +98,7 @@ githubmirror:
     - git push github $CI_COMMIT_BRANCH --force
   only:
     - develop
+    - master
 
 
 # trigger_langexp:                        
