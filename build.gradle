@@ -177,6 +177,8 @@ project(':fd-lang') {
         archiveFileName = "FeatureDiagramCLI.jar"
     }
 
+    jar.dependsOn(shadowJar)
+
     task buildFeatureConfigurationToolJar(type: Jar, dependsOn: shadowJar) {
         archiveFileName = 'FeatureConfigurationCLI.jar'
         archiveClassifier = "fc-cli"
