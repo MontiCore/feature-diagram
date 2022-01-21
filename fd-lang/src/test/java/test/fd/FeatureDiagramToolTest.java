@@ -48,7 +48,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.startsWith("usage: java -jar FeatureDiagramTool.jar"));
+    assertTrue(printed.startsWith("usage: java -jar MCFeatureDiagram.jar"));
     assertEquals(0, Log.getErrorCount());
   }
 
@@ -58,7 +58,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.startsWith("usage: java -jar FeatureDiagramTool.jar"));
+    assertTrue(printed.startsWith("usage: java -jar MCFeatureDiagram.jar"));
     assertEquals(0, Log.getErrorCount());
   }
 

@@ -76,7 +76,7 @@ public class FACT {
       if (null == cmd || 0 == cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
         formatter
-            .printHelp("java -jar FACT.jar <test1.fd> <test2.fd>? [analysis options] ", options);
+            .printHelp("java -jar MCFACT.jar <test1.fd> <test2.fd>? [analysis options] ", options);
         return;
       }
 

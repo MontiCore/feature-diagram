@@ -141,7 +141,7 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
       CommandLine cmd = cliParser.parse(options, args);
       if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar FeatureConfigurationPartialTool.jar", options, true);
+        formatter.printHelp("java -jar MCFeatureConfigurationPartial.jar", options, true);
         return;
       }
 
@@ -206,7 +206,7 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
     }
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("java -jar FeatureConfigurationPartialTool.jar", options, true);
+      formatter.printHelp("java -jar MCFeatureConfigurationPartial.jar", options, true);
       Log.error("0xFD112 An exception occured while processing the CLI input!", e);
     }
   }

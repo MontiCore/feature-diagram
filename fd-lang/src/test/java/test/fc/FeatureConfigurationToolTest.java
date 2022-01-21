@@ -56,7 +56,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.startsWith("usage: java -jar FeatureConfigurationTool.jar"));
+    assertTrue(printed.startsWith("usage: java -jar MCFeatureConfiguration.jar"));
     assertEquals(0, Log.getErrorCount());
   }
 
@@ -66,7 +66,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.startsWith("usage: java -jar FeatureConfigurationTool.jar"));
+    assertTrue(printed.startsWith("usage: java -jar MCFeatureConfiguration.jar"));
     assertEquals(0, Log.getErrorCount());
   }
 

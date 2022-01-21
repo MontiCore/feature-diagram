@@ -5,10 +5,10 @@
 [FCtool]:                    fd-lang/src/main/java/de/monticore/featureconfiguration/FeatureConfigurationTool.java
 [PFCtool]:                    ../../../../../../../../fd-lang/src/main/java/de/monticore/featureconfigurationpartial/FeatureConfigurationPartialTool.java
 
-[fact-link]: http://www.monticore.de/download/FACT.jar
-[fdtool-link]: http://www.monticore.de/download/FeatureDiagramCLI.jar
-[fctool-link]: http://www.monticore.de/download/FeatureConfigurationCLI.jar
-[fcptool-link]: http://www.monticore.de/download/FeatureConfigurationPartialCLI.jar
+[fact-link]: http://www.monticore.de/download/MCFACT.jar
+[fdtool-link]: http://www.monticore.de/download/MCFeatureDiagram.jar
+[fctool-link]: http://www.monticore.de/download/MCFeatureConfiguration.jar
+[fcptool-link]: http://www.monticore.de/download/MCFeatureConfigurationPartial.jar
 
 [SemDiffPaper]: https://se-rwth.de/publications/Semantic-Evolution-Analysis-of-Feature-Models.pdf
 [flatzinc]: https://www.minizinc.org/doc-2.4.3/en/flattening.html
@@ -193,7 +193,7 @@ and, optionally, additional information (depends on the analysis kinds) in form 
 An overview of the different analyses is given by [[BSRC10]](https://www.sciencedirect.com/science/article/abs/pii/S0306437910000025?via%3Dihub).
 
 FACT can be used as follows:
-`java -jar FACT.jar <Car.fd> [-<analysis>]+`, where
+`java -jar MCFACT.jar <Car.fd> [-<analysis>]+`, where
 * `<Car.fd>` is the (optionally, qualified) fileName of an FD "Car"
 * `<analysis>` is the name of an analysis followed by arguments for the analysis that depend on the type of analysis.
 
@@ -211,10 +211,10 @@ Currently, the FeatureModelAnalysisCLITool supports the following analyses:
   `open` is chosen by default if no argument is specified. The differences between the open- and closed-world semantics are
    described [in this paper][SemDiffPaper] in detail. 
 
-For example, `java -jar FACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the FD "Car". 
+For example, `java -jar MCFACT.jar Car.fd -isValid Basic.fc` checks whether a configuration "Basic" is a valid configuration of the FD "Car". 
 The result, in this case `true` or `false`, is printed to the console.
 Currently, `semdiff` is the only option that expects two FDs as inputs. 
-For example, `java -jar FACT.jar Car1.fd Car2.fd -semdiff open` computes and outputs a diff witness 
+For example, `java -jar MCFACT.jar Car1.fd Car2.fd -semdiff open` computes and outputs a diff witness 
 contained in the open-world semantic difference from `Car1.fd` to `Car2.fd` if at least one exists.
 Otherwise, the tool outputs that `Car1.fd` is a refinement of `Car2.fd`.
 
@@ -252,7 +252,7 @@ else{
 The [FeatureDiagramTool][FDtool] offers both CLI and a Java API for processing FeatureDiagram models. 
 It provides through the CLI as follows:
 
-`java -jar FeatureDiagramCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+`java -jar MCFeatureDiagram.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -289,7 +289,7 @@ For using the tool as Java API, it contains the following methods:
 The [FeatureConfigurationTool][FCtool] offers both CLI and a Java API for processing FeatureConfiguration models. 
 It provides through the CLI as follows:
 
-`java -jar FeatureConfigurationCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+`java -jar MCFeatureConfiguration.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -324,7 +324,7 @@ For using the tool as Java API, it contains the following methods:
 The [FeatureConfigurationPartialTool][PFCtool] offers both CLI and a Java API for processing 
 PartialFeatureConfiguration models. It provides through the CLI as follows:
 
-`java -jar FeatureConfigurationPartialCLI.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
+`java -jar MCFeatureConfigurationPartial.jar [-h] -i <fileName> [-o <outPath>] [-path <p>] [-pp [<file>]] [-s [<file>]]`
         
 where the arguments are:
 * `-h`,`--help`                  Prints this help dialog
@@ -374,30 +374,30 @@ The tools are explained here and the languages are documented there.
 #### Print tool argument options
 (1) Print argument options of the FACT tool:
 
-    java -jar fd-analysis/target/libs/FACT.jar -h
+    java -jar fd-analysis/target/libs/MCFACT.jar -h
         
 (2) Print argument options of the FD tool:
 
-    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar -h
+    java -jar fd-lang/target/libs/MCFeatureDiagram.jar -h
 
 (3) Print argument options of the FC tool:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar -h
+    java -jar fd-lang/target/libs/MCFeatureConfiguration.jar -h
 
 (4) Print argument options of the PartialFC tool:
 
-    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar -h
+    java -jar fd-lang/target/libs/MCFeatureConfigurationPartial.jar -h
 
 #### Process A Single Model
 (5) Parse an FD model and store its symbol table to a file `CarNavigation.fdsym` (in the default output directory `target`):
 
-    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar \
+    java -jar fd-lang/target/libs/MCFeatureDiagram.jar \
         -i fd-lang/src/test/resources/fdvalid/CarNavigation.fd \
         -s fdvalid/CarNavigation.fdsym
 
 (6) Parse an FD model and store its symbol table to a file in the non-default output directory `target/symbols`:
 
-    java -jar fd-lang/target/libs/FeatureDiagramCLI.jar \
+    java -jar fd-lang/target/libs/MCFeatureDiagram.jar \
         -i fd-lang/src/test/resources/fdvalid/BasicElements.fd \
         -o target/symbols \
         -s fdvalid/BasicElements.fdsym
@@ -405,7 +405,7 @@ The tools are explained here and the languages are documented there.
 (7) Parse an FC model and print its symbol table, where the used feature diagram is loaded from the 
 stored symbol table (**requires executing (5) first** to store the symbol table of the FD model):
 
-    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar \
+    java -jar fd-lang/target/libs/MCFeatureConfiguration.jar \
         -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc \
         -path target \
         -s
@@ -415,7 +415,7 @@ stored symbol table (**requires executing (5) first** to store the symbol table 
 **Warning:** This is not recommended and produces a warning message as result. Instead, the FD should 
 be loaded from the symbol table (cf. (7) ).
 
-    java -jar fd-lang/target/libs/FeatureConfigurationCLI.jar \
+    java -jar fd-lang/target/libs/MCFeatureConfiguration.jar \
         -i fd-lang/src/test/resources/fcvalid/BasicCarNavigation.fc \
         -path fd-lang/src/test/resources \
         -s
@@ -424,7 +424,7 @@ be loaded from the symbol table (cf. (7) ).
 (8) Parse and then pretty print a Partial FC model (**requires executing (6) first** to store the 
 symbol table of the FD model):
 
-    java -jar fd-lang/target/libs/FeatureConfigurationPartialCLI.jar \
+    java -jar fd-lang/target/libs/MCFeatureConfigurationPartial.jar \
         -i fd-lang/src/test/resources/pfcvalid/SelectOne.fc \
         -path target/symbols \
         -pp
@@ -433,19 +433,19 @@ symbol table of the FD model):
 
 (9) Check whether an FC is valid:
 
-    java -jar fd-analysis/target/libs/FACT.jar \
+    java -jar fd-analysis/target/libs/MCFACT.jar \
         fd-analysis/src/test/resources/FalseOptional.fd \
         -isValid fd-analysis/src/test/resources/ValidConfig.fc
 
 (10) Return any valid configuration of an FD:
 
-    java -jar fd-analysis/target/libs/FACT.jar \
+    java -jar fd-analysis/target/libs/MCFACT.jar \
         fd-analysis/src/test/resources/fdvalid/CarNavigation.fd \
         -findValid
 
 (11) Calculate semantic difference between two FDs:
 
-    java -jar fd-analysis/target/libs/FACT.jar \
+    java -jar fd-analysis/target/libs/MCFACT.jar \
         fd-analysis/src/test/resources/fddiff/car2.fd \
         fd-analysis/src/test/resources/fddiff/car1.fd \
         -semdiff

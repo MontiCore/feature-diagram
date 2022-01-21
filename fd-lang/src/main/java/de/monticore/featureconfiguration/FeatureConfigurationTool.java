@@ -131,7 +131,7 @@ public class FeatureConfigurationTool extends FeatureConfigurationToolTOP {
       CommandLine cmd = cliParser.parse(options, args);
       if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar FeatureConfigurationTool.jar", options, true);
+        formatter.printHelp("java -jar MCFeatureConfiguration.jar", options, true);
         return;
       }
 
@@ -195,7 +195,7 @@ public class FeatureConfigurationTool extends FeatureConfigurationToolTOP {
     }
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("java -jar FeatureConfigurationTool.jar", options, true);
+      formatter.printHelp("java -jar MCFeatureConfiguration.jar", options, true);
       Log.error("0xFC103 An exception occured while processing the CLI input!", e);
     }
   }

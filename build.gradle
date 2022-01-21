@@ -172,15 +172,15 @@ project(':fd-lang') {
             attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
-        archiveClassifier = "fd-cli"
-        archiveFileName = "FeatureDiagramCLI.jar"
+        archiveClassifier = "fd-mc-tool"
+        archiveFileName = "MCFeatureDiagram.jar"
     }
 
     jar.dependsOn(shadowJar)
 
     task buildFeatureConfigurationToolJar(type: Jar, dependsOn: shadowJar) {
-        archiveFileName = 'FeatureConfigurationCLI.jar'
-        archiveClassifier = "fc-cli"
+        archiveFileName = 'MCFeatureConfiguration.jar'
+        archiveClassifier = "fc-mc-tool"
         manifest {
             attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationTool')
         }
@@ -188,8 +188,8 @@ project(':fd-lang') {
     }
 
     task buildFeatureConfigurationToolPartialJar(type: Jar, dependsOn: shadowJar) {
-        archiveFileName = 'FeatureConfigurationPartialCLI.jar'
-        archiveClassifier = "fcp-cli"
+        archiveFileName = 'MCFeatureConfigurationPartial.jar'
+        archiveClassifier = "fcp-mc-tool"
         manifest {
             attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool')
         }
@@ -255,8 +255,8 @@ project(':fd-analysis') {
             attributes "Main-Class": "mcfdtool.FACT"
         }
         minimize() // sort out unused files automatically (does not find everything we don't need)
-        archiveFileName = "FACT.jar"
-        archiveClassifier = "cli"
+        archiveFileName = "MCFACT.jar"
+        archiveClassifier = "mc-tool"
     }
 
     jar.dependsOn(shadowJar)
