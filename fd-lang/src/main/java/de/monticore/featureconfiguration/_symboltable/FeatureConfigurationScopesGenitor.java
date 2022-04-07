@@ -7,7 +7,7 @@ import de.monticore.featureconfiguration._ast.ASTFeatures;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbol;
 import de.monticore.featurediagram._symboltable.FeatureSymbol;
 import de.monticore.types.mcbasictypes._ast.ASTMCImportStatement;
-import de.monticore.utils.Names;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 
 import java.util.ArrayList;

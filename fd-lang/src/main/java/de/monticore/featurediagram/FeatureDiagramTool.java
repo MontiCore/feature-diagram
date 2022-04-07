@@ -4,7 +4,6 @@ package de.monticore.featurediagram;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
-import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
@@ -12,17 +11,14 @@ import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import de.monticore.utils.Names;
+import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
-import org.antlr.v4.runtime.RecognitionException;
 import org.apache.commons.cli.*;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
-public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
+public class FeatureDiagramTool extends FeatureDiagramToolTOP {
 
   /**
    * constant for the default folder into which symbols are stored
@@ -82,7 +78,6 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
    * @return
    */
   public ASTFeatureDiagram run(String modelFile, Path out) {
-
     // parse the model and create the AST representation
     final ASTFDCompilationUnit ast = parse(modelFile);
 
@@ -118,7 +113,6 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
       }
     }
     ModelPaths.addEntry(FeatureDiagramMill.globalScope().getSymbolPath(), path);
-
     // setup the symbol table
     IFeatureDiagramArtifactScope modelTopScope = createSymbolTable(ast);
 
@@ -132,8 +126,8 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
   }
 
   /**
-   * This method realizes a CLI for processing FC models.
-   * See the project's Readme for a documentation of the CLI
+   * This method realizes a tool for processing FC models.
+   * See the project's Readme for a documentation of the tool
    *
    * @param args
    */
@@ -147,7 +141,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
       CommandLine cmd = cliParser.parse(options, args);
       if (null == cmd || 0 != cmd.getArgList().size() || cmd.hasOption("help")) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar FeatureDiagramTool.jar", options, true);
+        formatter.printHelp("java -jar MCFeatureDiagram.jar", options, true);
         return;
       }
 
@@ -207,21 +201,21 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
     }
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("java -jar FeatureDiagramTool.jar", options, true);
-      Log.error("0xFD112 An exception occured while processing the CLI input!", e);
+      formatter.printHelp("java -jar MCFeatureDiagram.jar", options, true);
+      Log.error("0xFD114 An exception occured while processing the CLI input!", e);
     }
   }
 
   @Override
   public Options addStandardOptions(Options options) {
     //help
-    options.addOption(org.apache.commons.cli.Option.builder("h")
+    options.addOption(Option.builder("h")
       .longOpt("help")
       .desc("Prints this help dialog")
       .build());
 
 //parse input file
-    options.addOption(org.apache.commons.cli.Option.builder("i")
+    options.addOption(Option.builder("i")
       .longOpt("input")
       .argName("file")
       .hasArg()
@@ -229,7 +223,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
       .build());
 
 //pretty print runner
-    options.addOption(org.apache.commons.cli.Option.builder("pp")
+    options.addOption(Option.builder("pp")
       .longOpt("prettyprint")
       .argName("file")
       .optionalArg(true)
@@ -238,7 +232,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
       .build());
 
 // pretty print SC
-    options.addOption(org.apache.commons.cli.Option.builder("s")
+    options.addOption(Option.builder("s")
       .longOpt("symboltable")
       .argName("file")
       .optionalArg(true)
@@ -247,7 +241,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
       .build());
 
 //reports about the runner
-    options.addOption(org.apache.commons.cli.Option.builder("r")
+    options.addOption(Option.builder("r")
       .longOpt("report")
       .argName("dir")
       .hasArg(true)
@@ -255,7 +249,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
       .build());
 
 // model paths
-    options.addOption(org.apache.commons.cli.Option.builder("path")
+    options.addOption(Option.builder("path")
       .hasArgs()
       .desc("Sets the artifact path for imported symbols, space separated.")
       .build());
@@ -264,7 +258,7 @@ public class FeatureDiagramCLI extends FeatureDiagramCLITOP {
 
   /**
    *
-   * @param options the additional cli options for this class
+   * @param options the additional tool options for this class
    * @return
    */
   @Override

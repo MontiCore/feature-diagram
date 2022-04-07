@@ -329,7 +329,7 @@ public class FACTTest extends AbstractTest {
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.startsWith("usage: java -jar FACT.jar <test1.fd> <test2.fd>? [analysis options]"));
+    assertTrue(printed.startsWith("usage: java -jar MCFACT.jar <test1.fd> <test2.fd>? [analysis options]"));
     assertEquals(0, Log.getErrorCount());
   }
 }

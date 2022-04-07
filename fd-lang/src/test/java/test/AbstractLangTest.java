@@ -2,15 +2,15 @@
 
 package test;
 
-import de.monticore.featureconfiguration.FeatureConfigurationCLI;
+import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbols2Json;
-import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialCLI;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialSymbols2Json;
-import de.monticore.featurediagram.FeatureDiagramCLI;
+import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
@@ -27,13 +27,13 @@ import static org.junit.Assert.fail;
 
 public class AbstractLangTest {
 
-  protected FeatureDiagramCLI fdTool = new FeatureDiagramCLI();
+  protected FeatureDiagramTool fdTool = new FeatureDiagramTool();
 
   protected FeatureDiagramParser fdParser = new FeatureDiagramParser();
 
   protected FeatureDiagramSymbols2Json fdSymbols2Json = new FeatureDiagramSymbols2Json();
 
-  protected FeatureConfigurationCLI fcTool = new FeatureConfigurationCLI();
+  protected FeatureConfigurationTool fcTool = new FeatureConfigurationTool();
 
   protected FeatureConfigurationParser fcParser = new FeatureConfigurationParser();
 
@@ -43,7 +43,7 @@ public class AbstractLangTest {
 
   protected FeatureConfigurationPartialParser fcpParser = new FeatureConfigurationPartialParser();
 
-  protected FeatureConfigurationPartialCLI fcpTool = new FeatureConfigurationPartialCLI();
+  protected FeatureConfigurationPartialTool fcpTool = new FeatureConfigurationPartialTool();
 
   @BeforeClass
   public static void setUpLog() {
