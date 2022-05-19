@@ -54,7 +54,7 @@ subprojects {
     buildDir = file("$projectDir/target")
 
 
-    sourceCompatibility = '1.8'
+    sourceCompatibility = '11'
 }
 
 project(':fd-lang') {
