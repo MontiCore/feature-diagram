@@ -36,8 +36,6 @@ test:
 
 deploy:
   stage: deploy
-  dependencies:
-    - checkMDLinks
   script:
     - "gradle publish $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
   only:
@@ -49,17 +47,7 @@ checkArtifacts:
     - "gradle checkArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
     - "gradle checkArtifactsFeatureConfiguration $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
     - "gradle checkArtifactsFeatureConfigurationPartial $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
-  allow_failure: true  
-checkMDLinks:
-  stage: test
-  script:
-    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkCheckerCLI.jar?job=build\" --output MDLinkCheckerCLI.jar"
-    - "url=https://git.rwth-aachen.de/monticore/languages/feature-diagram/-/tree/develop"
-    - "linkCheckRes=$(java -jar MDLinkCheckerCLI.jar -url $url -t $secibuildtoken -p)"
-    - "echo \"$linkCheckRes\""
-    - "if [[ $linkCheckRes == *\"ERROR\"* ]]; then exit 1; fi"
-  only:
-    - develop
+  allow_failure: true
 
 # Mirrors this repository's `develop` and `master` branches to GitHub.
 #
@@ -73,8 +61,6 @@ githubmirror:
     #
     # See https://docs.gitlab.com/ee/ci/runners/configure_runners.html#git-strategy
     GIT_STRATEGY: clone
-  dependencies:
-    - checkMDLinks
   before_script:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
@@ -86,10 +72,8 @@ githubmirror:
     - mkdir -p ~/.ssh
     - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
   script:
-    - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fmdlinkchecker/jobs/artifacts/master/raw/target/libs/MDLinkChangerCLI.jar?job=build\" --output MDLinkChangerCLI.jar"
     - "curl --location --header \"PRIVATE-TOKEN: $secibuildtoken\" \"https://git.rwth-aachen.de/api/v4/projects/monticore%2Fauxiliary-development-tools%2Fgithub-mirror-tools/repository/files/mirror.sh/raw\" --output mirror.sh"
     - sh mirror.sh
-    - rm MDLinkChangerCLI.jar
     - rm mirror.sh
     - git add --all
     # We'll simply ignore failures during commit because there is a chance that no files were changed. In this case the
