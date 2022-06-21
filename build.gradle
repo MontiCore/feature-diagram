@@ -1,287 +1,291 @@
 /* (c) https://github.com/MontiCore/monticore */
 
 plugins {
-    id "java"
-    id "monticore" version "$mc_version" // MontiCore Plugin
-    id "maven-publish"
-    id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
+  id "java"
+  id "monticore" version "$mc_version"
+  id "maven-publish"
+  id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
 }
 
-
 allprojects {
-    group = 'de.monticore.lang'
+  group = 'de.monticore.lang'
 
-    repositories {
-        if (("true").equals(getProperty('useLocalRepo'))) {
-            mavenLocal()
-        }
-        maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            url repo
-        }
+  repositories {
+    if (("true").equals(getProperty('useLocalRepo'))) {
+      mavenLocal()
     }
+    maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      url repo
+    }
+  }
 
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
+  tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+  }
 }
 
 subprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven-publish'
+  apply plugin: 'java'
+  apply plugin: 'maven-publish'
 
-    dependencies {
-        implementation group: 'de.monticore.lang', name: 'mlc-lang', version: mc_version
-        implementation group: 'de.monticore.lang', name: 'mlc-tool', version: mc_version
+  dependencies {
+    implementation group: 'de.monticore.lang', name: 'mlc-lang', version: mc_version
+    implementation group: 'de.monticore.lang', name: 'mlc-tool', version: mc_version
 
-        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
-        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
-        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
-        implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
-        implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
-        implementation group: 'com.google.guava', name: 'guava', version: guava_version
+    implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+    implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+    implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+    implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
+    implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
+    implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
-        testImplementation group: 'junit', name: 'junit', version: junit_version
-    }
+    testImplementation group: 'junit', name: 'junit', version: junit_version
+  }
 
-    // configure non-standard source sets
-    sourceSets {
-        main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
-    }
-
-
-    buildDir = file("$projectDir/target")
+  // configure non-standard source sets
+  sourceSets {
+    main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+  }
 
 
-    sourceCompatibility = '11'
+  buildDir = file("$projectDir/target")
+
+
+  sourceCompatibility = '11'
 }
 
 project(':fd-lang') {
-    apply plugin: 'java'
-    apply plugin: 'monticore'
-    apply plugin: 'com.github.johnrengelman.shadow'
+  apply plugin: 'java'
+  apply plugin: 'monticore'
+  apply plugin: 'com.github.johnrengelman.shadow'
 
-    dependencies {
-        implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
-        grammar("de.monticore:monticore-grammar:$mc_version") {
-            capabilities {
-                requireCapability("de.monticore:monticore-grammar-grammars")
-            }
-        }
+  dependencies {
+    implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
+    grammar("de.monticore:monticore-grammar:$mc_version") {
+      capabilities {
+        requireCapability("de.monticore:monticore-grammar-grammars")
+      }
+    }
+  }
+
+  description = 'Feature Diagram Language'
+
+  task generateFeatureDiagram(type: MCTask) {
+    grammar = file "$grammarDir/de/monticore/FeatureDiagram.mc4"
+    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+    def uptoDate = incCheck("de/monticore/FeatureDiagram.mc4")
+    outputs.upToDateWhen { uptoDate }
+  }
+
+  task generateFeatureConfiguration(type: MCTask) {
+    grammar = file "$grammarDir/de/monticore/FeatureConfiguration.mc4"
+    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+    def uptoDate = incCheck("de/monticore/FeatureConfiguration.mc4")
+    outputs.upToDateWhen { uptoDate }
+  }
+
+  task generateFeatureConfigurationPartial(type: MCTask) {
+    grammar = file "$grammarDir/de/monticore/FeatureConfigurationPartial.mc4"
+    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+    def uptoDate = incCheck("de/monticore/FeatureConfigurationPartial.mc4")
+    outputs.upToDateWhen { uptoDate }
+  }
+
+  generateFeatureConfiguration.dependsOn(generateFeatureDiagram)
+  generateFeatureConfigurationPartial.dependsOn(generateFeatureConfiguration)
+
+  sourceSets {
+    grammars {
+      java.srcDirs = []
+      resources {
+        srcDirs([grammarDir])
+        include "**/*.mc4"
+        include "**/*.mlc"
+      }
+    }
+  }
+
+  java {
+    registerFeature('grammars') {
+      usingSourceSet(sourceSets.grammars)
+    }
+  }
+
+  /**
+   * Integration with MLC language and tool
+   */
+  task checkArtifacts { group = 'mlc' }
+  configurations { MLC }
+  dependencies { MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: mlc_version) }
+  StringJoiner joiner = new StringJoiner(" ")
+  configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }
+  configurations.grammar.resolve().each { joiner.add(it.toString()) }
+  joiner.add "$projectDir/target/symbols"
+  String mp = joiner.toString()
+
+  // two tasks per MLC file
+  fileTree("src").matching { include '**/*.mlc' }.each {
+    def f = it
+    def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
+
+    task "showArtifacts${mlcName}"(type: JavaExec) {
+      classpath = configurations.MLC
+      group = 'mlc'
+      mainClass = 'de.monticore.mlc.MLTool'
+      args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-all"
+      dependsOn("generate${mlcName}")
     }
 
-    description = 'Feature Diagram Language'
-
-    task generateFeatureDiagram(type: MCTask) {
-        grammar = file "$grammarDir/de/monticore/FeatureDiagram.mc4"
-        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("de/monticore/FeatureDiagram.mc4")
-        outputs.upToDateWhen { uptoDate }
+    task "checkArtifacts${mlcName}"(type: JavaExec) {
+      classpath = configurations.MLC
+      group = 'MLC'
+      mainClass = 'de.monticore.mlc.MLCTool'
+      args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
+      dependsOn("generate${mlcName}")
+      checkArtifacts.dependsOn("checkArtifacts${mlcName}")
     }
+  }
+  // end integration with MLC
 
-    task generateFeatureConfiguration(type: MCTask) {
-        grammar = file "$grammarDir/de/monticore/FeatureConfiguration.mc4"
-        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("de/monticore/FeatureConfiguration.mc4")
-        outputs.upToDateWhen { uptoDate }
+  compileJava {
+    dependsOn project.collect { it.tasks.withType(MCTask) }
+  }
+
+  // build sources jar with handwritten + generated sources
+  task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from(sourceSets.main.allJava)
+  }
+
+  sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
+
+  // build grammar jar as well
+  task grammarJar(type: Jar) {
+    archiveClassifier = 'grammars'
+    from("$projectDir/$grammarDir") { include "**/*.mc4" }
+  }
+
+  shadowJar {
+    // all in one jar
+    manifest {
+      attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
     }
+    minimize()
+    // sort out unused files automatically (does not find everything we don't need)
+    archiveClassifier = "fd-mc-tool"
+    archiveFileName = "MCFeatureDiagram.jar"
+  }
 
-    task generateFeatureConfigurationPartial(type: MCTask) {
-        grammar = file "$grammarDir/de/monticore/FeatureConfigurationPartial.mc4"
-        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("de/monticore/FeatureConfigurationPartial.mc4")
-        outputs.upToDateWhen { uptoDate }
+  jar.dependsOn(shadowJar)
+
+  task buildFeatureConfigurationToolJar(type: Jar, dependsOn: shadowJar) {
+    archiveFileName = 'MCFeatureConfiguration.jar'
+    archiveClassifier = "fc-mc-tool"
+    manifest {
+      attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationTool')
     }
+    from zipTree(shadowJar.archiveFile)
+  }
 
-    generateFeatureConfiguration.dependsOn(generateFeatureDiagram)
-    generateFeatureConfigurationPartial.dependsOn(generateFeatureConfiguration)
-
-    sourceSets {
-        grammars {
-            java.srcDirs = []
-            resources {
-                srcDirs([grammarDir])
-                include "**/*.mc4"
-                include "**/*.mlc"
-            }
-        }
+  task buildFeatureConfigurationToolPartialJar(type: Jar, dependsOn: shadowJar) {
+    archiveFileName = 'MCFeatureConfigurationPartial.jar'
+    archiveClassifier = "fcp-mc-tool"
+    manifest {
+      attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool')
     }
-
-    java {
-        registerFeature('grammars') {
-            usingSourceSet(sourceSets.grammars)
-        }
-    }
-
-    /**
-     * Integration with MLC language and tool
-     */
-    task checkArtifacts {group = 'mlc'}
-    configurations { MLC }
-    dependencies { MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: mlc_version) }
-    StringJoiner joiner = new StringJoiner(" ")
-    configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }
-    configurations.grammar.resolve().each { joiner.add(it.toString()) }
-    joiner.add "$projectDir/target/symbols"
-    String mp = joiner.toString()
-
-    // two tasks per MLC file
-    fileTree("src").matching { include '**/*.mlc' }.each {
-        def f = it
-        def mlcName = it.getName().substring(0, it.getName().lastIndexOf('.'))
-
-        task "showArtifacts${mlcName}"(type: JavaExec) {
-            classpath = configurations.MLC
-            group = 'mlc'
-            mainClass = 'de.monticore.mlc.MLTool'
-            args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-all"
-            dependsOn("generate${mlcName}")
-        }
-
-        task "checkArtifacts${mlcName}"(type: JavaExec) {
-            classpath = configurations.MLC
-            group = 'MLC'
-            mainClass = 'de.monticore.mlc.MLCTool'
-            args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
-            dependsOn("generate${mlcName}")
-            checkArtifacts.dependsOn("checkArtifacts${mlcName}")
-        }
-    }    // end integration with MLC
-
-    compileJava {
-        dependsOn project.collect { it.tasks.withType(MCTask) }
-    }
-
-    // build sources jar with handwritten + generated sources
-    task sourcesJar(type: Jar) {
-        archiveClassifier = 'sources'
-        from(sourceSets.main.allJava)
-    }
-
-    sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
-
-    // build grammar jar as well
-    task grammarJar(type: Jar) {
-        archiveClassifier = 'grammars'
-        from("$projectDir/$grammarDir") { include "**/*.mc4" }
-    }
-
-    shadowJar { // all in one jar
-        manifest {
-            attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
-        }
-        minimize() // sort out unused files automatically (does not find everything we don't need)
-        archiveClassifier = "fd-mc-tool"
-        archiveFileName = "MCFeatureDiagram.jar"
-    }
-
-    jar.dependsOn(shadowJar)
-
-    task buildFeatureConfigurationToolJar(type: Jar, dependsOn: shadowJar) {
-        archiveFileName = 'MCFeatureConfiguration.jar'
-        archiveClassifier = "fc-mc-tool"
-        manifest {
-            attributes('Main-Class': 'de.monticore.featureconfiguration.FeatureConfigurationTool')
-        }
-        from zipTree(shadowJar.archiveFile)
-    }
-
-    task buildFeatureConfigurationToolPartialJar(type: Jar, dependsOn: shadowJar) {
-        archiveFileName = 'MCFeatureConfigurationPartial.jar'
-        archiveClassifier = "fcp-mc-tool"
-        manifest {
-            attributes('Main-Class': 'de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool')
-        }
-        from zipTree(shadowJar.archiveFile)
-    }
+    from zipTree(shadowJar.archiveFile)
+  }
 
 //    jar.dependsOn(shadowJar)
-    jar.dependsOn(buildFeatureConfigurationToolJar)
-    jar.dependsOn(buildFeatureConfigurationToolPartialJar)
+  jar.dependsOn(buildFeatureConfigurationToolJar)
+  jar.dependsOn(buildFeatureConfigurationToolPartialJar)
 
-    // configure deployment
-    publishing {
-        // configure what artifacts to publish
-        publications {
-            mavenJava(MavenPublication) {
-                artifactId = "$project.name"
-                from components.java
-                artifact sourcesJar
-                artifact buildFeatureConfigurationToolJar
-                artifact buildFeatureConfigurationToolPartialJar
-            }
-        }
-        repositories.maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-        }
+  // configure deployment
+  publishing {
+    // configure what artifacts to publish
+    publications {
+      mavenJava(MavenPublication) {
+        artifactId = "$project.name"
+        from components.java
+        artifact sourcesJar
+        artifact buildFeatureConfigurationToolJar
+        artifact buildFeatureConfigurationToolPartialJar
+      }
     }
+    repositories.maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+      url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    }
+  }
 }
 
 
 project(':fd-analysis') {
 
-    apply plugin: 'java'
-    apply plugin: 'com.github.johnrengelman.shadow'
+  apply plugin: 'java'
+  apply plugin: 'com.github.johnrengelman.shadow'
 
-    dependencies {
-        implementation project(':fd-lang')
-        implementation group: 'org.choco-solver', name: 'choco-solver', version: choco_solver_version
-        implementation(group: 'org.choco-solver', name: 'choco-parsers', version: choco_parser_version) {
-            exclude group: "xcsp3", module: "xcsp3"
-        }
-
-        implementation group: 'org.sat4j', name: 'org.sat4j.core', version: sat4j_version
-        implementation group: 'org.logicng', name: 'logicng', version: logicng_version
+  dependencies {
+    implementation project(':fd-lang')
+    implementation group: 'org.choco-solver', name: 'choco-solver', version: choco_solver_version
+    implementation(group: 'org.choco-solver', name: 'choco-parsers', version: choco_parser_version) {
+      exclude group: "xcsp3", module: "xcsp3"
     }
 
-    description = 'Feature Diagram Analyses'
+    implementation group: 'org.sat4j', name: 'org.sat4j.core', version: sat4j_version
+    implementation group: 'org.logicng', name: 'logicng', version: logicng_version
+  }
 
-    // build sources jar with handwritten + generated sources
-    task sourcesJar(type: Jar) {
-        archiveClassifier = 'sources'
-        from(sourceSets.main.allJava)
+  description = 'Feature Diagram Analyses'
+
+  // build sources jar with handwritten + generated sources
+  task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from(sourceSets.main.allJava)
+  }
+
+  sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
+
+  shadowJar {
+    // all in one jar
+    manifest {
+      attributes "Main-Class": "mcfdtool.FACT"
     }
+    minimize()
+    // sort out unused files automatically (does not find everything we don't need)
+    archiveFileName = "MCFACT.jar"
+    archiveClassifier = "mc-tool"
+  }
 
-    sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
+  jar.dependsOn(shadowJar)
 
-    shadowJar { // all in one jar
-        manifest {
-            attributes "Main-Class": "mcfdtool.FACT"
-        }
-        minimize() // sort out unused files automatically (does not find everything we don't need)
-        archiveFileName = "MCFACT.jar"
-        archiveClassifier = "mc-tool"
+  // configure deployment
+  publishing {
+    // configure what artifacts to publish
+    publications {
+      mavenJava(MavenPublication) {
+        artifactId = "$project.name"
+        from components.java
+        artifact sourcesJar
+      }
     }
-
-    jar.dependsOn(shadowJar)
-
-    // configure deployment
-    publishing {
-        // configure what artifacts to publish
-        publications {
-            mavenJava(MavenPublication) {
-                artifactId = "$project.name"
-                from components.java
-                artifact sourcesJar
-            }
-        }
-        repositories.maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
-            def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
-            url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
-        }
+    repositories.maven {
+      credentials.username mavenUser
+      credentials.password mavenPassword
+      def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-releases/"
+      def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/monticore-snapshots/"
+      url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
     }
+  }
 }
 
 task buildAll(type: GradleBuild) {
-    tasks = ['build']
+  tasks = ['build']
 }
 
 defaultTasks 'build'
