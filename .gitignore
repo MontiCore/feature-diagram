@@ -8,3 +8,7 @@ target/
 /build/
 /fd-lang/out/
 /fd-analysis/out/
+
+gradle
+gradlew
+gradlew.bat
