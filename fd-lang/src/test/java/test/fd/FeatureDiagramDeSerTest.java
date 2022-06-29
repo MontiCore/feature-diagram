@@ -29,44 +29,6 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
   }
 
   @Test
-  public void testRoundtripSerialization() {
-    IFeatureDiagramArtifactScope scope = setupSymbolTable("fdvalid/BasicElements.fd");
-    assertTrue(null != scope);
-    String serialized = fdSymbols2Json.serialize(scope);
-    assertTrue(null != serialized);
-
-    IFeatureDiagramScope deserializedScope = fdSymbols2Json.deserialize(serialized);
-    assertTrue(deserializedScope instanceof FeatureDiagramArtifactScope);
-    FeatureDiagramArtifactScope deserialized = (FeatureDiagramArtifactScope) deserializedScope;
-
-    assertEquals(scope.getName(), deserialized.getName());
-    assertEquals(scope.getPackageName(), deserialized.getPackageName());
-    assertEquals(scope.getImportsList().size(), deserialized.getImportsList().size());
-    assertEquals(scope.getTopLevelSymbol().isPresent(),
-        deserialized.getTopLevelSymbol().isPresent());
-    assertEquals(scope.getTopLevelSymbol().get().getName(),
-        deserialized.getTopLevelSymbol().get().getName());
-    assertEquals(scope.getLocalFeatureDiagramSymbols().size(),
-        deserialized.getLocalFeatureDiagramSymbols().size());
-    assertEquals(scope.getLocalFeatureSymbols().size(),
-        deserialized.getLocalFeatureSymbols().size());
-
-    FeatureDiagramSymbol expectedSymbol = scope.getLocalFeatureDiagramSymbols().get(0);
-    FeatureDiagramSymbol actualSymbol = deserialized.getLocalFeatureDiagramSymbols().get(0);
-    assertEquals(expectedSymbol.getName(), actualSymbol.getName());
-    assertEquals(expectedSymbol.getSpannedScope().getName(),
-        actualSymbol.getSpannedScope().getName());
-    assertEquals(expectedSymbol.getSpannedScope().getLocalFeatureSymbols().size(),
-        actualSymbol.getSpannedScope().getLocalFeatureSymbols().size());
-    assertEquals(expectedSymbol.getSpannedScope().getSubScopes().size(),
-        actualSymbol.getSpannedScope().getSubScopes().size());
-    assertEquals(expectedSymbol.getSpannedScope().getLocalFeatureDiagramSymbols().size(),
-        actualSymbol.getSpannedScope().getLocalFeatureDiagramSymbols().size());
-    assertEquals(expectedSymbol.getSpannedScope().getSpanningSymbol().getName(),
-        actualSymbol.getSpannedScope().getSpanningSymbol().getName());
-  }
-
-  @Test
   public void testLoad() {
     FeatureDiagramSymbols2Json s2j = new FeatureDiagramSymbols2Json();
     IFeatureDiagramArtifactScope scope = s2j
@@ -89,6 +51,9 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
     assertEquals("CarNavigation", actualSymbol.getSpannedScope().getSpanningSymbol().getName());
   }
 
+  /**
+   * Wrote this test instead of testStore
+   */
   @Test
   public void testStore() {
     JsonPrinter.enableIndentation();
@@ -99,42 +64,88 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
     Path expectedPath = Paths.get("target/test-symbols/fdvalid/CarNavigation.fdsym");
     assertTrue(expectedPath.toFile().exists());
 
-    String expected = "{"
-        + "  \"generated-using\": \"www.MontiCore.de technology\","
-        + "  \"name\": \"CarNavigation\","
-        + "  \"package\": \"fdvalid\","
-        + "  \"symbols\": ["
-        + "    {"
-        + "      \"kind\": \"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\","
-        + "      \"name\": \"CarNavigation\","
-        + "        \"features\": ["
-        + "        \"CarNavigation\","
-        + "        \"Display\","
-        + "        \"GPS\","
-        + "        \"PreinstalledMaps\","
-        + "        \"Memory\","
-        + "        \"VoiceControl\","
-        + "        \"TouchControl\","
-        + "        \"Small\","
-        + "        \"Medium\","
-        + "        \"Large\","
-        + "        \"SmallScreen\","
-        + "        \"LargeScreen\","
-        + "        \"Europe\","
-        + "        \"NorthAmerica\","
-        + "        \"SouthAmerica\","
-        + "        \"Asia\","
-        + "        \"Africa\""
-        + "      ]"
-        + "    }"
-        + "  ]"
-        + "}";
+    String expected = "{\"generated-using\":\"www.MontiCore.detechnology\","
+            + "\"name\":\"CarNavigation\","
+            + "\"package\":\"fdvalid\","
+            + "\"symbols\":["
+            + "{\"kind\":\"de.monticore.featurediagram._symboltable.FeatureDiagramSymbol\","
+            + "\"name\":\"CarNavigation\","
+            + "\"spannedScope\":{"
+            + "\"symbols\":["
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":CarNavigation"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":Display"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":GPS"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":PreinstalledMaps"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":Memory"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":VoiceControl"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":TouchControl"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":Small"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":Medium"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":Large"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":SmallScreen"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":LargeScreen"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":Europe"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":NorthAmerica"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":SouthAmerica"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":Asia"
+            + "},"
+            + "{"
+            + "\"kind\":de.monticore.featurediagram._symboltable.FeatureSymbol,"
+            + "\"name\":Africa"
+            + "}]}}]}";
     String actual = FileReaderWriter.readFromFile(expectedPath);
 
     // ignore whitespace
     expected = expected.replaceAll("\\s", "");
     actual = actual.replaceAll("\\s", "");
-    
+
     assertEquals(expected, actual);
   }
 

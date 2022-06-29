@@ -7,6 +7,7 @@ import de.monticore.symboltable.serialization.JsonPrinter;
 import de.monticore.symboltable.serialization.json.JsonElement;
 import de.monticore.symboltable.serialization.json.JsonObject;
 
+
 /**
  * This handwritten deser serializes and deserializes FeatureSymbols.
  * The serialization strategy for FeatureSymbols deviates from the generated strategy as it
@@ -17,15 +18,31 @@ public class FeatureDiagramSymbolDeSer extends FeatureDiagramSymbolDeSerTOP {
 
   protected static final String FEATURES = "features";
 
-  @Override public String serialize(FeatureDiagramSymbol toSerialize,
-      FeatureDiagramSymbols2Json s2j) {
+  @Override
+  public String serialize(FeatureDiagramSymbol toSerialize,
+                          FeatureDiagramSymbols2Json s2j) {
     JsonPrinter p = s2j.getJsonPrinter();
     p.beginObject();
     p.member(JsonDeSers.KIND, getSerializedKind());
     p.member(JsonDeSers.NAME, toSerialize.getName());
 
+    p.beginObject(JsonDeSers.SPANNED_SCOPE);
+
+    p.beginArray(JsonDeSers.SYMBOLS);
+
+    for (int i = 0; i < toSerialize.getAllFeatures().size(); i++) {
+      p.beginObject();
+      p.memberJson(JsonDeSers.KIND, s2j.featureSymbolDeSer.getSerializedKind());
+
+      p.memberJson(JsonDeSers.NAME, toSerialize.getAllFeatures().get(i).getName());
+      p.endObject();
+    }
+    p.endArray();
+
+    p.endObject();
+
     // do not serialize spanned scope, but list of feature names
-    p.array(FEATURES, toSerialize.getAllFeatures(), f -> ("\"" + f.getName() + "\""));
+    //p.array(FEATURES, toSerialize.getAllFeatures(), f -> ("\"" + f.getName() + "\""));
 
     serializeAddons(toSerialize, s2j);
     p.endObject();
@@ -33,7 +50,8 @@ public class FeatureDiagramSymbolDeSer extends FeatureDiagramSymbolDeSerTOP {
     return p.toString();
   }
 
-  @Override public FeatureDiagramSymbol deserialize(JsonObject symbolJson) {
+  @Override
+  public FeatureDiagramSymbol deserialize(JsonObject symbolJson) {
     FeatureDiagramSymbolBuilder builder = FeatureDiagramMill.featureDiagramSymbolBuilder();
     builder.setName(symbolJson.getStringMember(JsonDeSers.NAME));
     FeatureDiagramSymbol symbol = builder.build();
