@@ -32,9 +32,9 @@ public class FeatureDiagramSymbolDeSer extends FeatureDiagramSymbolDeSerTOP {
 
     for (int i = 0; i < toSerialize.getAllFeatures().size(); i++) {
       p.beginObject();
-      p.memberJson(JsonDeSers.KIND, s2j.featureSymbolDeSer.getSerializedKind());
+      p.member(JsonDeSers.KIND, s2j.featureSymbolDeSer.getSerializedKind());
 
-      p.memberJson(JsonDeSers.NAME, toSerialize.getAllFeatures().get(i).getName());
+      p.member(JsonDeSers.NAME, toSerialize.getAllFeatures().get(i).getName());
       p.endObject();
     }
     p.endArray();
