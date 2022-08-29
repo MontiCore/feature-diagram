@@ -43,6 +43,7 @@ public class FeatureDiagramSymbolDeSer extends FeatureDiagramSymbolDeSerTOP {
 
     // do not serialize spanned scope, but list of feature names
     //p.array(FEATURES, toSerialize.getAllFeatures(), f -> ("\"" + f.getName() + "\""));
+    s2j.getTraverser().addTraversedElement(toSerialize.getSpannedScope());
 
     serializeAddons(toSerialize, s2j);
     p.endObject();
