@@ -31,8 +31,8 @@ subprojects {
   apply plugin: 'maven-publish'
 
   dependencies {
-    implementation group: 'de.monticore.lang', name: 'mlc-lang', version: mc_version
-    implementation group: 'de.monticore.lang', name: 'mlc-tool', version: mc_version
+    implementation group: 'de.monticore.lang', name: 'mlc-lang', version: mlc_version
+    implementation group: 'de.monticore.lang', name: 'mlc-tool', version: mlc_version
 
     implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
     implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
