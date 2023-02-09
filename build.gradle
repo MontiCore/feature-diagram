@@ -172,7 +172,9 @@ project(':fd-lang') {
     manifest {
       attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
     }
-    minimize()
+    minimize {
+      exclude(dependency('org.freemarker:freemarker:.*'))
+    }
     // sort out unused files automatically (does not find everything we don't need)
     archiveClassifier = "fd-mc-tool"
     archiveFileName = "MCFeatureDiagram.jar"
@@ -256,7 +258,9 @@ project(':fd-analysis') {
     manifest {
       attributes "Main-Class": "mcfdtool.FACT"
     }
-    minimize()
+    minimize {
+      exclude(dependency('org.freemarker:freemarker:.*'))
+    }
     // sort out unused files automatically (does not find everything we don't need)
     archiveFileName = "MCFACT.jar"
     archiveClassifier = "mc-tool"
