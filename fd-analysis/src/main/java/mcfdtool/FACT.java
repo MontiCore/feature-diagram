@@ -5,7 +5,6 @@ import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
-import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
 import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
@@ -169,7 +168,7 @@ public class FACT {
       }
       if (witness.isPresent()) {
         System.out.println(
-            "Diff witness: " + FeatureConfigurationPartialPrettyPrinter.print(witness.get()));
+            "Diff witness: " + FeatureConfigurationPartialMill.prettyPrint(witness.get(), true));
       }
       else {
         System.out.println("The first input FD is a refinement of the second input FD.");
@@ -193,8 +192,10 @@ public class FACT {
       Log.error("0xFC782 AllProducts was not successful");
     }
     else {
-      System.out.println("Result of AllProducts: "
-          + FeatureConfigurationPartialPrettyPrinter.print(result));
+      String pp = result.stream()
+              .map(astFeatureConfiguration -> FeatureConfigurationPartialMill.prettyPrint(astFeatureConfiguration, true))
+              .collect(Collectors.joining(System.lineSeparator()));
+      System.out.println("Result of AllProducts: " + pp);
     }
     return result;
   }
@@ -212,7 +213,7 @@ public class FACT {
     }
     else {
       System.out.println("Result of CompleteToValid: "
-          + FeatureConfigurationPartialPrettyPrinter.print(result));
+          + FeatureConfigurationPartialMill.prettyPrint(result, true));
     }
     return result;
   }
@@ -263,7 +264,7 @@ public class FACT {
     }
     else {
       System.out.println("Result of FindValid: "
-          + FeatureConfigurationPartialPrettyPrinter.print(result));
+          + FeatureConfigurationPartialMill.prettyPrint(result, true));
     }
     return result;
   }
@@ -280,8 +281,10 @@ public class FACT {
       Log.error("0xFC778 GeneralFilter was not successful");
     }
     else {
-      System.out.println("Result of GeneralFilter: "
-          + FeatureConfigurationPartialPrettyPrinter.print(result));
+      String pp = result.stream()
+              .map(ast -> FeatureConfigurationPartialMill.prettyPrint(ast, true))
+              .collect(Collectors.joining(System.lineSeparator()));
+      System.out.println("Result of GeneralFilter: " + pp);
     }
     return result;
   }

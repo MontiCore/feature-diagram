@@ -6,7 +6,6 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbols2Json;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationGlobalScope;
-import de.monticore.featureconfiguration.prettyprint.FeatureConfigurationPrinter;
 import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
@@ -17,6 +16,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -181,22 +181,40 @@ public class FeatureConfigurationTool extends FeatureConfigurationToolTOP {
         }
       }
 
-      // pretty print  model and either output on stdout or store to file
+      // pretty print  model and either output on stdout or store to fileFeatureConfigurationFullPrettyPrinter
       if (cmd.hasOption("prettyprint")) {
-        String prettyPrinted = FeatureConfigurationPrinter.print(ast);
-        String outFile = cmd.getOptionValue("prettyprint");
-        if (null != outFile) {
-          FileReaderWriter.storeInFile(output.resolve(outFile), prettyPrinted);
-        }
-        else {
-          System.out.println(prettyPrinted);
-        }
+        this.prettyPrint(ast, cmd.getOptionValue("prettyprint") == null ? "" : output.resolve(cmd.getOptionValue("prettyprint")).toString());
       }
     }
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("java -jar MCFeatureConfiguration.jar", options, true);
       Log.error("0xFC103 An exception occured while processing the CLI input!", e);
+    }
+  }
+
+  @Override
+  public  void prettyPrint (de.monticore.featureconfiguration._ast.ASTFCCompilationUnit ast,String file) {
+    print(FeatureConfigurationMill.prettyPrint(ast, true), file);
+  }
+
+  @Override
+  public void print(String content, @Nullable String path) {
+// print to stdout or file
+    if (path == null || path.isEmpty()) {
+      System.out.println(content);
+    } else {
+      java.io.File f = new java.io.File(path);
+      // create directories (logs error otherwise)
+      f.getAbsoluteFile().getParentFile().mkdirs();
+      java.io.FileWriter writer;
+      try {
+        writer = new java.io.FileWriter(f);
+        writer.write(content);
+        writer.close();
+      } catch (java.io.IOException e) {
+        Log.error("0xA7105x06458 Could not write to file " + f.getAbsolutePath());
+      }
     }
   }
 

@@ -2,6 +2,7 @@
 
 package test.fcp;
 
+import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.se_rwth.commons.logging.Log;
@@ -13,8 +14,11 @@ import test.AbstractLangTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -59,7 +63,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed.startsWith("usage: java -jar MCFeatureConfigurationPartial.jar"));
+    assertTrue(printed, printed.startsWith("usage: java -jar MCFeatureConfigurationPartial.jar"));
     assertEquals(0, Log.getErrorCount());
   }
 
@@ -146,29 +150,33 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
   }
 
   @Test
-  public void testPrettyPrintToConsole() {
+  public void testPrettyPrintToConsole() throws IOException {
     FeatureConfigurationPartialTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-pp"
     });
 
+    Optional<ASTFCCompilationUnit> astOpt = FeatureConfigurationPartialMill.parser().parse(validFC("BasicCarNavigation"));
+    assertTrue("Failed to parse", astOpt.isPresent());
+    assertEquals(0, Log.getErrorCount());
+
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertEquals("/* (c) https://github.com/MontiCore/monticore */\n"
-        + "package fcvalid;\n"
-        + "\n"
-        + "import fdvalid.CarNavigation;\n"
-        + "\n"
-        + "featureconfig BasicCarNavigation for fdvalid.CarNavigation {\n"
-        + "  select { CarNavigation,VoiceControl,Display,SmallScreen,GPS,Memory,Small }\n"
-        + "  exclude { Large }\n"
-        + "}", printed);
+
+    Optional<ASTFCCompilationUnit> prettyAstOpt = FeatureConfigurationPartialMill.parser().parse_String(printed);
+    assertTrue("Failed to parse pretty: " + printed, prettyAstOpt.isPresent());
+    assertEquals(0, Log.getErrorCount());
+
+    if (!astOpt.get().deepEqualsWithComments(prettyAstOpt.get())) {
+      assertEquals("Failed to deep equals", Files.readString(new File(validFC("BasicCarNavigation")).toPath()), printed);
+      fail("Failed to deep equals"); // make sure to fail
+    }
     assertEquals(0, Log.getErrorCount());
   }
 
   @Test
-  public void testPrettyPrintToFile() {
+  public void testPrettyPrintToFile() throws IOException {
     FeatureConfigurationPartialTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
@@ -179,10 +187,26 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
     assertNotNull(printed);
     assertTrue(new File("target/BasicCarNavigationOut.fc").exists());
     assertEquals(0, Log.getErrorCount());
+
+    Optional<ASTFCCompilationUnit> astOpt = FeatureConfigurationPartialMill.parser().parse(validFC("BasicCarNavigation"));
+    assertTrue("Failed to parse", astOpt.isPresent());
+    assertEquals(0, Log.getErrorCount());
+
+    Optional<ASTFCCompilationUnit> prettyAstOpt = FeatureConfigurationPartialMill.parser().parse("target/BasicCarNavigationOut.fc");
+    assertTrue("Failed to parse pretty", prettyAstOpt.isPresent());
+    assertEquals(0, Log.getErrorCount());
+
+    if (!astOpt.get().deepEqualsWithComments(prettyAstOpt.get())) {
+      assertEquals("Failed to deep equals",
+              Files.readString(new File(validFC("BasicCarNavigation")).toPath()),
+              Files.readString(new File("target/BasicCarNavigationOut.fc").toPath()));
+      fail("Failed to deep equals"); // make sure to fail
+    }
+    assertEquals(0, Log.getErrorCount());
   }
 
   @Test
-  public void testSetOutput() {
+  public void testSetOutput() throws IOException {
     FeatureConfigurationPartialTool.main(
         new String[] {
             "-i", validFC("BasicCarNavigation"),
@@ -192,6 +216,33 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
     assertTrue(new File("target/mytarget/BasicCarNavigation.fc").exists());
     assertEquals(0, Log.getErrorCount());
+    
+    Optional<ASTFCCompilationUnit> astOpt = FeatureConfigurationPartialMill.parser().parse(validFC("BasicCarNavigation"));
+    assertTrue("Failed to parse", astOpt.isPresent());
+    assertEquals(0, Log.getErrorCount());
+
+    Optional<ASTFCCompilationUnit> prettyAstOpt = FeatureConfigurationPartialMill.parser().parse("target/mytarget/BasicCarNavigation.fc");
+    assertTrue("Failed to parse pretty", prettyAstOpt.isPresent());
+    assertEquals(0, Log.getErrorCount());
+
+    if (!astOpt.get().deepEqualsWithComments(prettyAstOpt.get())) {
+      assertEquals("Failed to deep equals",
+              Files.readString(new File(validFC("BasicCarNavigation")).toPath()),
+              Files.readString(new File("target/mytarget/BasicCarNavigation.fc").toPath()));
+      fail("Failed to deep equals"); // make sure to fail
+    }
+    assertEquals(0, Log.getErrorCount());
+  }
+
+  @Test
+  public void testSetOutput22() throws IOException {
+    FeatureConfigurationPartialTool.main(
+            new String[] {
+                    "-i", validFC("BasicCarNavigation"),
+                    "-path", "src/test/resources",
+                    "-o", "target/mytarget",
+                    "-pp", "/tmp/BasicCarNavigation.fc"});
+
   }
 
   private String validFC(String name) {
