@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 public class FeatureConfigurationCoCoTest extends AbstractLangTest {
 
   @Before
-  public static void initMill(){
+  public void initMill(){
     FeatureConfigurationMill.init();
   }
 

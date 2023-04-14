@@ -27,26 +27,30 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   protected ByteArrayOutputStream out;
 
-  @Before
+
   public void initMill(){
     FeatureConfigurationMill.init();
   }
 
-  @Before
   public void produceFDSymbol(){
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
     fdTool.run("src/test/resources/fdvalid/CarNavigation.fd",
         Paths.get("target/symbols"));
   }
 
-  @Before
   public void redirectSysOut() {
-    Log.initWARN();
-    Log.enableFailQuick(false);
     originalOut = System.out;
     out = new ByteArrayOutputStream();
     System.setOut(new PrintStream(out));
   }
+
+  @Before
+  public void setup() {
+    initMill();
+    produceFDSymbol();
+    redirectSysOut();
+  }
+
 
   @After
   public void restoreSysOut() {
