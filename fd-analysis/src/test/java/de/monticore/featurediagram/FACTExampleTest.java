@@ -8,6 +8,7 @@ import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import mcfdtool.FACT;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.file.Paths;
@@ -22,7 +23,6 @@ public class FACTExampleTest extends AbstractTest {
 
   @Test
   public void test(){
-    LogStub.init();
     factExampleInReadme();
     assertEquals(0, Log.getErrorCount());
   }

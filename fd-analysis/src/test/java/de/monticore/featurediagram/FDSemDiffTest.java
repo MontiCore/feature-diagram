@@ -39,7 +39,6 @@ public class FDSemDiffTest {
   public void setup() {
     parser = new FeatureDiagramParser();
     semDiff = new FDSemDiff();
-    Log.enableFailQuick(false);
   }
 
   @Test
