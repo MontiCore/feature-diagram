@@ -1,7 +1,9 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fc;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._parser.FeatureConfigurationParser;
+import org.junit.Before;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -11,6 +13,11 @@ import java.io.IOException;
  * This class tests the parser of feature diagram and feature configuration languages
  */
 public class FeatureConfigurationParserTest extends AbstractLangTest {
+
+  @Before
+  public void initMill(){
+    FeatureConfigurationMill.init();
+  }
 
   @Test
   public void testParseStringsForIndividualGrammarRules() throws IOException {

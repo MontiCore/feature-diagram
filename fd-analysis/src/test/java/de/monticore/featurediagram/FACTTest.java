@@ -3,14 +3,11 @@
 package de.monticore.featurediagram;
 
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
-import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mcfdtool.FACT;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;

@@ -6,8 +6,8 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Before;
 import test.AbstractLangTest;
 
 import java.nio.file.Path;
@@ -23,8 +23,8 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
     return fdTool.createSymbolTable(ast);
   }
 
-  @BeforeClass
-  public static void initMills() {
+  @Before
+  public void initMills() {
     FeatureDiagramMill.init();
   }
 

@@ -6,7 +6,7 @@ import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.io.paths.MCPath;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -24,8 +24,8 @@ public class FeatureConfigurationSymbolTableTest extends AbstractLangTest {
     return fcTool.createSymbolTable(ast, mp);
   }
 
-  @BeforeClass
-  public static void initMill(){
+  @Before
+  public void initMill(){
     FeatureConfigurationMill.init();
   }
 

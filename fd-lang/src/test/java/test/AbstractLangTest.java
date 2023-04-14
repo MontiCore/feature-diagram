@@ -19,7 +19,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.util.Optional;
 
@@ -45,26 +44,17 @@ public class AbstractLangTest {
 
   protected FeatureConfigurationPartialTool fcpTool = new FeatureConfigurationPartialTool();
 
-  @BeforeClass
-  public static void setUpLog() {
-//  Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
+  @Before
+  public void setUp() {
     LogStub.init();
-    FeatureDiagramMill.reset();
-    FeatureConfigurationMill.reset();
-    FeatureConfigurationPartialMill.reset();
-  }
-
-  @Before
-  public void clearFindings() {
+    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
     Log.getFindings().clear();
-  }
-
-  @Before
-  public void clearGlobalScopes() {
+    FeatureConfigurationPartialMill.reset();
     FeatureConfigurationPartialMill.globalScope().clear();
     FeatureConfigurationMill.globalScope().clear();
     FeatureDiagramMill.globalScope().clear();
   }
+
 
   protected static void assertPresent(Optional<?> opt) {
     Assert.assertTrue(opt.isPresent());

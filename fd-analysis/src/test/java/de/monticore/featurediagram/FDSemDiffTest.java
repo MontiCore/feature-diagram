@@ -8,7 +8,6 @@ import de.monticore.featureconfigurationpartial._visitor.UnSelectedFeatureCollec
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import de.se_rwth.commons.logging.Log;
 import fddiff.FDSemDiff;
 import org.junit.Before;
 import org.junit.Test;

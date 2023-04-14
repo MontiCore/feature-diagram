@@ -4,7 +4,7 @@ package test.fc;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.io.paths.MCPath;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 
 public class FeatureConfigurationCoCoTest extends AbstractLangTest {
 
-  @BeforeClass
+  @Before
   public static void initMill(){
     FeatureConfigurationMill.init();
   }

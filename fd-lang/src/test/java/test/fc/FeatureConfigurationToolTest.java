@@ -8,7 +8,6 @@ import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -28,8 +27,8 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   protected ByteArrayOutputStream out;
 
-  @BeforeClass
-  public static void initMill(){
+  @Before
+  public void initMill(){
     FeatureConfigurationMill.init();
   }
 

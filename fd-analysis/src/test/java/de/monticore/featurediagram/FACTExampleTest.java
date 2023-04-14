@@ -6,9 +6,7 @@ import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.io.paths.MCPath;
 import de.se_rwth.commons.logging.Log;
-import de.se_rwth.commons.logging.LogStub;
 import mcfdtool.FACT;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.file.Paths;

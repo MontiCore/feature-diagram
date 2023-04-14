@@ -27,15 +27,13 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
 
   protected ByteArrayOutputStream out;
 
-  @BeforeClass
-  public static void initMills() {
+  @Before
+  public void initMills() {
     FeatureDiagramMill.init();
   }
 
   @Before
   public void redirectSysOut() {
-    Log.initWARN();
-    Log.enableFailQuick(false);
     originalOut = System.out;
     out = new ByteArrayOutputStream();
     System.setOut(new PrintStream(out));

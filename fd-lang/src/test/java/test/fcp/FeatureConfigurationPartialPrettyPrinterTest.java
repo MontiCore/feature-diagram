@@ -4,7 +4,7 @@ package test.fcp;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.io.FileReaderWriter;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -18,8 +18,8 @@ import static org.junit.Assert.fail;
 
 public class FeatureConfigurationPartialPrettyPrinterTest extends AbstractLangTest {
 
-  @BeforeClass
-  public static void initMills() {
+  @Before
+  public void initMills() {
     FeatureConfigurationPartialMill.init();
   }
 

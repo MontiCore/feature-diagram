@@ -3,7 +3,7 @@ package test.fcp;
 
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._parser.FeatureConfigurationPartialParser;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -14,8 +14,8 @@ import java.io.IOException;
  */
 public class FeatureConfigurationPartialParserTest extends AbstractLangTest {
 
-  @BeforeClass
-  public static void initMill(){
+  @Before
+  public void initMill(){
     FeatureConfigurationPartialMill.init();
   }
 

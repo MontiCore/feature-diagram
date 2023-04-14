@@ -21,7 +21,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.nio.file.Paths;
 import java.util.Optional;

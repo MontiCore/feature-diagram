@@ -8,7 +8,6 @@ import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -28,8 +27,8 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   protected ByteArrayOutputStream out;
 
-  @BeforeClass
-  public static void initMill(){
+  @Before
+  public void initMill(){
     FeatureConfigurationPartialMill.init();
   }
 
@@ -45,8 +44,6 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Before
   public void redirectSysOut() {
-    Log.initWARN();
-    Log.enableFailQuick(false);
     originalOut = System.out;
     out = new ByteArrayOutputStream();
     System.setOut(new PrintStream(out));
