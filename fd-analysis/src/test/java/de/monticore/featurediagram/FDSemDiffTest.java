@@ -4,10 +4,13 @@ package de.monticore.featurediagram;
 
 import com.google.common.collect.Lists;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
+import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.featureconfigurationpartial._visitor.UnSelectedFeatureCollector;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFeatureDiagram;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
+import de.se_rwth.commons.logging.Log;
+import de.se_rwth.commons.logging.LogStub;
 import fddiff.FDSemDiff;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +39,10 @@ public class FDSemDiffTest {
 
   @Before
   public void setup() {
+    LogStub.init();
+    Log.enableFailQuick(false);
+    FeatureConfigurationPartialMill.reset();
+    FeatureConfigurationPartialMill.init();
     parser = new FeatureDiagramParser();
     semDiff = new FDSemDiff();
   }

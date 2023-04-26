@@ -22,11 +22,11 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
     ASTFDCompilationUnit ast = fdTool.parse("src/test/resources/" + modelFile);
     return fdTool.createSymbolTable(ast);
   }
-//
-//  @Before
-//  public void initMills() {
-//    FeatureDiagramMill.init();
-//  }
+
+  @Before
+  public void initMills() {
+    FeatureDiagramMill.init();
+  }
 
   @Test
   public void testLoad() {

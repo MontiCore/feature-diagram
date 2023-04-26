@@ -45,7 +45,6 @@ public class AbstractTest {
     LogStub.init();
     Log.initWARN();
     Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    Log.getFindings().clear();
     FeatureConfigurationPartialMill.reset();
     FeatureConfigurationPartialMill.init();
   }
