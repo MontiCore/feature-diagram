@@ -7,7 +7,6 @@ import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
-import de.monticore.featurediagram.prettyprint.FeatureDiagramPrettyPrinter;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
@@ -15,6 +14,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -189,20 +189,38 @@ public class FeatureDiagramTool extends FeatureDiagramToolTOP {
 
       // pretty print  model and either output on stdout or store to file
       if (cmd.hasOption("prettyprint")) {
-        String prettyPrinted = FeatureDiagramPrettyPrinter.print(ast);
-        String outFile = cmd.getOptionValue("prettyprint");
-        if (null != outFile) {
-          FileReaderWriter.storeInFile(output.resolve(outFile), prettyPrinted);
-        }
-        else {
-          System.out.println(prettyPrinted);
-        }
+        this.prettyPrint(ast, cmd.getOptionValue("prettyprint"));
       }
     }
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("java -jar MCFeatureDiagram.jar", options, true);
       Log.error("0xFD114 An exception occured while processing the CLI input!", e);
+    }
+  }
+
+  @Override
+  public  void prettyPrint (de.monticore.featurediagram._ast.ASTFDCompilationUnit ast,String file){
+    print(FeatureDiagramMill.prettyPrint(ast, true), file);
+  }
+
+  @Override
+  public void print(String content, @Nullable String path) {
+    // print to stdout or file - allow path to be null
+    if (path == null || path.isEmpty()) {
+      System.out.println(content);
+    } else {
+      java.io.File f = new java.io.File(path);
+      // create directories (logs error otherwise)
+      f.getAbsoluteFile().getParentFile().mkdirs();
+      java.io.FileWriter writer;
+      try {
+        writer = new java.io.FileWriter(f);
+        writer.write(content);
+        writer.close();
+      } catch (java.io.IOException e) {
+        Log.error("0xA7105x06458 Could not write to file " + f.getAbsolutePath());
+      }
     }
   }
 

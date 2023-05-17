@@ -31,8 +31,8 @@ subprojects {
   apply plugin: 'maven-publish'
 
   dependencies {
-    implementation group: 'de.monticore.lang', name: 'mlc-lang', version: mc_version
-    implementation group: 'de.monticore.lang', name: 'mlc-tool', version: mc_version
+    implementation group: 'de.monticore.lang', name: 'mlc-lang', version: mlc_version
+    implementation group: 'de.monticore.lang', name: 'mlc-tool', version: mlc_version
 
     implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
     implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
@@ -172,7 +172,9 @@ project(':fd-lang') {
     manifest {
       attributes "Main-Class": "de.monticore.featurediagram.FeatureDiagramTool"
     }
-    minimize()
+    minimize {
+      exclude(dependency('org.freemarker:freemarker:.*'))
+    }
     // sort out unused files automatically (does not find everything we don't need)
     archiveClassifier = "fd-mc-tool"
     archiveFileName = "MCFeatureDiagram.jar"
@@ -224,7 +226,7 @@ project(':fd-lang') {
   }
 }
 
-
+/* TODO: update used libraries (ANTLR 4.12.0)
 project(':fd-analysis') {
 
   apply plugin: 'java'
@@ -256,7 +258,9 @@ project(':fd-analysis') {
     manifest {
       attributes "Main-Class": "mcfdtool.FACT"
     }
-    minimize()
+    minimize {
+      exclude(dependency('org.freemarker:freemarker:.*'))
+    }
     // sort out unused files automatically (does not find everything we don't need)
     archiveFileName = "MCFACT.jar"
     archiveClassifier = "mc-tool"
@@ -284,6 +288,7 @@ project(':fd-analysis') {
   }
 }
 
+ */
 task buildAll(type: GradleBuild) {
   tasks = ['build']
 }

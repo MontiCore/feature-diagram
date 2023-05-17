@@ -7,7 +7,6 @@ import de.monticore.featureconfigurationpartial._cocos.FeatureConfigurationParti
 import de.monticore.featureconfigurationpartial._symboltable.FeatureConfigurationPartialSymbols2Json;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialArtifactScope;
 import de.monticore.featureconfigurationpartial._symboltable.IFeatureConfigurationPartialGlobalScope;
-import de.monticore.featureconfigurationpartial.prettyprint.FeatureConfigurationPartialPrettyPrinter;
 import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
@@ -18,6 +17,7 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 
+import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -194,20 +194,33 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
 
       // pretty print  model and either output on stdout or store to file
       if (cmd.hasOption("prettyprint")) {
-        String prettyPrinted = FeatureConfigurationPartialPrettyPrinter.print(ast);
-        String outFile = cmd.getOptionValue("prettyprint");
-        if (null != outFile) {
-          FileReaderWriter.storeInFile(output.resolve(outFile), prettyPrinted);
-        }
-        else {
-          System.out.println(prettyPrinted);
-        }
+        this.prettyPrint(ast, resolvePath(output, cmd.getOptionValue("prettyprint")));
       }
     }
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("java -jar MCFeatureConfigurationPartial.jar", options, true);
       Log.error("0xFD112 An exception occured while processing the CLI input!", e);
+    }
+  }
+
+  public Path resolvePath(Path outputPath, String file){
+    // outputPath = Paths.get("target")
+    if (file == null) return null;
+    return outputPath.resolve(file);
+  }
+
+  public void prettyPrint (de.monticore.featureconfiguration._ast.ASTFCCompilationUnit ast, Path targetPath) {
+    de.monticore.featureconfigurationpartial._prettyprint.FeatureConfigurationPartialFullPrettyPrinter prettyPrinter = new de.monticore.featureconfigurationpartial._prettyprint.FeatureConfigurationPartialFullPrettyPrinter(new de.monticore.prettyprint.IndentPrinter());
+    print(prettyPrinter.prettyprint(ast), targetPath);
+  }
+
+  public void print(String content, Path targetPath) {
+    // print to stdout or file
+    if (targetPath == null) {
+      System.out.println(content);
+    } else {
+      de.monticore.io.FileReaderWriter.storeInFile(targetPath, content);
     }
   }
 

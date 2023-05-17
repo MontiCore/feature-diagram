@@ -13,4 +13,7 @@ pluginManagement {
     }
 }
 rootProject.name = 'feature-diagram'
-include ":fd-lang", ":fd-analysis"
+include ":fd-lang"
+/* TODO: update used libraries (ANTLR 4.12.0)
+, ":fd-analysis"
+ */

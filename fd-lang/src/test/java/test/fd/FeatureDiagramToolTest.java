@@ -4,6 +4,7 @@ package test.fd;
 
 import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.featurediagram.FeatureDiagramMill;
+import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
@@ -13,7 +14,10 @@ import test.AbstractLangTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -185,26 +189,26 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
 
 
   @Test
-  public void testPrettyPrint() {
+  public void testPrettyPrint() throws IOException {
     FeatureDiagramTool.main(new String[] {
         "-i", validFD("BasicElements"),
         "-pp"
     });
+    Optional<ASTFDCompilationUnit> astOpt = FeatureDiagramMill.parser().parse(validFD("BasicElements"));
+    assertPresent(astOpt);
+    assertEquals(0, Log.getErrorCount());
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertEquals("/* (c) https://github.com/MontiCore/monticore */\n"
-        + "package fdvalid;\n"
-        + "\n"
-        + "featurediagram BasicElements {\n"
-        + "  A -> B & C? & D;\n"
-        + "  A -> E ^ F ^ G;\n"
-        + "  C -> H | I | J;\n"
-        + "  D -> [0..*] of {K, L, M};\n"
-        + "  M requires E;\n"
-        + "  C excludes I;\n"
-        + "  E excludes J;\n"
-        + "}", printed);
+
+    Optional<ASTFDCompilationUnit> prettyAstOpt = FeatureDiagramMill.parser().parse_String(printed);
+    assertPresent(prettyAstOpt);
+    assertEquals(0, Log.getErrorCount());
+
+    if (!astOpt.get().deepEqualsWithComments(prettyAstOpt.get())) {
+      assertEquals("Failed to deep equals", Files.readString(new File(validFD("BasicElements")).toPath()), printed);
+      fail("Failed to deep equals"); // make sure to fail
+    }
     assertEquals(0, Log.getErrorCount());
   }
 

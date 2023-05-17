@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.featurediagram._cocos;
 
+import de.monticore.expressions.commonexpressions.CommonExpressionsMill;
 import de.monticore.expressions.commonexpressions._ast.*;
 import de.monticore.expressions.commonexpressions._visitor.CommonExpressionsVisitor2;
 import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
@@ -38,8 +39,7 @@ public class ValidConstraintExpression implements FeatureDiagramASTFeatureConstr
 
     private void error(String expressionKind, SourcePosition pos) {
       // pretty print expression for error message
-      CommonExpressionsFullPrettyPrinter pp = new CommonExpressionsFullPrettyPrinter(new IndentPrinter());
-      String exprString = pp.prettyprint(expression);
+      String exprString = CommonExpressionsMill.prettyPrint(expression, false);
       Log.error("0xFD011 The cross-tree constraint '" + exprString + "' uses a " + expressionKind
           + ", which is forbidden!", pos);
     }
