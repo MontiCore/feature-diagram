@@ -1,0 +1,8 @@
+featurediagram Concrete {
+
+Car -> Engine;
+Car -> ComfortFunctions?;
+Engine -> Gasoline | Electric | Hybrid ;
+ComfortFunctions -> NavSystem ^ AirCond ^ LockSystem ;
+
+}

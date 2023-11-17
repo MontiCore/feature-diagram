@@ -1,0 +1,6 @@
+featurediagram Vehicle {
+
+Vehicle -> Engine;
+Vehicle -> InfotainmentSystem? ;
+
+}

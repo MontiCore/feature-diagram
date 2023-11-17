@@ -1,0 +1,10 @@
+
+featurediagram Smtfd {
+
+  A -> B & C & D & K? & L?;
+  A -> E | F | G ;
+  A -> H ^ I ^ J ;
+
+  (A requires K) excludes L ;
+
+}

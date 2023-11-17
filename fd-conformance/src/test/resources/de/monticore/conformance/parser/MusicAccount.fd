@@ -1,0 +1,15 @@
+featurediagram musicplatform {
+
+MusicAccount -> Abo & Payment & Login & Advert? ;
+
+Abo ->  Free ^ Premium ;
+
+Premium ->  Normal ^ Family ^ Student;
+
+Advert requires Free ;
+
+Payment -> CreditCard | Paypal ;
+
+Login -> GoogleAcc | Email | FacebookAcc ;
+
+}

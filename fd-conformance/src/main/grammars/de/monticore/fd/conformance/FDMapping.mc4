@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.fd.conformance;
+
+grammar FDMapping extends  de.monticore.MCBasics {
+
+symbol scope FDMapping = "mapping" name:Name "{"(FDMappingRule)* "}";
+
+FDMapElement = Name ;
+
+FDElementComposition  = FDMapElement ("++" FDMapElement)*;
+
+FDMappingRule = leftSide:FDElementComposition "==>" rightSide:FDMapElement ";";
+
+}

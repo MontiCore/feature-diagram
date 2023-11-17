@@ -1,0 +1,110 @@
+import com.github.sherter.googlejavaformatgradleplugin.VerifyGoogleJavaFormat
+plugins {
+    id 'java'
+    id 'java-gradle-plugin'
+    id 'jacoco'
+    id 'monticore' version "$mc_version"
+    id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
+    id 'maven-publish'
+    id "com.github.sherter.google-java-format" version "0.9"  // Task "verifyGoogleJavaFormat" and "googleJavaFormat"
+
+}
+
+project(':fd-conformance') {
+
+    dependencies {
+        implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+        implementation group: 'de.monticore', name: 'class2mc', version: mc_version
+        implementation group: 'de.monticore.lang', name: 'fd-lang', version: mc_version
+        implementation group: 'com.google.guava', name: 'guava', version: guava_version
+        implementation group: 'de.monticore.lang.ocl', name: 'ocl2smt', version: mc_version
+        implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+        implementation 'edu.mit.alloy:alloy:6'
+        implementation 'tools.aqua:z3-turnkey:4.11.2'
+
+
+        testImplementation group: 'junit', name: 'junit', version: junit_version
+
+
+        implementation "de.se_rwth.commons:se-commons-groovy:$mc_version"
+        grammar("de.monticore.lang:fd-lang:$mc_version") {
+            capabilities { requireCapability("de.monticore.lang:fd-lang-grammars") }
+        }
+        grammar("de.monticore:monticore-grammar:$mc_version") {
+            capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    compileJava {
+        dependsOn project.collect { it.tasks.withType(MCTask) }
+    }
+
+    group = 'fd-conformance'
+    repositories {
+        if (("true").equals(getProperty('useLocalRepo'))) {
+            mavenLocal()
+        }
+        maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            url repo
+        }
+        mavenCentral()
+    }
+
+    description = 'SLE-Project: Conformance Checking for Feature Diagrams'
+    buildDir = file("$projectDir/target")
+    def grammarDir = 'src/main/grammars'
+
+    googleJavaFormat {
+        exclude '**/target/**'
+    }
+
+    verifyGoogleJavaFormat {
+        ignoreFailures true
+        exclude "**"
+    }  // do not check format in "build"
+
+    tasks.register('generateMapping', MCTask) {
+        grammar = file "$grammarDir/de/monticore/fd/conformance/FDMapping.mc4"
+        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+        def uptoDate = incCheck("Mapping.mc4")
+        outputs.upToDateWhen { uptoDate }
+    }
+
+    tasks.register('checkfmt', VerifyGoogleJavaFormat) {}
+
+    tasks.register('fmt') {
+        dependsOn tasks.named("googleJavaFormat")
+    }
+
+    jar.dependsOn(shadowJar)
+    shadowJar {
+        zip64(true)
+        manifest {
+            attributes "Main-Class": "de.monticore.fd.conformance.FDConformanceTool"
+        }
+
+        archiveFileName = "fdConformance.jar"
+        destinationDirectory = file('build/libs')
+        archiveClassifier = "tool"
+
+    }
+
+    sourceSets {
+        main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
+        grammars {
+            resources {
+                srcDirs([grammarDir])
+                include "**/*.mc4"
+            }
+        }
+    }
+}

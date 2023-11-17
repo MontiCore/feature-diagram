@@ -1,0 +1,5 @@
+mapping Mapping1 {
+  Burger ==> Burger ;
+  Beilage ==> Bread ;
+  Fuellung ==> Filling ;
+}

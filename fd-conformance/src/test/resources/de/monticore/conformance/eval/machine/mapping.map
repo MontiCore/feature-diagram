@@ -1,0 +1,8 @@
+mapping Map {
+Car ==> Machine;
+Engine ==> CoreComponent;
+Engine ==> CoreComponent;
+NavSystem  ==> OptionalComponent;
+LockSystem  ==> OptionalComponent;
+AirCond ==> OptionalComponent;
+}
