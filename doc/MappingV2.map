@@ -1,0 +1,7 @@
+mapping MappingV2 {
+  CoolCar2 ==> CoolCar1;
+  NavigationSystem ++ Radio ==> InfotainmentSystem;
+  Gasoline ==> Gasoline;
+  Electric ==> Gasoline;
+  Hybrid ==> Gasoline;
+}

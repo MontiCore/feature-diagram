@@ -75,7 +75,7 @@ public class FDConformanceTool extends FeatureDiagramToolTOP {
 
     options.addOption(
         Option.builder("m")
-            .longOpt("mapping")
+            .longOpt("map")
             .desc("Introduce mapping file ")
             .numberOfArgs(1)
             .build());

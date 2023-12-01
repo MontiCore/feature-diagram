@@ -92,8 +92,8 @@ project(':fd-conformance') {
             attributes "Main-Class": "de.monticore.fd.conformance.FDConformanceTool"
         }
 
-        archiveFileName = "fdConformance.jar"
-        destinationDirectory = file('build/libs')
+        archiveFileName = "FDConf.jar"
+        destinationDirectory = file('target/libs')
         archiveClassifier = "tool"
 
     }
