@@ -9,50 +9,63 @@ import de.monticore.expressions.expressionsbasis._ast.ASTExpression;
 import de.monticore.expressions.expressionsbasis._ast.ASTNameExpression;
 import de.monticore.featurediagram._ast.ASTExcludes;
 import de.monticore.featurediagram._ast.ASTRequires;
-import de.monticore.ocl2smt.ocl2smt.expressionconverter.Expression2smt;
+import de.monticore.ocl2smt.ocl2smt.expr2smt.expr2z3.Z3ExprAdapter;
+import de.monticore.ocl2smt.ocl2smt.expr2smt.expr2z3.Z3ExprFactory;
+import de.monticore.ocl2smt.ocl2smt.expr2smt.expr2z3.Z3TypeAdapter;
+import de.monticore.ocl2smt.ocl2smt.expr2smt.expr2z3.Z3TypeFactory;
+import de.monticore.ocl2smt.ocl2smt.oclExpr2smt.OCLExprConverter;
 import de.se_rwth.commons.logging.Log;
 import java.util.Map;
 import java.util.Optional;
 
-public class FDExpression2smt extends Expression2smt {
+public class FDExpression2smt extends OCLExprConverter<Z3ExprAdapter> {
   public final Map<String, BoolExpr> constants;
+  protected Context ctx ;
 
-  public FDExpression2smt(Context ctx, Map<String, BoolExpr> constants) {
+  public FDExpression2smt(Z3ExprFactory eFactory, Z3TypeFactory tFactory, Context ctx, Map<String, BoolExpr> constants) {
+    super(eFactory,tFactory);
     this.constants = constants;
-    this.ctx = ctx;
+    this.ctx = ctx ;
   }
 
   @Override
-  protected Expr<? extends Sort> convert(ASTNameExpression node) {
-    return constants.get(node.getName());
+  protected Z3ExprAdapter convert(ASTNameExpression node) {
+    return new Z3ExprAdapter(constants.get(node.getName()),(Z3TypeAdapter) tFactory.mkBoolType());
   }
 
   @Override
-  protected Optional<BoolExpr> convertBoolExprOpt(ASTExpression node) {
-    Optional<BoolExpr> res = super.convertBoolExprOpt(node);
-    if (res.isEmpty()) {
+  public Z3ExprAdapter convertExpr(ASTExpression node) {
+      Z3ExprAdapter res ;
       if (node instanceof ASTRequires) {
-        res = Optional.ofNullable(convert((ASTRequires) node));
+        res = convert((ASTRequires) node);
       } else if (node instanceof ASTExcludes) {
-        res = Optional.ofNullable(convert((ASTExcludes) node));
+        res = convert((ASTExcludes) node);
       } else if (node instanceof ASTNameExpression) {
-        res = Optional.ofNullable((BoolExpr) convert((ASTNameExpression) node));
+        res = ( convert((ASTNameExpression) node));
+      }else {
+        res = super.convertExpr(node);
+
       }
-    }
-    return res;
+  return  res ;
   }
 
-  protected BoolExpr convert(ASTRequires requires) {
-    return ctx.mkImplies(convertBoolExpr(requires.getLeft()), convertBoolExpr(requires.getRight()));
+  protected Z3ExprAdapter convert(ASTRequires requires) {
+    return eFactory.mkImplies(convertExpr(requires.getLeft()), convertExpr(requires.getRight()));
   }
 
-  protected BoolExpr convert(ASTExcludes excludes) {
-    return ctx.mkXor((convertBoolExpr(excludes.getLeft())), convertBoolExpr(excludes.getRight()));
+  protected Z3ExprAdapter convert(ASTExcludes excludes) {
+    BoolExpr left = (BoolExpr)convertExpr(excludes.getLeft()).getExpr();
+    BoolExpr right =(BoolExpr) convertExpr(excludes.getRight()).getExpr();
+    return new Z3ExprAdapter(ctx.mkXor(left, right),(Z3TypeAdapter) tFactory.mkBoolType());
   }
 
   @Override
-  protected Expr<? extends Sort> convert(ASTFieldAccessExpression node) {
+  protected Z3ExprAdapter convert(ASTFieldAccessExpression node) {
     Log.error("FieldAccessExpression not converted for FD-Expressions");
     return null;
+  }
+
+  public BoolExpr convertBoolExpr(ASTExpression constraint) {
+    return (BoolExpr) convertExpr(constraint).getExpr();
   }
 }

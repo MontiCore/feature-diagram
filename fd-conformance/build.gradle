@@ -24,7 +24,7 @@ project(':fd-conformance') {
         implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
         implementation 'edu.mit.alloy:alloy:6'
         implementation 'tools.aqua:z3-turnkey:4.11.2'
-
+        implementation "de.monticore.lang:cd4analysis:$mc_version:cd2smt" //todo remover later ?
 
         testImplementation group: 'junit', name: 'junit', version: junit_version
 

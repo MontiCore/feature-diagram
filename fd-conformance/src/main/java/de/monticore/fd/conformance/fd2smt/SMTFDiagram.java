@@ -3,6 +3,10 @@ package de.monticore.fd.conformance.fd2smt;
 import com.microsoft.z3.*;
 import de.monticore.fd.conformance.FDExpression2smt;
 import de.monticore.featurediagram._ast.*;
+import de.monticore.ocl2smt.ocl2smt.expr2smt.expr2z3.Z3ExprAdapter;
+import de.monticore.ocl2smt.ocl2smt.expr2smt.expr2z3.Z3ExprFactory;
+import de.monticore.ocl2smt.ocl2smt.expr2smt.expr2z3.Z3TypeFactory;
+
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -39,8 +43,9 @@ public class SMTFDiagram {
       BoolExpr constr = ctx.mkBoolConst(ident.apply(feature));
       features.put(feature, constr);
     }
-
-    expression2smt = new FDExpression2smt(ctx, features);
+    Z3TypeFactory typeFactory = new Z3TypeFactory(ctx);
+    Z3ExprFactory eFactory = new Z3ExprFactory(typeFactory,ctx);
+    expression2smt = new FDExpression2smt(eFactory,typeFactory,ctx, features);
 
     // convert a feature element to boolean constraints
     fd.getFeatureDiagram().getFDElementList().forEach(elem -> constraints.put(elem, convert(elem)));
