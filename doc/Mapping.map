@@ -1,0 +1,4 @@
+mapping Mapping {
+  CoolCar2 ==> CoolCar1;
+  NavigationSystem ++ Radio ==> InfotainmentSystem;
+}

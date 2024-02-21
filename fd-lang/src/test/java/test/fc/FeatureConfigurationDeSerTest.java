@@ -11,9 +11,7 @@ import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
-import de.se_rwth.commons.logging.LogStub;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -32,16 +30,11 @@ public class FeatureConfigurationDeSerTest extends AbstractLangTest {
     return fcTool.createSymbolTable(ast, mp);
   }
 
-  @BeforeClass
-  public static void initMill(){
+  @Before
+  public void initMill(){
     FeatureConfigurationMill.init();
   }
 
-  @Before
-  public void setUpFCLog() {
-    //  Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    LogStub.init();
-  }
 
   @Test
   public void testRoundtripSerialization() {

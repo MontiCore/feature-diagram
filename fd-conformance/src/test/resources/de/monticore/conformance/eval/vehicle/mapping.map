@@ -1,0 +1,7 @@
+mapping Map {
+
+Car ==> Vehicle;
+NavigationSystem ++ Radio ==> InfotainmentSystem;
+
+
+}

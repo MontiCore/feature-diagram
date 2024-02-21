@@ -12,7 +12,7 @@ import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -26,8 +26,8 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
 
   protected static final MCPath mp = new MCPath(Paths.get("src/test/resources"));
 
-  @BeforeClass
-  public static void initMill(){
+  @Before
+  public void initMill(){
     FeatureConfigurationPartialMill.init();
   }
 

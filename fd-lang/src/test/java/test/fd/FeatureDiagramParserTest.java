@@ -3,8 +3,8 @@ package test.fd;
 
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Before;
 import test.AbstractLangTest;
 
 import java.io.IOException;
@@ -14,8 +14,8 @@ import java.io.IOException;
  */
 public class FeatureDiagramParserTest extends AbstractLangTest {
 
-  @BeforeClass
-  public static void initMill(){
+  @Before
+  public void initMill(){
     FeatureDiagramMill.init();
   }
 

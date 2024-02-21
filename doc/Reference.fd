@@ -1,0 +1,5 @@
+featurediagram Reference {
+  CoolCar1 -> Engine;
+  CoolCar1 -> InfotainmentSystem?;
+  Engine -> Gasoline;
+}

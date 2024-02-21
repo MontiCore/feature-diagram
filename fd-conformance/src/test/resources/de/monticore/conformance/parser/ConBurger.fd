@@ -1,0 +1,9 @@
+featurediagram ConBurger {
+
+Hamburger -> Bread & Filling ;
+
+Filling -> BeefMeat;
+
+Filling -> Salat & BBQSauce & Fries ;
+
+}

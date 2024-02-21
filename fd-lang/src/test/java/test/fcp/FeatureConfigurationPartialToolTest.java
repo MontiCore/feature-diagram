@@ -8,7 +8,6 @@ import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.se_rwth.commons.logging.Log;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -28,12 +27,11 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   protected ByteArrayOutputStream out;
 
-  @BeforeClass
-  public static void initMill(){
+
+  public void initMill(){
     FeatureConfigurationPartialMill.init();
   }
 
-  @Before
   public void produceFDSymbol(){
     //Process FD first to obtain stored FD symbol. Otherwise, all test cases would yield a warning
     fdTool.run("src/test/resources/fdvalid/CarNavigation.fd",
@@ -43,13 +41,17 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
         Paths.get("target/symbols"));
   }
 
-  @Before
   public void redirectSysOut() {
-    Log.initWARN();
-    Log.enableFailQuick(false);
     originalOut = System.out;
     out = new ByteArrayOutputStream();
     System.setOut(new PrintStream(out));
+  }
+
+  @Before
+  public void setup() {
+    initMill();
+    produceFDSymbol();
+    redirectSysOut();
   }
 
   @After

@@ -1,0 +1,8 @@
+featurediagram UnValidBurger {
+Burger -> Filling;
+
+Filling -> VeganMeat;
+
+Filling ->   Cheese;
+
+}

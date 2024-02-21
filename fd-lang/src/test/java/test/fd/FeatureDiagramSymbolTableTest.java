@@ -7,7 +7,7 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.paths.MCPath;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import test.AbstractLangTest;
 
@@ -19,8 +19,8 @@ import static org.junit.Assert.*;
 
 public class FeatureDiagramSymbolTableTest extends AbstractLangTest {
 
-  @BeforeClass
-  public static void initMills() {
+  @Before
+  public void initMills() {
     FeatureDiagramMill.init();
     FeatureDiagramMill.globalScope();
   }

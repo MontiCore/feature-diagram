@@ -2,6 +2,7 @@
 
 package de.monticore.featurediagram;
 
+import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration.FeatureConfigurationTool;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._ast.ASTFeatureConfiguration;
@@ -20,7 +21,6 @@ import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -39,16 +39,14 @@ public class AbstractTest {
 
   public static final String TEST_RES = "src/test/resources/";
 
-  @BeforeClass
-  public static void setUpLog() {
-//        Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
-    LogStub.init();
-  }
 
   @Before
-  public void clearFindings() {
-    Log.getFindings().clear();
+  public void setup() {
+    LogStub.init();
+    Log.initWARN();
+    Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
     FeatureConfigurationPartialMill.reset();
+    FeatureConfigurationPartialMill.init();
   }
 
   protected static void assertPresent(Optional<?> opt) {

@@ -1,0 +1,10 @@
+featurediagram Burger {
+Burger -> Bread & Filling;
+
+Filling -> Meat ^ VeganMeat;
+
+Filling ->  Vegetable? & Sauce?  & Cheese? & Extras? ;
+
+VeganMeat excludes Cheese ;
+
+}

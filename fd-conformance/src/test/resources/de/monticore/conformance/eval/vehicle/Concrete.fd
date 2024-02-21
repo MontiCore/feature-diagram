@@ -1,0 +1,8 @@
+featurediagram Car {
+
+Car -> Engine;
+Car -> ComfortFunctions? ;
+Engine -> Gasoline | Electric | Hybrid ;
+ComfortFunctions -> NavigationSystem ^ Radio ^ AirConditioning ;
+
+}

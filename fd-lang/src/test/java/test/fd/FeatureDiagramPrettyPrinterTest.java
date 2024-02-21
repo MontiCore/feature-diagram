@@ -4,8 +4,8 @@ package test.fd;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.io.FileReaderWriter;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Before;
 import test.AbstractLangTest;
 
 import java.io.File;
@@ -18,8 +18,8 @@ import static org.junit.Assert.fail;
 
 public class FeatureDiagramPrettyPrinterTest extends AbstractLangTest {
 
-  @BeforeClass
-  public static void initMills() {
+  @Before
+  public void initMills() {
     FeatureDiagramMill.init();
   }
 

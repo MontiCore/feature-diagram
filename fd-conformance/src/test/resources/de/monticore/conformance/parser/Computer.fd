@@ -1,0 +1,6 @@
+featurediagram Computer {
+Computer -> Processor & Storage & OS;
+
+Computer -> Microphone? & Webcam & USBPort ;
+
+}

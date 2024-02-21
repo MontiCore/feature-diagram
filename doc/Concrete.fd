@@ -1,0 +1,8 @@
+featurediagram Concrete {
+  CoolCar2 -> Engine;
+  CoolCar2 -> ComfortFunctions;
+  Engine -> Gasoline ^ Electric ^ Hybrid ;
+  ComfortFunctions -> NavigationSystem?;
+  ComfortFunctions -> Radio;
+  ComfortFunctions -> AirConditioning?;
+}
