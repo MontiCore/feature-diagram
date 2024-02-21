@@ -37,7 +37,7 @@ This document is intended for  **language engineers** who extend, adapt or embed
 
 # MontiCore Feature Diagram Language (FDL)
 
-[[_TOC_]]
+
 
 The following documents the MontiCore feature diagram language FDL. 
 Feature diagrams (FDs) consist of features and their relationships
