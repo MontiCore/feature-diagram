@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 featurediagram Burger {
 Burger -> Bread & Filling;
 

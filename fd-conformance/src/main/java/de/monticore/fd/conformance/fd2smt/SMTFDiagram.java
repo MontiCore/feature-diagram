@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.fd.conformance.fd2smt;
 
 import com.microsoft.z3.*;

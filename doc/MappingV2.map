@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 mapping MappingV2 {
   CoolCar2 ==> CoolCar1;
   NavigationSystem ++ Radio ==> InfotainmentSystem;

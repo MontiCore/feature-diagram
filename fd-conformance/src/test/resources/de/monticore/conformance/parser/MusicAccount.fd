@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 featurediagram musicplatform {
 
 MusicAccount -> Abo & Payment & Login & Advert? ;
