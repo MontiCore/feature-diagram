@@ -3,7 +3,7 @@ package de.monticore.fd.conformance;
 
 grammar FDMapping extends  de.monticore.MCBasics {
 
-symbol scope FDMapping = "mapping" name:Name "{"(FDMappingRule)* "}";
+symbol scope FDMapping = "mapping" Name "{"(FDMappingRule)* "}";
 
 FDMapElement = Name ;
 

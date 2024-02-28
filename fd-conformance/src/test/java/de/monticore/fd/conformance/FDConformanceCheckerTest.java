@@ -25,7 +25,7 @@ public class FDConformanceCheckerTest extends FDAbstractTest {
   public void testCoolCarInvalid() {
     String refModel = RELATIVE_MODEL_PATH + "eval/coolcar/Reference.fd";
     String conModel = RELATIVE_MODEL_PATH + "eval/coolcar/Concrete.fd";
-    String map = RELATIVE_MODEL_PATH + "eval/coolcar/MapV1.map";
+    String map = RELATIVE_MODEL_PATH + "eval/coolcar/MapV1.fdmap";
     setup(refModel, conModel, map);
 
     // check conformance
@@ -36,7 +36,7 @@ public class FDConformanceCheckerTest extends FDAbstractTest {
   public void testCoolCarValid() {
     String refModel = RELATIVE_MODEL_PATH + "eval/coolcar/Reference.fd";
     String conModel = RELATIVE_MODEL_PATH + "eval/coolcar/Concrete.fd";
-    String map = RELATIVE_MODEL_PATH + "eval/coolcar/MapV2.map";
+    String map = RELATIVE_MODEL_PATH + "eval/coolcar/MapV2.fdmap";
     setup(refModel, conModel, map);
 
     // check conformance
@@ -47,7 +47,7 @@ public class FDConformanceCheckerTest extends FDAbstractTest {
   public void conformanceCheckerTest() {
     String refModel = RELATIVE_MODEL_PATH + "conf/reference.fd";
     String conModel = RELATIVE_MODEL_PATH + "conf/concrete.fd";
-    String map = RELATIVE_MODEL_PATH + "conf/mapping.map";
+    String map = RELATIVE_MODEL_PATH + "conf/mapping.fdmap";
     setup(refModel, conModel, map);
 
     // check conformance
