@@ -76,11 +76,7 @@ public class FDConformanceTool extends FeatureDiagramToolTOP {
             .build());
 
     options.addOption(
-        Option.builder("m")
-            .longOpt("map")
-            .desc("Introduce mapping file ")
-            .numberOfArgs(1)
-            .build());
+        Option.builder("m").longOpt("map").desc("Introduce mapping file ").numberOfArgs(1).build());
 
     return options;
   }
@@ -96,7 +92,14 @@ public class FDConformanceTool extends FeatureDiagramToolTOP {
     Log.info("Loading and checking  mapping.....", logName);
     ASTFDMapping mapping = FDLoader.loadAndCheckMapping(refPath, conPath, mappingPath);
 
-    Log.println("===== Check if "+ con.getFeatureDiagram().getName() + " conforms to " + ref.getFeatureDiagram().getName() + " with respect to " + mapping.getName() + " =====");
+    Log.println(
+        "===== Check if "
+            + con.getFeatureDiagram().getName()
+            + " conforms to "
+            + ref.getFeatureDiagram().getName()
+            + " with respect to "
+            + mapping.getName()
+            + " =====");
     FDConformanceChecker.checkConformance(ref, con, mapping);
   }
 }
