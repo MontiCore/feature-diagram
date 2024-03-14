@@ -81,6 +81,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testParseValidModel() {
+    FeatureConfigurationPartialMill.reset();
     FeatureConfigurationPartialTool
         .main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
     FeatureConfigurationPartialTool

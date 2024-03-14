@@ -134,6 +134,7 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
    * @param args
    */
   public void run(String[] args) {
+    init();
     Options options = initOptions();
 
     try {
