@@ -1,111 +1,191 @@
-![](pics/Conformance_Checking_for_Feature_Diagrams.png)
+# Checking Conformance to Reference Feature Diagrams
 
-##### Foreword:
-The primary focus of this project revolves around Conformance Checking for Feature Diagrams. Our objective is to evaluate the conformity between a reference model and a concrete model. Furthermore, we present a step-by-step procedure along with the solution we devised to address any challenges encountered during the process.
-
-
-## Contents
-- Reference Model
-- Feature Diagram
-- Example
-- Conformance relation and checking
-- Mapping
-- Approach for conformance check
-- Transformation to SMT
-- Algorithm (Solution)
+#### Foreword:
+The aim of `fd-conformance` is to provide tooling for automatically checking conformance with a reference Feature Diagram.
+We base our notion of conformance on semantic model refinement: 
+a concrete Feature Diagram conforms to a reference model 
+if each valid feature configuration of the concrete model corresponds or *incarnates* a valid feature configuration of the reference model.
+To designate concrete features as incarnations of reference features, we employ a custom mapping language.
+The tool then employs a translation of the models and incarnation mapping to SMT to automatically check for conformance.
+If the model does not conform, a counter-example or *diff-witness* is provided to demonstrate non-conformance.
 
 
+In the following, we will describe the concept and implementation of this tooling in greater detail.
 
 
-## Reference Model 
-A reference model in systems, enterprise, and software engineering refers to a model expressed in a specific language. It serves the purpose of illustrating a collection of domain concepts along with their domain-specific relationships. Additionally, it includes a conformance relation that accurately identifies the group of models that adhere to the same language.
-In our project we represent reference models as feature diagrams.
+[[_TOC_]]
 
 ## Feature Diagrams
+Feature Diagrams are used to model product-lines and configuration options.
+A Feature Diagram is a directed tree with nodes consisting of features and edges defining dependency between them.
+A child feature always depends on is parent feature.
+Edges can be *mandatory* or *optional*, and they can be bundled into *inclusive* or *exclusive* selections.
+Furthermore, features can *require* or *exclude* other features.
+The semantics of a Feature Diagram is the set of valid feature configurations.
+For more information on Feature Diagrams used in this subproject refer to the [REAMDE](../README.md) 
+of the _feature-diagram_ project.
 
-Feature diagrams, also referred to as feature models, are the models within the feature diagram language. They serve as descriptions of software or system families, focusing on features that can be experienced by users. Feature Diagrams are commonly utilized as variability models in software product lines. Feature configurations play a crucial role in this context as they select specific features from a feature diagram and define a product or variant within the product lines.
- 
+
+## Reference Models and Conformance
+The concept of a reference model is contingent on its relation to other more concrete models.
+By itself, a reference model is a model within a given modelling language 
+that is used to describe domain concepts and domain-specific relations in an exemplary manner.
+Whether it was originally used as a concrete model or created as a pattern, 
+a reference model is defined by its usage.
+
+A concrete model which conforms to a reference model is also referred to as a concretization 
+of the latter.
+Its elements are said to incarnate corresponding elements of the reference model.
+A mapping of incarnations to their corresponding reference elements is referred to as an 
+incarnation mapping.
+
+A notion of conformance to a reference model must be semantically sound, 
+i.e., the essence or meaning of the reference model mus be preserved in its concretizations.
+Formally, we require that a concretization semantically refines its reference model in 
+the context of incarnation.
+More specifically, after translating the incarnations to their corresponding references, 
+the semantics of the concrete model must be a subset of the reference model's semantics.
+
+In the case of Feature Diagrams, we require that every valid feature configuration of the 
+concretization corresponds to a valid feature configuaration of the reference models 
+with respect to the incarnations of reference features.
+
+More on our understanding of reference models can be found here:
+[[Rum23]](https://www.se-rwth.de/essay/Reference-Models/)
+
+## Incarnation Mapping
+
+Incarnation Mappings are used to relate elements of a concrete model to corresponding elements of 
+a reference model. 
+This need not be a one-to-one mapping, as an incarnation of a reference element may consist of
+multiple, composed concrete elements, and vice versa.
+Moreover, an element within the reference model may have multiple incarnations in the concrete model.
+Finally, not all elements in the concrete model need to incarnate elements of the reference model,
+leading to only a partial mapping.
+
+We use the language [FDMapping](src/main/grammars/de/monticore/fd/conformance) to define such 
+incarnation mappings for Feature Diagrams.
+If for a specific feature in the reference model no incarnation is defined in the mapping, 
+but a feature of equal name exists in the concrete model, it is mapped to this feature by default.
+
+
 #### Example:
 
+We can use a Feature Diagram to model a car product-line:
+A car of this product-line needs a gasoline engine and can optionally have an infotainment system 
+built-in.
+The corresponding Feature Diagram might look like this:
 
-  ![](pics/Slide3.jpg)
+```
+featurediagram CarProductLine1 {
+  Car -> Engine;
+  Car -> InfotainmentSystem?;
+  Engine -> Gasoline;
+}
+```
 
-  ## Conformance Relation and Checking
+Then, for the next product-line of cars, the previous Feature Diagram is used as a reference.
+However, now the car can either have an electric or hybrid engine as an alternative to the 
+gasoline engine. 
+Furthermore, it must contain a radio and may optionally have a navigation system 
+and air conditioning.
+The corresponding Feature Diagram might look like this:
 
-The __conformance relation__ between two models A, B
-is a binary, reflexive, transitive relation that
-describes whether concrete model B is a concretization of reference model A.
+```
+featurediagram CarProductLine2 {
+  Car -> Engine;
+  Car -> ComfortFunctions;
+  Engine -> Gasoline ^ Electric ^ Hybrid ;
+  ComfortFunctions -> NavigationSystem?;
+  ComfortFunctions -> Radio;
+  ComfortFunctions -> AirConditioning?;
+}
+```
 
-The __conformance check__ verifies whether the concrete model (CM) is a refinement of the reference model (RM).
+The infotainment system of the previous product-line is incarnated by the combination 
+of the radio and navigation system. 
+The remaining features either have the same name or are new.
+As such, one would assume, that we only need to specify the incarnation of `InfotainmentSystem`
+in the incarnation mapping as follows:
 
-![](pics/Slide3.jpg)
-Due to the potential variance in names, a direct comparison between __sem(rm)__ and __sem(cm)__ is not feasible.
+```
+mapping CarMapping {
+  NavigationSystem ++ Radio ==> InfotainmentSystem;
+}
+```
 
-## Mapping
+However, this is a mistake, as the features `Electric` and `Hybrid` now exist 
+as alternative engine types to `Gasoline`.
+As such we have to map them accordingly:
 
-In feature diagrams, mapping refers to the process of establishing a relationship between concrete models and reference models. Concrete models represent specific instances or implementations of a system, while reference models represent an abstract representation of the system's features and behavior. Mapping allows you to relate the features in concrete models to the corresponding features in the reference model.
-
-
-
-Mapping in feature diagrams is applied by comparing the features present in concrete models with the features defined in the reference model. By identifying similarities and equivalences between the features, mapping relationships are established to relate the specific implementations in the concrete models to the desired or abstract representation in the reference model. This process helps in capturing and documenting the correspondence between the concrete and reference models, aiding in the validation and verification of the concrete models against the desired system representation.
-
-![](pics/Slide6.jpg)
-
-## Conformance Checks "Approach"
-
-__Input:__
-
-- Reference FD 
-- Concrete FD 
-- Mapping
-
-__Approach:__
-
-- Reduce  the problem to a Satisfiability Problem (SMT) .
-- Define the problem using SMT language, which allows writing First-Order Logic formulas.
-- Utilize the Z3 solver, a powerful tool for solving SMT formulas, to find values for variables that satisfy the formulas.
-
-__Output:__
-
-- If the concrete FD conforms to the reference FD and mapping, return "true" along with a witness configuration that satisfies the conditions.
-- If the concrete FD does not conform to the reference FD and mapping, return an indication that it is not conforming.
-
-__What is that?__
-- SMT is a language used to write formulas in First-Order Logic.
-
-__Z3:__
-
-- Z3 is a solver that can handle SMT formulas and find values for variables that make the formulas satisfiable.
-
-By following this revised design, you can leverage SMT and the Z3 solver to efficiently determine the conformance of the concrete FD to the reference FD and mapping.
-
-## _Transformation to SMT_
-
-FDs are prepositional logic formulas in Graphic Form.
-
-Transformations rules :
-- [ ] Each feature as a Boolean variable
-- [ ] Variable is true if the feature is present in the configuration
-- [ ] Tree properties and constraint transform as Formulas
-
-![](pics/Slide12.jpg)
-
-## Algorithm:
-
-![](pics/Slide17.jpg)
+```
+mapping CarMapping2 {
+  NavigationSystem ++ Radio ==> InfotainmentSystem;
+  Gasoline ==> Gasoline;
+  Electric ==> Gasoline;
+  Hybrid ==> Gasoline;
+}
+```
 
 
-## Motivating EXAMPLE:
 
-![](pics/Slide18.jpg)
+## Conformance Checker
 
-In Figure 1, we illustrate a valid conformance relation for the feature diagram. A tree structure on the left side is an implementation of a reference model. This reference model describes a concept and the necessary components for a machine.
-First, we need a machine name as root. In this case, it’s a machine. The root has two children, the ‘core Component’ and ‘Optional Component’.  For a valid structure, a machine must have a ‘core Component’ but an ‘Optional Component’ is optional, so the machine can have several or none optional parts.
-The tree on the right side is also the feature diagram with an example of a concrete model of a car component.  The car must have an Engine, which could be a gasoline, electric, or hybrid engine. For better habitability, the car can have other optional parts, such as a navigation system, an air conditioner, central locking system.
-As we can see, reference and concrete models have a similar tree structure. Both models have compulsory parts and optional parts, which means the concrete model has similar associations as the reference model.
-However, we can't be judged for conformance yet.
-For a valid conformance relation, we need to describe how our mapping works. The Arrow from right to left is a mapping, and each element from the concrete model must be stated to an element on the reference model.
-So, in this example, we state all rules.  The mapping is valid, and there is a conformance relation between a concrete and reference model.
+The conformance checker determines based on the aforementioned requirements whether a concrete
+Feature Diagram conforms to a reference Feature Diagram concerning a given incarnation mapping.
+As such, it takes two (2) Feature Diagrams and one (1) mapping as input and produces 
+a corresponding _diff-witness_ in the case of non-conformance.
+This witness is a feature configuration of the concrete model that does not correspond to any
+instance of the reference model, thus demonstrating that the concrete model does not refine
+the reference model, i.e. the meaning/essence of the reference model was not preserved.
+Otherwise, the tool simply confirms the concrete model's conformance to the reference model.
 
-![](pics/Slide5.jpg)
+The conformance checker operates by reducing the conformance problem to an equivalent instance
+of a satisfiability problem.
+The Feature Diagrams and mappings are translated to propositional formulas: 
+Each feature corresponding to a Boolean variable.
+A child feature always implies its parent feature.
+A parent feature also implies mandatory child features.
+Inclusive and exclusive selections of child features are translated 
+using corresponding disjunctions.
+Similarly, a _requires_-relations is translated into an implication, 
+and an _excludes_-relations implies the negation of the targeted feature.
+Each mapping rule is translated to an implication, as well.
+Finally, the formula representing the reference model is negated and conjoined with the others.
+If the resulting formula is satisfiable, the concrete model is non-conforming, 
+as any valid assignment of the Boolean variables represents a diff-witness.
+If it unsatisfiable, then each feature configuration of the concrete model must have a 
+corresponding instance of the reference model, and conformance holds.
+
+The tool can be used by executing the `FDConf.jar ` with corresponding input parameters:
+```
+java -jar fd-conformance/target/libs/FDConf.jar --reference "Reference.fd" --concrete "Concrete.fd" --map "Mapping.map"
+```
+
+### Example:
+
+If we consider the previous example with the incomplete `CarMapping` and execute the `FDConf.jar ` 
+with
+
+```
+java -jar fd-conformance/target/libs/FDConf.jar --reference "CarProductLine1.fd" --concrete "CarProductLine2.fd" --map "CarMapping.map"
+```
+
+the tool outputs the following:
+
+```
+===== Check if CarProductLine2 conforms to CarProductLine1 with respect to CarMapping =====
+===== NOT CONFORM =====
+Concrete Configuration: [ComfortFunctions, Hybrid, Car, Radio, Engine] is valid.
+Reference Configuration: [Car, Engine] is NOT allowed!
+```
+
+If instead we use the complete `CarMapping2`, we simply get:
+```
+===== Check if CarProductLine2 conforms to CarProductLine1 with respect to CarMapping2 =====
+===== CONFORM =====
+```
+
+
+
  

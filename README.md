@@ -45,8 +45,9 @@ describe the [tools](#tools) that the FDL provides to process FD models
 and to perform analyses on the FDs.
 
 ## Project Structure
-* [**doc**](doc) contains slides and images used for the documentation of the language
-* [**fd-analysis**](fd-analysis) contains several FD analyses and a tool to execute these 
+* [**doc**](doc) contains slides, images and examples used for the documentation of the language
+* [**fd-analysis**](fd-analysis) contains several FD analyses and a tool to execute these
+* [**fd-conformance**](fd-conformance) contains an SMT-based conformance checker implementation
 * [**fd-lang**](fd-lang) contains the technical realization of the languages
   * The FD language is documented [here](fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md)
   * The FC languages are documented [here](fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.md)
