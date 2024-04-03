@@ -1,3 +1,5 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+
 # Checking Conformance to Reference Feature Diagrams
 
 #### Foreword:
