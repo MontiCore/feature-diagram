@@ -52,7 +52,7 @@ public class FeatureDiagramSymbolDeSer extends FeatureDiagramSymbolDeSerTOP {
   }
 
   @Override
-  public FeatureDiagramSymbol deserialize(IFeatureDiagramScope scope, JsonObject symbolJson) {
+  public FeatureDiagramSymbol deserialize(JsonObject symbolJson) {
     FeatureDiagramSymbolBuilder builder = FeatureDiagramMill.featureDiagramSymbolBuilder();
     builder.setName(symbolJson.getStringMember(JsonDeSers.NAME));
     FeatureDiagramSymbol symbol = builder.build();
