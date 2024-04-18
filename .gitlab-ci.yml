@@ -64,7 +64,6 @@ checkArtifacts:
     - "gradle checkArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
     - "gradle checkArtifactsFeatureConfiguration $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
     - "gradle checkArtifactsFeatureConfigurationPartial $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
-  allow_failure: true
 
 # Mirrors this repository's `develop` and `master` branches to GitHub.
 #
