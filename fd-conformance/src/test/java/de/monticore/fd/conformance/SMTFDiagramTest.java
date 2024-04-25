@@ -67,7 +67,7 @@ public class SMTFDiagramTest extends FDAbstractTest {
   public void testRequiresAndExcludes() {
     Set<String> config = getFeatureConfiguration(smtFDiagram, solver.getModel());
     System.out.println(config);
-    boolean res = config.contains("K") ^ config.contains("L");
+    boolean res = !config.contains("L");
     Assertions.assertTrue(res);
   }
 }

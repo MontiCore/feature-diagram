@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+classdiagram ValidWithAll {
+  class Account ;
+  class Item ;
+  class Clazz ;
+
+  association hasItems Account -> (items)Item;
+  association items Item -> (clazz)Clazz;
+}

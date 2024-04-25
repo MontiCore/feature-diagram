@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+featurediagram Reference {
+  CD -> Account & Item & Clazz? & hasItems? & Clazz1? & Clazz2? ;
+  Clazz -> items;
+  Clazz1 excludes Clazz2;
+}
+

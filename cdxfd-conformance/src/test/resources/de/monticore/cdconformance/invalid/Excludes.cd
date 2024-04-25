@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+classdiagram Excludes {
+  class Account ;
+  class Item ;
+  class Clazz ;
+  class Clazz1;
+  class Clazz2;
+
+  association hasItems Account -> (items)Item;
+  association items Item -> (clazz)Clazz;
+}

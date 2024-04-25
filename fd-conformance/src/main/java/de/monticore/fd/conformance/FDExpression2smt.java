@@ -54,11 +54,12 @@ public class FDExpression2smt extends OCLExprConverter<Z3ExprAdapter> {
   protected Z3ExprAdapter convert(ASTRequires requires) {
     return eFactory.mkImplies(convertExpr(requires.getLeft()), convertExpr(requires.getRight()));
   }
-
+  // a excludes b   means !a || !b
   protected Z3ExprAdapter convert(ASTExcludes excludes) {
     BoolExpr left = (BoolExpr) convertExpr(excludes.getLeft()).getExpr();
     BoolExpr right = (BoolExpr) convertExpr(excludes.getRight()).getExpr();
-    return new Z3ExprAdapter(ctx.mkXor(left, right), (Z3TypeAdapter) tFactory.mkBoolType());
+    return new Z3ExprAdapter(
+        ctx.mkOr(ctx.mkNot(left), ctx.mkNot(right)), (Z3TypeAdapter) tFactory.mkBoolType());
   }
 
   @Override
