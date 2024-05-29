@@ -131,6 +131,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
         + "    {\n"
         + "      \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
         + "      \"name\": \"PremiumPhone\",\n"
+        + "      \"fullName\": \"PremiumPhone\",\n"
         + "      \"featureDiagram\": \"Phone\",\n"
         + "      \"selectedFeatures\": [\n"
         + "        \"Phone\",\n"
