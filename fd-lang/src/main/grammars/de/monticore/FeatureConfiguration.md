@@ -18,7 +18,7 @@ This document is intended for  **language engineers** who extend, adapt or embed
 
 # MontiCore Feature Configuration Languages
 
-[[_TOC_]]
+
 
 This project contains two alternative languages for modeling feature configurations.
 The language for feature configurations enables modeling feature configurations that select
