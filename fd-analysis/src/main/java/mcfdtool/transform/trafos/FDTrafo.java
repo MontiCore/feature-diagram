@@ -25,7 +25,7 @@ public class FDTrafo implements FeatureDiagramVisitor2 {
   public void apply(ASTFeatureDiagram fd, FlatZincModel result) {
     this.flatZincModel = result;
 
-    FeatureDiagramTraverser traverser = FeatureDiagramMill.traverser();
+    FeatureDiagramTraverser traverser = FeatureDiagramMill.inheritanceTraverser();
     traverser.add4FeatureDiagram(this);
     fd.accept(traverser);
 

@@ -30,7 +30,7 @@ public class UseSelectBlock implements FeatureConfigurationASTFeatureConfigurati
     protected FeatureConfigurationPartialTraverser traverser;
 
     public Checker(ASTFeatureConfiguration node) {
-      this.traverser = FeatureConfigurationPartialMill.traverser();
+      this.traverser = FeatureConfigurationPartialMill.inheritanceTraverser();
       traverser.add4FeatureConfiguration(this);
       node.accept(traverser);
     }

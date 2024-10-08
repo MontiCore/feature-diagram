@@ -16,7 +16,7 @@ import java.util.List;
 public class OptionalFeatureCollector implements FeatureDiagramVisitor2 {
 
   public static List<String> getOptionalFeatures(ASTFeatureDiagram fd){
-    FeatureDiagramTraverser traverser  = FeatureDiagramMill.traverser();
+    FeatureDiagramTraverser traverser  = FeatureDiagramMill.inheritanceTraverser();
     OptionalFeatureCollector visitor = new OptionalFeatureCollector();
     traverser.add4FeatureDiagram(visitor);
     fd.accept(traverser);

@@ -22,7 +22,7 @@ public class ValidConstraintExpression implements FeatureDiagramASTFeatureConstr
     ASTExpression expression = node.getConstraint();
     Checker checker = new Checker(expression);
 
-    FeatureDiagramTraverser traverser = FeatureDiagramMill.traverser();
+    FeatureDiagramTraverser traverser = FeatureDiagramMill.inheritanceTraverser();
     traverser.add4CommonExpressions(checker);
     expression.accept(traverser);
   }

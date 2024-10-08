@@ -25,7 +25,7 @@ public class FCTrafo implements FeatureConfigurationPartialVisitor2, FeatureConf
     flatZincModel = result;
     //run the visitor to add constraints for selected features
 
-    FeatureConfigurationPartialTraverser traverser = FeatureConfigurationPartialMill.traverser();
+    FeatureConfigurationPartialTraverser traverser = FeatureConfigurationPartialMill.inheritanceTraverser();
     traverser.add4FeatureConfiguration(this);
     traverser.add4FeatureConfigurationPartial(this);
     fc.accept(traverser);

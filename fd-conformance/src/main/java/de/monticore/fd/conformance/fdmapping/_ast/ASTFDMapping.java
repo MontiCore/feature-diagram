@@ -39,7 +39,7 @@ public class ASTFDMapping extends ASTFDMappingTOP {
           }
         };
 
-    FDMappingTraverser traverser = FDMappingMill.traverser();
+    FDMappingTraverser traverser = FDMappingMill.inheritanceTraverser();
     traverser.add4FDMapping(featureCollector);
     this.accept(traverser);
   }

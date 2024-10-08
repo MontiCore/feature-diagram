@@ -33,7 +33,7 @@ public class CrossTreeConstraintTrafo implements FeatureDiagramVisitor2,
   private Map<ASTNode, Variable> variables;
 
   public static void apply(ASTFeatureDiagram fd, FlatZincModel result) {
-    FeatureDiagramTraverser traverser = FeatureDiagramMill.traverser();
+    FeatureDiagramTraverser traverser = FeatureDiagramMill.inheritanceTraverser();
 
 
     //create all variables for cross-tree constraints (at once, to yield unique names)

@@ -17,7 +17,7 @@ import java.util.List;
 public class UnSelectedFeatureCollector implements FeatureConfigurationPartialVisitor2 {
 
   public static List<String> getSelectedFeatures(ASTFeatureConfiguration fc){
-    FeatureConfigurationPartialTraverser traverser = FeatureConfigurationPartialMill.traverser();
+    FeatureConfigurationPartialTraverser traverser = FeatureConfigurationPartialMill.inheritanceTraverser();
     UnSelectedFeatureCollector fcpVisitor = new UnSelectedFeatureCollector();
     SelectedFeatureCollector fcVisitor = new SelectedFeatureCollector();
     traverser.add4FeatureConfigurationPartial(fcpVisitor);
@@ -30,7 +30,7 @@ public class UnSelectedFeatureCollector implements FeatureConfigurationPartialVi
   }
 
   public static List<String> getExcludedFeatures(ASTFeatureConfiguration fc){
-    FeatureConfigurationPartialTraverser traverser = FeatureConfigurationPartialMill.traverser();
+    FeatureConfigurationPartialTraverser traverser = FeatureConfigurationPartialMill.inheritanceTraverser();
     UnSelectedFeatureCollector visitor = new UnSelectedFeatureCollector();
     traverser.add4FeatureConfigurationPartial(visitor);
     fc.accept(traverser);

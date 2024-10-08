@@ -25,7 +25,7 @@ public class FeatureNamesCollector implements FeatureDiagramVisitor2 {
   protected FeatureDiagramTraverser traverser;
 
   public FeatureNamesCollector(){
-    traverser = FeatureDiagramMill.traverser();
+    traverser = FeatureDiagramMill.inheritanceTraverser();
     occurrences = new HashMap<>();
     traverser.add4FeatureDiagram(this);
   }

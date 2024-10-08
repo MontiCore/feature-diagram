@@ -62,7 +62,7 @@ public class CDxFDConformance {
     potentialOptFeatures.removeIf(
         name -> CDxFDConformanceUtil.collectFeaturesNames(fc).contains(name));
 
-    CD4CodeTraverser traverser = CD4CodeMill.traverser();
+    CD4CodeTraverser traverser = CD4CodeMill.inheritanceTraverser();
     AddOptionalStereotypeTrafo visitor = new AddOptionalStereotypeTrafo(potentialOptFeatures);
     traverser.add4CDInterfaceAndEnum(visitor);
     traverser.add4CDAssociation(visitor);
