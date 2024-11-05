@@ -27,7 +27,7 @@ In the following, we will describe the concept and implementation of this
 tooling in greater detail.
 
 
-[[_TOC_]]
+
 
 ## Feature Diagrams
 Feature Diagrams are used to model product-lines and configuration options.
