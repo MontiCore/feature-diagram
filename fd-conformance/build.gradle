@@ -20,7 +20,7 @@ project(':fd-conformance') {
         implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
         implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
         implementation group: 'de.monticore', name: 'class2mc', version: mc_version
-        implementation group: 'de.monticore.lang', name: 'fd-lang', version: mc_version
+        implementation project(':fd-lang')
         implementation group: 'com.google.guava', name: 'guava', version: guava_version
         implementation group: 'de.monticore.lang.ocl', name: 'ocl2smt', version: mc_version
         implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
@@ -32,9 +32,6 @@ project(':fd-conformance') {
 
 
         implementation "de.se_rwth.commons:se-commons-groovy:$mc_version"
-        grammar("de.monticore.lang:fd-lang:$mc_version") {
-            capabilities { requireCapability("de.monticore.lang:fd-lang-grammars") }
-        }
         grammar("de.monticore:monticore-grammar:$mc_version") {
             capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
         }

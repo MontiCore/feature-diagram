@@ -22,7 +22,7 @@ project(':cdxfd-conformance') {
         implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
         implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
         implementation group: 'de.monticore', name: 'class2mc', version: mc_version
-        implementation group: 'de.monticore.lang', name: 'fd-lang', version: mc_version
+        implementation project (':fd-lang')
         implementation group: 'com.google.guava', name: 'guava', version: guava_version
         implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
         implementation 'tools.aqua:z3-turnkey:4.11.2'
