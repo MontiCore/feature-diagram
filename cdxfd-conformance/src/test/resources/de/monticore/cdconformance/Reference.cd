@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.lang.String;
+
+classdiagram Reference {
+  class Account ;
+  class Item;
+  class Clazz; //is made optional in the FD
+
+  class Clazz1 ;
+  class Clazz2 ;
+
+  association hasItems Account -> (items)Item; //made optional in the FD
+  association items Item -> (clazz)Clazz; //mandatory when we have clazz
+}

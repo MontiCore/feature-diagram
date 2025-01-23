@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 featurediagram Concrete {
   CoolCar2 -> Engine;
   CoolCar2 -> ComfortFunctions;

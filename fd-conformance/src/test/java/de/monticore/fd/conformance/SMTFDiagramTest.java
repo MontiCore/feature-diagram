@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.fd.conformance;
 
 import com.microsoft.z3.*;
@@ -65,7 +67,7 @@ public class SMTFDiagramTest extends FDAbstractTest {
   public void testRequiresAndExcludes() {
     Set<String> config = getFeatureConfiguration(smtFDiagram, solver.getModel());
     System.out.println(config);
-    boolean res = config.contains("K") ^ config.contains("L");
+    boolean res = !config.contains("L");
     Assertions.assertTrue(res);
   }
 }

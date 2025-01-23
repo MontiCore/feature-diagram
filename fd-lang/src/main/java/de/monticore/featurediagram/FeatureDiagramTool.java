@@ -14,7 +14,6 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 
-import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -195,7 +194,7 @@ public class FeatureDiagramTool extends FeatureDiagramToolTOP {
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("java -jar MCFeatureDiagram.jar", options, true);
-      Log.error("0xFD114 An exception occured while processing the CLI input!", e);
+      Log.error("0xFD114 An exception occured while processing the CLI input: " + e.getMessage());
     }
   }
 
@@ -204,8 +203,11 @@ public class FeatureDiagramTool extends FeatureDiagramToolTOP {
     print(FeatureDiagramMill.prettyPrint(ast, true), file);
   }
 
+  /**
+   * @param path if null prints to System.out.
+   */
   @Override
-  public void print(String content, @Nullable String path) {
+  public void print(String content, String path) {
     // print to stdout or file - allow path to be null
     if (path == null || path.isEmpty()) {
       System.out.println(content);

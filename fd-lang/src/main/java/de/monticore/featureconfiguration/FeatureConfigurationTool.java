@@ -16,7 +16,6 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 
-import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -189,7 +188,7 @@ public class FeatureConfigurationTool extends FeatureConfigurationToolTOP {
     catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("java -jar MCFeatureConfiguration.jar", options, true);
-      Log.error("0xFC103 An exception occured while processing the CLI input!", e);
+      Log.error("0xFC103 An exception occured while processing the CLI input: " +  e.getMessage());
     }
   }
 
@@ -198,9 +197,12 @@ public class FeatureConfigurationTool extends FeatureConfigurationToolTOP {
     print(FeatureConfigurationMill.prettyPrint(ast, true), file);
   }
 
+  /**
+   * @param path if null, prints to System.out.
+   */
   @Override
-  public void print(String content, @Nullable String path) {
-// print to stdout or file
+  public void print(String content, String path) {
+    // print to stdout or file
     if (path == null || path.isEmpty()) {
       System.out.println(content);
     } else {

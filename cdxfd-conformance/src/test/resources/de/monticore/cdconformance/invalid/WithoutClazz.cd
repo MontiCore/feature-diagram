@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import java.lang.String;
+
+classdiagram WithoutClazz {
+  class Account ;
+  class Item ;
+
+  association items Item -> (clazz)Clazz;
+}

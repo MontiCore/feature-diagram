@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 mapping Mapping1 {
   Burger ==> Burger ;
   Beilage ==> Bread ;

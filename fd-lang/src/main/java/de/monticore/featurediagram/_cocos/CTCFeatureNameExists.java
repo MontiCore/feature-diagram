@@ -37,7 +37,7 @@ public class CTCFeatureNameExists implements FeatureDiagramASTFeatureDiagramCoCo
 
     public Checker(ASTFeatureDiagram node) {
       ctcnames = new HashMap<>();
-      traverser = FeatureDiagramMill.traverser();
+      traverser = FeatureDiagramMill.inheritanceTraverser();
       traverser.add4ExpressionsBasis(this);
       node.accept(traverser);
     }

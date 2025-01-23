@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.fd.conformance.fdmapping._ast;
 
 import de.monticore.fd.conformance.fdmapping.FDMappingMill;
@@ -37,7 +39,7 @@ public class ASTFDMapping extends ASTFDMappingTOP {
           }
         };
 
-    FDMappingTraverser traverser = FDMappingMill.traverser();
+    FDMappingTraverser traverser = FDMappingMill.inheritanceTraverser();
     traverser.add4FDMapping(featureCollector);
     this.accept(traverser);
   }

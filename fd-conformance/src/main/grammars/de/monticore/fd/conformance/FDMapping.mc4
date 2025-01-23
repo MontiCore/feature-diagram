@@ -1,14 +1,33 @@
 /* (c) https://github.com/MontiCore/monticore */
 package de.monticore.fd.conformance;
 
+/* This is a prototypical MontiCore grammar for defining incarnation mappings for Feature Diagrams.
+ * Adaptations might not be conservative. */
+
 grammar FDMapping extends  de.monticore.MCBasics {
 
-symbol scope FDMapping = "mapping" name:Name "{"(FDMappingRule)* "}";
+  /**
+   * An FDMapping encodes an incarnation mapping between a concrete Feature Diagram
+   * and reference Feature Diagram.
+   */
+  symbol scope FDMapping = "mapping" Name "{"(FDMappingRule)* "}";
 
-FDMapElement = Name ;
+  /**
+   * An FDMappingRule maps a compositions of elements of the concrete FD (on the left)
+   * to an element of the reference FD (on the right).
+   */
+  FDMappingRule = leftSide:FDElementComposition "==>" rightSide:FDMapElement ";";
 
-FDElementComposition  = FDMapElement ("++" FDMapElement)*;
+  /**
+   * An FDElementComposition constitutes a composition of FDMapElements.
+   * It is used to enable incarnation of reference features via compositions of concrete features
+   */
+  FDElementComposition  = FDMapElement ("++" FDMapElement)*;
 
-FDMappingRule = leftSide:FDElementComposition "==>" rightSide:FDMapElement ";";
+  /**
+   * An FDMapElement represents either a concrete or reference element.
+   * Currently we consider only features which are referenced via name.
+   */
+  FDMapElement = Name ;
 
 }

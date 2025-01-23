@@ -157,6 +157,8 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
         + "    {\n"
         + "      \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
         + "      \"name\": \"BasicCarNavigation\",\n"
+        + "      \"fullName\": \"fcvalid.BasicCarNavigation\",\n"
+        + "      \"packageName\": \"fcvalid\",\n"
         + "      \"featureDiagram\": \"fdvalid.CarNavigation\",\n"
         + "      \"selectedFeatures\": [\n"
         + "        \"CarNavigation\",\n"

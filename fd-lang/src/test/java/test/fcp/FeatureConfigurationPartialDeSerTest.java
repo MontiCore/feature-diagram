@@ -112,6 +112,8 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
         + "    {"
         + "      \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\","
         + "      \"name\": \"BasicCarNavigation\","
+        + "      \"fullName\": \"fcvalid.BasicCarNavigation\","
+        + "      \"packageName\": \"fcvalid\","
         + "      \"featureDiagram\": \"fdvalid.CarNavigation\","
         + "        \"selectedFeatures\": ["
         + "        \"CarNavigation\","

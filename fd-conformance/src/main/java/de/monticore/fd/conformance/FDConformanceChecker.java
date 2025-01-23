@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.fd.conformance;
 
 import com.microsoft.z3.*;
@@ -51,7 +53,7 @@ public class FDConformanceChecker {
     } else {
       Log.println("===== NOT CONFORM =====");
       Model model = solver.getModel();
-      Log.println("Concrete Configuration: " + computeWitness(con, model)  + "is valid.");
+      Log.println("Concrete Configuration: " + computeWitness(con, model) + "is valid.");
       Log.println("Reference Configuration: " + computeWitness(ref, model) + " is NOT allowed!");
 
       return false;

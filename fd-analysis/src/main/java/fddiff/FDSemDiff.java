@@ -86,7 +86,7 @@ public class FDSemDiff {
       ff::variable, Function.identity()
     ));
 
-    FeatureDiagramTraverser traverser = FeatureDiagramMill.traverser();
+    FeatureDiagramTraverser traverser = FeatureDiagramMill.inheritanceTraverser();
     FD2Formula trafo = new FD2Formula(ff);
     traverser.add4FeatureDiagram(trafo);
     // traverser.setFeatureDiagramHandler(trafo);

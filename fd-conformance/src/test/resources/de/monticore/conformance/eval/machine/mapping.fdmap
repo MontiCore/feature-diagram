@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 mapping Map {
 Car ==> Machine;
 Engine ==> CoreComponent;

@@ -81,6 +81,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testParseValidModel() {
+    FeatureConfigurationPartialMill.reset();
     FeatureConfigurationPartialTool
         .main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
     FeatureConfigurationPartialTool
@@ -130,6 +131,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
         + "    {\n"
         + "      \"kind\": \"de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol\",\n"
         + "      \"name\": \"PremiumPhone\",\n"
+        + "      \"fullName\": \"PremiumPhone\",\n"
         + "      \"featureDiagram\": \"Phone\",\n"
         + "      \"selectedFeatures\": [\n"
         + "        \"Phone\",\n"

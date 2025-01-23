@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7.4.2-jdk11
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7.6.4-jdk11
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
@@ -64,7 +64,6 @@ checkArtifacts:
     - "gradle checkArtifactsFeatureDiagram $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
     - "gradle checkArtifactsFeatureConfiguration $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
     - "gradle checkArtifactsFeatureConfigurationPartial $GRADLE_OPTS $ARGS3 -PmavenPassword=$pass -PmavenUser=$user"
-  allow_failure: true
 
 # Mirrors this repository's `develop` and `master` branches to GitHub.
 #
@@ -104,9 +103,8 @@ githubmirror:
     - (git commit -m "[Mirror] Replace all internal links and references") || true
     - git remote add github git@github.com:MontiCore/feature-diagram.git
     - git push github $CI_COMMIT_BRANCH --force
-  only:
-    - develop
-    - master
+  rules:
+    - when: never
 
 
 # trigger_langexp:                        

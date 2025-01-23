@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 import com.github.sherter.googlejavaformatgradleplugin.VerifyGoogleJavaFormat
 plugins {
     id 'java'
@@ -18,7 +20,7 @@ project(':fd-conformance') {
         implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
         implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
         implementation group: 'de.monticore', name: 'class2mc', version: mc_version
-        implementation group: 'de.monticore.lang', name: 'fd-lang', version: mc_version
+        implementation project(':fd-lang')
         implementation group: 'com.google.guava', name: 'guava', version: guava_version
         implementation group: 'de.monticore.lang.ocl', name: 'ocl2smt', version: mc_version
         implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
@@ -30,9 +32,6 @@ project(':fd-conformance') {
 
 
         implementation "de.se_rwth.commons:se-commons-groovy:$mc_version"
-        grammar("de.monticore.lang:fd-lang:$mc_version") {
-            capabilities { requireCapability("de.monticore.lang:fd-lang-grammars") }
-        }
         grammar("de.monticore:monticore-grammar:$mc_version") {
             capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
         }
@@ -75,7 +74,7 @@ project(':fd-conformance') {
     tasks.register('generateMapping', MCTask) {
         grammar = file "$grammarDir/de/monticore/fd/conformance/FDMapping.mc4"
         outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("Mapping.mc4")
+        def uptoDate = incCheck("FDMapping.mc4")
         outputs.upToDateWhen { uptoDate }
     }
 
@@ -92,7 +91,7 @@ project(':fd-conformance') {
             attributes "Main-Class": "de.monticore.fd.conformance.FDConformanceTool"
         }
 
-        archiveFileName = "FDConf.jar"
+        archiveFileName = "MCFDC.jar"
         destinationDirectory = file('target/libs')
         archiveClassifier = "tool"
 

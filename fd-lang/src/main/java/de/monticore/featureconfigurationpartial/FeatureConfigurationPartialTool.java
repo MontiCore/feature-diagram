@@ -17,7 +17,6 @@ import de.se_rwth.commons.Names;
 import de.se_rwth.commons.logging.Log;
 import org.apache.commons.cli.*;
 
-import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -134,6 +133,7 @@ public class FeatureConfigurationPartialTool extends FeatureConfigurationPartial
    * @param args
    */
   public void run(String[] args) {
+    init();
     Options options = initOptions();
 
     try {

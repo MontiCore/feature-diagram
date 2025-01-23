@@ -1,3 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+
 package de.monticore.fd.conformance;
 
 import de.monticore.fd.conformance.fdmapping._ast.ASTFDMapping;
@@ -52,7 +54,7 @@ public class FDConformanceTool extends FeatureDiagramToolTOP {
     } catch (Exception e) {
       HelpFormatter formatter = new HelpFormatter();
       formatter.printHelp("java -jar MCFeatureDiagram.jar", options, true);
-      Log.error("0xFD114 An exception occured while processing the CLI input!", e);
+      Log.error("0xFD114 An exception occured while processing the CLI input:" + e.getMessage());
     }
   }
 
@@ -74,11 +76,7 @@ public class FDConformanceTool extends FeatureDiagramToolTOP {
             .build());
 
     options.addOption(
-        Option.builder("m")
-            .longOpt("map")
-            .desc("Introduce mapping file ")
-            .numberOfArgs(1)
-            .build());
+        Option.builder("m").longOpt("map").desc("Introduce mapping file ").numberOfArgs(1).build());
 
     return options;
   }
@@ -94,7 +92,14 @@ public class FDConformanceTool extends FeatureDiagramToolTOP {
     Log.info("Loading and checking  mapping.....", logName);
     ASTFDMapping mapping = FDLoader.loadAndCheckMapping(refPath, conPath, mappingPath);
 
-    Log.println("===== Check if "+ con.getFeatureDiagram().getName() + " conforms to " + ref.getFeatureDiagram().getName() + " with respect to " + mapping.getName() + " =====");
+    Log.println(
+        "===== Check if "
+            + con.getFeatureDiagram().getName()
+            + " conforms to "
+            + ref.getFeatureDiagram().getName()
+            + " with respect to "
+            + mapping.getName()
+            + " =====");
     FDConformanceChecker.checkConformance(ref, con, mapping);
   }
 }

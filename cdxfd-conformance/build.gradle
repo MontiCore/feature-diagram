@@ -1,0 +1,85 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+import com.github.sherter.googlejavaformatgradleplugin.VerifyGoogleJavaFormat
+plugins {
+    id 'java'
+    id 'java-gradle-plugin'
+    id 'jacoco'
+    id 'monticore' version "$mc_version"
+    id 'maven-publish'
+    id "com.github.sherter.google-java-format" version "0.9"
+
+}
+
+project(':cdxfd-conformance') {
+
+    dependencies {
+        implementation project(':fd-conformance')
+
+        implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
+        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
+        implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
+        implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
+        implementation group: 'de.monticore.lang', name: 'cd4analysis', version: mc_version
+        implementation group: 'de.monticore', name: 'class2mc', version: mc_version
+        implementation project (':fd-lang')
+        implementation group: 'com.google.guava', name: 'guava', version: guava_version
+        implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+        implementation 'tools.aqua:z3-turnkey:4.11.2'
+        implementation "de.monticore.lang:cd4analysis:$mc_version:cddiff"
+
+        testImplementation group: 'junit', name: 'junit', version: junit_version
+
+
+        implementation "de.se_rwth.commons:se-commons-groovy:$mc_version"
+        grammar("de.monticore.lang:fd-lang:$mc_version") {
+            capabilities { requireCapability("de.monticore.lang:fd-lang-grammars") }
+        }
+        grammar("de.monticore:monticore-grammar:$mc_version") {
+            capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    compileJava {
+        dependsOn project.collect { it.tasks.withType(MCTask) }
+    }
+
+    group = 'cd-conformance'
+    repositories {
+        if (("true") == getProperty('useLocalRepo')) {
+            mavenLocal()
+        }
+        maven {
+            credentials.username mavenUser
+            credentials.password mavenPassword
+            url repo
+        }
+        mavenCentral()
+    }
+
+    description = 'coming soon...'
+    buildDir = file("$projectDir/target")
+    def grammarDir = 'src/main/grammars'
+
+    googleJavaFormat {
+        exclude '**/target/**'
+    }
+
+    verifyGoogleJavaFormat {
+        ignoreFailures true
+        exclude "**"
+    }
+
+
+
+    tasks.register('checkfmt', VerifyGoogleJavaFormat) {}
+
+    tasks.register('fmt') {
+        dependsOn tasks.named("googleJavaFormat")
+    }
+
+}

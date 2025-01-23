@@ -25,14 +25,14 @@ or extending the feature configuration language is located
 
 
 
-The models of the feature diagram language (FDL) are called *feature diagrams (FDs)*. Sometimes
-the term feature model is used interchangeably. 
+The models of the feature diagram language (FDL) are called *feature diagrams 
+(FDs)*. Sometimes the term feature model is used interchangeably. 
 An FD describes a software or system family in terms of 
-(user-experienceable) features. FDs are used as variability models in
-the context of software product lines. *Feature configurations (FCs)* select features
-of a feature diagram and specify a product (or variant) of the product lines.
-This documentation does not provide a general holistic introduction to FDs
-and their applications, as this is provided by several books (e.g., 
+(user-experienceable) features. FDs are used as variability models in the 
+context of software product lines. *Feature configurations (FCs)* select 
+features of a feature diagram and specify a product (or variant) of the product
+lines. This documentation does not provide a general holistic introduction to 
+FDs and their applications, as this is provided by several books (e.g., 
 [[CE00]](https://dl.acm.org/doi/book/10.5555/345203), 
 [[CN02]](https://dl.acm.org/doi/book/10.5555/501065)) and 
 research papers (e.g., 
@@ -45,15 +45,25 @@ describe the [tools](#tools) that the FDL provides to process FD models
 and to perform analyses on the FDs.
 
 ## Project Structure
-* [**doc**](doc) contains slides and images used for the documentation of the language
-* [**fd-analysis**](fd-analysis) contains several FD analyses and a tool to execute these 
-* [**fd-lang**](fd-lang) contains the technical realization of the languages
-  * The FD language is documented [here](fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md)
-  * The FC languages are documented [here](fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.md)
+* [**cdxfd-conformance**](cdxfd-conformance) extends the conformance checker
+  for Class Diagrams in [**cd4analysis**](https://github.com/MontiCore/cd4analysis)
+  to check conformance towards 150% models. (Alpha-version)
+  * More information can be found [here](cdxfd-conformance/index.md).
+* [**doc**](doc) contains slides, images and examples used for the 
+  documentation of the language.
+* [**fd-analysis**](fd-analysis) contains several FD analyses and a tool to 
+  execute these.
+* [**fd-conformance**](fd-conformance) contains an SMT-based conformance 
+  checker implementation for reference FDs. (Beta-version)
+  * More information can be found [here](fd-conformance/index.md).
+* [**fd-lang**](fd-lang) contains the technical realization of the languages:
+  * The FD language is documented [here](fd-lang/src/main/grammars/de/monticore/FeatureDiagram.md).
+  * The FC languages are documented [here](fd-lang/src/main/grammars/de/monticore/FeatureConfiguration.md).
 
 ## Textual Syntax
 This section presents two examples for FDs: The phone example gives an overview
-over the textual syntax while the CarNavigation presents all syntax elements of the language.
+over the textual syntax while the CarNavigation presents all syntax elements of
+the language.
 
 Each FD has a name and a body that is surrounded by curly brackets.
 The body contains rules that define the feature tree. Each rule describes a 
@@ -83,21 +93,22 @@ The content of the FD begins with the keyword `featurediagram` followed
 by the FD's name (l. 1) and the FD body, enclosed by curly 
 braces. 
 
-The body of an FD contains feature rules that describe either relations between parent
-and child features (l. 3 and l. 7) or introduce subfeatures through feature 
-groups (l. 5). Further, the feature diagram may contain cross-tree constraints (l. 9).
-The root feature is determined automatically through the feature rules.
+The body of an FD contains feature rules that describe either relations between
+parent and child features (l. 3 and l. 7) or introduce subfeatures through 
+feature groups (l. 5). Further, the feature diagram may contain cross-tree 
+constraints (l. 9). The root feature is determined automatically through the 
+feature rules.
 
-Feature configurations start with the keyword `featureconfig` followed by an optional
-name of the feature configuration. Afterward, the feature configuration has to 
-indicate, which FD it belongs to. This begins with the keyword `for`, followed
-by the (qualified) name of the FD.
-The body of the feature configuration, enclosed in curly braces, contains a comma-separated
-list of selected feature names. 
-Please note that this syntax for feature configurations does not distinguish between 
-features that are not selected (yet) and features, which are "unselected". To this end, 
-a different feature configuration language has to be employed, e.g., to model step-wise configuration
-of FDs.
+Feature configurations start with the keyword `featureconfig` followed by an 
+optional name of the feature configuration. Afterward, the feature 
+configuration has to indicate, which FD it belongs to. This begins with the 
+keyword `for`, followed by the (qualified) name of the FD.
+The body of the feature configuration, enclosed in curly braces, contains a
+comma-separated list of selected feature names. 
+Please note that this syntax for feature configurations does not distinguish 
+between features that are not selected (yet) and features, which are 
+"unselected". To this end, a different feature configuration language has to 
+be employed, e.g., to model step-wise configuration of FDs.
 
 ###### CarNavigation Example 
 
@@ -136,8 +147,8 @@ subfeatures `Small`, `Medium`, and `Large` that are in a common xor group.
 The `Display` of the navigation must have either a `SmallScreen` behin the 
 steering wheel or a `LargeScreen` (e.g., in the center of the dashobard),
 or both. This is realized as an or group in the FD. 
-Further, the navigation system can have preinstalled maps. If maps are preinstalled,
-at least one and at most three region maps can be selected. 
+Further, the navigation system can have preinstalled maps. If maps are 
+preinstalled, at least one and at most three region maps can be selected. 
 The available regions are `Europe`, `NorthAmerica`, `SouthAmerica`, `Asia`, and 
 `Africa`.
 
@@ -176,7 +187,9 @@ To build the project, it is required to install a Java 8 JDK and git.
 ##### Step 2: Build Project with gradle
 
     gradle build --refresh-dependencies
-Afterwards, the jars of the tools are available in `fd-lang/target/libs` and `fd-analysis/target/libs`.
+
+Afterwards, the jars of the tools are available in `fd-lang/target/libs` and 
+`fd-analysis/target/libs`.
 
 
 ## Tool Documentation
