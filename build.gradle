@@ -2,7 +2,7 @@
 
 plugins {
   id "java"
-  id "monticore" version "$mc_version"
+  id "de.monticore.generator" version "$mc_version"
   id "maven-publish"
   id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
 }
@@ -58,46 +58,17 @@ subprojects {
 
 project(':fd-lang') {
   apply plugin: 'java'
-  apply plugin: 'monticore'
+  apply plugin: 'de.monticore.generator'
   apply plugin: 'com.github.johnrengelman.shadow'
 
   dependencies {
-    implementation group: 'org.antlr', name: 'antlr4-runtime', version: antlr_version
-    grammar("de.monticore:monticore-grammar:$mc_version") {
-      capabilities {
-        requireCapability("de.monticore:monticore-grammar-grammars")
-      }
-    }
+    grammar "de.monticore:monticore-grammar:$mc_version"
   }
 
   description = 'Feature Diagram Language'
 
-  task generateFeatureDiagram(type: MCTask) {
-    grammar = file "$grammarDir/de/monticore/FeatureDiagram.mc4"
-    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-    def uptoDate = incCheck("de/monticore/FeatureDiagram.mc4")
-    outputs.upToDateWhen { uptoDate }
-  }
-
-  task generateFeatureConfiguration(type: MCTask) {
-    grammar = file "$grammarDir/de/monticore/FeatureConfiguration.mc4"
-    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-    def uptoDate = incCheck("de/monticore/FeatureConfiguration.mc4")
-    outputs.upToDateWhen { uptoDate }
-  }
-
-  task generateFeatureConfigurationPartial(type: MCTask) {
-    grammar = file "$grammarDir/de/monticore/FeatureConfigurationPartial.mc4"
-    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-    def uptoDate = incCheck("de/monticore/FeatureConfigurationPartial.mc4")
-    outputs.upToDateWhen { uptoDate }
-  }
-
-  generateFeatureConfiguration.dependsOn(generateFeatureDiagram)
-  generateFeatureConfigurationPartial.dependsOn(generateFeatureConfiguration)
-
   sourceSets {
-    grammars {
+    grammarsForVariant {
       java.srcDirs = []
       resources {
         srcDirs([grammarDir])
@@ -108,9 +79,14 @@ project(':fd-lang') {
   }
 
   java {
+    // Deprecated feature, published for compatibility reasons
     registerFeature('grammars') {
-      usingSourceSet(sourceSets.grammars)
+      usingSourceSet(sourceSets.grammarsForVariant)
     }
+  }
+  // Ensure the grammars and GrammarsForVariant jars do not conflict
+  tasks.grammarsForVariantJar {
+    archiveClassifier = "grammars-compat"
   }
 
   /**
@@ -121,7 +97,7 @@ project(':fd-lang') {
   dependencies { MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: mlc_version) }
   StringJoiner joiner = new StringJoiner(" ")
   configurations.compileClasspath.resolve().each { joiner.add(it.toString()) }
-  configurations.grammar.resolve().each { joiner.add(it.toString()) }
+  configurations.grammarSymbolDependencies.resolve().each { joiner.add(it.toString()) }
   joiner.add "$projectDir/target/symbols"
   String mp = joiner.toString()
 
@@ -149,22 +125,11 @@ project(':fd-lang') {
   }
   // end integration with MLC
 
-  compileJava {
-    dependsOn project.collect { it.tasks.withType(MCTask) }
-  }
-
   // build sources jar with handwritten + generated sources
   task sourcesJar(type: Jar) {
     archiveClassifier = 'sources'
     from(sourceSets.main.allJava)
-  }
-
-  sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask) }
-
-  // build grammar jar as well
-  task grammarJar(type: Jar) {
-    archiveClassifier = 'grammars'
-    from("$projectDir/$grammarDir") { include "**/*.mc4" }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
   }
 
   shadowJar {
@@ -200,7 +165,6 @@ project(':fd-lang') {
     from zipTree(shadowJar.archiveFile)
   }
 
-//    jar.dependsOn(shadowJar)
   jar.dependsOn(buildFeatureConfigurationToolJar)
   jar.dependsOn(buildFeatureConfigurationToolPartialJar)
 
