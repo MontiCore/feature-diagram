@@ -5,7 +5,7 @@ plugins {
     id 'java'
     id 'java-gradle-plugin'
     id 'jacoco'
-    id 'monticore' version "$mc_version"
+    id 'de.monticore.generator' version "$mc_version"
     id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
     id 'maven-publish'
     id "com.github.sherter.google-java-format" version "0.9"  // Task "verifyGoogleJavaFormat" and "googleJavaFormat"
@@ -32,9 +32,7 @@ project(':fd-conformance') {
 
 
         implementation "de.se_rwth.commons:se-commons-groovy:$mc_version"
-        grammar("de.monticore:monticore-grammar:$mc_version") {
-            capabilities { requireCapability("de.monticore:monticore-grammar-grammars") }
-        }
+        grammar("de.monticore:monticore-grammar:$mc_version")
     }
 
     test {
@@ -60,7 +58,6 @@ project(':fd-conformance') {
 
     description = 'SLE-Project: Conformance Checking for Feature Diagrams'
     buildDir = file("$projectDir/target")
-    def grammarDir = 'src/main/grammars'
 
     googleJavaFormat {
         exclude '**/target/**'
@@ -70,13 +67,6 @@ project(':fd-conformance') {
         ignoreFailures true
         exclude "**"
     }  // do not check format in "build"
-
-    tasks.register('generateMapping', MCTask) {
-        grammar = file "$grammarDir/de/monticore/fd/conformance/FDMapping.mc4"
-        outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
-        def uptoDate = incCheck("FDMapping.mc4")
-        outputs.upToDateWhen { uptoDate }
-    }
 
     tasks.register('checkfmt', VerifyGoogleJavaFormat) {}
 
@@ -95,15 +85,5 @@ project(':fd-conformance') {
         destinationDirectory = file('target/libs')
         archiveClassifier = "tool"
 
-    }
-
-    sourceSets {
-        main.java.srcDirs += ["$projectDir/target/generated-sources/monticore/sourcecode"]
-        grammars {
-            resources {
-                srcDirs([grammarDir])
-                include "**/*.mc4"
-            }
-        }
     }
 }
