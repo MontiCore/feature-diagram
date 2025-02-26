@@ -39,6 +39,9 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
     fdTool.run("src/test/resources/phone/Phone.fd",
         Paths.get("target/symbols"));
+
+    // assure a clean globalScope afterwarts
+    FeatureConfigurationPartialMill.globalScope().clear();
   }
 
   public void redirectSysOut() {
@@ -108,7 +111,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
   public void testSymbolTable() {
     FeatureConfigurationPartialTool.main( new String[] {
         "-i", "src/test/resources/phone/PremiumPhone.fc",
-        "-path", "target/symbols",
+        "-path", "src/test/resources/phone/",
         "-s", "testSymbolTable.pfcsymbols"
     });
     assertTrue(new File("target/testSymbolTable.pfcsymbols").exists());
@@ -119,7 +122,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
   public void testSymbolTableWithoutArgs() {
     FeatureConfigurationPartialTool.main( new String[] {
         "-i", "src/test/resources/phone/PremiumPhone.fc",
-        "-path", "target/symbols",
+        "-path", "src/test/resources/phone/",
         "-s"
     });
 
@@ -157,7 +160,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
   public void testPrettyPrintToConsole() throws IOException {
     FeatureConfigurationPartialTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
-        "-path", "target/symbols",
+        "-path", "src/test/resources/",
         "-pp"
     });
 
@@ -183,7 +186,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
   public void testPrettyPrintToFile() throws IOException {
     FeatureConfigurationPartialTool.main(new String[] {
         "-i", validFC("BasicCarNavigation"),
-        "-path", "target/symbols",
+        "-path", "src/test/resources/",
         "-pp", "BasicCarNavigationOut.fc"
     });
 
