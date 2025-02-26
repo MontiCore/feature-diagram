@@ -47,7 +47,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("true"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -59,7 +59,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("false"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -76,7 +76,7 @@ public class FACTTest extends AbstractTest {
     Optional<ASTFCCompilationUnit> conf = parsers
         .parse_String("featureconfig " + products[products.length - 1]);
     assertTrue(conf.isPresent());
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -88,7 +88,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("B"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -100,7 +100,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("B"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -117,7 +117,7 @@ public class FACTTest extends AbstractTest {
     Optional<ASTFCCompilationUnit> conf = parsers
         .parse_String("featureconfig" + products[products.length - 1]);
     assertTrue(conf.isPresent());
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -134,7 +134,7 @@ public class FACTTest extends AbstractTest {
     Optional<ASTFCCompilationUnit> conf = parsers
         .parse_String("featureconfig" + products[products.length - 1]);
     assertTrue(conf.isPresent());
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -151,7 +151,7 @@ public class FACTTest extends AbstractTest {
     Optional<ASTFCCompilationUnit> conf = parsers
         .parse_String("featureconfig" + products[products.length - 1]);
     assertTrue(conf.isPresent());
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -163,7 +163,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("false"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -175,7 +175,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("true"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -187,7 +187,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.endsWith("2"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -271,7 +271,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.contains("Diff witness: "));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -285,7 +285,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.contains("The first input FD is a refinement of the second input FD."));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -298,7 +298,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.contains("The first input FD is a refinement of the second input FD."));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -312,7 +312,7 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.contains("Diff witness: "));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -322,6 +322,6 @@ public class FACTTest extends AbstractTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.startsWith("usage: java -jar MCFACT.jar <test1.fd> <test2.fd>? [analysis options]"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 }

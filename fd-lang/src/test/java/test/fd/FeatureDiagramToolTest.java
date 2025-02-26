@@ -51,7 +51,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.startsWith("usage: java -jar MCFeatureDiagram.jar"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -61,7 +61,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
     String printed = out.toString().trim();
     assertNotNull(printed);
     assertTrue(printed.startsWith("usage: java -jar MCFeatureDiagram.jar"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -70,7 +70,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
     FeatureDiagramTool.main(new String[] { "-i", validFD("GraphLibrary") });
     FeatureDiagramTool.main(new String[] { "-input", validFD("CarNavigation") });
     FeatureDiagramTool.main(new String[] { "-input", validFD("PhoneComplex") });
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -81,7 +81,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
             "-path", "src/test/resources/",
             "-s", "testSetPath.symbols"
         });
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -94,7 +94,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
         });
 
     assertTrue(new File("target/mytarget/test.symbols").exists());
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -104,7 +104,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
         "-s", "testSymbolTable.symbols"
     });
     assertTrue(new File("target/testSymbolTable.symbols").exists());
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test
@@ -182,7 +182,7 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
             + "    }\n"
             + "  ]\n"
             + "}", printed);
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
 
@@ -194,20 +194,20 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
     });
     Optional<ASTFDCompilationUnit> astOpt = FeatureDiagramMill.parser().parse(validFD("BasicElements"));
     assertPresent(astOpt);
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
 
     String printed = out.toString().trim();
     assertNotNull(printed);
 
     Optional<ASTFDCompilationUnit> prettyAstOpt = FeatureDiagramMill.parser().parse_String(printed);
     assertPresent(prettyAstOpt);
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
 
     if (!astOpt.get().deepEqualsWithComments(prettyAstOpt.get())) {
       assertEquals("Failed to deep equals", Files.readString(new File(validFD("BasicElements")).toPath()), printed);
       fail("Failed to deep equals"); // make sure to fail
     }
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   private String validFD(String name) {

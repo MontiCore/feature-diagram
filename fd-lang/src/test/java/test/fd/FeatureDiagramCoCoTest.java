@@ -33,7 +33,7 @@ public class FeatureDiagramCoCoTest extends AbstractLangTest {
     FeatureDiagramCoCos.checkAll(readFile(dir + "CarNavigation.fd"));
     FeatureDiagramCoCos.checkAll(readFile(dir + "GraphLibrary.fd"));
     FeatureDiagramCoCos.checkAll(readFile(dir + "Phone.fd"));
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   @Test

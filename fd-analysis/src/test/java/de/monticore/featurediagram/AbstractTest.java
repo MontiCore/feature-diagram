@@ -57,6 +57,13 @@ public class AbstractTest {
     Assert.assertTrue(!opt.isPresent());
   }
 
+  protected void assertNoFindings() {
+    Assert.assertTrue(Log.getFindings().stream()
+            .map(Finding::buildMsg)
+            .collect(Collectors.joining(System.lineSeparator())),
+        Log.getFindings().isEmpty());
+  }
+
   public static void assertErrorCode(String... errorCodes) {
     for (String errorCode : errorCodes) {
       assertErrorCode(errorCode);

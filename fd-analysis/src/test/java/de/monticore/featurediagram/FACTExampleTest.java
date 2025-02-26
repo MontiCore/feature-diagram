@@ -22,7 +22,7 @@ public class FACTExampleTest extends AbstractTest {
   @Test
   public void test(){
     factExampleInReadme();
-    assertEquals(0, Log.getErrorCount());
+    assertNoFindings();
   }
 
   public void factExampleInReadme(){

@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.fail;
 
@@ -54,6 +55,12 @@ public class AbstractLangTest {
     FeatureDiagramMill.globalScope().clear();
   }
 
+  protected void assertNoFindings() {
+    Assert.assertTrue(Log.getFindings().stream()
+            .map(Finding::buildMsg)
+            .collect(Collectors.joining(System.lineSeparator())),
+        Log.getFindings().isEmpty());
+  }
 
   protected static void assertPresent(Optional<?> opt) {
     Assert.assertTrue(opt.isPresent());
