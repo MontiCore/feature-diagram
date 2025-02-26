@@ -111,7 +111,7 @@ project(':fd-lang') {
       group = 'mlc'
       mainClass = 'de.monticore.mlc.MLTool'
       args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-all"
-      dependsOn("generate${mlcName}")
+      dependsOn("generateMCGrammars")
     }
 
     task "checkArtifacts${mlcName}"(type: JavaExec) {
@@ -119,7 +119,7 @@ project(':fd-lang') {
       group = 'MLC'
       mainClass = 'de.monticore.mlc.MLCTool'
       args "-input", f, "-projectDir", projectDir, "-mp", mp, "-s", "-check"
-      dependsOn("generate${mlcName}")
+      dependsOn("generateMCGrammars")
       checkArtifacts.dependsOn("checkArtifacts${mlcName}")
     }
   }
