@@ -121,8 +121,8 @@ project(':fd-lang') {
       args = ["-input", f, "-projectDir", projectDir, "-s", "-check"]
       args += modelPath
       dependsOn("generateMCGrammars")
-      checkArtifacts.dependsOn("checkArtifacts${mlcName}")
     }
+    checkArtifacts.dependsOn("checkArtifacts${mlcName}")
   }
   // end integration with MLC
 
