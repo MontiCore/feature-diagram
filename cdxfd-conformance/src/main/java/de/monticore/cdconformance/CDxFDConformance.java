@@ -13,7 +13,7 @@ import de.monticore.cdconformance.inc.association.STNamedAssocIncStrategy;
 import de.monticore.cdconformance.inc.type.CompTypeIncStrategy;
 import de.monticore.cdconformance.inc.type.EqTypeIncStrategy;
 import de.monticore.cdconformance.inc.type.STTypeIncStrategy;
-import de.monticore.cdmatcher.MatchCDAssocsBySrcNameAndTgtRole;
+import de.monticore.cdmatcher.MatchCDAssocsBySrcTypeAndTgtRole;
 import de.monticore.cdmatcher.MatchingStrategy;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
@@ -100,7 +100,7 @@ public class CDxFDConformance {
       assocInc.addIncStrategy(new EqNameAssocIncStrategy(refCD, mapping));
     }
     if (params.contains(CDConfParameter.SRC_TARGET_ASSOC_MAPPING)) {
-      assocInc.addIncStrategy(new MatchCDAssocsBySrcNameAndTgtRole(typeInc, conCD, refCD));
+      assocInc.addIncStrategy(new MatchCDAssocsBySrcTypeAndTgtRole(typeInc, conCD, refCD));
     }
     return assocInc;
   }
