@@ -13,8 +13,8 @@ import de.monticore.cdconformance.inc.association.STNamedAssocIncStrategy;
 import de.monticore.cdconformance.inc.type.CompTypeIncStrategy;
 import de.monticore.cdconformance.inc.type.EqTypeIncStrategy;
 import de.monticore.cdconformance.inc.type.STTypeIncStrategy;
+import de.monticore.cdmatcher.ExternalCandidatesMatchingStrategy;
 import de.monticore.cdmatcher.MatchCDAssocsBySrcTypeAndTgtRole;
-import de.monticore.cdmatcher.MatchingStrategy;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
@@ -90,7 +90,7 @@ public class CDxFDConformance {
       Set<CDConfParameter> params,
       ASTCDCompilationUnit refCD,
       ASTCDCompilationUnit conCD,
-      MatchingStrategy<ASTCDType> typeInc,
+      ExternalCandidatesMatchingStrategy<ASTCDType> typeInc,
       String mapping) {
     CompAssocIncStrategy assocInc = new CompAssocIncStrategy(refCD, mapping);
     if (params.contains(CDConfParameter.STEREOTYPE_MAPPING)) {
@@ -110,8 +110,8 @@ public class CDxFDConformance {
    * The incarnation strategies help to map the concrete name to the reference names.
    */
   public static ASTFCCompilationUnit cd2FConfiguration(
-      MatchingStrategy<ASTCDType> typeInc,
-      MatchingStrategy<ASTCDAssociation> assocInc,
+      ExternalCandidatesMatchingStrategy<ASTCDType> typeInc,
+      ExternalCandidatesMatchingStrategy<ASTCDAssociation> assocInc,
       ASTCDCompilationUnit conCD,
       ASTFDCompilationUnit fd) {
 
@@ -164,12 +164,12 @@ public class CDxFDConformance {
   }
 
   public static Optional<String> resolveRefName(
-      MatchingStrategy<ASTCDType> typeInc, ASTCDType con) {
+    ExternalCandidatesMatchingStrategy<ASTCDType> typeInc, ASTCDType con) {
     return typeInc.getMatchedElements(con).stream().findFirst().map(ASTCDType::getName);
   }
 
   public static Optional<String> resolveRefName(
-      MatchingStrategy<ASTCDAssociation> assocInc, ASTCDAssociation con) {
+    ExternalCandidatesMatchingStrategy<ASTCDAssociation> assocInc, ASTCDAssociation con) {
     return assocInc.getMatchedElements(con).stream().findFirst().map(ASTCDAssociation::getName);
   }
 }
