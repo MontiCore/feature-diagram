@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fd;
 
+import com.google.common.base.Verify;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.io.FileReaderWriter;
@@ -25,7 +26,7 @@ public class FeatureDiagramPrettyPrinterTest extends AbstractLangTest {
 
   @Test
   public void testValidFDs() throws IOException{
-    for (File validfd : Objects.requireNonNull(new File("src/test/resources/fdvalid/").listFiles((file, s) -> s.endsWith(".fd")))) {
+    for (File validfd : Verify.verifyNotNull(new File("src/test/resources/fdvalid/").listFiles((file, s) -> s.endsWith(".fd")))) {
       testRoundtripPrint(validfd);
     }
   }
