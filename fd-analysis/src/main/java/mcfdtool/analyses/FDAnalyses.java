@@ -9,7 +9,7 @@ import mcfdtool.solver.Solvers;
 import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.trafos.FlatZincTrafo;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +40,7 @@ public class FDAnalyses {
    */
   public static Map<String, Integer> countOccurrencesInFCs(
       List<ASTFeatureConfiguration> allConfigurations) {
-    Map<String, Integer> occurrences = new HashMap<>();
+    Map<String, Integer> occurrences = new LinkedHashMap<>();
     for (ASTFeatureConfiguration cfg : allConfigurations) {
       for (String feature : UnSelectedFeatureCollector.getSelectedFeatures(cfg)) {
         int currentOccurences = occurrences.containsKey(feature) ? occurrences.get(feature) : 0;

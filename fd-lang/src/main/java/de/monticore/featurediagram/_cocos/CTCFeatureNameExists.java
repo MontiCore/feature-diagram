@@ -9,7 +9,7 @@ import de.monticore.featurediagram._visitor.FeatureDiagramTraverser;
 import de.se_rwth.commons.SourcePosition;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -36,7 +36,7 @@ public class CTCFeatureNameExists implements FeatureDiagramASTFeatureDiagramCoCo
     protected FeatureDiagramTraverser traverser;
 
     public Checker(ASTFeatureDiagram node) {
-      ctcnames = new HashMap<>();
+      ctcnames = new LinkedHashMap<>();
       traverser = FeatureDiagramMill.inheritanceTraverser();
       traverser.add4ExpressionsBasis(this);
       node.accept(traverser);

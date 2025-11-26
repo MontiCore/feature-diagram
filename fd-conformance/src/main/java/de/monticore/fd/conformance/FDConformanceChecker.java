@@ -92,7 +92,7 @@ public class FDConformanceChecker {
 
   private static Set<String> computeWitness(SMTFDiagram smtFDiagram, Model model) {
 
-    Set<String> res = new HashSet<>();
+    Set<String> res = new LinkedHashSet<>();
     for (Map.Entry<String, BoolExpr> entry : smtFDiagram.getAllFeatures().entrySet()) {
       BoolExpr expr = (BoolExpr) model.eval(entry.getValue(), true);
       if (expr.getBoolValue().equals(Z3_lbool.Z3_L_TRUE)) {

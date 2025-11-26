@@ -99,7 +99,7 @@ public class FDSemDiff {
 
     if(closedWorld) {
       // features of FD1 that are not features of FD2 must not be selected in FD2
-      Set<String> featuresInFD1NotInFD2 = new HashSet<>(fd1.getAllFeatures());
+      Set<String> featuresInFD1NotInFD2 = new LinkedHashSet<>(fd1.getAllFeatures());
       featuresInFD1NotInFD2.removeAll(fd2.getAllFeatures());
       for (String feature : featuresInFD1NotInFD2) {
         // This feature must not be chosen for FD2
@@ -108,7 +108,7 @@ public class FDSemDiff {
       }
 
       // features of FD2 that are not features of FD1 must not be selected in FD1
-      Set<String> featuresInFD2NotInFD1 = new HashSet<>(fd2.getAllFeatures());
+      Set<String> featuresInFD2NotInFD1 = new LinkedHashSet<>(fd2.getAllFeatures());
       featuresInFD2NotInFD1.removeAll(fd1.getAllFeatures());
       for (String feature : featuresInFD2NotInFD1) {
         // This feature must not be chosen for fd1
@@ -127,7 +127,7 @@ public class FDSemDiff {
     Optional<ASTFeatureConfiguration> result = Optional.empty();
     if (assignment != null) {
       Set<String> selectedFeatures = assignment.positiveLiterals().stream().map(vars::get).filter(Objects::nonNull).collect(Collectors.toSet());
-      return Optional.of(calculateConfiguration(selectedFeatures, new HashSet<>(fd1.getAllFeatures()), fd1.getName()));
+      return Optional.of(calculateConfiguration(selectedFeatures, new LinkedHashSet<>(fd1.getAllFeatures()), fd1.getName()));
     }
 
     return result;
@@ -141,7 +141,7 @@ public class FDSemDiff {
     for (String feature : selectedFeatures) {
           selectBuilder.addName(feature);
     }
-    HashSet<String> unselectedFeatures = new HashSet<>(allFeatures);
+    LinkedHashSet<String> unselectedFeatures = new LinkedHashSet<>(allFeatures);
     unselectedFeatures.removeAll(selectedFeatures);
     for(String feature : unselectedFeatures) {
       unselectBuilder.addName(feature);

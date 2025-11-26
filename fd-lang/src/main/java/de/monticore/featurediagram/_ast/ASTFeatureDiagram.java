@@ -5,7 +5,7 @@ import de.monticore.featurediagram._visitor.FeatureNamesCollector;
 import de.monticore.featurediagram._visitor.Occurrence;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ASTFeatureDiagram extends ASTFeatureDiagramTOP {
@@ -48,7 +48,7 @@ public class ASTFeatureDiagram extends ASTFeatureDiagramTOP {
   protected void initFeaturesAndRoot() {
     FeatureNamesCollector collector = new FeatureNamesCollector();
     this.accept(collector.getTraverser());
-    HashMap<String, Occurrence> featuresMap = collector.getOccurrences();
+    LinkedHashMap<String, Occurrence> featuresMap = collector.getOccurrences();
         features = new ArrayList<>();
     featuresMap.forEach((k, v) -> {
             features.add(k);

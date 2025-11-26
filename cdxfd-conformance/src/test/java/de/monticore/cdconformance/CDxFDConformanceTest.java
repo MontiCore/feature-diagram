@@ -10,7 +10,7 @@ import de.monticore.cdbasis._ast.ASTCDCompilationUnit;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.se_rwth.commons.logging.Log;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ class CDxFDConformanceTest {
   @BeforeEach
   public void setup() {
     initMills();
-    params = new HashSet<>(Set.of(NAME_MAPPING));
+    params = new LinkedHashSet<>(Set.of(NAME_MAPPING));
     refCD = CDxFDConformanceUtil.loadAndCheckCD(basedir + "Reference.cd");
     fd = CDxFDConformanceUtil.loadAndCheckFD(basedir + "Reference.fd");
   }

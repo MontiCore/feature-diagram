@@ -115,7 +115,7 @@ public class CDxFDConformance {
       ASTCDCompilationUnit conCD,
       ASTFDCompilationUnit fd) {
 
-    Set<String> features = new HashSet<>();
+    Set<String> features = new LinkedHashSet<>();
 
     for (ASTCDType type : conCD.getCDDefinition().getCDClassesList()) {
       resolveRefName(typeInc, type).map(features::add);

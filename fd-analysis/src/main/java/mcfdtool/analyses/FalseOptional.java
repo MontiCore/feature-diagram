@@ -8,7 +8,7 @@ import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.trafos.FlatZincTrafo;
 import mcfdtool.visitors.OptionalFeatureCollector;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +51,7 @@ public class FalseOptional {
     Map<String, Integer> occurrences = FDAnalyses.countOccurrencesInFCs(allConfigurations);
 
     //Step 2: populate a set with features that are selected in every valid configuration
-    Set<String> alwaysSelected = new HashSet<>();
+    Set<String> alwaysSelected = new LinkedHashSet<>();
     int numberOfValidFCs = allConfigurations.size();
     for (String feature : occurrences.keySet()) {
       //if the feature occurs in every valid configuration

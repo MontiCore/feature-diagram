@@ -5,7 +5,7 @@ import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFeatureTreeRule;
 import de.monticore.featurediagram._ast.ASTGroupPart;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,13 +20,13 @@ import java.util.stream.Collectors;
  */
 public class FeatureNamesCollector implements FeatureDiagramVisitor2 {
 
-  protected HashMap<String, Occurrence> occurrences;
+  protected LinkedHashMap<String, Occurrence> occurrences;
 
   protected FeatureDiagramTraverser traverser;
 
   public FeatureNamesCollector(){
     traverser = FeatureDiagramMill.inheritanceTraverser();
-    occurrences = new HashMap<>();
+    occurrences = new LinkedHashMap<>();
     traverser.add4FeatureDiagram(this);
   }
 
@@ -51,7 +51,7 @@ public class FeatureNamesCollector implements FeatureDiagramVisitor2 {
         });
   }
 
-  public HashMap<String, Occurrence> getOccurrences() {
+  public LinkedHashMap<String, Occurrence> getOccurrences() {
     return occurrences;
   }
 

@@ -23,14 +23,14 @@ public abstract class FDAbstractTest {
   public static final String RELATIVE_MODEL_PATH = "src/test/resources/de/monticore/conformance/";
 
   protected static Context buildContext() {
-    Map<String, String> cfg = new HashMap<>();
+    Map<String, String> cfg = new LinkedHashMap<>();
     cfg.put("model", "true");
     return new Context(cfg);
   }
 
   protected Set<String> getFeatureConfiguration(SMTFDiagram smtfDiagram, Model model) {
 
-    Set<String> res = new HashSet<>();
+    Set<String> res = new LinkedHashSet<>();
     for (String feature : smtfDiagram.getFeatureDiagram().getFeatureDiagram().getAllFeatures()) {
       BoolExpr expr = (BoolExpr) model.eval(smtfDiagram.getFeature(feature), true);
       if (expr.getBoolValue().equals(Z3_lbool.Z3_L_TRUE)) {

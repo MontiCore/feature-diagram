@@ -8,7 +8,7 @@ import de.monticore.featurediagram._visitor.FeatureNamesCollector;
 import de.monticore.featurediagram._visitor.Occurrence;
 import de.se_rwth.commons.logging.Log;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -94,7 +94,7 @@ public class HasTreeShape
    * @return
    */
   protected Map<String, String> getAllParents(ASTFeatureDiagram node) {
-    Map<String, String> parents = new HashMap<>();
+    Map<String, String> parents = new LinkedHashMap<>();
     List<ASTFeatureTreeRule> featureTreeRules =
       node.getFDElementList().stream()
         .filter(e -> e instanceof ASTFeatureTreeRule)

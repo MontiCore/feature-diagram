@@ -14,7 +14,7 @@ import mcfdtool.transform.flatzinc.Constraint;
 import mcfdtool.transform.flatzinc.FlatZincModel;
 import mcfdtool.transform.flatzinc.Variable;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -31,7 +31,7 @@ public class CTCVariableCreator implements FeatureDiagramVisitor2,
 
   public CTCVariableCreator(FlatZincModel flatZincModel) {
     i = 1;
-    names = new HashMap<>();
+    names = new LinkedHashMap<>();
     this.flatZincModel = flatZincModel;
   }
 

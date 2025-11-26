@@ -11,7 +11,7 @@ import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.se_rwth.commons.logging.Log;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class FCValidator {
@@ -33,7 +33,7 @@ public class FCValidator {
     List<String> configFeatures = CDxFDConformanceUtil.collectFeaturesNames(fConfiguration);
 
     // check if all features in the configuration are in the diagram
-    if (!new HashSet<>(diagramFeatures).containsAll(configFeatures)) {
+    if (!new LinkedHashSet<>(diagramFeatures).containsAll(configFeatures)) {
       configFeatures.removeAll(diagramFeatures);
       Log.info(
           "The following feature does not appear in the Feature Diagram: " + configFeatures,

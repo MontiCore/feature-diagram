@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 public class SMTFDiagram {
   private final ASTFDCompilationUnit fd;
   private final Context ctx;
-  private final Map<ASTFDElement, BoolExpr> constraints = new HashMap<>();
-  private final Map<String, BoolExpr> features = new HashMap<>();
+  private final Map<ASTFDElement, BoolExpr> constraints = new LinkedHashMap<>();
+  private final Map<String, BoolExpr> features = new LinkedHashMap<>();
   private final FDExpression2smt expression2smt;
 
   /***
@@ -69,7 +69,7 @@ public class SMTFDiagram {
    * @return the conversion as boolExpr.
    */
   protected BoolExpr convert(ASTFeatureTreeRule rule) {
-    Set<BoolExpr> res = new HashSet<>();
+    Set<BoolExpr> res = new LinkedHashSet<>();
     String parent = rule.getName();
 
     // rule like A -> B? have no influence

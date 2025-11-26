@@ -35,7 +35,7 @@ public class ChocoSolver implements ISolver {
 
   @Override
   public List<Map<String, Integer>> getAllSolutions(FlatZincModel model) {
-    Set<Map<String, Integer>> results = new HashSet<>(); //Set to filter out duplicates
+    Set<Map<String, Integer>> results = new LinkedHashSet<>(); //Set to filter out duplicates
     Model fzn = choco.parse(model);
     while (fzn.getSolver().solve()) {
       results.add(getSolverResult(fzn));
@@ -51,7 +51,7 @@ public class ChocoSolver implements ISolver {
    * @return
    */
   protected Map<String, Integer> getSolverResult(Model model) {
-    Map<String, Integer> result = new HashMap<>();
+    Map<String, Integer> result = new LinkedHashMap<>();
     for (Variable var : model.getVars()) {
       boolean isInt = (var.getTypeAndKind() & Variable.INT) != 0;
       if (isInt) {

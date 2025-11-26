@@ -10,7 +10,7 @@ import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramArtifactScope;
 import de.se_rwth.commons.logging.Log;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 
@@ -87,7 +87,7 @@ public class FDLoader {
   }
 
   public static Context buildContext() {
-    Map<String, String> cfg = new HashMap<>();
+    Map<String, String> cfg = new LinkedHashMap<>();
     cfg.put("model", "true");
     return new Context(cfg);
   }
