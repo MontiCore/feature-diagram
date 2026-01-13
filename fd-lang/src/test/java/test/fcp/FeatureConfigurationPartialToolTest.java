@@ -64,7 +64,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testHelp() {
-    FeatureConfigurationPartialTool.main(new String[] { "-h" });
+    new FeatureConfigurationPartialTool().run(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -74,7 +74,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testHelpLong() {
-    FeatureConfigurationPartialTool.main(new String[] { "-help" });
+    new FeatureConfigurationPartialTool().run(new String[] { "-help" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -100,7 +100,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testWithoutSetPath() {
-    FeatureConfigurationPartialTool.main(
+    new FeatureConfigurationPartialTool().run(
         new String[] {
             "-i", "src/test/resources/phone/PremiumPhone.fc"
         });
@@ -109,7 +109,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testSymbolTable() {
-    FeatureConfigurationPartialTool.main( new String[] {
+    new FeatureConfigurationPartialTool().run( new String[] {
         "-i", "src/test/resources/phone/PremiumPhone.fc",
         "-path", "src/test/resources/phone/",
         "-s", "testSymbolTable.pfcsymbols"
@@ -120,7 +120,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testSymbolTableWithoutArgs() {
-    FeatureConfigurationPartialTool.main( new String[] {
+    new FeatureConfigurationPartialTool().run( new String[] {
         "-i", "src/test/resources/phone/PremiumPhone.fc",
         "-path", "src/test/resources/phone/",
         "-s"
@@ -158,7 +158,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testPrettyPrintToConsole() throws IOException {
-    FeatureConfigurationPartialTool.main(new String[] {
+    new FeatureConfigurationPartialTool().run(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "src/test/resources/",
         "-pp"
@@ -184,7 +184,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testPrettyPrintToFile() throws IOException {
-    FeatureConfigurationPartialTool.main(new String[] {
+    new FeatureConfigurationPartialTool().run(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "src/test/resources/",
         "-pp", "BasicCarNavigationOut.fc"
@@ -214,7 +214,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testSetOutput() throws IOException {
-    FeatureConfigurationPartialTool.main(
+    new FeatureConfigurationPartialTool().run(
         new String[] {
             "-i", validFC("BasicCarNavigation"),
             "-path", "src/test/resources",
@@ -243,7 +243,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
   @Test
   public void testSetOutput22() throws IOException {
-    FeatureConfigurationPartialTool.main(
+    new FeatureConfigurationPartialTool().run(
             new String[] {
                     "-i", validFC("BasicCarNavigation"),
                     "-path", "src/test/resources",

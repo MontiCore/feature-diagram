@@ -59,7 +59,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testHelp() {
-    FeatureConfigurationTool.main(new String[] { "-h" });
+    new FeatureConfigurationTool().run(new String[] { "-h" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -69,7 +69,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testHelpLong() {
-    FeatureConfigurationTool.main(new String[] { "-help" });
+    new FeatureConfigurationTool().run(new String[] { "-help" });
 
     String printed = out.toString().trim();
     assertNotNull(printed);
@@ -96,7 +96,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testWithoutSetPath() {
-    FeatureConfigurationTool.main(
+    new FeatureConfigurationTool().run(
         new String[] {
             "-i", "src/test/resources/phone/BasicPhone.fc"
         });
@@ -105,7 +105,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testPrettyPrintToConsole() throws IOException  {
-    FeatureConfigurationTool.main(new String[] {
+    new FeatureConfigurationTool().run(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-pp"
@@ -131,7 +131,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testSymbolTable() {
-    FeatureConfigurationTool.main( new String[] {
+    new FeatureConfigurationTool().run( new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-s", "testSymbolTable.fcsymbols"
@@ -142,7 +142,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testSymbolTableWithoutArgs() {
-    FeatureConfigurationTool.main( new String[] {
+    new FeatureConfigurationTool().run( new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "target/symbols",
         "-s"
@@ -177,7 +177,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testPrettyPrintToFile() throws IOException{
-    FeatureConfigurationTool.main(new String[] {
+    new FeatureConfigurationTool().run(new String[] {
         "-i", validFC("BasicCarNavigation"),
         "-path", "src/test/resources", "target/symbols",
         "-pp", "BasicCarNavigationOut.fc"
@@ -210,7 +210,7 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testSetOutput() throws IOException {
-    FeatureConfigurationTool.main(
+    new FeatureConfigurationTool().run(
         new String[] {
             "-i", validFC("BasicCarNavigation"),
             "-path", "src/test/resources",
