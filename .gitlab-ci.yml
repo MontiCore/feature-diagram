@@ -1,5 +1,5 @@
 # (c) https://github.com/MontiCore/monticore
-image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:7.6.4-jdk11
+image: registry.git.rwth-aachen.de/monticore/container-registry/gradle:8.5-jdk21
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
@@ -32,7 +32,7 @@ build:
 # For more information, visit: https://git.rwth-aachen.de/se/infrastructure/mdlinkchecker (Available internally only)
 check-links:
   # We need a JDK 17+ image for this job since the link checker requires Java 17.
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:21-jdk-alpine
   # The check runs parallel to the build since project documentation is not generated.
   stage: build
   # Allow failure regardless of whether the tool exists with a non-zero error code. We don't currently want to fail the
@@ -71,7 +71,7 @@ checkArtifacts:
 # For more information, visit: https://git.rwth-aachen.de/se/infrastructure/github-mirror-tools (Available internally only)
 githubmirror:
   # We need a JDK 17+ image for this job since the link checker requires Java 17.
-  image: eclipse-temurin:17-jdk-alpine
+  image: eclipse-temurin:21-jdk-alpine
   stage: deploy
   variables:
     # The repository is edited during this job. To make sure that no changes persist, we instruct GitLab to always
