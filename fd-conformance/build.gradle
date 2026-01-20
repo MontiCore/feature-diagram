@@ -6,7 +6,7 @@ plugins {
     id 'java-gradle-plugin'
     id 'jacoco'
     id 'de.monticore.generator' version "$mc_version"
-    id 'com.github.johnrengelman.shadow' version "$shadow_plugin_version"
+    id 'com.gradleup.shadow' version "$shadow_plugin_version"
     id 'maven-publish'
     id "com.github.sherter.google-java-format" version "0.9"  // Task "verifyGoogleJavaFormat" and "googleJavaFormat"
 

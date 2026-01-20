@@ -4,7 +4,7 @@ plugins {
   id "java"
   id "de.monticore.generator" version "$mc_version"
   id "maven-publish"
-  id "com.github.johnrengelman.shadow" version "$shadow_plugin_version"
+  id "com.gradleup.shadow" version "$shadow_plugin_version"
 }
 
 allprojects {
@@ -53,13 +53,14 @@ subprojects {
   buildDir = file("$projectDir/target")
 
 
-  sourceCompatibility = '11'
+  sourceCompatibility = JavaVersion.VERSION_21
+  targetCompatibility = JavaVersion.VERSION_21
 }
 
 project(':fd-lang') {
   apply plugin: 'java'
   apply plugin: 'de.monticore.generator'
-  apply plugin: 'com.github.johnrengelman.shadow'
+  apply plugin: 'com.gradleup.shadow'
 
   dependencies {
     grammar "de.monticore:monticore-grammar:$mc_version"
@@ -195,7 +196,7 @@ project(':fd-lang') {
 project(':fd-analysis') {
 
   apply plugin: 'java'
-  apply plugin: 'com.github.johnrengelman.shadow'
+  apply plugin: 'com.gradleup.shadow'
 
   dependencies {
     implementation project(':fd-lang')
