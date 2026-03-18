@@ -4,15 +4,15 @@ package test.fcp;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
 import de.monticore.io.paths.MCPath;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import test.AbstractLangTest;
 
 import java.nio.file.Paths;
 
 public class FeatureConfigurationPartialCoCoTest extends AbstractLangTest {
 
-  @Before
+  @BeforeEach
   public void initMill(){
     FeatureConfigurationPartialMill.init();
   }

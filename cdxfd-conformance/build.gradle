@@ -27,8 +27,10 @@ project(':cdxfd-conformance') {
         grammar "de.monticore.lang:cd4analysis:$mc_version"
         implementation "de.monticore.lang:cd4analysis:$mc_version:cddiff"
 
-        testImplementation group: 'junit', name: 'junit', version: junit_version
-
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+        testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
+        testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+        testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
 
         implementation "de.se_rwth.commons:se-commons-groovy:$mc_version"
     }

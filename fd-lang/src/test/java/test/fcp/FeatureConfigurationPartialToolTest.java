@@ -5,10 +5,9 @@ package test.fcp;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialTool;
 import de.monticore.featureconfigurationpartial.FeatureConfigurationPartialMill;
-import de.se_rwth.commons.logging.Log;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import test.AbstractLangTest;
 
 import java.io.ByteArrayOutputStream;
@@ -19,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
@@ -50,14 +49,14 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
     System.setOut(new PrintStream(out));
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     initMill();
     produceFDSymbol();
     redirectSysOut();
   }
 
-  @After
+  @AfterEach
   public void restoreSysOut() {
     System.setOut(originalOut);
   }
@@ -68,7 +67,7 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
 
     String printed = out.toString().trim();
     assertNotNull(printed);
-    assertTrue(printed, printed.startsWith("usage: java -jar MCFeatureConfigurationPartial.jar"));
+    assertTrue(printed.startsWith("usage: java -jar MCFeatureConfigurationPartial.jar"), printed);
     assertNoFindings();
   }
 
@@ -165,14 +164,14 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
     });
 
     Optional<ASTFCCompilationUnit> astOpt = FeatureConfigurationPartialMill.parser().parse(validFC("BasicCarNavigation"));
-    assertTrue("Failed to parse", astOpt.isPresent());
+    assertTrue(astOpt.isPresent(), "Failed to parse");
     assertNoFindings();
 
     String printed = out.toString().trim();
     assertNotNull(printed);
 
     Optional<ASTFCCompilationUnit> prettyAstOpt = FeatureConfigurationPartialMill.parser().parse_String(printed);
-    assertTrue("Failed to parse pretty: " + printed, prettyAstOpt.isPresent());
+    assertTrue(prettyAstOpt.isPresent(), "Failed to parse pretty: " + printed);
     assertNoFindings();
 
     if (!astOpt.get().deepEqualsWithComments(prettyAstOpt.get())) {
@@ -196,11 +195,11 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
     assertNoFindings();
 
     Optional<ASTFCCompilationUnit> astOpt = FeatureConfigurationPartialMill.parser().parse(validFC("BasicCarNavigation"));
-    assertTrue("Failed to parse", astOpt.isPresent());
+    assertTrue(astOpt.isPresent(), "Failed to parse");
     assertNoFindings();
 
     Optional<ASTFCCompilationUnit> prettyAstOpt = FeatureConfigurationPartialMill.parser().parse("target/BasicCarNavigationOut.fc");
-    assertTrue("Failed to parse pretty", prettyAstOpt.isPresent());
+    assertTrue(prettyAstOpt.isPresent(), "Failed to parse pretty");
     assertNoFindings();
 
     if (!astOpt.get().deepEqualsWithComments(prettyAstOpt.get())) {
@@ -225,11 +224,11 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
     assertNoFindings();
     
     Optional<ASTFCCompilationUnit> astOpt = FeatureConfigurationPartialMill.parser().parse(validFC("BasicCarNavigation"));
-    assertTrue("Failed to parse", astOpt.isPresent());
+    assertTrue(astOpt.isPresent(), "Failed to parse");
     assertNoFindings();
 
     Optional<ASTFCCompilationUnit> prettyAstOpt = FeatureConfigurationPartialMill.parser().parse("target/mytarget/BasicCarNavigation.fc");
-    assertTrue("Failed to parse pretty", prettyAstOpt.isPresent());
+    assertTrue(prettyAstOpt.isPresent(), "Failed to parse pretty");
     assertNoFindings();
 
     if (!astOpt.get().deepEqualsWithComments(prettyAstOpt.get())) {

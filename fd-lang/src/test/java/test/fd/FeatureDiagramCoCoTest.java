@@ -7,20 +7,18 @@ import de.monticore.featurediagram._cocos.FeatureDiagramCoCos;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.IFeatureDiagramGlobalScope;
 import de.monticore.io.paths.MCPath;
-import de.se_rwth.commons.logging.Log;
-import org.junit.Test;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import test.AbstractLangTest;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class FeatureDiagramCoCoTest extends AbstractLangTest {
 
-  @Before
+  @BeforeEach
   public void initMill(){
     FeatureDiagramMill.init();
   }

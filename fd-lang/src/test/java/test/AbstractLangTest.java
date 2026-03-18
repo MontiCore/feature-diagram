@@ -17,13 +17,12 @@ import de.monticore.featurediagram._symboltable.FeatureDiagramSymbols2Json;
 import de.se_rwth.commons.logging.Finding;
 import de.se_rwth.commons.logging.Log;
 import de.se_rwth.commons.logging.LogStub;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractLangTest {
 
@@ -45,7 +44,7 @@ public class AbstractLangTest {
 
   protected FeatureConfigurationPartialTool fcpTool = new FeatureConfigurationPartialTool();
 
-  @Before
+  @BeforeEach
   public void setUp() {
     LogStub.init();
     Log.enableFailQuick(false); // Uncomment this to support finding reasons for failing tests
@@ -56,18 +55,17 @@ public class AbstractLangTest {
   }
 
   protected void assertNoFindings() {
-    Assert.assertTrue(Log.getFindings().stream()
-            .map(Finding::buildMsg)
-            .collect(Collectors.joining(System.lineSeparator())),
-        Log.getFindings().isEmpty());
+    assertTrue(Log.getFindings().isEmpty(), Log.getFindings().stream()
+        .map(Finding::buildMsg)
+        .collect(Collectors.joining(System.lineSeparator())));
   }
 
   protected static void assertPresent(Optional<?> opt) {
-    Assert.assertTrue(opt.isPresent());
+    assertTrue(opt.isPresent());
   }
 
   protected static void assertEmpty(Optional<?> opt) {
-    Assert.assertTrue(!opt.isPresent());
+    assertFalse(opt.isPresent());
   }
 
   public static void assertErrorCode(String... errorCodes) {

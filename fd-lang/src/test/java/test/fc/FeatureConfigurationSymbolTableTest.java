@@ -6,15 +6,15 @@ import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.featureconfiguration._symboltable.FeatureConfigurationSymbol;
 import de.monticore.featureconfiguration._symboltable.IFeatureConfigurationArtifactScope;
 import de.monticore.io.paths.MCPath;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import test.AbstractLangTest;
 
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FeatureConfigurationSymbolTableTest extends AbstractLangTest {
 
@@ -24,7 +24,7 @@ public class FeatureConfigurationSymbolTableTest extends AbstractLangTest {
     return fcTool.createSymbolTable(ast, mp);
   }
 
-  @Before
+  @BeforeEach
   public void initMill(){
     FeatureConfigurationMill.init();
   }
@@ -44,11 +44,11 @@ public class FeatureConfigurationSymbolTableTest extends AbstractLangTest {
   public void testDetail() {
     String model = "src/test/resources/fcvalid/BasicCarNavigation.fc";
     IFeatureConfigurationArtifactScope scope = setupSymbolTable(model);
-
-    assertTrue(null != scope);
+    
+    assertNotNull(scope);
     FeatureConfigurationSymbol fd = scope.resolveFeatureConfiguration("BasicCarNavigation")
         .orElse(null);
-    assertTrue(null != fd);
+    assertNotNull(fd);
     assertEquals("BasicCarNavigation", fd.getName());
     assertEquals("CarNavigation", fd.getFeatureDiagram().getName());
 
@@ -70,11 +70,11 @@ public class FeatureConfigurationSymbolTableTest extends AbstractLangTest {
   public void testImport() {
     String model = "src/test/resources/fcvalid/SelectImported.fc";
     IFeatureConfigurationArtifactScope scope = setupSymbolTable(model);
-
-    assertTrue(null != scope);
+    
+    assertNotNull(scope);
     FeatureConfigurationSymbol fc = scope.resolveFeatureConfiguration("SelectImported")
         .orElse(null);
-    assertTrue(null != fc);
+    assertNotNull(fc);
     assertEquals(2, fc.sizeSelectedFeatures());
     List<String> selectedFeatureNames =
       fc.getSelectedFeaturesList().stream().map(f -> f.getName())

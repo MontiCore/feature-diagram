@@ -4,8 +4,8 @@ package test.fd;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.io.FileReaderWriter;
-import org.junit.Test;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import test.AbstractLangTest;
 
 import java.io.File;
@@ -13,12 +13,12 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class FeatureDiagramPrettyPrinterTest extends AbstractLangTest {
 
-  @Before
+  @BeforeEach
   public void initMills() {
     FeatureDiagramMill.init();
   }
@@ -39,11 +39,11 @@ public class FeatureDiagramPrettyPrinterTest extends AbstractLangTest {
     String pretty = FeatureDiagramMill.prettyPrint(astOpt.get(), true);
     Optional<ASTFDCompilationUnit> prettyAstOpt = FeatureDiagramMill.parser().parse(f.getAbsolutePath());
     if (prettyAstOpt.isEmpty()) {
-      assertEquals("Failed to parse pretty printed: " + f.getName(), fileContent, pretty); // throw equals exc to see the comparison
+      assertEquals(fileContent, pretty, "Failed to parse pretty printed: " + f.getName()); // throw equals exc to see the comparison
       fail("Failed to parse pretty printed"); // fail just in case
     }
     if (!prettyAstOpt.get().deepEquals(astOpt.get())) {
-      assertEquals("Failed to deep equals: " + f.getName(), fileContent, pretty); // throw equals exc to see the comparison
+      assertEquals(fileContent, pretty, "Failed to deep equals: " + f.getName()); // throw equals exc to see the comparison
       fail("Failed to deep equals"); // fail just in case
     }
   }

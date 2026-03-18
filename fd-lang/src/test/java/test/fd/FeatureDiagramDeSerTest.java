@@ -6,15 +6,14 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import org.junit.Test;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import test.AbstractLangTest;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FeatureDiagramDeSerTest extends AbstractLangTest {
 
@@ -23,7 +22,7 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
     return fdTool.createSymbolTable(ast);
   }
 
-  @Before
+  @BeforeEach
   public void initMills() {
     FeatureDiagramMill.init();
   }
@@ -33,11 +32,11 @@ public class FeatureDiagramDeSerTest extends AbstractLangTest {
     FeatureDiagramSymbols2Json s2j = new FeatureDiagramSymbols2Json();
     IFeatureDiagramArtifactScope scope = s2j
         .load("src/test/resources/symbols/CarNavigation.fdsym");
-    assertTrue(null != scope);
+    assertNotNull(scope);
     assertEquals("CarNavigation", scope.getName());
     assertEquals("fdvalid", scope.getPackageName());
     assertEquals(0, scope.getImportsList().size());
-    assertEquals(true, scope.getTopLevelSymbol().isPresent());
+    assertTrue(scope.getTopLevelSymbol().isPresent());
     assertEquals("CarNavigation", scope.getTopLevelSymbol().get().getName());
     assertEquals(1, scope.getLocalFeatureDiagramSymbols().size());
     assertEquals(0, scope.getLocalFeatureSymbols().size());

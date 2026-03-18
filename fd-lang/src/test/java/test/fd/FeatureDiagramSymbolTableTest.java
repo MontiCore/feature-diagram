@@ -7,19 +7,19 @@ import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
 import de.monticore.featurediagram._parser.FeatureDiagramParser;
 import de.monticore.featurediagram._symboltable.*;
 import de.monticore.io.paths.MCPath;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import test.AbstractLangTest;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FeatureDiagramSymbolTableTest extends AbstractLangTest {
 
-  @Before
+  @BeforeEach
   public void initMills() {
     FeatureDiagramMill.init();
     FeatureDiagramMill.globalScope();
@@ -44,9 +44,9 @@ public class FeatureDiagramSymbolTableTest extends AbstractLangTest {
     String model = "src/test/resources/fdvalid/BasicElements.fd";
     IFeatureDiagramArtifactScope scope = setupSymbolTable(model);
 
-    assertTrue(null != scope);
+    assertNotNull(scope);
     FeatureDiagramSymbol fd = scope.resolveFeatureDiagram("BasicElements").orElse(null);
-    assertTrue(null != fd);
+    assertNotNull(fd);
 
     assertTrue(scope.resolveFeatureDown("BasicElements.A").isPresent());
     assertTrue(scope.resolveFeatureDown("BasicElements.B").isPresent());

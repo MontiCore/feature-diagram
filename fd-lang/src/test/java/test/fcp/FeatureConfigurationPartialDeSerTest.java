@@ -12,21 +12,20 @@ import de.monticore.featurediagram.ModelPaths;
 import de.monticore.io.FileReaderWriter;
 import de.monticore.io.paths.MCPath;
 import de.monticore.symboltable.serialization.JsonPrinter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import test.AbstractLangTest;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
 
   protected static final MCPath mp = new MCPath(Paths.get("src/test/resources"));
 
-  @Before
+  @BeforeEach
   public void initMill(){
     FeatureConfigurationPartialMill.init();
   }
@@ -39,12 +38,12 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
   @Test
   public void testRoundtripSerialization() {
     IFeatureConfigurationPartialArtifactScope scope = setupSymbolTable("pfcvalid/SelectSome.fc");
-    assertTrue(null != scope);
+    assertNotNull(scope);
     String serialized = fcpSymbols2Json.serialize(scope);
-    assertTrue(null != serialized);
+    assertNotNull(serialized);
 
     IFeatureConfigurationPartialArtifactScope deserializedScope = fcpSymbols2Json.deserialize(serialized);
-    assertTrue(deserializedScope instanceof FeatureConfigurationPartialArtifactScope);
+    assertInstanceOf(FeatureConfigurationPartialArtifactScope.class, deserializedScope);
     FeatureConfigurationPartialArtifactScope deserialized = (FeatureConfigurationPartialArtifactScope) deserializedScope;
 
     assertEquals(scope.getName(), deserialized.getName());
@@ -78,11 +77,11 @@ public class FeatureConfigurationPartialDeSerTest extends AbstractLangTest {
     FeatureConfigurationPartialSymbols2Json s2j = new FeatureConfigurationPartialSymbols2Json();
     IFeatureConfigurationPartialArtifactScope scope = s2j
         .load("src/test/resources/symbols/BasicCarNavigation.fcsym");
-    assertTrue(null != scope);
+    assertNotNull(scope);
     assertEquals("BasicCarNavigation", scope.getName());
     assertEquals("fcvalid", scope.getPackageName());
     assertEquals(0, scope.getImportsList().size());
-    assertEquals(true, scope.getTopLevelSymbol().isPresent());
+    assertTrue(scope.getTopLevelSymbol().isPresent());
     assertEquals("BasicCarNavigation", scope.getTopLevelSymbol().get().getName());
     assertEquals(1, scope.getLocalFeatureConfigurationSymbols().size());
     assertEquals(0, scope.getLocalFeatureDiagramSymbols().size());

@@ -5,11 +5,9 @@ package test.fd;
 import de.monticore.featurediagram.FeatureDiagramTool;
 import de.monticore.featurediagram.FeatureDiagramMill;
 import de.monticore.featurediagram._ast.ASTFDCompilationUnit;
-import de.se_rwth.commons.logging.Log;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import test.AbstractLangTest;
 
 import java.io.ByteArrayOutputStream;
@@ -19,7 +17,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FeatureDiagramToolTest extends AbstractLangTest {
 
@@ -27,19 +25,19 @@ public class FeatureDiagramToolTest extends AbstractLangTest {
 
   protected ByteArrayOutputStream out;
 
-  @Before
+  @BeforeEach
   public void initMills() {
     FeatureDiagramMill.init();
   }
 
-  @Before
+  @BeforeEach
   public void redirectSysOut() {
     originalOut = System.out;
     out = new ByteArrayOutputStream();
     System.setOut(new PrintStream(out));
   }
 
-  @After
+  @AfterEach
   public void restoreSysOut() {
     System.setOut(originalOut);
   }

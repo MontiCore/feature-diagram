@@ -41,7 +41,10 @@ subprojects {
     implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
     implementation group: 'com.google.guava', name: 'guava', version: guava_version
 
-    testImplementation group: 'junit', name: 'junit', version: junit_version
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:$junit_version"
   }
 
   // configure non-standard source sets
