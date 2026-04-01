@@ -49,23 +49,22 @@ project(':cdxfd-conformance') {
             mavenLocal()
         }
         maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            url repo
+            credentials.username = mavenUser
+            credentials.password = mavenPassword
+            url = repo
         }
         mavenCentral()
     }
 
     description = 'coming soon...'
-    buildDir = file("$projectDir/target")
-    def grammarDir = 'src/main/grammars'
+    layout.buildDirectory = layout.projectDirectory.dir("target")
 
     googleJavaFormat {
         exclude '**/target/**'
     }
 
     verifyGoogleJavaFormat {
-        ignoreFailures true
+        ignoreFailures = true
         exclude "**"
     }
 

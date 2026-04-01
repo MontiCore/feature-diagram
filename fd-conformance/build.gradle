@@ -51,22 +51,22 @@ project(':fd-conformance') {
             mavenLocal()
         }
         maven {
-            credentials.username mavenUser
-            credentials.password mavenPassword
-            url repo
+            credentials.username = mavenUser
+            credentials.password = mavenPassword
+            url = repo
         }
         mavenCentral()
     }
 
     description = 'SLE-Project: Conformance Checking for Feature Diagrams'
-    buildDir = file("$projectDir/target")
+    layout.buildDirectory = layout.projectDirectory.dir("target")
 
     googleJavaFormat {
         exclude '**/target/**'
     }
 
     verifyGoogleJavaFormat {
-        ignoreFailures true
+        ignoreFailures = true
         exclude "**"
     }  // do not check format in "build"
 
@@ -78,7 +78,7 @@ project(':fd-conformance') {
 
     jar.dependsOn(shadowJar)
     shadowJar {
-        zip64(true)
+        zip64 = true
         manifest {
             attributes "Main-Class": "de.monticore.fd.conformance.FDConformanceTool"
         }
