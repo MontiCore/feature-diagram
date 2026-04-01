@@ -88,6 +88,11 @@ project(':fd-lang') {
       usingSourceSet(sourceSets.grammarsForVariant)
     }
   }
+
+  test {
+    useJUnitPlatform()
+  }
+
   // Ensure the grammars and GrammarsForVariant jars do not conflict
   tasks.grammarsForVariantJar {
     archiveClassifier = "grammars-compat"

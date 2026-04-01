@@ -78,18 +78,12 @@ public class FeatureConfigurationToolTest extends AbstractLangTest {
 
   @Test
   public void testParseValidModel() {
-    FeatureConfigurationTool
-        .main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationTool
-        .main(new String[] { "-i", validFC("PremiumCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationTool
-        .main(new String[] { "-input", validFC("SelectImported"), "-path", "src/test/resources"});
-    FeatureConfigurationTool
-        .main(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
-    FeatureConfigurationTool
-        .main(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
-    FeatureConfigurationTool
-        .main(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
+    new FeatureConfigurationTool().run(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
+    new FeatureConfigurationTool().run(new String[] { "-i", validFC("PremiumCarNavigation"), "-path", "src/test/resources"});
+    new FeatureConfigurationTool().run(new String[] { "-input", validFC("SelectImported"), "-path", "src/test/resources"});
+    new FeatureConfigurationTool().run(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
+    new FeatureConfigurationTool().run(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
+    new FeatureConfigurationTool().run(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
     assertNoFindings();
   }
 

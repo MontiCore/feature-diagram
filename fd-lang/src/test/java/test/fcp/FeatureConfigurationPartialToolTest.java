@@ -84,16 +84,11 @@ public class FeatureConfigurationPartialToolTest extends AbstractLangTest {
   @Test
   public void testParseValidModel() {
     FeatureConfigurationPartialMill.reset();
-    FeatureConfigurationPartialTool
-        .main(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialTool
-        .main(new String[] { "-i", validFC("SelectImported"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialTool
-        .main(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialTool
-        .main(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
-    FeatureConfigurationPartialTool
-        .main(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
+    new FeatureConfigurationPartialTool().run(new String[] { "-i", validFC("BasicCarNavigation"), "-path", "src/test/resources"});
+    new FeatureConfigurationPartialTool().run(new String[] { "-i", validFC("SelectImported"), "-path", "src/test/resources"});
+    new FeatureConfigurationPartialTool().run(new String[] { "-input", validFC("SelectNone"), "-path", "src/test/resources"});
+    new FeatureConfigurationPartialTool().run(new String[] { "-input", validFC("SelectOne"), "-path", "src/test/resources"});
+    new FeatureConfigurationPartialTool().run(new String[] { "-input", validFC("SelectSome"), "-path", "src/test/resources"});
     assertNoFindings();
   }
 
