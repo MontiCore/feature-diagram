@@ -33,15 +33,15 @@ subprojects {
   apply plugin: 'maven-publish'
 
   dependencies {
-    implementation group: 'de.monticore.lang', name: 'mlc-lang', version: mlc_version
-    implementation group: 'de.monticore.lang', name: 'mlc-tool', version: mlc_version
+    implementation "de.monticore.lang:mlc-lang:$mlc_version"
+    implementation "de.monticore.lang:mlc-tool:$mlc_version"
 
-    implementation group: 'de.monticore', name: 'monticore-grammar', version: mc_version
-    implementation group: 'de.monticore', name: 'monticore-runtime', version: mc_version
-    implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
-    implementation group: 'org.codehaus.plexus', name: 'plexus-archiver', version: plexus_archiver_version
-    implementation group: 'commons-cli', name: 'commons-cli', version: commons_cli_version
-    implementation group: 'com.google.guava', name: 'guava', version: guava_version
+    implementation "de.monticore:monticore-grammar:$mc_version"
+    implementation "de.monticore:monticore-runtime:$mc_version"
+    implementation "de.se_rwth.commons:se-commons-logging:$logging_version"
+    implementation "org.codehaus.plexus:plexus-archiver:$plexus_archiver_version"
+    implementation "commons-cli:commons-cli:$commons_cli_version"
+    implementation "com.google.guava:guava:$guava_version"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testImplementation "org.junit.jupiter:junit-jupiter-params:$junit_version"
@@ -107,7 +107,7 @@ project(':fd-lang') {
    */
   tasks.register('checkArtifacts') { group = 'mlc' }
   configurations { MLC }
-  dependencies { MLC(group: 'de.monticore.lang', name: 'mlc-gradle', version: mlc_version) }
+  dependencies { MLC("de.monticore.lang:mlc-gradle:$mlc_version") }
   def modelPath = []
   configurations.compileClasspath.resolve().each { modelPath.addAll(["-mp", it.toString()]) }
   configurations.grammarSymbolDependencies.resolve().each { modelPath.addAll(["-mp", it.toString()]) }

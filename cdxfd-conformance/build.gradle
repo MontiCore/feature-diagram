@@ -16,12 +16,12 @@ project(':cdxfd-conformance') {
     dependencies {
         implementation project(':fd-conformance')
 
-        implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
-        implementation group: 'de.se_rwth.commons', name: 'se-commons-logging', version: logging_version
-        grammar group: 'de.monticore', name: 'monticore-grammar', version: mc_version
-        implementation group: 'de.monticore', name: 'class2mc', version: mc_version
-        grammar project (':fd-lang')
-        implementation group: 'com.google.guava', name: 'guava', version: guava_version
+        implementation "org.slf4j:slf4j-simple:$slf4j_version"
+        implementation "de.se_rwth.commons:se-commons-logging:$logging_version"
+        grammar "de.monticore:monticore-grammar:$mc_version"
+        implementation "de.monticore:class2mc:$mc_version"
+        grammar project(':fd-lang')
+        implementation "com.google.guava:guava:$guava_version"
         implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
         implementation 'tools.aqua:z3-turnkey:4.11.2'
         grammar "de.monticore.lang:cd4analysis:$mc_version"
