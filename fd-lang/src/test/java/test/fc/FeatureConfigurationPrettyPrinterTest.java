@@ -1,6 +1,7 @@
 /* (c) https://github.com/MontiCore/monticore */
 package test.fc;
 
+import com.google.common.base.Verify;
 import de.monticore.featureconfiguration.FeatureConfigurationMill;
 import de.monticore.featureconfiguration._ast.ASTFCCompilationUnit;
 import de.monticore.io.FileReaderWriter;
@@ -25,7 +26,7 @@ public class FeatureConfigurationPrettyPrinterTest extends AbstractLangTest {
 
   @Test
   public void testValidFCs() throws IOException{
-    for (File validfd : Objects.requireNonNull(new File("src/test/resources/fcvalid/").listFiles((file, s) -> s.endsWith(".fd")))) {
+    for (File validfd : Verify.verifyNotNull(new File("src/test/resources/fcvalid/").listFiles((file, s) -> s.endsWith(".fd")))) {
       testRoundtripPrint(validfd);
     }
   }
